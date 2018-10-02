@@ -9,7 +9,6 @@ import com.exrates.inout.domain.other.PaginationWrapper;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.exceptions.entity.ErrorInfo;
 import com.exrates.inout.service.InputOutputService;
-import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.UserService;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -23,19 +22,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREATE_BY_USER;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-/**
- * created by ValkSam
- */
 @Controller
 public class RefillRequestController {
 
@@ -47,17 +41,15 @@ public class RefillRequestController {
 
     private final UserService userService;
 
-    private final MerchantService merchantService;
-
     private final InputOutputService inputOutputService;
+
     private final LocaleResolver localeResolver;
 
     @Autowired
-    public RefillRequestController(MessageSource messageSource, RefillService refillService, UserService userService, MerchantService merchantService, InputOutputService inputOutputService, LocaleResolver localeResolver) {
+    public RefillRequestController(MessageSource messageSource, RefillService refillService, UserService userService, InputOutputService inputOutputService, LocaleResolver localeResolver) {
         this.messageSource = messageSource;
         this.refillService = refillService;
         this.userService = userService;
-        this.merchantService = merchantService;
         this.inputOutputService = inputOutputService;
         this.localeResolver = localeResolver;
     }
@@ -65,8 +57,7 @@ public class RefillRequestController {
     @RequestMapping(value = "/refill/request/create", method = POST)
     @ResponseBody
     public Map<String, Object> createRefillRequest(
-            @RequestBody RefillRequestParamsDto requestParamsDto, Principal principal,
-            Locale locale) throws UnsupportedEncodingException {
+            @RequestBody RefillRequestParamsDto requestParamsDto, Principal principal, Locale locale)  {
         if (requestParamsDto.getOperationType() != INPUT) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
         }
@@ -82,7 +73,7 @@ public class RefillRequestController {
             );
             if (address.isPresent()) {
                 String message = messageSource.getMessage("refill.messageAboutCurrentAddress", new String[]{address.get()}, locale);
-                return new HashMap<String, Object>() {{
+                return new HashMap<>() {{
                     put("address", address.get());
                     put("message", message);
                     put("qr", address.get());
@@ -103,31 +94,24 @@ public class RefillRequestController {
 
     @RequestMapping(value = "/refill/request/revoke", method = POST)
     @ResponseBody
-    public void revokeWithdrawRequest(
-            @RequestParam Integer id) {
+    public void revokeWithdrawRequest(@RequestParam Integer id) {
         refillService.revokeRefillRequest(id);
     }
 
-    @RequestMapping(value = "/refill/request/info", method = GET)
-    @ResponseBody
-    public RefillRequestFlatDto getInfoRefill(
-            @RequestParam Integer id) {
+    @GetMapping(value = "/refill/request/info")
+    public RefillRequestFlatDto getInfoRefill(@RequestParam Integer id) {
         return refillService.getFlatById(id);
     }
 
 
     @RequestMapping(value = "/refill/request/confirm", method = POST)
     @ResponseBody
-    public void confirmWithdrawRequest(
-            InvoiceConfirmData invoiceConfirmData,
-            Locale locale) {
+    public void confirmWithdrawRequest(InvoiceConfirmData invoiceConfirmData, Locale locale) {
         refillService.confirmRefillRequest(invoiceConfirmData, locale);
     }
 
-    @RequestMapping(value = "/refill/banks", method = GET)
-    @ResponseBody
-    public List<InvoiceBank> getBankListForCurrency(
-            @RequestParam Integer currencyId) {
+    @GetMapping(value = "/refill/banks")
+    public List<InvoiceBank> getBankListForCurrency(@RequestParam Integer currencyId) {
         List<InvoiceBank> banks = refillService.findBanksForCurrency(currencyId);
         banks.forEach(bank -> {
             if (bank.getBankDetails() != null) {
@@ -137,20 +121,16 @@ public class RefillRequestController {
         return banks;
     }
 
-    @RequestMapping(value = "/refill/commission", method = GET)
-    @ResponseBody
-    public Map<String, String> getCommissions(
-            @RequestParam("amount") BigDecimal amount,
+    @GetMapping(value = "/refill/commission")
+    public Map<String, String> getCommissions(@RequestParam("amount") BigDecimal amount,
             @RequestParam("currency") Integer currencyId,
             @RequestParam("merchant") Integer merchantId,
-            Principal principal,
-            Locale locale) {
+            Principal principal, Locale locale) {
         Integer userId = userService.getIdByEmail(principal.getName());
         return refillService.correctAmountAndCalculateCommission(userId, amount, currencyId, merchantId, locale);
     }
 
-    @RequestMapping(value = "/refill/unconfirmed", method = GET)
-    @ResponseBody
+    @GetMapping(value = "/refill/unconfirmed")
     public PaginationWrapper<List<MyInputOutputHistoryDto>> findMyUnconfirmedRefillRequests(@RequestParam("currency") String currencyName,
                                                                                             @RequestParam("limit") Integer limit,
                                                                                             @RequestParam("offset") Integer offset,
@@ -188,9 +168,7 @@ public class RefillRequestController {
 
     @RequestMapping(value = "/2a8fy7b07dxe44/refill/accept", method = POST)
     @ResponseBody
-    public void accept(
-            @RequestBody RefillRequestAcceptEntryParamsDto acceptDto,
-            Principal principal) {
+    public void accept(@RequestBody RefillRequestAcceptEntryParamsDto acceptDto, Principal principal) {
         Integer requesterAdminId = userService.getIdByEmail(principal.getName());
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                 .requestId(acceptDto.getRequestId())

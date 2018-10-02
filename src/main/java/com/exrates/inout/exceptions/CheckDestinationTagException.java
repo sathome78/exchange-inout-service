@@ -1,8 +1,5 @@
 package com.exrates.inout.exceptions;
 
-/**
- * Created by Maks on 22.07.2017.
- */
 public class CheckDestinationTagException extends RuntimeException {
 
     private String fieldName;

@@ -1,8 +1,5 @@
 package com.exrates.inout.exceptions;
 
-/**
- * @author Denis Savin (pilgrimm333@gmail.com)
- */
 public class UnsupportedOrderStatusException extends RuntimeException {
 
     public final int orderStatusId;

@@ -255,7 +255,7 @@ public class WithdrawRequestController {
     }
 
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler({AbsentFinPasswordException.class, NotConfirmedFinPasswordException.class, WrongFinPasswordException.class, CheckFinPassException.class})
+    @ExceptionHandler({AbsentFinPasswordException.class, NotConfirmedFinPasswordException.class})
     @ResponseBody
     public ErrorInfo finPassExceptionHandler(HttpServletRequest req, Exception exception) {
         return new ErrorInfo(req.getRequestURL(), exception, messageSource.getMessage(((MerchantException) (exception)).getReason(), null, localeResolver.resolveLocale(req)));

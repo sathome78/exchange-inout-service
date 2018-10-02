@@ -55,7 +55,7 @@ public class CommonMerchantsController {
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(value = "/merchants/input", method = GET)
+    @GetMapping(value = "/merchants/input")
     public ModelAndView inputCredits(@RequestParam("currency") String currencyName, Principal principal) {
         ModelAndView modelAndView = new ModelAndView("globalPages/merchantsInput");
         try {
@@ -86,7 +86,7 @@ public class CommonMerchantsController {
         }
     }
 
-    @RequestMapping(value = "/merchants/output", method = GET)
+    @GetMapping(value = "/merchants/output")
     public ModelAndView outputCredits(@RequestParam("currency") String currencyName, Principal principal) {
         ModelAndView modelAndView = new ModelAndView("globalPages/merchantsOutput");
         try {
@@ -121,7 +121,7 @@ public class CommonMerchantsController {
         }
     }
 
-    @RequestMapping(value = "/merchants/transfer", method = GET)
+    @GetMapping("/merchants/transfer")
     public ModelAndView transfer(@RequestParam("currency") String currencyName, Principal principal) {
         ModelAndView modelAndView = new ModelAndView("globalPages/transfer");
         try {
@@ -155,9 +155,8 @@ public class CommonMerchantsController {
         }
     }
 
-    @RequestMapping(value = "/merchants/data", method = GET)
-    public @ResponseBody
-    List<MerchantCurrency> getMerchantsData() {
+    @RequestMapping("/merchants/data")
+    public List<MerchantCurrency> getMerchantsData() {
         List<Integer> currenciesId = currencyService
                 .getAllCurrencies()
                 .stream()
@@ -167,8 +166,7 @@ public class CommonMerchantsController {
         return merchantService.getAllUnblockedForOperationTypeByCurrencies(currenciesId, INPUT);
     }
 
-    @RequestMapping(value = "/merchants/commission", method = GET)
-    @ResponseBody
+    @GetMapping("/merchants/commission")
     public Map<String, String> getCommissions(final @RequestParam("type") OperationType type,
                                               final @RequestParam("amount") BigDecimal amount,
                                               final @RequestParam("currency") String currency,

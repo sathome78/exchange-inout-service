@@ -196,10 +196,10 @@ public class MobileInputOutputController {
 
             } catch (RefillRequestGeneratingAdditionalAddressNotAvailableException e) {
                 refillService.retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(Collections.singletonList(merchantCurrency), userEmail);
-                Map<String, String> params = new HashMap<String, String>() {{
+                Map<String, String> params = new HashMap<>() {{
                     put("message", refillService.getPaymentMessageForTag(merchant.getServiceBeanName(), merchantCurrency.getAddress(), userLocale));
                 }};
-                result = new HashMap<String, Object>() {{
+                result = new HashMap<>() {{
                     put("params", params);
                 }};
             }
@@ -437,19 +437,6 @@ public class MobileInputOutputController {
     @ExceptionHandler({NotEnoughMoneyException.class, NotEnoughUserWalletMoneyException.class})
     public ApiError notEnoughMoneyExceptionHandler(HttpServletRequest req, Exception exception) {
         return new ApiError(INSUFFICIENT_FUNDS, req.getRequestURL(), exception);
-    }
-
-    @ResponseStatus(NOT_ACCEPTABLE)
-    @ExceptionHandler({IllegalInvoiceStatusException.class})
-    public ApiError illegalInvoiceRequestStatusExceptionHandler(HttpServletRequest req, Exception exception) {
-        return new ApiError(BAD_INVOICE_STATUS, req.getRequestURL(), exception);
-    }
-
-    @ResponseStatus(NOT_FOUND)
-    @ExceptionHandler(CurrencyPairNotFoundException.class)
-    @ResponseBody
-    public ApiError currencyPairNotFoundExceptionHandler(HttpServletRequest req, Exception exception) {
-        return new ApiError(ErrorCode.CURRENCY_PAIR_NOT_FOUND, req.getRequestURL(), exception);
     }
 
     @ResponseStatus(NOT_FOUND)

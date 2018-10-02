@@ -37,4 +37,6 @@ public interface WithdrawRequestDao {
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
     WithdrawRequestInfoDto findWithdrawInfo(Integer id);
+
+    WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id);
 }

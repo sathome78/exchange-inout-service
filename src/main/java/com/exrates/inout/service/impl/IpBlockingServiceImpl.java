@@ -17,7 +17,6 @@ import static com.exrates.inout.domain.enums.IpBanStatus.*;
 
 @Log4j2(topic = "ip_log")
 @Service
-@PropertySource(value = {"classpath:/ip_ban.properties"})
 public class IpBlockingServiceImpl implements IpBlockingService {
 
     @Value("${ban.short.attempts.num}")

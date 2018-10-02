@@ -34,28 +34,26 @@ import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-/**
- * created by ValkSam
- */
 @Controller
 public class WithdrawRequestAdminController {
 
     private static final Logger log = LogManager.getLogger("withdraw");
 
-    @Autowired
-    private MessageSource messageSource;
+    private final WithdrawService withdrawService;
+
+    private final UserService userService;
+
+    private final MerchantService merchantService;
+
+    private final CurrencyService currencyService;
 
     @Autowired
-    WithdrawService withdrawService;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    MerchantService merchantService;
-
-    @Autowired
-    private CurrencyService currencyService;
+    public WithdrawRequestAdminController(WithdrawService withdrawService, UserService userService, MerchantService merchantService, CurrencyService currencyService) {
+        this.withdrawService = withdrawService;
+        this.userService = userService;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+    }
 
     @RequestMapping(value = "/2a8fy7b07dxe44/withdrawal")
     public ModelAndView withdrawalRequests(Principal principal) {

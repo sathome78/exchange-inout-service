@@ -45,8 +45,7 @@ public class DBConfiguration {
         hikariConfig.setUsername(dbMasterUser);
         hikariConfig.setPassword(dbMasterPassword);
         hikariConfig.setMaximumPoolSize(50);
-        DataSource dataSource = new HikariDataSource(hikariConfig);
-        return dataSource;
+        return new HikariDataSource(hikariConfig);
     }
 
     @Bean(name = "slaveHikariDataSource")

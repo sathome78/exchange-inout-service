@@ -35,7 +35,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
@@ -51,26 +50,34 @@ public class TransferRequestController {
 
     private static final Logger log = LogManager.getLogger("transfer");
 
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private TransferService transferService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private InputOutputService inputOutputService;
-    @Autowired
-    private LocaleResolver localeResolver;
-    @Autowired
-    private RateLimitService rateLimitService;
-    @Autowired
-    private CurrencyService currencyService;
-    @Autowired
-    private SecureService secureServiceImpl;
+    private final MessageSource messageSource;
+    private final TransferService transferService;
+    private final UserService userService;
+    private final MerchantService merchantService;
+    private final InputOutputService inputOutputService;
+    private final LocaleResolver localeResolver;
+    private final RateLimitService rateLimitService;
+    private final CurrencyService currencyService;
+    private final SecureService secureServiceImpl;
 
     private final static String transferRequestCreateDto = "transferRequestCreateDto";
+
+    @Autowired
+    public TransferRequestController(MessageSource messageSource, TransferService transferService,
+                                     UserService userService, MerchantService merchantService,
+                                     InputOutputService inputOutputService, LocaleResolver localeResolver,
+                                     RateLimitService rateLimitService, CurrencyService currencyService,
+                                     SecureService secureServiceImpl) {
+        this.messageSource = messageSource;
+        this.transferService = transferService;
+        this.userService = userService;
+        this.merchantService = merchantService;
+        this.inputOutputService = inputOutputService;
+        this.localeResolver = localeResolver;
+        this.rateLimitService = rateLimitService;
+        this.currencyService = currencyService;
+        this.secureServiceImpl = secureServiceImpl;
+    }
 
 
     @RequestMapping(value = "/transfer/request/create", method = POST)
@@ -78,7 +85,7 @@ public class TransferRequestController {
     public Map<String, Object> createTransferRequest(
             @RequestBody TransferRequestParamsDto requestParamsDto,
             Principal principal,
-            HttpServletRequest servletRequest) throws UnsupportedEncodingException {
+            HttpServletRequest servletRequest){
         Locale locale = localeResolver.resolveLocale(servletRequest);
         if (requestParamsDto.getOperationType() != USER_TRANSFER) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
@@ -172,33 +179,28 @@ public class TransferRequestController {
 
     @RequestMapping(value = "/transfer/request/hash", method = POST)
     @ResponseBody
-    public String getHashForUser(
-            @RequestParam Integer id, Principal principal) {
+    public String getHashForUser(@RequestParam Integer id, Principal principal) {
         return transferService.getHash(id, principal);
     }
 
     @RequestMapping(value = "/transfer/request/revoke", method = POST)
     @ResponseBody
-    public void revokeVoucherByUser(
-            @RequestParam Integer id, Principal principal) {
+    public void revokeVoucherByUser(@RequestParam Integer id, Principal principal) {
         transferService.revokeByUser(id, principal);
     }
 
     @RequestMapping(value = "/2a8fy7b07dxe44/transfer/request/revoke", method = POST)
     @ResponseBody
-    public void revokeVoucherByAdmin(
-            @RequestParam Integer id, Principal principal) {
+    public void revokeVoucherByAdmin(@RequestParam Integer id, Principal principal) {
         transferService.revokeByAdmin(id, principal);
     }
 
-    @RequestMapping(value = "/2a8fy7b07dxe44/transfer/request/info", method = GET)
-    @ResponseBody
-    public TransferRequestFlatDto getInfoTransfer(
-            @RequestParam Integer id) {
+    @GetMapping(value = "/2a8fy7b07dxe44/transfer/request/info")
+    public TransferRequestFlatDto getInfoTransfer(@RequestParam Integer id) {
         return transferService.getFlatById(id);
     }
 
-    @RequestMapping(value = "/2a8fy7b07dxe44/withdrawal/vouchers", method = GET)
+    @GetMapping(value = "/2a8fy7b07dxe44/withdrawal/vouchers")
     public ModelAndView vouchers(Principal principal) {
         final Map<String, Object> params = new HashMap<>();
         List<UserCurrencyOperationPermissionDto> permittedCurrencies = currencyService.getCurrencyOperationPermittedForWithdraw(principal.getName())
@@ -219,8 +221,7 @@ public class TransferRequestController {
         return new ModelAndView("admin/vouchers", params);
     }
 
-    @RequestMapping(value = "/2a8fy7b07dxe44/transfer/requests", method = GET)
-    @ResponseBody
+    @GetMapping(value = "/2a8fy7b07dxe44/transfer/requests")
     public DataTable<List<VoucherAdminTableDto>> getAllTransfers(VoucherFilterData filterData,
                                                                  @RequestParam Map<String, String> params,
                                                                  Principal principal,
@@ -230,14 +231,12 @@ public class TransferRequestController {
         return transferService.getAdminVouchersList(dataTableParams, filterData, principal.getName(), locale);
     }
 
-    @RequestMapping(value = "/transfer/commission", method = GET)
-    @ResponseBody
+    @GetMapping(value = "/transfer/commission")
     public Map<String, String> getCommissions(
             @RequestParam("amount") BigDecimal amount,
             @RequestParam("currency") Integer currencyId,
             @RequestParam("merchant") Integer merchant,
-            Principal principal,
-            Locale locale) {
+            Principal principal, Locale locale) {
         Integer userId = userService.getIdByEmail(principal.getName());
         return transferService.correctAmountAndCalculateCommissionPreliminarily(userId, amount, currencyId, merchant, locale);
     }

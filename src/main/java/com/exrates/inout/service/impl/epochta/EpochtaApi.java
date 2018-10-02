@@ -20,21 +20,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created by Maks on 17.10.2017.
- */
 @Log4j2
-@PropertySource("classpath:ePochta.properties")
 @Component
 public class EpochtaApi {
 
     private RequestBuilder reqBuilder;
-    private @Value("${epochta.login}")
-    String login;
-    private @Value("${epochta.password}")
-    String password;
-    private @Value("${epochta.URL}")
-    String URL;
+    @Value("${epochta.login}")
+    private String login;
+    @Value("${epochta.password}")
+    private String password;
+    @Value("${epochta.URL}")
+    private String URL;
 
     @PostConstruct
     private void init() {
