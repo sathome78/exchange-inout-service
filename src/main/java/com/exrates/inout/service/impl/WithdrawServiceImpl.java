@@ -62,13 +62,13 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     private final NotificationService notificationService;
 
-    final TransactionDescription transactionDescription;
+    private final TransactionDescription transactionDescription;
 
-    final MerchantServiceContext merchantServiceContext;
+    private final MerchantServiceContext merchantServiceContext;
 
     private final CommissionService commissionService;
 
-    final InputOutputService inputOutputService;
+    private final InputOutputService inputOutputService;
 
     private final MerchantService merchantService;
 
@@ -89,13 +89,11 @@ public class WithdrawServiceImpl implements WithdrawService {
         this.commissionService = commissionService;
     }
 
-    @Override
     @Transactional(readOnly = true)
     public MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId) {
         return merchantDao.findAutoWithdrawParamsByMerchantAndCurrency(merchantId, currencyId);
     }
 
-    @Override
     @Transactional
     public Map<String, String> createWithdrawalRequest(
             WithdrawRequestCreateDto request,

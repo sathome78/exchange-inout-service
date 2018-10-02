@@ -19,11 +19,10 @@ import java.util.*;
 import static java.util.Arrays.asList;
 
 @Service
-@PropertySource("classpath:/uploadfiles.properties")
 public class UserFilesServiceImpl implements UserFilesService {
 
-    private @Value("${upload.userFilesDir}")
-    String userFilesDir;
+    @Value("${upload.userFilesDir}")
+    private String userFilesDir;
     @Value("${upload.userFilesLogicalDir}")
     private String userFilesLogicalDir;
 

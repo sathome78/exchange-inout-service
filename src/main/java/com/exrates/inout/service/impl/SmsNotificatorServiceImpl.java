@@ -137,7 +137,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
         walletOperationData.setDescription(description);
         WalletTransferStatus walletTransferStatus = walletService.walletBalanceChange(walletOperationData);
         if (!walletTransferStatus.equals(WalletTransferStatus.SUCCESS)) {
-            throw new PaymentException(walletTransferStatus);
+            throw new PaymentException();
         }
         CompanyWallet companyWallet = companyWalletService.findByCurrency(currencyService.findByName(CURRENCY_NAME));
         companyWalletService.deposit(companyWallet, new BigDecimal(0), feeAmount);

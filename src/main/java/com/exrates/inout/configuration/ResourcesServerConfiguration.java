@@ -18,7 +18,7 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 public class ResourcesServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    final
+    private final
     RedisConnectionFactory redisConnectionFactory;
 
     @Autowired
@@ -29,7 +29,7 @@ public class ResourcesServerConfiguration extends ResourceServerConfigurerAdapte
 
     public void configure(ResourceServerSecurityConfigurer resources) {
         TokenStore tokenStore = new RedisTokenStore(redisConnectionFactory);
-        resources.resourceId("product_api").tokenStore(tokenStore);
+        resources.resourceId("input_output_api").tokenStore(tokenStore);
     }
 
     public void configure(HttpSecurity http) throws Exception {

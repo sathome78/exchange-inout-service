@@ -89,7 +89,6 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.walletInnerTransfer(walletId, amount, sourceType, sourceId, description);
     }
 
-    @Override
     public WalletTransferStatus walletBalanceChange(final WalletOperationData walletOperationData) {
         return walletDao.walletBalanceChange(walletOperationData);
     }

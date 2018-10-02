@@ -82,7 +82,6 @@ public class TransferServiceImpl implements TransferService {
         this.merchantService = merchantService;
     }
 
-    @Override
     @Transactional
     public Map<String, Object> createTransferRequest(TransferRequestCreateDto request) {
         ProfileData profileData = new ProfileData(1000);
@@ -170,7 +169,6 @@ public class TransferServiceImpl implements TransferService {
         return createdTransferRequestId;
     }
 
-    @Override
     @Transactional
     public List<MerchantCurrency> retrieveAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies) {
         merchantCurrencies.forEach(e -> {
@@ -184,7 +182,6 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Transactional
-    @Override
     public void revokeByUser(int requestId, Principal principal) {
         TransferRequestFlatDto transferRequest = transferRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new InvoiceNotFoundException(String.format("withdraw request id: %s", requestId)));
@@ -258,7 +255,6 @@ public class TransferServiceImpl implements TransferService {
         return notification;
     }
 
-    @Override
     @Transactional(readOnly = true)
     public Map<String, String> correctAmountAndCalculateCommissionPreliminarily(
             Integer userId,
@@ -275,19 +271,16 @@ public class TransferServiceImpl implements TransferService {
         return result;
     }
 
-    @Override
     public Optional<TransferRequestFlatDto> getByHashAndStatus(String code, Integer requiredStatus, boolean block) {
         return transferRequestDao.getFlatByHashAndStatus(code, requiredStatus, block);
     }
 
-    @Override
     public boolean checkRequest(TransferRequestFlatDto transferRequestFlatDto, String userEmail) {
         ITransferable merchantService = (ITransferable) merchantServiceContext.getMerchantService(transferRequestFlatDto.getMerchantId());
         return !merchantService.recipientUserIsNeeded() || transferRequestFlatDto.getRecipientId().equals(userService.getIdByEmail(userEmail));
     }
 
     @Transactional
-    @Override
     public TransferDto performTransfer(TransferRequestFlatDto dto, Locale locale, InvoiceActionTypeEnum action) {
         checkTransferToSelf(dto.getUserId(), dto.getRecipientId(), locale);
         IMerchantService merchantService = merchantServiceContext.getMerchantService(dto.getMerchantId());
@@ -318,12 +311,10 @@ public class TransferServiceImpl implements TransferService {
         return resDto;
     }
 
-    @Override
     public String getUserEmailByTrnasferId(int id) {
         return transferRequestDao.getCreatorEmailById(id);
     }
 
-    @Override
     @Transactional
     public DataTable<List<VoucherAdminTableDto>> getAdminVouchersList(
             DataTableParams dataTableParams,
@@ -352,8 +343,6 @@ public class TransferServiceImpl implements TransferService {
         return output;
     }
 
-
-    @Override
     public String getHash(Integer id, Principal principal) {
         TransferRequestFlatDto dto = getFlatById(id);
         if (dto == null || !dto.getCreatorEmail().equals(principal.getName())

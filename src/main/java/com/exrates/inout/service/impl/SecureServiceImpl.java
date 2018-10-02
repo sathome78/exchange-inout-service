@@ -33,10 +33,10 @@ import java.util.Locale;
 @PropertySource("classpath:session.properties")
 public class SecureServiceImpl implements SecureService {
 
-    private @Value("${session.checkPinParam}")
-    String checkPinParam;
-    private @Value("${session.authenticationParamName}")
-    String authenticationParamName;
+    @Value("${session.checkPinParam}")
+    private String checkPinParam;
+    @Value("${session.authenticationParamName}")
+    private String authenticationParamName;
     @Value("${session.passwordParam}")
     private String passwordParam;
 

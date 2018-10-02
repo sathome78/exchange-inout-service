@@ -30,11 +30,10 @@ public class TelegramBotService extends TelegramLongPollingBot {
     @Qualifier("telegramNotificatorServiceImpl")
     @Autowired
     private Subscribable subscribable;
-
-    private @Value("${telegram.bot.key}")
-    String key;
-    private @Value("${telegram.bot.username}")
-    String botName;
+    @Value("${telegram.bot.key}")
+    private String key;
+    @Value("${telegram.bot.username}")
+    private String botName;
 
     static {
         ApiContextInitializer.init();

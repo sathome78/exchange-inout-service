@@ -32,7 +32,6 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 
 @Log4j2
-@PropertySource("classpath:session.properties")
 public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
@@ -50,13 +49,12 @@ public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFil
 
     @Autowired
     private GeetestLib geetest;
-
-    private @Value("${session.checkPinParam}")
-    String checkPinParam;
-    private @Value("${session.pinParam}")
-    String pinParam;
-    private @Value("${session.passwordParam}")
-    String passwordParam;
+    @Value("${session.checkPinParam}")
+    private String checkPinParam;
+    @Value("${session.pinParam}")
+    private String pinParam;
+    @Value("${session.passwordParam}")
+    private String passwordParam;
     private String authenticationParamName = "authentication";
 
 
