@@ -52,4 +52,24 @@ mail:
     password: setarxe123
     allowedOnly: true
     allowedEmails: golvazin@gmail.com,avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
-  default_mail_type: gmail
+  default_mail_type: mandrill
+
+telegram:
+  bot:
+    url: https://t.me/exrates_me_bot
+    key: 471353387:AAGWDWPIHKMDv6T4TDu7avsDN9H02qhwxzQ
+    username: exrates_me_bot
+    name: exrates
+
+epochta:
+  URL: http://api.atompark.com/members/sms/xml.php
+  login: sell@exrates.top
+  password: 1exMeBNhybYfV
+
+session:
+  checkPinParam: l_checkPin
+  authenticationParamName: authentication
+  passwordParam: l_password
+
+invoice: 4320
+  blockNotifyUsers: false

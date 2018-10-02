@@ -19,28 +19,22 @@ import javax.sql.DataSource;
 @Configuration
 public class DBConfiguration {
 
-    @Value("${}")
+    @Value("spring.datasource.hikari.driver-class-name")
     private String dbMasterClassname;
-
-    @Value("${}")
+    @Value("spring.datasource.hikari.jdbc-url")
     private String dbMasterUrl;
-
-    @Value("${}")
+    @Value("spring.datasource.hikari.username")
     private String dbMasterUser;
-
-    @Value("${d}")
+    @Value("slave.datasource.hikari.password")
     private String dbMasterPassword;
 
-    @Value("")
+    @Value("slave.datasource.hikari.driver-class-name")
     private String dbSlaveClassname;
-
-    @Value("")
+    @Value("slave.datasource.jdbc-url")
     private String dbSlaveUrl;
-
-    @Value("")
+    @Value("slave.datasource.hikari.username")
     private String dbSlaveUser;
-
-    @Value("")
+    @Value("slave.datasource.hikari.password")
     private String dbSlavePassword;
 
     @Bean(name = "masterHikariDataSource")

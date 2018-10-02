@@ -53,3 +53,23 @@ mail:
     allowedOnly: true
     allowedEmails: golvazin@gmail.com,avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
+
+telegram:
+  bot:
+    url: https://t.me/exrates_test_bot
+    key: 393104878:AAFh5XZKf7DcAWBKFYyEV6LxNHJrcYw7xPA
+    username: exrates_test_bot
+    name: exrates_test
+
+epochta:
+  URL: http://api.atompark.com/members/sms/xml.php
+  login: sell@exrates.top
+  password: 1exMeBNhybYfV
+
+session:
+  checkPinParam: l_checkPin
+  authenticationParamName: authentication
+  passwordParam: l_password
+
+invoice: 5
+  blockNotifyUsers: true

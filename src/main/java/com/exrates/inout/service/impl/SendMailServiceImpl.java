@@ -31,13 +31,13 @@ public class SendMailServiceImpl implements SendMailService {
 
     private final JavaMailSender infoMailSender;
 
-    @Value("${mail_info.allowedOnly}")
+    @Value("${mail.mail_info.allowedOnly}")
     private Boolean allowedOnly;
 
-    @Value("${mail_info.allowedEmails}")
+    @Value("${mail.mail_info.allowedEmails}")
     private String allowedEmailsList;
 
-    @Value("${default_mail_type}")
+    @Value("${mail.default_mail_type}")
     private String mailType;
 
     private final static int THREADS_NUMBER = 4;

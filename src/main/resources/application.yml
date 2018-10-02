@@ -5,6 +5,7 @@ spring:
       username: root
       jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
+      driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
@@ -30,6 +31,7 @@ slave:
       username: root
       jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
+      driver-class-name: com.mysql.jdbc.Driver
 
 mail:
   mail_support:
@@ -53,3 +55,23 @@ mail:
     allowedOnly: true
     allowedEmails: golvazin@gmail.com,avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
+
+telegram:
+  bot:
+    url: https://t.me/exrates_local_test_bot
+    key: 467357916:AAFNnf9iLW3cVSRA_EPwiuU74KYgjKo-VDc
+    username: exrates_local_test_bot
+    name: exrates_local_test
+
+epochta:
+  URL: http://api.atompark.com/members/sms/xml.php
+  login: sell@exrates.top
+  password: 1exMeBNhybYfV
+
+session:
+  checkPinParam: l_checkPin
+  authenticationParamName: authentication
+  passwordParam: l_password
+
+invoice: 5
+  blockNotifyUsers: true
