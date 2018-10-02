@@ -1,0 +1,71 @@
+package com.exrates.inout.dao.impl;
+
+import com.exrates.inout.dao.CompanyWalletDao;
+import com.exrates.inout.domain.main.CompanyWallet;
+import com.exrates.inout.domain.main.Currency;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Repository
+public class CompanyWalletDaoImpl implements CompanyWalletDao {
+
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public CompanyWalletDaoImpl(@Qualifier(value = "masterTemplate") NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public CompanyWallet create(Currency currency) {
+        final String sql = "INSERT INTO COMPANY_WALLET(currency_id) VALUES (:currencyId)";
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        final Map<String, Integer> params = new HashMap<>() {{
+            put("currencyId", currency.getId());
+        }};
+        if (jdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder) > 0) {
+            final CompanyWallet companyWallet = new CompanyWallet();
+            companyWallet.setCurrency(currency);
+            companyWallet.setId(keyHolder.getKey().intValue());
+            return companyWallet;
+        }
+        return null;
+    }
+
+    public CompanyWallet findByCurrencyId(Currency currency) {
+        final String sql = "SELECT * FROM  COMPANY_WALLET WHERE currency_id = :currencyId";
+        final Map<String, Integer> params = new HashMap<>() {{
+            put("currencyId", currency.getId());
+        }};
+        final CompanyWallet companyWallet = new CompanyWallet();
+        try {
+            return jdbcTemplate.queryForObject(sql, params, (resultSet, i) -> {
+                companyWallet.setId(resultSet.getInt("id"));
+                companyWallet.setBalance(resultSet.getBigDecimal("balance"));
+                companyWallet.setCommissionBalance(resultSet.getBigDecimal("commission_balance"));
+                companyWallet.setCurrency(currency);
+                return companyWallet;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public boolean update(CompanyWallet companyWallet) {
+        final String sql = "UPDATE COMPANY_WALLET SET balance = :balance, commission_balance = :commissionBalance where id = :id";
+        final Map<String, Object> params = new HashMap<>() {{
+            put("balance", companyWallet.getBalance());
+            put("commissionBalance", companyWallet.getCommissionBalance());
+            put("id", companyWallet.getId());
+        }};
+        return jdbcTemplate.update(sql, params) > 0;
+    }
+}

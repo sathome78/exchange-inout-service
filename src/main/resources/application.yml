@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    hikari:
+      password: root
+      username: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+      connection-test-query: SELECT 1 FROM DUAL
+  jpa:
+    hibernate:
+      ddl-auto: none
+  profiles:
+    active: container
+  redis:
+    host: 172.10.10.236
+    port: 6379
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+slave:
+  datasource:
+    hikari:
+      password: root
+      username: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+      connection-test-query: SELECT 1 FROM DUAL
+
+mail:
+  mail_support:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    user: exrates.dev@gmail.com
+    password: setarxe123
+  mail_mandrill:
+    host: smtp.mandrillapp.com
+    port: 587
+    protocol: smtp
+    user: Currency
+    password: PsQhkDq7dB8Zn3qAserRTw
+  mail_info:
+    host: smtp.mandrillapp.com
+    port: 587
+    protocol: smtp
+    user: exrates.dev@gmail.com
+    password: setarxe123
+    allowedOnly: true
+    allowedEmails: golvazin@gmail.com,avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
+  default_mail_type: gmail
