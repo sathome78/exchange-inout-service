@@ -9,9 +9,6 @@ import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
 
-/**
- * Created by ValkSam
- */
 @Log4j2
 public enum TransferStatusEnum implements InvoiceStatus {
     CREATED_USER(1) {
@@ -88,17 +85,6 @@ public enum TransferStatusEnum implements InvoiceStatus {
                 .collect(Collectors.toList());
     }
 
-    public static List<InvoiceStatus> getAvailableForActionStatusesList(List<InvoiceActionTypeEnum> action) {
-        return Arrays.stream(TransferStatusEnum.class.getEnumConstants())
-                .filter(e -> action.stream().filter(e::availableForAction).findFirst().isPresent())
-                .collect(Collectors.toList());
-    }
-
-    public Set<InvoiceActionTypeEnum> getAvailableActionList() {
-        schemaMap.keySet().forEach(InvoiceActionTypeEnum::checkRestrictParamNeeded);
-        return schemaMap.keySet();
-    }
-
     public Set<InvoiceActionTypeEnum> getAvailableActionList(InvoiceActionParamsValue paramsValue) {
         return schemaMap.keySet().stream()
                 .filter(e -> e.isMatchesTheParamsValue(paramsValue))
@@ -137,41 +123,10 @@ public enum TransferStatusEnum implements InvoiceStatus {
         return candidateList.get(0);
     }
 
-    public static Set<InvoiceStatus> getMiddleStatesSet() {
-        return Arrays.stream(TransferStatusEnum.class.getEnumConstants())
-                .filter(e -> !e.schemaMap.isEmpty())
-                .collect(Collectors.toSet());
-    }
-
-    public static Set<InvoiceStatus> getEndStatesSet() {
-        return Arrays.stream(TransferStatusEnum.class.getEnumConstants())
-                .filter(e -> e.schemaMap.isEmpty())
-                .collect(Collectors.toSet());
-    }
-
-    public static InvoiceStatus getInvoiceStatusAfterAction(InvoiceActionTypeEnum action) {
-        TreeSet<InvoiceStatus> statusSet = new TreeSet(
-                Arrays.stream(TransferStatusEnum.class.getEnumConstants())
-                        .filter(e -> e.availableForAction(action))
-                        .map(e -> e.nextState(action))
-                        .collect(Collectors.toList()));
-        if (statusSet.size() == 0) {
-            log.fatal("no state found !");
-            throw new AssertionError();
-        }
-        if (statusSet.size() > 1) {
-            log.fatal("more then one state found !");
-            throw new AssertionError();
-        }
-        return statusSet.first();
-    }
-
-    @Override
     public Boolean isEndStatus() {
         return schemaMap.isEmpty();
     }
 
-    @Override
     public Boolean isSuccessEndStatus() {
         Map<InvoiceActionTypeEnum, InvoiceStatus> schema = new HashMap<>();
         Arrays.stream(TransferStatusEnum.class.getEnumConstants())
@@ -196,7 +151,6 @@ public enum TransferStatusEnum implements InvoiceStatus {
         this.code = code;
     }
 
-    @Override
     public Integer getCode() {
         return code;
     }

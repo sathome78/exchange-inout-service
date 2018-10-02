@@ -13,9 +13,6 @@ import java.util.stream.Collectors;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeButtonEnum.*;
 import static com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission.ACCEPT_DECLINE;
 
-/**
- * Created by ValkSam on 18.02.2017.
- */
 @NoArgsConstructor
 public enum InvoiceActionTypeEnum {
     CONFIRM_USER {{

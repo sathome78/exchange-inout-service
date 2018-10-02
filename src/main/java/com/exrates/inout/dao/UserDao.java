@@ -20,10 +20,6 @@ public interface UserDao {
 
     boolean create(User user);
 
-    void createUserDoc(int userId, List<Path> paths);
-
-    void setUserAvatar(int userId, String path);
-
     List<UserFile> findUserDoc(int userId);
 
     UserRole getUserRoleById(Integer id);
@@ -46,8 +42,6 @@ public interface UserDao {
 
     TemporalToken verifyToken(String token);
 
-    List<TemporalToken> getTokenByUserAndType(int userId, TokenType tokenType);
-
     List<TemporalToken> getAllTokens();
 
     String getPreferredLang(int userId);
@@ -63,8 +57,6 @@ public interface UserDao {
     InvoiceOperationPermission getCurrencyPermissionsByUserIdAndCurrencyIdAndDirection(Integer userId, Integer currencyId, InvoiceOperationDirection invoiceOperationDirection);
 
     String getEmailById(Integer id);
-
-    UserRole getUserRoleByEmail(String email);
 
     String getPinByEmailAndEvent(String email, NotificationMessageEventEnum event);
 

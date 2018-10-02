@@ -287,29 +287,6 @@ public class UserDaoImpl implements UserDao {
         return result.size() == 1 ? result.get(0) : null;
     }
 
-    public List<TemporalToken> getTokenByUserAndType(int userId, TokenType tokenType) {
-        String sql = "SELECT * FROM TEMPORAL_TOKEN WHERE user_id= :user_id and token_type_id=:token_type_id";
-        Map<String, String> namedParameters = new HashMap<String, String>();
-        namedParameters.put("user_id", String.valueOf(userId));
-        namedParameters.put("token_type_id", String.valueOf(tokenType.getTokenType()));
-        ArrayList<TemporalToken> result = (ArrayList<TemporalToken>) namedParameterJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<TemporalToken>() {
-            @Override
-            public TemporalToken mapRow(ResultSet rs, int rowNumber) throws SQLException {
-                TemporalToken temporalToken = new TemporalToken();
-                temporalToken.setId(rs.getInt("id"));
-                temporalToken.setUserId(rs.getInt("user_id"));
-                temporalToken.setValue(rs.getString("value"));
-                temporalToken.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
-                temporalToken.setExpired(rs.getBoolean("expired"));
-                temporalToken.setTokenType(TokenType.convert(rs.getInt("token_type_id")));
-                temporalToken.setCheckIp(rs.getString("check_ip"));
-                return temporalToken;
-            }
-        });
-        return result;
-    }
-
-
     public List<TemporalToken> getAllTokens() {
         String sql = "SELECT * FROM TEMPORAL_TOKEN";
         ArrayList<TemporalToken> result = (ArrayList<TemporalToken>) namedParameterJdbcTemplate.query(sql, new BeanPropertyRowMapper<TemporalToken>() {
@@ -405,14 +382,6 @@ public class UserDaoImpl implements UserDao {
     public String getEmailById(Integer id) {
         String sql = "SELECT email FROM USER WHERE id = :id";
         return namedParameterJdbcTemplate.queryForObject(sql, Collections.singletonMap("id", id), String.class);
-    }
-
-    public UserRole getUserRoleByEmail(String email) {
-        String sql = "select USER_ROLE.name as role_name from USER " +
-                "inner join USER_ROLE on USER.roleid = USER_ROLE.id where USER.email = :email ";
-        Map<String, String> namedParameters = Collections.singletonMap("email", email);
-        return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, (rs, row) ->
-                UserRole.valueOf(rs.getString("role_name")));
     }
 
     public String getPinByEmailAndEvent(String email, NotificationMessageEventEnum event) {

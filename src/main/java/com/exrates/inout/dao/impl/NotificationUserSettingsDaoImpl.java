@@ -21,9 +21,7 @@ import java.util.Map;
 @Repository
 public class NotificationUserSettingsDaoImpl implements NotificationUserSettingsDao {
 
-    @Autowired
-    @Qualifier(value = "masterTemplate")
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static RowMapper<NotificationsUserSetting> notificationsUserSettingRowMapper = (rs, idx) -> {
         NotificationsUserSetting setting = new NotificationsUserSetting();
@@ -34,6 +32,11 @@ public class NotificationUserSettingsDaoImpl implements NotificationUserSettings
         setting.setNotificationMessageEventEnum(NotificationMessageEventEnum.valueOf(rs.getString("event_name")));
         return setting;
     };
+
+    @Autowired
+    public NotificationUserSettingsDaoImpl(@Qualifier(value = "masterTemplate") NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     public NotificationsUserSetting getByUserAndEvent(int userId, NotificationMessageEventEnum event) {
         String sql = "SELECT UN.* FROM 2FA_USER_NOTIFICATION_MESSAGE_SETTINGS UN " +

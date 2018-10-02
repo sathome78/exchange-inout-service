@@ -10,7 +10,6 @@ import static com.exrates.inout.domain.enums.TransactionSourceType.WITHDRAW;
 
 public enum OperationType {
     INPUT(1, REFILL) {{
-        /*Addition of three digits is required for IDR input*/
         currencyForAddRandomValueToAmount.put(10, new AdditionalRandomAmountParam() {{
             currencyName = "IDR";
             lowBound = 100;
@@ -31,12 +30,10 @@ public enum OperationType {
         public double lowBound;
         public double highBound;
 
-        @Override
         public boolean equals(Object currencyName) {
             return this.currencyName.equals((String) currencyName);
         }
 
-        @Override
         public int hashCode() {
             return currencyName != null ? currencyName.hashCode() : 0;
         }
@@ -59,34 +56,6 @@ public enum OperationType {
 
     public Optional<AdditionalRandomAmountParam> getRandomAmountParam(Integer currencyId) {
         return Optional.ofNullable(currencyForAddRandomValueToAmount.get(currencyId));
-    }
-
-    public Optional<AdditionalRandomAmountParam> getRandomAmountParam(String currencyName) {
-        return currencyForAddRandomValueToAmount.values().stream()
-                .filter(e -> e.equals(currencyName))
-                .findAny();
-    }
-
-    public static List<OperationType> getInputOutputOperationsList() {
-        return new ArrayList<OperationType>() {{
-            add(INPUT);
-            add(OUTPUT);
-        }};
-    }
-
-    public static OperationType getOpposite(OperationType ot) {
-        switch (ot) {
-            case INPUT:
-                return OUTPUT;
-            case OUTPUT:
-                return INPUT;
-            case SELL:
-                return BUY;
-            case BUY:
-                return SELL;
-            default:
-                return ot;
-        }
     }
 
     public int getType() {

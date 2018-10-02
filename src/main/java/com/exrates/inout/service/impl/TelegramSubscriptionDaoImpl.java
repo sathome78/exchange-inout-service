@@ -1,8 +1,8 @@
 package com.exrates.inout.service.impl;
 
+import com.exrates.inout.dao.TelegramSubscriptionDao;
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
 import com.exrates.inout.domain.main.TelegramSubscription;
-import com.exrates.inout.dao.TelegramSubscriptionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;

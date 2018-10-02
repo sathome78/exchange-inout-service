@@ -2,7 +2,6 @@ package com.exrates.inout.configuration;
 
 import com.exrates.inout.domain.enums.AdminAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

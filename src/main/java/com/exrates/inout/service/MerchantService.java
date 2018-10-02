@@ -1,9 +1,13 @@
 package com.exrates.inout.service;
 
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
+import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.main.*;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.MerchantCurrency;
 
 import java.math.BigDecimal;
 import java.util.List;

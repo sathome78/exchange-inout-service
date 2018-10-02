@@ -6,6 +6,4 @@ import java.util.List;
 
 public interface NotificatorsDao {
     Notificator getById(int id);
-
-    List<Notificator> getAllNotificators();
 }

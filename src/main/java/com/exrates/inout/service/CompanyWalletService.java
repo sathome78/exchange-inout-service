@@ -4,7 +4,6 @@ import com.exrates.inout.domain.main.CompanyWallet;
 import com.exrates.inout.domain.main.Currency;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public interface CompanyWalletService {
 

@@ -52,38 +52,39 @@ public class MobileInputOutputController {
     private static final Logger LOGGER = LogManager.getLogger("mobileAPI");
 
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final MerchantService merchantService;
+
+    private final CommissionService commissionService;
+
+    private final InputOutputService inputOutputService;
+
+    private final MessageSource messageSource;
+
+    private final WithdrawService withdrawService;
+
+    private final RefillService refillService;
+
+    private final TransferService transferService;
+
+    private final RateLimitService rateLimitService;
+
+    private final CurrencyService currencyService;
 
     @Autowired
-    private MerchantService merchantService;
-
-    @Autowired
-    private CommissionService commissionService;
-
-    @Autowired
-    private WalletService walletService;
-
-    @Autowired
-    private InputOutputService inputOutputService;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    WithdrawService withdrawService;
-
-    @Autowired
-    RefillService refillService;
-
-    @Autowired
-    private TransferService transferService;
-
-    @Autowired
-    private RateLimitService rateLimitService;
-
-    @Autowired
-    private CurrencyService currencyService;
+    public MobileInputOutputController(CommissionService commissionService, UserService userService, MerchantService merchantService, InputOutputService inputOutputService, MessageSource messageSource, WithdrawService withdrawService, RefillService refillService, TransferService transferService, RateLimitService rateLimitService, CurrencyService currencyService) {
+        this.commissionService = commissionService;
+        this.userService = userService;
+        this.merchantService = merchantService;
+        this.inputOutputService = inputOutputService;
+        this.messageSource = messageSource;
+        this.withdrawService = withdrawService;
+        this.refillService = refillService;
+        this.transferService = transferService;
+        this.rateLimitService = rateLimitService;
+        this.currencyService = currencyService;
+    }
 
 
     @RequestMapping(value = "/merchants", method = GET)
@@ -249,7 +250,7 @@ public class MobileInputOutputController {
 
 
     @RequestMapping(value = "/invoice/confirm", method = POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> confirmInvoice(@Valid InvoiceConfirmData invoiceConfirmData) throws Exception {
+    public ResponseEntity<Void> confirmInvoice(@Valid InvoiceConfirmData invoiceConfirmData) {
         String userEmail = getAuthenticatedUserEmail();
         Locale userLocale = userService.getUserLocaleForMobile(userEmail);
         refillService.confirmRefillRequest(invoiceConfirmData, userLocale);
@@ -257,7 +258,7 @@ public class MobileInputOutputController {
     }
 
     @RequestMapping(value = "/invoice/revoke", method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Void> revokeInvoice(@RequestBody Map<String, String> params) throws Exception {
+    public ResponseEntity<Void> revokeInvoice(@RequestBody Map<String, String> params) {
         String invoiceIdString = RestApiUtils.retrieveParamFormBody(params, "invoiceId", true);
         Integer invoiceId = Integer.parseInt(invoiceIdString);
         InvoiceConfirmData invoiceConfirmData = new InvoiceConfirmData();
@@ -269,7 +270,6 @@ public class MobileInputOutputController {
 
     @RequestMapping(value = "/invoice/banks", method = GET)
     public List<InvoiceBank> getBanksByCurrency(@RequestParam Integer currencyId) {
-        /*return refillService.findBanksForCurrency(currencyId);*/
         return Collections.singletonList(InvoiceBank.getUnavilableInvoice(currencyId));
     }
 
@@ -393,7 +393,6 @@ public class MobileInputOutputController {
         CryptoAddressDto result = merchantCurrencyData.stream().map(CryptoAddressDto::new).
                 findFirst().orElseThrow(() -> new MerchantNotFoundException(String.valueOf(merchantId)));
         if (StringUtils.isEmpty(result.getAddress())) {
-            //TODO temp
             RefillRequestParamsDto requestParamsDto = new RefillRequestParamsDto();
             requestParamsDto.setCurrency(currencyId);
             requestParamsDto.setMerchant(merchantId);

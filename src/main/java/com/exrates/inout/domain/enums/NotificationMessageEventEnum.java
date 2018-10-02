@@ -2,9 +2,6 @@ package com.exrates.inout.domain.enums;
 
 import java.util.stream.Stream;
 
-/**
- * Created by Maks on 29.09.2017.
- */
 public enum NotificationMessageEventEnum {
 
     LOGIN(1, "message.pincode.forlogin", "message.subj.login.pin", true),

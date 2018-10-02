@@ -1,8 +1,8 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
+import com.exrates.inout.dao.SmsSubscriptionDao;
 import com.exrates.inout.domain.dto.SmsSubscriptionDto;
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
-import com.exrates.inout.dao.SmsSubscriptionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;

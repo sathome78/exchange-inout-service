@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -42,31 +40,33 @@ public class WithdrawRequestController {
 
     private static final Logger log = LogManager.getLogger("withdraw");
 
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    WithdrawService withdrawService;
-    @Autowired
-    UserService userService;
-    @Autowired
-    MerchantService merchantService;
-    @Autowired
-    private InputOutputService inputOutputService;
-    @Autowired
-    private CommissionService commissionService;
-    @Autowired
-    private LocaleResolver localeResolver;
-    @Autowired
-    private SecureService secureServiceImpl;
+    private final MessageSource messageSource;
+    private final WithdrawService withdrawService;
+    private final UserService userService;
+    private final MerchantService merchantService;
+    private final InputOutputService inputOutputService;
+    private final LocaleResolver localeResolver;
+    private final SecureService secureServiceImpl;
 
     private final static String withdrawRequestSessionAttr = "withdrawRequestCreateDto";
+
+    @Autowired
+    public WithdrawRequestController(MessageSource messageSource, WithdrawService withdrawService, UserService userService, MerchantService merchantService, InputOutputService inputOutputService, LocaleResolver localeResolver, SecureService secureServiceImpl) {
+        this.messageSource = messageSource;
+        this.withdrawService = withdrawService;
+        this.userService = userService;
+        this.merchantService = merchantService;
+        this.inputOutputService = inputOutputService;
+        this.localeResolver = localeResolver;
+        this.secureServiceImpl = secureServiceImpl;
+    }
 
     @RequestMapping(value = "/withdraw/request/create", method = POST)
     @ResponseBody
     public Map<String, String> createWithdrawalRequest(
             @RequestBody WithdrawRequestParamsDto requestParamsDto,
             Principal principal, HttpServletRequest request,
-            Locale locale) throws UnsupportedEncodingException {
+            Locale locale) {
         if (!withdrawService.checkOutputRequestsLimit(requestParamsDto.getCurrency(), principal.getName())) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }
@@ -117,8 +117,7 @@ public class WithdrawRequestController {
 
     @RequestMapping(value = "/withdraw/request/revoke", method = POST)
     @ResponseBody
-    public void revokeWithdrawRequest(
-            @RequestParam Integer id) {
+    public void revokeWithdrawRequest(@RequestParam Integer id) {
         withdrawService.revokeWithdrawalRequest(id);
     }
 
@@ -144,10 +143,9 @@ public class WithdrawRequestController {
 
     @RequestMapping(value = "/withdraw/info", method = GET)
     @ResponseBody
-    public WithdrawRequestInfoDto getWithdrawRequestInfo(@RequestParam Integer requestId, Principal principal, HttpServletRequest request) {
-        WithdrawRequestInfoDto infoDto = withdrawService.getWithdrawalInfo(requestId, localeResolver.resolveLocale(request));
+    public WithdrawRequestInfoDto getWithdrawRequestInfo(@RequestParam Integer requestId, HttpServletRequest request) {
         /*Preconditions.checkArgument(principal.getName().equalsIgnoreCase(infoDto.getUserEmail()));*/
-        return infoDto;
+        return withdrawService.getWithdrawalInfo(requestId, localeResolver.resolveLocale(request));
     }
 
     @RequestMapping(value = "/2a8fy7b07dxe44/withdraw/take", method = POST)
@@ -264,7 +262,7 @@ public class WithdrawRequestController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ExceptionHandler({IncorrectPinException.class})
     @ResponseBody
-    public PinDto incorrectPinExceptionHandler(HttpServletRequest req, HttpServletResponse response, Exception exception) {
+    public PinDto incorrectPinExceptionHandler(Exception exception) {
         IncorrectPinException ex = (IncorrectPinException) exception;
         return ex.getDto();
     }

@@ -2,16 +2,11 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.NotificationUserSettingsDao;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
-import com.exrates.inout.domain.enums.NotificationTypeEnum;
 import com.exrates.inout.domain.main.NotificationsUserSetting;
 import com.exrates.inout.service.NotificationsSettingsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @Log4j2(topic = "message_notify")
 @Component

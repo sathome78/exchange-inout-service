@@ -1,14 +1,7 @@
 package com.exrates.inout.domain.enums;
 
-import com.exrates.inout.exceptions.TransactionLabelTypeAmountParamNeededException;
-import com.exrates.inout.exceptions.TransactionLabelTypeMoreThenOneResultException;
-import com.exrates.inout.exceptions.TransactionLabelTypeNotResolvedException;
-
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.*;
 
@@ -60,39 +53,6 @@ public enum TransactionType {
         this.operationType = operationType;
     }
 
-    public static TransactionType resolveFromOperationTypeAndSource(TransactionSourceType sourceType, OperationType operationType) {
-        List<TransactionType> candidates = Arrays.stream(TransactionType.class.getEnumConstants())
-                .filter(e -> (e.sourceType == null || e.sourceType == sourceType) && ((e.operationType == null) || (e.operationType == operationType)))
-                .collect(Collectors.toList());
-        if (candidates.isEmpty()) {
-            throw new TransactionLabelTypeNotResolvedException(String.format("sourceType: %s operationType: %s", sourceType, operationType));
-        }
-        if (candidates.size() > 1) {
-            throw new TransactionLabelTypeAmountParamNeededException(String.format("sourceType: %s operationType: %s", sourceType, operationType));
-        }
-        return candidates.get(0);
-    }
-
-    public static TransactionType resolveFromOperationTypeAndSource(TransactionSourceType sourceType, OperationType operationType, BigDecimal amount) {
-        List<TransactionType> candidates = Arrays.stream(TransactionType.class.getEnumConstants())
-                .filter(e -> (e.sourceType == null || e.sourceType == sourceType) && ((e.operationType == null) || (e.operationType == operationType)))
-                .filter(e -> e.amountPredicate == null || e.amountPredicate.test(amount))
-                .collect(Collectors.toList());
-        if (candidates.isEmpty()) {
-            throw new TransactionLabelTypeNotResolvedException(String.format("sourceType: %s operationType: %s", sourceType, operationType));
-        }
-        if (candidates.size() > 1) {
-            candidates = candidates.stream()
-                    .filter(e -> e.amountPredicate != null && e.amountPredicate.test(amount))
-                    .collect(Collectors.toList());
-            if (candidates.size() > 1) {
-                throw new TransactionLabelTypeMoreThenOneResultException(String.format("sourceType: %s operationType: %s amount: %s", sourceType, operationType, amount));
-            }
-        }
-        return candidates.get(0);
-    }
-
-    @Override
     public String toString() {
         return this.name();
     }

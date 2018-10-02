@@ -9,10 +9,6 @@ public enum CurrencyPairType {
 
     private OrderBaseType orderBaseType;
 
-    public OrderBaseType getOrderBaseType() {
-        return orderBaseType;
-    }
-
     CurrencyPairType(OrderBaseType orderBaseType) {
         this.orderBaseType = orderBaseType;
     }

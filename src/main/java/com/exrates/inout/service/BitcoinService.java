@@ -1,8 +1,6 @@
 package com.exrates.inout.service;
 
-import com.exrates.inout.domain.dto.BtcBlockDto;
-import com.exrates.inout.domain.dto.BtcTransactionDto;
-import com.exrates.inout.domain.dto.BtcWalletInfoDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.event.BtcBlockEvent;
 import com.exrates.inout.event.BtcWalletEvent;
 import org.springframework.context.event.EventListener;

@@ -1,8 +1,8 @@
 package com.exrates.inout.dao.impl;
 
+import com.exrates.inout.dao.NotificationDao;
 import com.exrates.inout.domain.main.NotificationEvent;
 import com.exrates.inout.domain.main.NotificationOption;
-import com.exrates.inout.dao.NotificationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;

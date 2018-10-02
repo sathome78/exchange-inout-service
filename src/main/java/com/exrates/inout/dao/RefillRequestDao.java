@@ -1,6 +1,9 @@
 package com.exrates.inout.dao;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.InvoiceConfirmData;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -13,14 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RefillRequestDao {
-
-    Optional<Integer> findIdByAddressAndMerchantIdAndCurrencyIdAndStatusId(String address, Integer merchantId, Integer currencyId, List<Integer> statusList);
-
-    Optional<Integer> findIdWithoutConfirmationsByAddressAndMerchantIdAndCurrencyIdAndStatusId(String address, Integer merchantId, Integer currencyId, List<Integer> statusList);
-
-    Optional<Integer> findIdByAddressAndMerchantIdAndCurrencyIdAndHash(String address, Integer merchantId, Integer currencyId, String hash);
-
-    Optional<Integer> findUserIdByAddressAndMerchantIdAndCurrencyId(String address, Integer merchantId, Integer currencyId);
 
     Optional<Integer> create(RefillRequestCreateDto request);
 

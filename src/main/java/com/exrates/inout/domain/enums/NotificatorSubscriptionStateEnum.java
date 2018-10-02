@@ -1,16 +1,9 @@
 package com.exrates.inout.domain.enums;
 
-/**
- * Created by Maks on 05.10.2017.
- */
 public enum NotificatorSubscriptionStateEnum {
 
     SUBSCRIBED(false, true, null),
     WAIT_FOR_SUBSCRIBE(true, false, SUBSCRIBED);
-
-    public static NotificatorSubscriptionStateEnum getBeginState() {
-        return WAIT_FOR_SUBSCRIBE;
-    }
 
     public static NotificatorSubscriptionStateEnum getFinalState() {
         return SUBSCRIBED;

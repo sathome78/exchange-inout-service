@@ -4,9 +4,6 @@ import com.exrates.inout.exceptions.UnsupportedOperationPermissionException;
 
 import java.util.stream.Stream;
 
-/**
- * Created by OLEG on 28.02.2017.
- */
 public enum InvoiceOperationPermission {
     NONE(0), VIEW_ONLY(1), ACCEPT_DECLINE(2);
 
@@ -27,7 +24,6 @@ public enum InvoiceOperationPermission {
                 .orElseThrow(() -> new UnsupportedOperationPermissionException(String.valueOf(id)));
     }
 
-    @Override
     public String toString() {
         return this.name();
     }

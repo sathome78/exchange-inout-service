@@ -15,13 +15,11 @@ import com.exrates.inout.exceptions.*;
 import com.exrates.inout.exceptions.entity.ErrorInfo;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.WithdrawService;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,16 +39,13 @@ public class WithdrawRequestAdminController {
 
     private final WithdrawService withdrawService;
 
-    private final UserService userService;
-
     private final MerchantService merchantService;
 
     private final CurrencyService currencyService;
 
     @Autowired
-    public WithdrawRequestAdminController(WithdrawService withdrawService, UserService userService, MerchantService merchantService, CurrencyService currencyService) {
+    public WithdrawRequestAdminController(WithdrawService withdrawService, MerchantService merchantService, CurrencyService currencyService) {
         this.withdrawService = withdrawService;
-        this.userService = userService;
         this.merchantService = merchantService;
         this.currencyService = currencyService;
     }

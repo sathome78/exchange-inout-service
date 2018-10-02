@@ -5,16 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created by ValkSam on 18.02.2017.
- */
 public interface InvoiceStatus {
-
-    default Set<InvoiceStatus> getAvailableNextStatesSet(Map<InvoiceActionTypeEnum, InvoiceStatus> schemaMap) {
-        Set<InvoiceStatus> availableNextStates = schemaMap.values().stream().collect(Collectors.toSet());
-        assert (availableNextStates.size() == schemaMap.values().size());
-        return availableNextStates;
-    }
 
     default Optional<InvoiceStatus> nextState(Map<InvoiceActionTypeEnum, InvoiceStatus> schemaMap, InvoiceActionTypeEnum action) {
         return Optional.ofNullable(schemaMap.get(action));
@@ -29,8 +20,6 @@ public interface InvoiceStatus {
     InvoiceStatus nextState(InvoiceActionTypeEnum action, InvoiceActionTypeEnum.InvoiceActionParamsValue paramsValue);
 
     Boolean availableForAction(InvoiceActionTypeEnum action);
-
-    Set<InvoiceActionTypeEnum> getAvailableActionList();
 
     Set<InvoiceActionTypeEnum> getAvailableActionList(InvoiceActionTypeEnum.InvoiceActionParamsValue paramsValue);
 

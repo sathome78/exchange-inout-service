@@ -2,9 +2,6 @@ package com.exrates.inout.domain.enums;
 
 import java.util.Arrays;
 
-/**
- * Created by Maks on 29.09.2017.
- */
 public enum NotificationTypeEnum {
 
     EMAIL(1, false, null), SMS(2, true, "message_price"), TELEGRAM(3, true, "subscribe_price");
@@ -13,10 +10,6 @@ public enum NotificationTypeEnum {
     private String priceColumn;
 
     private boolean needSubscribe;
-
-    public String getPriceColumn() {
-        return priceColumn;
-    }
 
     NotificationTypeEnum(int code, boolean needSubscribe, String priceColumn) {
         this.code = code;

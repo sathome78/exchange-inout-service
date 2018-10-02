@@ -1,6 +1,6 @@
 package com.exrates.inout.domain.main;
 
-import com.exrates.inout.domain.dto.OrderCreateDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.OrderBaseType;
 import com.exrates.inout.domain.enums.OrderStatus;

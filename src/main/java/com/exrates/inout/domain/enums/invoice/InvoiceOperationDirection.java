@@ -1,14 +1,8 @@
 package com.exrates.inout.domain.enums.invoice;
 
 import com.exrates.inout.exceptions.UnsupportedInvoiceOperationDirectionException;
-import lombok.ToString;
-
 import java.util.stream.Stream;
 
-/**
- * Created by OLEG on 28.02.2017.
- */
-@ToString
 public enum InvoiceOperationDirection {
     REFILL(1), WITHDRAW(2), TRANSFER_VOUCHER(3);
 
@@ -27,7 +21,6 @@ public enum InvoiceOperationDirection {
                 .orElseThrow(() -> new UnsupportedInvoiceOperationDirectionException(String.format("id: %s", id)));
     }
 
-    @Override
     public String toString() {
         return this.name();
     }

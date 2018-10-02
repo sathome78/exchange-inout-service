@@ -1,5 +1,6 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
+import com.exrates.inout.dao.TransferRequestDao;
 import com.exrates.inout.domain.dto.TransferRequestCreateDto;
 import com.exrates.inout.domain.dto.TransferRequestFlatDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
@@ -8,7 +9,6 @@ import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.TransferStatusEnum;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.dao.TransferRequestDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

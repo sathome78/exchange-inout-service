@@ -1,6 +1,7 @@
 package com.exrates.inout.service;
 
 import com.exrates.inout.domain.main.NotificationEvent;
+
 import java.util.Locale;
 
 public interface NotificationService {

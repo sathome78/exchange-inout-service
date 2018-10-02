@@ -42,9 +42,4 @@ public class NotificatorDaoImpl implements NotificatorsDao {
         }};
         return jdbcTemplate.queryForObject(sql, params, notificatorRowMapper);
     }
-
-    public List<Notificator> getAllNotificators() {
-        String sql = "SELECT * FROM 2FA_NOTIFICATOR";
-        return jdbcTemplate.query(sql, notificatorRowMapper);
-    }
 }

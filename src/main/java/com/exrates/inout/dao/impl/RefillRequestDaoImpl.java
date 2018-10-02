@@ -1,24 +1,24 @@
 package com.exrates.inout.dao.impl;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.dao.RefillRequestDao;
+import com.exrates.inout.domain.dto.InvoiceConfirmData;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
-import com.exrates.inout.domain.dto.filterdata.RefillAddressFilterData;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
-import com.exrates.inout.dao.RefillRequestDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -26,15 +26,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 
 @Repository
 public class RefillRequestDaoImpl implements RefillRequestDao {
@@ -91,105 +87,6 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     @Autowired
     @Qualifier(value = "masterTemplate")
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public Optional<Integer> findIdByAddressAndMerchantIdAndCurrencyIdAndStatusId(
-            String address,
-            Integer merchantId,
-            Integer currencyId,
-            List<Integer> statusList) {
-        String sql = "SELECT RR.id " +
-                " FROM REFILL_REQUEST RR " +
-                " JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = RR.refill_request_address_id) AND (RRA.address = :address) " +
-                " WHERE RR.merchant_id = :merchant_id " +
-                "       AND RR.currency_id = :currency_id " +
-                "       AND RR.status_id IN (:status_id_list) " +
-                " ORDER BY RR.id " +
-                " LIMIT 1 ";
-        Map<String, Object> params = new HashMap<>() {{
-            put("address", address);
-            put("merchant_id", merchantId);
-            put("currency_id", currencyId);
-            put("status_id_list", statusList);
-        }};
-        try {
-            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Integer> findIdWithoutConfirmationsByAddressAndMerchantIdAndCurrencyIdAndStatusId(
-            String address,
-            Integer merchantId,
-            Integer currencyId,
-            List<Integer> statusList) {
-        String sql = "SELECT RR.id " +
-                " FROM REFILL_REQUEST RR " +
-                " JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = RR.refill_request_address_id) AND (RRA.address = :address) " +
-                " LEFT JOIN REFILL_REQUEST_CONFIRMATION RRC ON (RRC.refill_request_id = RR.id) " +
-                " WHERE RR.merchant_id = :merchant_id " +
-                "       AND RR.currency_id = :currency_id " +
-                "       AND RR.status_id IN (:status_id_list) " +
-                "       AND RRC.id IS NULL ";
-        Map<String, Object> params = new HashMap<>() {{
-            put("address", address);
-            put("merchant_id", merchantId);
-            put("currency_id", currencyId);
-            put("status_id_list", statusList);
-        }};
-        try {
-            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<Integer> findIdByAddressAndMerchantIdAndCurrencyIdAndHash(
-            String address,
-            Integer merchantId,
-            Integer currencyId,
-            String hash) {
-        String sql = "SELECT RR.id " +
-                " FROM REFILL_REQUEST RR " +
-                " JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = RR.refill_request_address_id) AND (RRA.address = :address) " +
-                " WHERE RR.merchant_id = :merchant_id " +
-                "       AND RR.currency_id = :currency_id " +
-                "       AND RR.merchant_transaction_id = :hash ";
-        Map<String, Object> params = new HashMap<>() {{
-            put("address", address);
-            put("merchant_id", merchantId);
-            put("currency_id", currencyId);
-            put("hash", hash);
-        }};
-        try {
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-
-    public Optional<Integer> findUserIdByAddressAndMerchantIdAndCurrencyId(
-            String address,
-            Integer merchantId,
-            Integer currencyId) {
-        String sql = "SELECT RRA.user_id " +
-                " FROM REFILL_REQUEST_ADDRESS RRA " +
-                " WHERE RRA.merchant_id = :merchant_id " +
-                "       AND RRA.currency_id = :currency_id " +
-                "       AND RRA.address = :address " +
-                " LIMIT 1 ";
-        Map<String, Object> params = new HashMap<>() {{
-            put("address", address);
-            put("merchant_id", merchantId);
-            put("currency_id", currencyId);
-        }};
-        try {
-            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
 
     public Optional<Integer> create(RefillRequestCreateDto request) {
         Optional<Integer> result = Optional.empty();

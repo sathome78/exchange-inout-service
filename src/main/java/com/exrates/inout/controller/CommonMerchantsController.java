@@ -28,7 +28,6 @@ import java.util.Map;
 import static com.exrates.inout.domain.enums.OperationType.*;
 import static com.exrates.inout.domain.enums.UserCommentTopicEnum.*;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 @Slf4j
@@ -136,6 +135,7 @@ public class CommonMerchantsController {
             List<MerchantCurrency> merchantCurrencyData = merchantService.getAllUnblockedForOperationTypeByCurrencies(currenciesId, operationType);
             transferService.retrieveAdditionalParamsForWithdrawForMerchantCurrencies(merchantCurrencyData);
             List<String> warningCodeList = currencyService.getWarningsByTopic(TRANSFER_CURRENCY_WARNING);
+
             modelAndView.addObject("currency", currency);
             modelAndView.addObject("wallet", wallet);
             modelAndView.addObject("balance", BigDecimalProcessing.formatNonePoint(wallet.getActiveBalance(), false));

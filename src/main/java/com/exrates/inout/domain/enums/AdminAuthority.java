@@ -1,10 +1,7 @@
 package com.exrates.inout.domain.enums;
 
 import com.exrates.inout.exceptions.UnsupportedAuthorityException;
-import org.springframework.context.MessageSource;
-
 import java.util.Arrays;
-import java.util.Locale;
 
 public enum AdminAuthority {
     PROCESS_WITHDRAW(1),
@@ -33,10 +30,6 @@ public enum AdminAuthority {
         return Arrays.stream(AdminAuthority.values())
                 .filter(auth -> auth.getAuthority() == authority)
                 .findAny().orElseThrow(() -> new UnsupportedAuthorityException("Unsupported type of authority"));
-    }
-
-    public String toLocalizedString(MessageSource messageSource, Locale locale) {
-        return messageSource.getMessage("adminAuthority." + this.name(), null, locale);
     }
 
 }

@@ -3,18 +3,18 @@ package com.exrates.inout.service.impl;
 import com.exrates.inout.dao.TelegramSubscriptionDao;
 import com.exrates.inout.domain.enums.NotificationTypeEnum;
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
-import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.TelegramSubscription;
 import com.exrates.inout.exceptions.MessageUndeliweredException;
 import com.exrates.inout.exceptions.TelegramSubscriptionException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.NotificatorService;
+import com.exrates.inout.service.Subscribable;
+import com.exrates.inout.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Log4j2(topic = "message_notify")

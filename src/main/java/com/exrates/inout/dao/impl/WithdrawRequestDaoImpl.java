@@ -1,5 +1,6 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
+import com.exrates.inout.dao.WithdrawRequestDao;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -7,7 +8,6 @@ import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.dao.WithdrawRequestDao;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

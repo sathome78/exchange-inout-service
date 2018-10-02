@@ -6,13 +6,7 @@ import java.util.stream.Stream;
 
 public enum OrderStatus {
 
-    INPROCESS(1),
-    OPENED(2),
-    CLOSED(3),
-    CANCELLED(4),
-    DELETED(5),
-    DRAFT(6),
-    SPLIT_CLOSED(7);
+    INPROCESS(1), OPENED(2), CLOSED(3), CANCELLED(4), DELETED(5), DRAFT(6), SPLIT_CLOSED(7);
 
     private final int status;
 
@@ -29,7 +23,6 @@ public enum OrderStatus {
         return status;
     }
 
-    @Override
     public String toString() {
         return this.name();
     }

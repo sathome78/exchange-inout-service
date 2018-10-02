@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.impl.matchers.GroupMatcher;
 
 public class ClearTokenJob implements Job {

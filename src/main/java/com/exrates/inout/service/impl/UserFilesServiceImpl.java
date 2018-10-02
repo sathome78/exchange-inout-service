@@ -1,10 +1,8 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.service.UserFilesService;
-import com.exrates.inout.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,8 @@ public class UserFilesServiceImpl implements UserFilesService {
 
     private @Value("${upload.userFilesDir}")
     String userFilesDir;
-    private @Value("${upload.userFilesLogicalDir}")
-    String userFilesLogicalDir;
+    @Value("${upload.userFilesLogicalDir}")
+    private String userFilesLogicalDir;
 
     private final Set<String> contentTypes;
 

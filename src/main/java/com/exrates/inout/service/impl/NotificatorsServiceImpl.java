@@ -3,14 +3,15 @@ package com.exrates.inout.service.impl;
 import com.exrates.inout.dao.NotificatorPriceDao;
 import com.exrates.inout.dao.NotificatorsDao;
 import com.exrates.inout.domain.dto.Notificator;
-import com.exrates.inout.domain.enums.NotificationTypeEnum;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.NotificatorService;
+import com.exrates.inout.service.NotificatorsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 @Log4j2(topic = "message_notify")
 @Service

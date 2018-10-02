@@ -26,7 +26,5 @@ public interface WalletDao {
 
     WalletTransferStatus walletBalanceChange(WalletOperationData walletOperationData);
 
-    boolean isUserAllowedToManuallyChangeWalletBalance(int adminId, int walletHolderUserId);
-
     int getWalletIdAndBlock(Integer userId, Integer currencyId);
 }

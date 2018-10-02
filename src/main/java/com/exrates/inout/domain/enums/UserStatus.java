@@ -19,7 +19,6 @@ public enum UserStatus {
         return status;
     }
 
-    @Override
     public String toString() {
         return this.name();
     }

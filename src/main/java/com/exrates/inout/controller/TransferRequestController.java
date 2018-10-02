@@ -34,7 +34,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
@@ -42,7 +41,6 @@ import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.OperationType.USER_TRANSFER;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.PRESENT_VOUCHER;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -85,7 +83,7 @@ public class TransferRequestController {
     public Map<String, Object> createTransferRequest(
             @RequestBody TransferRequestParamsDto requestParamsDto,
             Principal principal,
-            HttpServletRequest servletRequest){
+            HttpServletRequest servletRequest) {
         Locale locale = localeResolver.resolveLocale(servletRequest);
         if (requestParamsDto.getOperationType() != USER_TRANSFER) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
@@ -115,10 +113,7 @@ public class TransferRequestController {
 
     @RequestMapping(value = "/transfer/request/checking", method = POST)
     @ResponseBody
-    public void checkingTransferReception(
-            @RequestParam String recipient,
-            Principal principal, Locale locale,
-            HttpServletRequest servletRequest) {
+    public void checkingTransferReception(@RequestParam String recipient, Principal principal, Locale locale) {
         User user = userService.findByEmail(principal.getName());
         if (user.getNickname().equals(recipient) || user.getEmail().equals(recipient)) {
             throw new InvalidNicknameException(messageSource
@@ -133,7 +128,7 @@ public class TransferRequestController {
     @RequestMapping(value = "/transfer/request/pin", method = POST)
     @ResponseBody
     public Map<String, Object> withdrawRequestCheckPin(
-            @RequestParam String pin, Locale locale, HttpServletRequest request, Principal principal) {
+            @RequestParam String pin, HttpServletRequest request, Principal principal) {
         Object object = request.getSession().getAttribute(transferRequestCreateDto);
         Preconditions.checkNotNull(object);
         Preconditions.checkArgument(pin.length() > 2 && pin.length() < 15);
@@ -282,7 +277,7 @@ public class TransferRequestController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ExceptionHandler({IncorrectPinException.class})
     @ResponseBody
-    public PinDto incorrectPinExceptionHandler(HttpServletRequest req, HttpServletResponse response, Exception exception) {
+    public PinDto incorrectPinExceptionHandler(Exception exception) {
         IncorrectPinException ex = (IncorrectPinException) exception;
         return ex.getDto();
     }

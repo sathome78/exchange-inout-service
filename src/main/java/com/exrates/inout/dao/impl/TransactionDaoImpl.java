@@ -204,11 +204,6 @@ public final class TransactionDaoImpl implements TransactionDao {
         return transaction;
     };
 
-    private final String SELECT_COUNT =
-            " SELECT COUNT(*)" +
-                    " FROM TRANSACTION "
-            //  + " USE INDEX (tx_idx_user_wallet_id_cur_id_optype_id) "
-            ;
     private final String SELECT_ALL =
             " SELECT " +
                     "   TRANSACTION.id,TRANSACTION.amount,TRANSACTION.commission_amount,TRANSACTION.datetime, " +
@@ -244,13 +239,6 @@ public final class TransactionDaoImpl implements TransactionDao {
                     "               (REFILL_REQUEST.merchant_id IS NOT NULL AND MERCHANT.id = REFILL_REQUEST.merchant_id) OR " +
                     "               (WITHDRAW_REQUEST.merchant_id IS NOT NULL AND MERCHANT.id = WITHDRAW_REQUEST.merchant_id) " +
                     "             )";
-
-    private String PERMISSION_CLAUSE = " JOIN (SELECT DISTINCT IOP.currency_id AS permitted_currency, OTD.operation_type_id AS permitted_optype " +
-            " from USER_CURRENCY_INVOICE_OPERATION_PERMISSION IOP " +
-            "    JOIN OPERATION_TYPE_DIRECTION OTD ON IOP.operation_direction_id = OTD.operation_direction_id " +
-            "  WHERE IOP.user_id = :requester_user_id) PERMS " +
-            "    ON TRANSACTION.currency_id = PERMS.permitted_currency AND TRANSACTION.operation_type_id = PERMS.permitted_optype";
-
 
     @Autowired
     MessageSource messageSource;

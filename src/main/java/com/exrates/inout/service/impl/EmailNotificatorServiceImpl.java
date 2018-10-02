@@ -20,10 +20,6 @@ public class EmailNotificatorServiceImpl implements NotificatorService {
         this.sendMailService = sendMailService;
     }
 
-    public Object getSubscriptionByUserId(int userId) {
-        return null;
-    }
-
     public String sendMessageToUser(String userEmail, String message, String subject) throws MessageUndeliweredException {
         Email email = new Email();
         email.setTo(userEmail);
