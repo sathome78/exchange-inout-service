@@ -83,7 +83,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
     private String send(String contact, String message) {
         log.debug("send sms to {}, message {}", contact, message);
         String xml = smsService.sendSms(SENDER, message,
-                new ArrayList<>() {{
+                new ArrayList<Phones>() {{
                     add(new Phones("id1", "", contact));
                 }});
         log.debug("send sms status {}", xml);

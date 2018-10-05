@@ -25,4 +25,6 @@ public interface CommissionService {
     CommissionDataDto normalizeAmountAndCalculateCommission(Integer userId, BigDecimal amount, OperationType type, Integer currencyId, Integer merchantId, String destinationTag);
 
     BigDecimal calculateCommissionForRefillAmount(BigDecimal amount, Integer commissionId);
+
+    Commission getDefaultCommission(OperationType referral);
 }

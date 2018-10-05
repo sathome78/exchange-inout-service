@@ -1,6 +1,7 @@
 package com.exrates.inout.service;
 
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 
 import java.util.Map;
 
@@ -29,4 +30,8 @@ public interface IRefillable extends IMerchantService {
     default boolean concatAdditionalToMainAddress() {
         return false;
     }
+
+    Boolean toMainAccountTransferringConfirmNeeded();
+
+    void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException;
 }

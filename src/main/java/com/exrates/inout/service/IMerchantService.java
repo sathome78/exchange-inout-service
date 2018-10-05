@@ -26,7 +26,7 @@ public interface IMerchantService {
     }
 
     default Map<String, String> generateFullUrlMap(String url, String method, Properties properties) {
-        Map<String, String> result = new HashMap<>() {{
+        Map<String, String> result = new HashMap<String,String>() {{
             put("$__redirectionUrl", url);
             put("$__method", method);
         }};

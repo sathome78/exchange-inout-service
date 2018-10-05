@@ -75,5 +75,40 @@ session:
   authenticationParamName: authentication
   passwordParam: l_password
 
-invoice: 5
+invoice:
   blockNotifyUsers: true
+
+advcash:
+  url: https://wallet.advcash.com/sci/
+  accountId: exratesnew@gmail.com
+  payeeName: Exrates
+  paymentSuccess: http://dev.exrates.tech/merchants/advcash/payment/success
+  paymentFailure: http://dev.exrates.tech/merchants/advcash/payment/failure
+  paymentStatus: https://exrates.me/merchants/advcash/payment/status
+  USDAccount: U143527856819
+  EURAccount: E971693091461
+  payeePassword: s3Jb8$P69o
+  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;193.93.79.99;
+
+perfectmoney:
+  url: https://perfectmoney.is/api/step1.asp
+  accountId: S404847
+  accountPass: 66RwHvFG
+  payeeName: Exrates
+  paymentSuccess: https://exrates.me/merchants/perfectmoney/payment/success
+  paymentFailure: https://exrates.me/merchants/perfectmoney/payment/failure
+  paymentStatus: https://exrates.me/merchants/perfectmoney/payment/status
+  USDAccount: U16666480
+  EURAccount: E15714655
+  alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
+  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;78.41.203.75;
+
+referral:
+  url: localhost:8080/register?ref=
+
+btcInvoice:
+  blockNotifyUsers: true
+
+upload:
+  userFilesDir: c:/Users/Public/upload/
+  userFilesLogicalDir: /userFiles

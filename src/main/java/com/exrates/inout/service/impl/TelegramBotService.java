@@ -9,7 +9,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
@@ -22,7 +21,6 @@ import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
 
-@PropertySource("classpath:telegram_bot.properties")
 @Log4j2(topic = "message_notify")
 @Component
 public class TelegramBotService extends TelegramLongPollingBot {

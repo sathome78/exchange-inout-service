@@ -209,4 +209,9 @@ public class CommissionServiceImpl implements CommissionService {
         return BigDecimalProcessing.doAction(amount, companyCommissionRate, MULTIPLY_PERCENT);
     }
 
+    @Override
+    public Commission getDefaultCommission(OperationType operationType) {
+        return commissionDao.getDefaultCommission(operationType);
+    }
+
 }

@@ -17,4 +17,5 @@ public interface NotificationService {
 
     void notifyUser(Integer userId, NotificationEvent cause, String titleMessage, String message);
 
+    long createLocalizedNotification(Integer parent, NotificationEvent inOut, String s, String s1, Object[] objects);
 }

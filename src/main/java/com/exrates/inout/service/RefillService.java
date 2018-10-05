@@ -7,6 +7,7 @@ import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public interface RefillService {
 
     Map<String, Object> createRefillRequest(RefillRequestCreateDto requestCreateDto);
+
+    Optional<Integer> getUserIdByAddressAndMerchantIdAndCurrencyId(String address, Integer merchantId, Integer currencyId);
 
     Optional<String> getAddressByMerchantIdAndCurrencyIdAndUserId(Integer merchantId, Integer currencyId, Integer userId);
 
@@ -56,4 +59,60 @@ public interface RefillService {
     Optional<InvoiceBank> findInvoiceBankById(Integer id);
 
     String getPaymentMessageForTag(String serviceBeanName, String tag, Locale locale);
+
+    void autoAcceptRefillRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
+
+    Integer createRefillRequestByFact(RefillRequestAcceptDto request);
+
+    Optional<Integer> getRequestIdInPendingByAddressAndMerchantIdAndCurrencyId(
+            String address,
+            Integer merchantId,
+            Integer currencyId);
+
+    void putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto onBchExamDto) throws RefillRequestAppropriateNotFoundException;
+
+    List<String> findAllAddresses(Integer merchantId, Integer currencyId);
+
+    void setConfirmationCollectedNumber(RefillRequestSetConfirmationsNumberDto confirmationsNumberDto) throws RefillRequestAppropriateNotFoundException;
+
+
+    Optional<RefillRequestFlatDto> findFlatByAddressAndMerchantIdAndCurrencyIdAndHash(
+            String address, Integer merchantId,
+            Integer currencyId,
+            String hash);
+
+    Optional<Integer> getRequestIdReadyForAutoAcceptByAddressAndMerchantIdAndCurrencyId(String address, Integer merchantId, Integer currencyId);
+
+    Optional<Integer> getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(
+            String address,
+            Integer merchantId,
+            Integer currencyId,
+            String hash);
+
+    Optional<Integer> getRequestIdByMerchantIdAndCurrencyIdAndHash(int id, int id1, String hash);
+
+    List<RefillRequestAddressDto> findAddressDtos(Integer merchantId, Integer currencyId);
+
+    void updateAddressNeedTransfer(String address, int merchantId, int currencyId, boolean b);
+
+    List<RefillRequestFlatDto> getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(int merchantId, int currencyId);
+
+    Optional<Integer> getRequestIdByMerchantIdAndCurrencyIdAndHash(
+            Integer merchantId,
+            Integer currencyId,
+            String hash);
+
+    List<RefillRequestAddressDto> findAllAddressesNeededToTransfer(int merchantId, int currencyId);
+
+    List<RefillRequestFlatDto> getInExamineByMerchantIdAndCurrencyIdList(Integer merchantId, Integer currencyId);
+
+    int getTxOffsetForAddress(String address);
+
+    void updateTxOffsetForAddress(String address, Integer newOffset);
+
+    boolean existsClosedRefillRequestForAddress(String s, int id, int id1);
+
+    List<RefillRequestAddressDto> findByAddressMerchantAndCurrency(String address, int id, int id1);
+
+    Optional<String> getLastBlockHashForMerchantAndCurrency(Integer merchantId, Integer currencyId);
 }

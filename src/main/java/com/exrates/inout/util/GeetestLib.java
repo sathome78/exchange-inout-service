@@ -413,13 +413,6 @@ public class GeetestLib {
         return validate.equals(encodeStr);
     }
 
-    /**
-     * 发送GET请求，获取服务器返回结果
-     *
-     * @param getURL
-     * @return 服务器返回结果
-     * @throws IOException
-     */
     private String readContentFromGet(String URL) throws IOException {
 
         java.net.URL getUrl = new URL(URL);
@@ -452,13 +445,6 @@ public class GeetestLib {
         }
     }
 
-    /**
-     * 发送POST请求，获取服务器返回结果
-     *
-     * @param getURL
-     * @return 服务器返回结果
-     * @throws IOException
-     */
     private String readContentFromPost(String URL, String data) throws IOException {
 
         gtlog(data);

@@ -3,10 +3,10 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.UserStatus;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static java.util.List.of;
 
 public class User {
 
@@ -25,7 +25,7 @@ public class User {
     private boolean readRules;
     private UserRole role = UserRole.USER;
     private String parentEmail;
-    private List<UserFile> userFiles = of();
+    private List<UserFile> userFiles = Collections.emptyList();
 
     public UserRole getRole() {
         return role;

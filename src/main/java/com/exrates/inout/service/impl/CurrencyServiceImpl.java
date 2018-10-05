@@ -1,18 +1,20 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.CurrencyDao;
+import com.exrates.inout.domain.dto.CurrencyPairLimitDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
 import com.exrates.inout.domain.dto.UserCurrencyOperationPermissionDto;
-import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.enums.UserCommentTopicEnum;
-import com.exrates.inout.domain.enums.UserRole;
+import com.exrates.inout.domain.enums.*;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.CurrencyPair;
+import com.exrates.inout.exceptions.CurrencyPairNotFoundException;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     private final UserService userService;
 
-    private static final Set<String> CRYPTO = new HashSet<>() {
+    private static final Set<String> CRYPTO = new HashSet<String>() {
         {
             add("EDRC");
             add("BTC");
@@ -138,6 +140,39 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     public boolean isIco(Integer currencyId) {
         return currencyDao.isCurrencyIco(currencyId);
+    }
+
+    @Override
+    public List<CurrencyPair> getAllCurrencyPairs(CurrencyPairType type) {
+        return currencyDao.getAllCurrencyPairs(type);
+    }
+
+    @Override
+    public CurrencyPair findCurrencyPairById(int id) {
+        try {
+            return currencyDao.findCurrencyPairById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new CurrencyPairNotFoundException("Currency pair not found");
+        }
+    }
+
+    @Override
+    public Integer findCurrencyPairIdByName(String pairName) {
+        return currencyDao.findOpenCurrencyPairIdByName(pairName).orElseThrow(() -> new CurrencyPairNotFoundException(pairName));
+    }
+
+    @Override
+    public CurrencyPairLimitDto findLimitForRoleByCurrencyPairAndType(int currencyPairId, OperationType operationType) {
+        UserRole userRole = userService.getUserRoleFromSecurityContext();
+        OrderType orderType = OrderType.convert(operationType.name());
+        return currencyDao.findCurrencyPairLimitForRoleByPairAndType(currencyPairId, userRole.getRole(), orderType.getType());
+
+    }
+
+    @Override
+    public CurrencyPair getCurrencyPairByName(String pairName) {
+
+        return currencyDao.findCurrencyPairByName(pairName);
     }
 
     @Transactional

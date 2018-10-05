@@ -73,5 +73,5 @@ session:
   authenticationParamName: authentication
   passwordParam: l_password
 
-invoice: 4320
+invoice:
   blockNotifyUsers: false

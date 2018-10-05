@@ -1,7 +1,7 @@
 package com.exrates.inout.service;
 
 
-import com.exrates.inout.domain.main.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 
 import java.math.BigDecimal;
 import java.util.Map;

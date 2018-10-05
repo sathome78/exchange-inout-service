@@ -10,6 +10,14 @@ public class MerchantException extends RuntimeException {
         super(message);
     }
 
+    public MerchantException(String message, Throwable cause) {
+        super(message,cause);
+    }
+
+    public MerchantException(Throwable cause) {
+        super(cause);
+    }
+
     public String getReason() {
         return REASON_CODE;
     }

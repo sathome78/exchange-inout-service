@@ -1,6 +1,7 @@
 package com.exrates.inout.domain.enums;
 
 import com.exrates.inout.exceptions.UnsupportedAuthorityException;
+
 import java.util.Arrays;
 
 public enum AdminAuthority {

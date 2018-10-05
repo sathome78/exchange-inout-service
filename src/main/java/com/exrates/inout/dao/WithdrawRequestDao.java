@@ -12,6 +12,14 @@ import java.util.Optional;
 
 public interface WithdrawRequestDao {
 
+    List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
+            String startDate,
+            String endDate,
+            List<Integer> roleIdList,
+            List<Integer> currencyList);
+
+    Integer findStatusIdByRequestId(Integer withdrawRequestId);
+
     int create(WithdrawRequestCreateDto withdrawRequest);
 
     void setStatusById(Integer id, InvoiceStatus newStatus);
@@ -26,7 +34,13 @@ public interface WithdrawRequestDao {
 
     WithdrawRequestFlatDto getPermittedFlatById(Integer id, Integer requesterUserId);
 
+    List<WithdrawRequestPostDto> getForPostByStatusList(Integer statusId);
+
+    WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id);
+
     void setHolderById(Integer id, Integer holderId);
+
+    void setInPostingStatusByStatus(Integer inPostingStatusId, List<Integer> statusIdList);
 
     List<ClientBank> findClientBanksForCurrency(Integer currencyId);
 
@@ -34,9 +48,11 @@ public interface WithdrawRequestDao {
 
     Optional<Integer> findUserIdById(Integer requestId);
 
+    Optional<Integer> getIdByHashAndMerchantId(String hash, Integer merchantId);
+
+    List<WithdrawRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId);
+
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
     WithdrawRequestInfoDto findWithdrawInfo(Integer id);
-
-    WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id);
 }

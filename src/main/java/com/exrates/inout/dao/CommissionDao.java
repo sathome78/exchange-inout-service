@@ -19,5 +19,7 @@ public interface CommissionDao {
     BigDecimal getMinFixedCommission(Integer currencyId, Integer merchantId);
 
     Commission getCommissionById(Integer commissionId);
+
+    Commission getDefaultCommission(OperationType storno);
 }
 

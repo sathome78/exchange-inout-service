@@ -7,6 +7,7 @@ import com.exrates.inout.domain.enums.*;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.main.*;
+import com.exrates.inout.exceptions.AuthenticationNotAvailableException;
 import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.NotificationsSettingsService;
 import com.exrates.inout.service.SendMailService;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,24 +42,24 @@ public class UserServiceImpl implements UserService {
 
     private final MessageSource messageSource;
 
-    private final NotificationService notificationService;
 
     private final HttpServletRequest request;
-
-    private final TokenScheduler tokenScheduler;
+    @Autowired
+    private TokenScheduler tokenScheduler;
 
     private final NotificationsSettingsService settingsService;
 
     private boolean global2FaActive = false;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, SendMailService sendMailService, MessageSource messageSource, NotificationService notificationService, HttpServletRequest request, TokenScheduler tokenScheduler, NotificationsSettingsService settingsService) {
+    NotificationService notificationService;
+
+    @Autowired
+    public UserServiceImpl(UserDao userDao, SendMailService sendMailService, MessageSource messageSource,  HttpServletRequest request, NotificationsSettingsService settingsService) {
         this.userDao = userDao;
         this.sendMailService = sendMailService;
         this.messageSource = messageSource;
-        this.notificationService = notificationService;
         this.request = request;
-        this.tokenScheduler = tokenScheduler;
         this.settingsService = settingsService;
     }
 
@@ -323,6 +325,11 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserRoleById(userId);
     }
 
+    @Override
+    public UserRole getUserRoleFromDB(String email) {
+        return userDao.getUserRoleByEmail(email);
+    }
+
     @Transactional
     public String updatePinForUserForEvent(String userEmail, NotificationMessageEventEnum event) {
         String pin = String.valueOf(10000000 + new Random().nextInt(90000000));
@@ -342,6 +349,25 @@ public class UserServiceImpl implements UserService {
         }
 
         return passwordEncoder.matches(pin, getPinForEvent(email, event));
+    }
+
+    @Override
+    public String getUserEmailFromSecurityContext() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new AuthenticationNotAvailableException();
+        }
+        return auth.getName();
+    }
+
+    @Override
+    public User getCommonReferralRoot() {
+        try {
+            return userDao.getCommonReferralRoot();
+        } catch (final EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
     private String getPinForEvent(String email, NotificationMessageEventEnum event) {

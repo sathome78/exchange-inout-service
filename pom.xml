@@ -21,8 +21,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>10</java.version>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring-cloud.version>Finchley.SR1</spring-cloud.version>
+        <btcd-cli4j.version>0.5.9.17</btcd-cli4j.version>
+        <bitcoinj.version>0.14.3</bitcoinj.version>
     </properties>
 
     <dependencies>
@@ -65,6 +69,31 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>stellar</groupId>
+            <artifactId>stellar-sdk</artifactId>
+            <version>0.1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>nem</groupId>
+            <artifactId>nem-core</artifactId>
+            <version>0.6.95-BETA</version>
+        </dependency>
+        <dependency>
+            <groupId>iota</groupId>
+            <artifactId>jota</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>monero</groupId>
+            <artifactId>monero-common</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>monero</groupId>
+            <artifactId>monero-core</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
@@ -142,7 +171,85 @@
             <artifactId>telegrambots</artifactId>
             <version>3.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>2.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yandex.money.api</groupId>
+            <artifactId>yandex-money-sdk-java</artifactId>
+            <version>5.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.neemre.btcd-cli4j</groupId>
+            <artifactId>btcd-cli4j-core</artifactId>
+            <version>${btcd-cli4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.neemre.btcd-cli4j</groupId>
+            <artifactId>btcd-cli4j-daemon</artifactId>
+            <version>${btcd-cli4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeromq</groupId>
+            <artifactId>jeromq</artifactId>
+            <version>0.4.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>abi</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>bitcoinj-core</artifactId>
+            <version>${bitcoinj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.4.0-b180608.0325</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>btcd-cli4j-inner</id>
+            <name>btcd-cli4j Inner Repo</name>
+            <url>file:///${project.basedir}/libs</url>
+        </repository>
+        <repository>
+            <id>jvnet-nexus-staging</id>
+            <url>http://maven.java.net/content/repositories/staging/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -155,15 +262,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>

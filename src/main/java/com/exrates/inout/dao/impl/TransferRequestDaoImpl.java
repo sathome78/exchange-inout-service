@@ -120,7 +120,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         if (block) {
             sql = sql.concat(" FOR UPDATE");
         }
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("hash", hash);
             put("status", requiredStatus);
         }};

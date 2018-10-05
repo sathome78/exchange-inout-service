@@ -197,10 +197,10 @@ public class MobileInputOutputController {
 
             } catch (RefillRequestGeneratingAdditionalAddressNotAvailableException e) {
                 refillService.retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(Collections.singletonList(merchantCurrency), userEmail);
-                Map<String, String> params = new HashMap<>() {{
+                Map<String, String> params = new HashMap<String, String>() {{
                     put("message", refillService.getPaymentMessageForTag(merchant.getServiceBeanName(), merchantCurrency.getAddress(), userLocale));
                 }};
-                result = new HashMap<>() {{
+                result = new HashMap<String, Object>() {{
                     put("params", params);
                 }};
             }

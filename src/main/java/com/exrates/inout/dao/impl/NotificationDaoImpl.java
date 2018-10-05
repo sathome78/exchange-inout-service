@@ -32,7 +32,7 @@ public class NotificationDaoImpl implements NotificationDao {
         String sql = "SELECT notification_event_id, user_id, send_notification, send_email " +
                 " FROM NOTIFICATION_OPTIONS " +
                 " WHERE user_id = :user_id AND notification_event_id = :notification_event_id";
-        Map<String, Integer> params = new HashMap<>() {{
+        Map<String, Integer> params = new HashMap<String, Integer>() {{
             put("user_id", userId);
             put("notification_event_id", event.getEventType());
         }};

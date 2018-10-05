@@ -118,4 +118,14 @@ public class CommissionDaoImpl implements CommissionDao {
         return jdbcTemplate.queryForObject(sql, params, commissionRowMapper);
     }
 
+    @Override
+    public Commission getDefaultCommission(OperationType operationType) {
+        final String sql = "SELECT id, operation_type, date, value " +
+                "FROM COMMISSION " +
+                "WHERE operation_type = :operation_type AND user_role = 4;";
+        final HashMap<String,Integer> params = new HashMap<>();
+        params.put("operation_type",operationType.type);
+        return jdbcTemplate.queryForObject(sql,params,commissionRowMapper);
+    }
+
 }

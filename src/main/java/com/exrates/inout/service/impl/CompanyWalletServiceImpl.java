@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
+import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
+import static com.exrates.inout.util.BigDecimalProcessing.doAction;
+
 @Log4j2
 @Service
 public class CompanyWalletServiceImpl implements CompanyWalletService {
@@ -43,6 +46,29 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
         if (!companyWalletDao.update(companyWallet)) {
             throw new WalletPersistException("Failed deposit on company wallet " + companyWallet.toString());
         }
+    }
+
+    @Override
+    public boolean substractCommissionBalanceById(Integer id, BigDecimal amount) {
+
+        return companyWalletDao.substarctCommissionBalanceById(id, amount);
+    }
+
+
+
+    @Override
+    @Transactional(propagation = Propagation.NESTED)
+    public void withdrawReservedBalance(CompanyWallet companyWallet, BigDecimal amount) {
+
+        BigDecimal newReservedBalance = doAction(companyWallet.getCommissionBalance(), amount, SUBTRACT);
+        if (newReservedBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new NotEnoughUserWalletMoneyException("POTENTIAL HACKING! Not enough money on Company Account for operation!" + companyWallet.toString());
+        }
+        companyWallet.setCommissionBalance(newReservedBalance);
+        if (!companyWalletDao.update(companyWallet)) {
+            throw new WalletPersistException("Failed withdraw on company wallet " + companyWallet.toString());
+        }
+
     }
 
     @Transactional(propagation = Propagation.NESTED)

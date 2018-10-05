@@ -2,7 +2,6 @@ package com.exrates.inout.dao;
 
 import com.exrates.inout.domain.dto.UpdateUserDto;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
-import com.exrates.inout.domain.enums.TokenType;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -11,7 +10,6 @@ import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.domain.main.User;
 import com.exrates.inout.domain.main.UserFile;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public interface UserDao {
@@ -62,4 +60,7 @@ public interface UserDao {
 
     void updatePinByUserEmail(String userEmail, String pin, NotificationMessageEventEnum event);
 
+    User getCommonReferralRoot();
+
+    UserRole getUserRoleByEmail(String email);
 }

@@ -180,7 +180,7 @@ public class UserDaoImpl implements UserDao {
 
     public User findByNickname(String nickname) {
         String sql = SELECT_USER + "WHERE USER.nickname = :nickname";
-        final Map<String, String> params = new HashMap<>() {
+        final Map<String, String> params = new HashMap<String, String>() {
             {
                 put("nickname", nickname);
             }
@@ -370,7 +370,7 @@ public class UserDaoImpl implements UserDao {
         String sql = "SELECT invoice_operation_permission_id " +
                 " FROM USER_CURRENCY_INVOICE_OPERATION_PERMISSION " +
                 " WHERE user_id = :user_id AND currency_id = :currency_id AND operation_direction = :operation_direction";
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String,Object>() {{
             put("user_id", userId);
             put("currency_id", currencyId);
             put("operation_direction", invoiceOperationDirection.name());
@@ -393,10 +393,29 @@ public class UserDaoImpl implements UserDao {
     public void updatePinByUserEmail(String userEmail, String pin, NotificationMessageEventEnum event) {
         String sql = String.format("UPDATE USER SET %s_pin = :pin " +
                 "WHERE USER.email = :email", event.name().toLowerCase());
-        Map<String, Object> namedParameters = new HashMap<>() {{
+        Map<String, Object> namedParameters = new HashMap<String,Object>() {{
             put("email", userEmail);
             put("pin", pin);
         }};
         namedParameterJdbcTemplate.update(sql, namedParameters);
+    }
+
+    @Override
+    public User getCommonReferralRoot() {
+        final String sql = "SELECT USER.id, nickname, email, password, finpassword, regdate, phone, status, USER_ROLE.name as role_name FROM COMMON_REFERRAL_ROOT INNER JOIN USER ON COMMON_REFERRAL_ROOT.user_id = USER.id INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id LIMIT 1";
+        final List<User> result = namedParameterJdbcTemplate.query(sql, getUserRowMapper());
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }
+
+    @Override
+    public UserRole getUserRoleByEmail(String email) {
+        String sql = "select USER_ROLE.name as role_name from USER " +
+                "inner join USER_ROLE on USER.roleid = USER_ROLE.id where USER.email = :email ";
+        Map<String, String> namedParameters = Collections.singletonMap("email", email);
+        return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, (rs, row) ->
+                UserRole.valueOf(rs.getString("role_name")));
     }
 }

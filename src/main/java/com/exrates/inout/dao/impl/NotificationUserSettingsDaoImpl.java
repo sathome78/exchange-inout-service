@@ -41,7 +41,7 @@ public class NotificationUserSettingsDaoImpl implements NotificationUserSettings
     public NotificationsUserSetting getByUserAndEvent(int userId, NotificationMessageEventEnum event) {
         String sql = "SELECT UN.* FROM 2FA_USER_NOTIFICATION_MESSAGE_SETTINGS UN " +
                 "WHERE UN.user_id = :user_id AND event_name = :event ";
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("user_id", userId);
             put("event", event.name());
         }};

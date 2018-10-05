@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -37,7 +36,7 @@ public class NotificatorDaoImpl implements NotificatorsDao {
 
     public Notificator getById(int id) {
         String sql = "SELECT * FROM 2FA_NOTIFICATOR WHERE id = :id ";
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("id", id);
         }};
         return jdbcTemplate.queryForObject(sql, params, notificatorRowMapper);

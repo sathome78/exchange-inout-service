@@ -73,7 +73,7 @@ session:
   authenticationParamName: authentication
   passwordParam: l_password
 
-invoice: 5
+invoice:
   blockNotifyUsers: true
 
 
@@ -88,3 +88,6 @@ ban:
       num:
       period:
     time:
+
+referral:
+  url: localhost:8080/register?ref=

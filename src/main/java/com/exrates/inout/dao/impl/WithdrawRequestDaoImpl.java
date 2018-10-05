@@ -21,8 +21,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
+import static com.exrates.inout.domain.enums.TransactionSourceType.WITHDRAW;
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
 
@@ -32,7 +35,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
 
     private static final Logger log = LogManager.getLogger("withdraw");
 
-    private static RowMapper<WithdrawRequestFlatDto> withdrawRequestFlatDtoRowMapper = (rs, idx) -> {
+    protected static RowMapper<WithdrawRequestFlatDto> withdrawRequestFlatDtoRowMapper = (rs, idx) -> {
         WithdrawRequestFlatDto withdrawRequestFlatDto = new WithdrawRequestFlatDto();
         withdrawRequestFlatDto.setId(rs.getInt("id"));
         withdrawRequestFlatDto.setWallet(rs.getString("wallet"));
@@ -57,12 +60,13 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return withdrawRequestFlatDto;
     };
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    @Autowired
+    @Qualifier(value = "masterTemplate")
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public WithdrawRequestDaoImpl(@Qualifier(value = "masterTemplate") NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @Qualifier(value = "slaveTemplate")
+    private NamedParameterJdbcTemplate slaveJdbcTemplate;
 
     private Optional<Integer> blockById(int id) {
         String sql = "SELECT COUNT(*) " +
@@ -72,6 +76,65 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return of(jdbcTemplate.queryForObject(sql, singletonMap("id", id), Integer.class));
     }
 
+    @Override
+    public List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
+            String startDate,
+            String endDate,
+            List<Integer> roleIdList,
+            List<Integer> currencyList) {
+        String sql = "SELECT WR.*, " +
+                "         USER.email AS user_email, USER.nickname AS nickname, " +
+                "         ADM.email AS admin_email, " +
+                "         MERCHANT.name AS merchant_name, " +
+                "         CURRENCY.name AS currency_name" +
+                " FROM WITHDRAW_REQUEST WR " +
+                " JOIN CURRENCY ON CURRENCY.id = WR.currency_id " +
+                " JOIN MERCHANT ON MERCHANT.id = WR.merchant_id " +
+                " JOIN USER AS USER ON USER.id = WR.user_id " +
+                " LEFT JOIN USER AS ADM ON ADM.id = WR.admin_holder_id " +
+                " WHERE " +
+                "    WR.date_creation BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(:end_date, '%Y-%m-%d %H:%i:%s') " +
+                "    AND (WR.currency_id IN (:currency_list)) " +
+                (roleIdList.isEmpty() ? "" : " AND USER.roleid IN (:role_id_list)");
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("start_date", startDate);
+            put("end_date", endDate);
+            if (!roleIdList.isEmpty()) {
+                put("role_id_list", roleIdList);
+            }
+            put("currency_list", currencyList);
+        }};
+        return jdbcTemplate.query(sql, params, new RowMapper<WithdrawRequestFlatForReportDto>() {
+            @Override
+            public WithdrawRequestFlatForReportDto mapRow(ResultSet rs, int i) throws SQLException {
+                WithdrawRequestFlatForReportDto withdrawRequestFlatForReportDto = new WithdrawRequestFlatForReportDto();
+                withdrawRequestFlatForReportDto.setInvoiceId(rs.getInt("WR.id"));
+                withdrawRequestFlatForReportDto.setWallet(rs.getString("wallet"));
+                withdrawRequestFlatForReportDto.setRecipientBank(rs.getString("recipient_bank_name"));
+                withdrawRequestFlatForReportDto.setAdminEmail(rs.getString("admin_email"));
+                withdrawRequestFlatForReportDto.setAcceptanceTime(rs.getTimestamp("status_modification_date") == null ? null : rs.getTimestamp("status_modification_date").toLocalDateTime());
+                withdrawRequestFlatForReportDto.setStatus(WithdrawStatusEnum.convert(rs.getInt("status_id")));
+                withdrawRequestFlatForReportDto.setUserFullName(rs.getString("user_full_name"));
+                withdrawRequestFlatForReportDto.setUserNickname(rs.getString("nickname"));
+                withdrawRequestFlatForReportDto.setUserEmail(rs.getString("user_email"));
+                withdrawRequestFlatForReportDto.setAmount(rs.getBigDecimal("amount"));
+                withdrawRequestFlatForReportDto.setCommissionAmount(rs.getBigDecimal("commission"));
+                withdrawRequestFlatForReportDto.setDatetime(rs.getTimestamp("date_creation") == null ? null : rs.getTimestamp("date_creation").toLocalDateTime());
+                withdrawRequestFlatForReportDto.setCurrency(rs.getString("currency_name"));
+                withdrawRequestFlatForReportDto.setSourceType(WITHDRAW);
+                withdrawRequestFlatForReportDto.setMerchant(rs.getString("merchant_name"));
+                return withdrawRequestFlatForReportDto;
+            }
+        });
+    }
+
+    @Override
+    public Integer findStatusIdByRequestId(Integer withdrawRequestId) {
+        String sql = "SELECT status FROM WITHDRAW_REQUEST WHERE transaction_id = :request_id";
+        return jdbcTemplate.queryForObject(sql, Collections.singletonMap("request_id", withdrawRequestId), Integer.class);
+    }
+
+    @Override
     public int create(WithdrawRequestCreateDto withdrawRequest) {
         final String sql = "INSERT INTO WITHDRAW_REQUEST " +
                 "(wallet, recipient_bank_name, recipient_bank_code, user_full_name, remark, amount, commission, merchant_commission, status_id," +
@@ -98,6 +161,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return (int) keyHolder.getKey().longValue();
     }
 
+    @Override
     public void setStatusById(Integer id, InvoiceStatus newStatus) {
         final String sql = "UPDATE WITHDRAW_REQUEST " +
                 "  SET status_id = :new_status_id, " +
@@ -109,6 +173,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         jdbcTemplate.update(sql, params);
     }
 
+    @Override
     public void setHashAndParamsById(Integer id, Map<String, String> params) {
         if (params.isEmpty()) {
             return;
@@ -124,11 +189,13 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         jdbcTemplate.update(sql, sqlParams);
     }
 
+    @Override
     public Optional<WithdrawRequestFlatDto> getFlatByIdAndBlock(int id) {
         blockById(id);
         return getFlatById(id);
     }
 
+    @Override
     public Optional<WithdrawRequestFlatDto> getFlatById(int id) {
         String sql = "SELECT * " +
                 " FROM WITHDRAW_REQUEST " +
@@ -136,6 +203,8 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return of(jdbcTemplate.queryForObject(sql, singletonMap("id", id), withdrawRequestFlatDtoRowMapper));
     }
 
+
+    @Override
     public PagingData<List<WithdrawRequestFlatDto>> getPermittedFlatByStatus(
             List<Integer> statusIdList,
             Integer requesterUserId,
@@ -183,6 +252,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return result;
     }
 
+    @Override
     public WithdrawRequestFlatDto getPermittedFlatById(
             Integer id,
             Integer requesterUserId) {
@@ -190,7 +260,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 " FROM WITHDRAW_REQUEST " +
                 getPermissionClause(requesterUserId) +
                 " WHERE WITHDRAW_REQUEST.id=:id ";
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("id", id);
             put("requester_user_id", requesterUserId);
             put("operation_direction", "WITHDRAW");
@@ -202,6 +272,94 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         });
     }
 
+    @Override
+    public List<WithdrawRequestPostDto> getForPostByStatusList(Integer statusId) {
+        String sql = " SELECT WR.*, " +
+                " CUR.name AS currency_name, " +
+                " M.name AS merchant_name, M.service_bean_name " +
+                " FROM WITHDRAW_REQUEST WR " +
+                " JOIN CURRENCY CUR ON (CUR.id = WR.currency_id) " +
+                " JOIN MERCHANT M ON (M.id = WR.merchant_id) " +
+                " WHERE status_id = :status_id ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("status_id", statusId);
+        }};
+        return jdbcTemplate.query(sql, params, (rs, idx) -> {
+            WithdrawRequestPostDto result = new WithdrawRequestPostDto();
+            result.setId(rs.getInt("id"));
+            result.setWallet(rs.getString("wallet"));
+            result.setDestinationTag(rs.getString("destination_tag"));
+            result.setRecipientBankName(rs.getString("recipient_bank_name"));
+            result.setRecipientBankCode(rs.getString("recipient_bank_code"));
+            result.setUserFullName(rs.getString("user_full_name"));
+            result.setRemark(rs.getString("remark"));
+            result.setAmount(rs.getBigDecimal("amount"));
+            result.setCommissionAmount(rs.getBigDecimal("commission"));
+            result.setStatus(WithdrawStatusEnum.convert(rs.getInt("status_id")));
+            result.setCurrencyName(rs.getString("currency_name"));
+            result.setMerchantName(rs.getString("merchant_name"));
+            result.setMerchantServiceBeanName(rs.getString("service_bean_name"));
+            result.setUserId(rs.getInt("user_id"));
+            result.setMerchantId(rs.getInt("merchant_id"));
+            result.setCurrencyId(rs.getInt("currency_id"));
+            return result;
+        });
+    }
+
+    @Override
+    public WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id) {
+        String sql = "SELECT " +
+                "   CUR.name AS currency_name, " +
+                "   USER.email AS user_email, " +
+                "   ADMIN.email AS admin_email, " +
+                "   M.name AS merchant_name, " +
+                "   MC.subtract_merchant_commission_for_withdraw " +
+                " FROM WITHDRAW_REQUEST WR " +
+                " JOIN CURRENCY CUR ON (CUR.id = WR.currency  public WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id) {\n" +
+                "    String sql = \"SELECT \" +\n" +
+                "        \"   CUR.name AS currency_name, \" +\n" +
+                "        \"   USER.email AS user_email, \" +\n" +
+                "        \"   ADMIN.email AS admin_email, \" +\n" +
+                "        \"   M.name AS merchant_name, \" +\n" +
+                "        \"   MC.subtract_merchant_commission_for_withdraw \" +\n" +
+                "        \" FROM WITHDRAW_REQUEST WR \" +\n" +
+                "        \" JOIN CURRENCY CUR ON (CUR.id = WR.currency_id) \" +\n" +
+                "        \" JOIN USER USER ON (USER.id = WR.user_id) \" +\n" +
+                "        \" LEFT JOIN USER ADMIN ON (ADMIN.id = WR.admin_holder_id) \" +\n" +
+                "        \" JOIN MERCHANT M ON (M.id = WR.merchant_id)\" +\n" +
+                "        \" JOIN MERCHANT_CURRENCY MC ON CUR.id = MC.currency_id AND M.id = MC.merchant_id \" +\n" +
+                "        \" WHERE WR.id = :id\";\n" +
+                "    return jdbcTemplate.queryForObject(sql, singletonMap(\"id\", id), (rs, idx) -> {\n" +
+                "          WithdrawRequestFlatAdditionalDataDto withdrawRequestFlatAdditionalDataDto = new WithdrawRequestFlatAdditionalDataDto();\n" +
+                "          withdrawRequestFlatAdditionalDataDto.setUserEmail(rs.getString(\"user_email\"));\n" +
+                "          withdrawRequestFlatAdditionalDataDto.setAdminHolderEmail(rs.getString(\"admin_email\"));\n" +
+                "          withdrawRequestFlatAdditionalDataDto.setCurrencyName(rs.getString(\"currency_name\"));\n" +
+                "          withdrawRequestFlatAdditionalDataDto.setMerchantName(rs.getString(\"merchant_name\"));\n" +
+                "          withdrawRequestFlatAdditionalDataDto.setIsMerchantCommissionSubtractedForWithdraw(\n" +
+                "                  rs.getBoolean(\"subtract_merchant_commission_for_withdraw\"));\n" +
+                "          return withdrawRequestFlatAdditionalDataDto;\n" +
+                "        }\n" +
+                "    );\n" +
+                "  }_id) " +
+                " JOIN USER USER ON (USER.id = WR.user_id) " +
+                " LEFT JOIN USER ADMIN ON (ADMIN.id = WR.admin_holder_id) " +
+                " JOIN MERCHANT M ON (M.id = WR.merchant_id)" +
+                " JOIN MERCHANT_CURRENCY MC ON CUR.id = MC.currency_id AND M.id = MC.merchant_id " +
+                " WHERE WR.id = :id";
+        return jdbcTemplate.queryForObject(sql, singletonMap("id", id), (rs, idx) -> {
+                    WithdrawRequestFlatAdditionalDataDto withdrawRequestFlatAdditionalDataDto = new WithdrawRequestFlatAdditionalDataDto();
+                    withdrawRequestFlatAdditionalDataDto.setUserEmail(rs.getString("user_email"));
+                    withdrawRequestFlatAdditionalDataDto.setAdminHolderEmail(rs.getString("admin_email"));
+                    withdrawRequestFlatAdditionalDataDto.setCurrencyName(rs.getString("currency_name"));
+                    withdrawRequestFlatAdditionalDataDto.setMerchantName(rs.getString("merchant_name"));
+                    withdrawRequestFlatAdditionalDataDto.setIsMerchantCommissionSubtractedForWithdraw(
+                            rs.getBoolean("subtract_merchant_commission_for_withdraw"));
+                    return withdrawRequestFlatAdditionalDataDto;
+                }
+        );
+    }
+
+    @Override
     public void setHolderById(Integer id, Integer holderId) {
         final String sql = "UPDATE WITHDRAW_REQUEST " +
                 "  SET admin_holder_id = :admin_holder_id " +
@@ -212,6 +370,24 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         jdbcTemplate.update(sql, params);
     }
 
+    @Override
+    public void setInPostingStatusByStatus(Integer inPostingStatusId, List<Integer> statusIdList) {
+        final String sql =
+                "  UPDATE " +
+                        "    WITHDRAW_REQUEST WR " +
+                        "    JOIN MERCHANT_CURRENCY MC ON (MC.merchant_id = WR.merchant_id) AND " +
+                        "     (MC.currency_id = WR.currency_id) AND " +
+                        "     (MC.withdraw_auto_enabled = 1) AND " +
+                        "     (WR.status_modification_date <= NOW() - INTERVAL MC.withdraw_auto_delay_seconds SECOND) " +
+                        "  SET status_id = :new_status_id " +
+                        "  WHERE WR.status_id IN (:status_id_list)  ";
+        Map<String, Object> params = new HashMap<>();
+        params.put("status_id_list", statusIdList);
+        params.put("new_status_id", inPostingStatusId);
+        jdbcTemplate.update(sql, params);
+    }
+
+    @Override
     public List<ClientBank> findClientBanksForCurrency(Integer currencyId) {
         final String sql = "SELECT id, currency_id, name, code " +
                 " FROM CLIENT_BANK " +
@@ -227,6 +403,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         });
     }
 
+    @Override
     public boolean checkOutputRequests(int currencyId, String email) {
         String sql = "SELECT " +
                 " (SELECT COUNT(*) FROM WITHDRAW_REQUEST REQUEST " +
@@ -243,11 +420,14 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
 
+    @Override
     public Optional<Integer> findUserIdById(Integer requestId) {
         String sql = "SELECT WR.user_id " +
                 " FROM WITHDRAW_REQUEST WR " +
                 " WHERE WR.id = :id ";
-        Map<String, Object> params = new HashMap<>() {{ put("id", requestId); }};
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("id", requestId);
+        }};
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, params, Integer.class));
         } catch (EmptyResultDataAccessException e) {
@@ -255,6 +435,37 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         }
     }
 
+    @Override
+    public Optional<Integer> getIdByHashAndMerchantId(String hash, Integer merchantId) {
+        String sql = "SELECT WR.id " +
+                " FROM WITHDRAW_REQUEST WR " +
+                " WHERE WR.transaction_hash = :hash AND WR.merchant_id = :merchant_id";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("hash", hash);
+            put("merchant_id", merchantId);
+        }};
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, params, Integer.class));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<WithdrawRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId) {
+        String sql = "SELECT WITHDRAW_REQUEST.* " +
+                " FROM WITHDRAW_REQUEST " +
+                " WHERE WITHDRAW_REQUEST.merchant_id = :merchant_id  AND WITHDRAW_REQUEST.status_id IN (:statuses)";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("statuses", statusId);
+        }};
+        return jdbcTemplate.query(sql, params, (rs, i) -> {
+            return withdrawRequestFlatDtoRowMapper.mapRow(rs, i);
+        });
+    }
+
+    @Override
     public List<Integer> getWithdrawalStatistic(String startDate, String endDate) {
         final String sql = "SELECT (SELECT COUNT(*) FROM WITHDRAW_REQUEST WHERE status_modification_date \n" +
                 "BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(:end_date, '%Y-%m-%d %H:%i:%s')" +
@@ -263,7 +474,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 "BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(:end_date, '%Y-%m-%d %H:%i:%s')  \n" +
                 " AND status_id IN (10,12)) as auto;";
 
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("start_date", startDate);
             put("end_date", endDate);
         }};
@@ -278,6 +489,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
 
     }
 
+    @Override
     public WithdrawRequestInfoDto findWithdrawInfo(Integer id) {
         String sql = "SELECT WR.*, U.email, M.description, M.name AS merchant_name, C.name, MC.withdraw_auto_delay_seconds " +
                 " FROM WITHDRAW_REQUEST WR " +
@@ -287,7 +499,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 " JOIN MERCHANT M ON M.id = WR.merchant_id " +
                 " JOIN CURRENCY C ON C.id = WR.currency_id " +
                 " WHERE WR.id = :id  ";
-        Map<String, Object> params = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("id", id);
         }};
         return jdbcTemplate.queryForObject(sql, params, (rs, i) -> {
@@ -306,32 +518,6 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         });
     }
 
-    public WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id) {
-        String sql = "SELECT " +
-                "   CUR.name AS currency_name, " +
-                "   USER.email AS user_email, " +
-                "   ADMIN.email AS admin_email, " +
-                "   M.name AS merchant_name, " +
-                "   MC.subtract_merchant_commission_for_withdraw " +
-                " FROM WITHDRAW_REQUEST WR " +
-                " JOIN CURRENCY CUR ON (CUR.id = WR.currency_id) " +
-                " JOIN USER USER ON (USER.id = WR.user_id) " +
-                " LEFT JOIN USER ADMIN ON (ADMIN.id = WR.admin_holder_id) " +
-                " JOIN MERCHANT M ON (M.id = WR.merchant_id)" +
-                " JOIN MERCHANT_CURRENCY MC ON CUR.id = MC.currency_id AND M.id = MC.merchant_id " +
-                " WHERE WR.id = :id";
-        return jdbcTemplate.queryForObject(sql, singletonMap("id", id), (rs, idx) -> {
-                    WithdrawRequestFlatAdditionalDataDto withdrawRequestFlatAdditionalDataDto = new WithdrawRequestFlatAdditionalDataDto();
-                    withdrawRequestFlatAdditionalDataDto.setUserEmail(rs.getString("user_email"));
-                    withdrawRequestFlatAdditionalDataDto.setAdminHolderEmail(rs.getString("admin_email"));
-                    withdrawRequestFlatAdditionalDataDto.setCurrencyName(rs.getString("currency_name"));
-                    withdrawRequestFlatAdditionalDataDto.setMerchantName(rs.getString("merchant_name"));
-                    withdrawRequestFlatAdditionalDataDto.setIsMerchantCommissionSubtractedForWithdraw(
-                            rs.getBoolean("subtract_merchant_commission_for_withdraw"));
-                    return withdrawRequestFlatAdditionalDataDto;
-                }
-        );
-    }
 
 
     private String getPermissionClause(Integer requesterUserId) {

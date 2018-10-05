@@ -1,21 +1,26 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.MerchantDao;
-import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
-import com.exrates.inout.domain.dto.TransferMerchantApiDto;
+import com.exrates.inout.domain.CoreWalletDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserCommentTopicEnum;
-import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.domain.main.MerchantCurrency;
+import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
+import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
+import com.exrates.inout.domain.main.*;
+import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
+import com.exrates.inout.service.merchant.BitcoinService;
+import com.exrates.inout.util.BigDecimalProcessing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,37 +39,107 @@ public class MerchantServiceImpl implements MerchantService {
 
     private static final Logger LOG = LogManager.getLogger("merchant");
 
-    private final MerchantDao merchantDao;
+    @Autowired
+    private MerchantDao merchantDao;
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    private final MessageSource messageSource;
+    @Autowired
+    private SendMailService sendMailService;
 
-    private final MerchantServiceContext merchantServiceContext;
-    private final CommissionService commissionService;
-    private final CurrencyService currencyService;
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private MerchantServiceContext merchantServiceContext;
+    @Autowired
+    private CommissionService commissionService;
+    @Autowired
+    private CurrencyService currencyService;
 
     private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
 
-
     @Autowired
-    public MerchantServiceImpl(MerchantDao merchantDao, UserService userService, MessageSource messageSource, MerchantServiceContext merchantServiceContext, CommissionService commissionService, CurrencyService currencyService) {
-        this.merchantDao = merchantDao;
-        this.userService = userService;
-        this.messageSource = messageSource;
-        this.merchantServiceContext = merchantServiceContext;
-        this.commissionService = commissionService;
-        this.currencyService = currencyService;
+    @Qualifier("bitcoinServiceImpl")
+    private BitcoinService bitcoinService;
+
+    @Override
+    public List<Merchant> findAllByCurrency(Currency currency) {
+        return merchantDao.findAllByCurrency(currency.getId());
     }
 
+    @Override
+    public List<Merchant> findAll() {
+        return merchantDao.findAll();
+    }
+
+    @Override
+    public String resolveTransactionStatus(final Transaction transaction, final Locale locale) {
+        if (transaction.getSourceType() == TransactionSourceType.WITHDRAW) {
+            WithdrawStatusEnum status = transaction.getWithdrawRequest().getStatus();
+            return messageSource.getMessage("merchants.withdraw.".concat(status.name()), null, locale);
+        }
+        if (transaction.getSourceType() == TransactionSourceType.REFILL) {
+            RefillStatusEnum status = transaction.getRefillRequest().getStatus();
+            Integer confirmations = transaction.getRefillRequest().getConfirmations();
+            return messageSource.getMessage("merchants.refill.".concat(status.name()), new Object[]{confirmations}, locale);
+        }
+        if (transaction.isProvided()) {
+            return messageSource.getMessage("transaction.provided", null, locale);
+        } else {
+            return messageSource.getMessage("transaction.notProvided", null, locale);
+        }
+    }
+
+    @Override
+    public String sendDepositNotification(final String toWallet,
+                                          final String email,
+                                          final Locale locale,
+                                          final CreditsOperation creditsOperation,
+                                          final String depositNotification) {
+        final BigDecimal amount = creditsOperation
+                .getAmount()
+                .add(creditsOperation.getCommissionAmount());
+        final String sumWithCurrency = BigDecimalProcessing.formatSpacePoint(amount, false) + " " +
+                creditsOperation
+                        .getCurrency()
+                        .getName();
+        final String notification = messageSource.getMessage(depositNotification,
+                new Object[]{sumWithCurrency, toWallet},
+                locale);
+        final Email mail = new Email();
+        mail.setTo(email);
+        mail.setSubject(messageSource
+                .getMessage("merchants.depositNotification.header", null, locale));
+        mail.setMessage(notification);
+
+        try {
+      /* TODO temporary disable
+      notificationService.createLocalizedNotification(email, NotificationEvent.IN_OUT,
+          "merchants.depositNotification.header", depositNotification,
+          new Object[]{sumWithCurrency, toWallet});*/
+            sendMailService.sendInfoMail(mail);
+        } catch (MailException e) {
+            LOG.error(e);
+        }
+        return notification;
+    }
+
+    @Override
     public Merchant findById(int id) {
         return merchantDao.findById(id);
     }
 
+    @Override
     public Merchant findByName(String name) {
         return merchantDao.findByName(name);
     }
 
+    @Override
     public List<MerchantCurrency> getAllUnblockedForOperationTypeByCurrencies(List<Integer> currenciesId, OperationType operationType) {
         if (currenciesId.isEmpty()) {
             return null;
@@ -72,15 +147,18 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantDao.findAllUnblockedForOperationTypeByCurrencies(currenciesId, operationType);
     }
 
+    @Override
     public List<MerchantCurrencyApiDto> findNonTransferMerchantCurrencies(Integer currencyId) {
         return findMerchantCurrenciesByCurrencyAndProcessTypes(currencyId, Arrays.stream(MerchantProcessType.values())
                 .filter(item -> item != MerchantProcessType.TRANSFER).map(Enum::name).collect(Collectors.toList()));
     }
 
+    @Override
     public Optional<MerchantCurrency> findByMerchantAndCurrency(int merchantId, int currencyId) {
         return merchantDao.findByMerchantAndCurrency(merchantId, currencyId);
     }
 
+    @Override
     public List<TransferMerchantApiDto> findTransferMerchants() {
         List<TransferMerchantApiDto> result = merchantDao.findTransferMerchants();
         result.forEach(item -> {
@@ -118,11 +196,104 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
+    @Override
+    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
+        return merchantDao.findMerchantCurrencyOptions(processTypes);
+    }
+
+    @Override
+    public Map<String, String> formatResponseMessage(CreditsOperation creditsOperation) {
+        final OperationType operationType = creditsOperation.getOperationType();
+        final String commissionPercent = creditsOperation
+                .getCommission()
+                .getValue()
+                .setScale(2, ROUND_HALF_UP)
+                .toString();
+        String finalAmount = null;
+        String sumCurrency = null;
+        switch (operationType) {
+            case INPUT:
+                finalAmount = creditsOperation
+                        .getAmount()
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                sumCurrency = creditsOperation
+                        .getAmount()
+                        .add(creditsOperation.getCommissionAmount())
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                break;
+            case OUTPUT:
+                finalAmount = creditsOperation
+                        .getAmount()
+                        .subtract(creditsOperation.getCommissionAmount())
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                sumCurrency = creditsOperation
+                        .getAmount()
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                break;
+
+        }
+        final Map<String, String> result = new HashMap<>();
+        result.put("commissionPercent", commissionPercent);
+        result.put("sumCurrency", sumCurrency);
+        result.put("finalAmount", finalAmount);
+        return result;
+    }
+
+    @Override
+    public Map<String, String> formatResponseMessage(Transaction transaction) {
+        final CreditsOperation creditsOperation = new CreditsOperation.Builder()
+                .operationType(transaction.getOperationType())
+                .amount(transaction.getAmount())
+                .commissionAmount(transaction.getCommissionAmount())
+                .commission(transaction.getCommission())
+                .currency(transaction.getCurrency())
+                .build();
+        return formatResponseMessage(creditsOperation);
+
+    }
+
+    @Override
+    public void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw) {
+        merchantDao.toggleSubtractMerchantCommissionForWithdraw(merchantId, currencyId, subtractMerchantCommissionForWithdraw);
+    }
+
+    @Override
+    @Transactional
+    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
+        merchantDao.toggleMerchantBlock(merchantId, currencyId, operationType);
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForAll(OperationType operationType, boolean blockStatus) {
+        merchantDao.setBlockForAllNonTransfer(operationType, blockStatus);
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
+        merchantDao.setBlockForMerchant(merchantId, currencyId, operationType, blockStatus);
+    }
+
+    @Override
     @Transactional
     public BigDecimal getMinSum(Integer merchantId, Integer currencyId) {
         return merchantDao.getMinSum(merchantId, currencyId);
     }
 
+    @Override
     @Transactional
     public void checkAmountForMinSum(Integer merchantId, Integer currencyId, BigDecimal amount) {
         if (amount.compareTo(getMinSum(merchantId, currencyId)) < 0) {
@@ -130,6 +301,15 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
+    /*============================*/
+
+    @Override
+    @Transactional
+    public List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime() {
+        return merchantDao.findMerchantCurrencyWithRefillLifetime();
+    }
+
+    @Override
     @Transactional
     public MerchantCurrencyLifetimeDto getMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -137,6 +317,7 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantDao.findMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(merchantId, currencyId);
     }
 
+    @Override
     @Transactional
     public MerchantCurrencyScaleDto getMerchantCurrencyScaleByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -148,6 +329,7 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
+    @Override
     @Transactional
     public void checkMerchantIsBlocked(Integer merchantId, Integer currencyId, OperationType operationType) {
         boolean isBlocked = merchantDao.checkMerchantBlock(merchantId, currencyId, operationType);
@@ -156,6 +338,32 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
+    @Override
+    public List<String> retrieveBtcCoreBasedMerchantNames() {
+        return merchantDao.retrieveBtcCoreBasedMerchantNames();
+    }
+
+    @Override
+    public CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale) {
+        CoreWalletDto result = merchantDao.retrieveCoreWalletByMerchantName(merchantName).orElseThrow(() -> new MerchantNotFoundException(merchantName));
+        result.localizeTitle(messageSource, locale);
+        return result;
+    }
+
+    @Override
+    public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
+
+        List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
+        result.forEach(dto -> dto.localizeTitle(messageSource, locale));
+        return result;
+    }
+
+    @Override
+    public Optional<String> getCoreWalletPassword(String merchantName, String currencyName) {
+        return merchantDao.getCoreWalletPassword(merchantName, currencyName);
+    }
+
+    @Override
     public Map<String, String> computeCommissionAndMapAllToString(final BigDecimal amount,
                                                                   final OperationType type,
                                                                   final String currency,
@@ -185,6 +393,7 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
+    @Override
     public void checkDestinationTag(Integer merchantId, String destinationTag) {
         IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
         if (merchantService instanceof IWithdrawable && ((IWithdrawable) merchantService).additionalTagForWithdrawAddressIsUsed()) {
@@ -192,6 +401,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
+    @Override
     public List<String> getWarningsForMerchant(OperationType operationType, Integer merchantId, Locale locale) {
         UserCommentTopicEnum commentTopic;
         switch (operationType) {
@@ -212,8 +422,24 @@ public class MerchantServiceImpl implements MerchantService {
         return resultLocalized;
     }
 
+    @Override
     public List<Integer> getIdsByProcessType(List<String> processType) {
         return merchantDao.findCurrenciesIdsByType(processType);
+    }
+
+    @Override
+    public boolean getSubtractFeeFromAmount(Integer merchantId, Integer currencyId) {
+        return merchantDao.getSubtractFeeFromAmount(merchantId, currencyId);
+    }
+
+    @Override
+    public void setSubtractFeeFromAmount(Integer merchantId, Integer currencyId, boolean subtractFeeFromAmount) {
+        merchantDao.setSubtractFeeFromAmount(merchantId, currencyId, subtractFeeFromAmount);
+    }
+
+    @Override
+    public List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId) {
+        return merchantDao.findTokenMerchantsByParentId(parentId);
     }
 
 }

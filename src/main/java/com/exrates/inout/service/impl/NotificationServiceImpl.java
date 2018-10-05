@@ -72,6 +72,11 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    @Override
+    public long createLocalizedNotification(Integer parent, NotificationEvent inOut, String s, String s1, Object[] objects) {
+        return 0L;
+    }
+
 
     private String[] normalizeArgs(Object... args) {
         return Arrays.toString(args).replaceAll("[\\[\\]]", "").split("\\s*,\\s*");

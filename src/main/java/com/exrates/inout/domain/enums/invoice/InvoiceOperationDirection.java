@@ -1,6 +1,7 @@
 package com.exrates.inout.domain.enums.invoice;
 
 import com.exrates.inout.exceptions.UnsupportedInvoiceOperationDirectionException;
+
 import java.util.stream.Stream;
 
 public enum InvoiceOperationDirection {

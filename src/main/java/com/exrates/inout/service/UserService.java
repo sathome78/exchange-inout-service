@@ -1,5 +1,6 @@
 package com.exrates.inout.service;
 
+import com.exrates.inout.domain.ReferralLevel;
 import com.exrates.inout.domain.dto.UpdateUserDto;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
 import com.exrates.inout.domain.enums.TokenType;
@@ -68,8 +69,14 @@ public interface UserService {
 
     UserRole getUserRoleFromDB(Integer userId);
 
+    UserRole getUserRoleFromDB(String email);
+
     @Transactional
     String updatePinForUserForEvent(String userEmail, NotificationMessageEventEnum event);
 
     boolean checkPin(String email, String pin, NotificationMessageEventEnum event);
+
+    String getUserEmailFromSecurityContext();
+
+    User getCommonReferralRoot();
 }
