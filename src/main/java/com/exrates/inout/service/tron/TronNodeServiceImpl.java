@@ -18,6 +18,7 @@ import java.net.URI;
 
 @Log4j2(topic = "tron")
 @Service
+@PropertySource("classpath:/merchants/tron.properties")
 public class TronNodeServiceImpl implements TronNodeService {
 
     private final RestTemplate restTemplate;

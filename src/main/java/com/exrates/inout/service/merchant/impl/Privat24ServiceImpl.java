@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@PropertySource("classpath:/merchants/privat24.properties")
 public class Privat24ServiceImpl implements Privat24Service {
 
     private @Value("${privat24.url}")

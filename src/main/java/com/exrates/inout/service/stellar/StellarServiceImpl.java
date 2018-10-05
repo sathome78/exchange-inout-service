@@ -31,6 +31,7 @@ import java.util.*;
 
 @Log4j2(topic = "stellar_log")
 @Service
+@PropertySource("classpath:/merchants/stellar.properties")
 public class StellarServiceImpl implements StellarService {
 
     private @Value("${stellar.horizon.url}")

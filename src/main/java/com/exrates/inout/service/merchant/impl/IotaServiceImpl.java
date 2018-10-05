@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2(topic = "iota_log")
 @Service
+@PropertySource("classpath:/merchants/iota.properties")
 public class IotaServiceImpl implements IotaService {
 
     @Autowired

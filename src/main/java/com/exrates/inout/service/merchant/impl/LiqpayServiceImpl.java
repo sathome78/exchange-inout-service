@@ -1,6 +1,5 @@
 package com.exrates.inout.service.merchant.impl;
 
-//import com.liqpay.LiqPay;
 
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
@@ -28,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
+@PropertySource("classpath:/merchants/liqpay.properties")
 public class LiqpayServiceImpl implements LiqpayService {
 
   private @Value("${liqpay.url}")

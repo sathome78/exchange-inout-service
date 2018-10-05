@@ -22,7 +22,7 @@ import java.util.*;
 
 
 @Repository
-public final class YandexMoneyMerchantDaoImpl implements YandexMoneyMerchantDao {
+public class YandexMoneyMerchantDaoImpl implements YandexMoneyMerchantDao {
 
     public static final RowMapper<String> tokenRowMapper = (resultSet, i) -> {
         return resultSet.getString("access_token");

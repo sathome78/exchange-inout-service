@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
+@PropertySource("classpath:/merchants/nixmoney.properties")
 public class NixMoneyServiceImpl implements NixMoneyService {
 
     private @Value("${nixmoney.url}")

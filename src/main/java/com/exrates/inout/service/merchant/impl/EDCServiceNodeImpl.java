@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 @Log4j2(topic = "edc_log")
 @Service
+@PropertySource({"classpath:/merchants/edc_cli_wallet.properties", "classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceNodeImpl implements EDCServiceNode {
 
   private @Value("${edcmerchant.token}")

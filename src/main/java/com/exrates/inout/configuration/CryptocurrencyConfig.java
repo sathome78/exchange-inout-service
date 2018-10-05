@@ -1,11 +1,15 @@
 package com.exrates.inout.configuration;
 
+import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.service.lisk.*;
 import com.exrates.inout.service.merchant.BitcoinService;
 import com.exrates.inout.service.merchant.impl.BitcoinServiceImpl;
+import com.exrates.inout.service.nem.XemMosaicService;
+import com.exrates.inout.service.nem.XemMosaicServiceImpl;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
 import lombok.extern.log4j.Log4j2;
+import org.nem.core.model.primitive.Supply;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -277,4 +281,29 @@ public class CryptocurrencyConfig {
         return new WavesServiceImpl("LUNES", "LUNES", "merchants/lunes.properties");
     }
 
+    /***tokens based on xem mosaic)****/
+    @Bean(name = "dimCoinServiceImpl")
+    public XemMosaicService dimCoinService() {
+        return new XemMosaicServiceImpl(
+                "DimCoin",
+                "DIM",
+                new MosaicIdDto("dim", "coin"),
+                1000000,
+                6,
+                new Supply(9000000000L),
+                10);
+    }
+
+
+    @Bean(name = "npxsServiceImpl")
+    public XemMosaicService npxsService() {
+        return new XemMosaicServiceImpl(
+                "NPXSXEM",
+                "NPXSXEM",
+                new MosaicIdDto("pundix", "npxs"),
+                1000000,
+                6,
+                new Supply(9000000000L),
+                0);
+    }
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
+@PropertySource("classpath:/merchants/payeer.properties")
 public class PayeerServiceImpl implements PayeerService {
 
   private @Value("${payeer.url}")

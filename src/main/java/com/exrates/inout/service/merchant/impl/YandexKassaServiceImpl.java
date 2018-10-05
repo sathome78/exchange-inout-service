@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Service
+@PropertySource("classpath:/merchants/yandex_kassa.properties")
 public class YandexKassaServiceImpl implements YandexKassaService {
 
     private @Value("${yandex_kassa.shopId}")

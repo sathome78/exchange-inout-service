@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
+@PropertySource("classpath:/merchants/okpay.properties")
 public class OkPayServiceImpl implements OkPayService {
 
     private @Value("${okpay.ok_receiver}")

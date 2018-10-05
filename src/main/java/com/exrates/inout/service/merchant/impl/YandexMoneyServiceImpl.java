@@ -50,6 +50,7 @@ import static com.squareup.okhttp.MediaType.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 @Service("yandexMoneyService")
+@PropertySource("classpath:/merchants/yandexmoney.properties")
 public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     private @Value("${yandexmoney.clientId}")

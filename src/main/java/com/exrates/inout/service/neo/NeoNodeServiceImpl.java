@@ -20,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @Log4j2(topic = "neo_log")
+@PropertySource("classpath:/merchants/neo.properties")
 public class NeoNodeServiceImpl implements NeoNodeService {
 
     @Autowired

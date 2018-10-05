@@ -18,18 +18,13 @@ import java.util.Optional;
 public class NotificatorsServiceImpl implements NotificatorsService {
 
 
-
-    private final NotificatorsDao notificatorsDao;
-    private final NotificatorPriceDao notificatorPriceDao;
-
-    private final Map<String, NotificatorService> notificatorsMap;
-
     @Autowired
-    public NotificatorsServiceImpl(NotificatorsDao notificatorsDao, NotificatorPriceDao notificatorPriceDao, Map<String, NotificatorService> notificatorsMap) {
-        this.notificatorsDao = notificatorsDao;
-        this.notificatorPriceDao = notificatorPriceDao;
-        this.notificatorsMap = notificatorsMap;
-    }
+    private NotificatorsDao notificatorsDao;
+    @Autowired
+    private NotificatorPriceDao notificatorPriceDao;
+    @Autowired
+    private Map<String, NotificatorService> notificatorsMap;
+
 
     public NotificatorService getNotificationService(Integer notificatorId) {
         Notificator notificator = Optional.ofNullable(this.getById(notificatorId))

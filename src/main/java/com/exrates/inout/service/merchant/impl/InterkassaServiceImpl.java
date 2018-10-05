@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
+@PropertySource("classpath:/merchants/interkassa.properties")
 public class InterkassaServiceImpl implements InterkassaService {
 
     private @Value("${interkassa.url}")
