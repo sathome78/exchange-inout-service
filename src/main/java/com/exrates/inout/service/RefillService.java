@@ -115,4 +115,8 @@ public interface RefillService {
     List<RefillRequestAddressDto> findByAddressMerchantAndCurrency(String address, int id, int id1);
 
     Optional<String> getLastBlockHashForMerchantAndCurrency(Integer merchantId, Integer currencyId);
+
+    Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantTransactionId(String address, String merchantTransactionId, String merchantName, String currencyName);
+
+    List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int merchantId);
 }

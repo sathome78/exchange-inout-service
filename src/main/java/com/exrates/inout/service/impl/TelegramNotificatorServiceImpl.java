@@ -20,17 +20,12 @@ import java.util.Optional;
 @Log4j2(topic = "message_notify")
 @Component("telegramNotificatorServiceImpl")
 public class TelegramNotificatorServiceImpl implements NotificatorService, Subscribable {
-
-    private final TelegramSubscriptionDao subscribtionDao;
-    private final UserService userService;
-    private final TelegramBotService telegramBotService;
-
     @Autowired
-    public TelegramNotificatorServiceImpl(TelegramSubscriptionDao subscribtionDao, UserService userService, TelegramBotService telegramBotService) {
-        this.subscribtionDao = subscribtionDao;
-        this.userService = userService;
-        this.telegramBotService = telegramBotService;
-    }
+    private  TelegramSubscriptionDao subscribtionDao;
+    @Autowired
+    private  UserService userService;
+    @Autowired
+    private  TelegramBotService telegramBotService;
 
 
     @Transactional

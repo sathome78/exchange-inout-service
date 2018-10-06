@@ -3,20 +3,30 @@ spring:
     hikari:
       password: root
       username: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
+      driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
   profiles:
     active: container
   redis:
-    host: 172.10.10.236
+      host: 172.10.10.236
     port: 6379
   application:
     name: input_output_api
 server:
   port: 8080
+
+slave:
+  datasource:
+    hikari:
+      password: root
+      username: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      connection-test-query: SELECT 1 FROM DUAL
+      driver-class-name: com.mysql.jdbc.Driver
 
 eureka:
   client:
@@ -25,13 +35,6 @@ eureka:
   instance:
     prefer-ip-address: true
 
-slave:
-  datasource:
-    hikari:
-      password: root
-      username: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
-      connection-test-query: SELECT 1 FROM DUAL
 
 mail:
   mail_support:
@@ -47,7 +50,7 @@ mail:
     user: Currency
     password: PsQhkDq7dB8Zn3qAserRTw
   mail_info:
-    host: smtp.mandrillapp.com
+    host: smtp.gmail.com
     port: 587
     protocol: smtp
     user: exrates.dev@gmail.com
@@ -76,18 +79,53 @@ session:
 invoice:
   blockNotifyUsers: true
 
+advcash:
+  url: https://wallet.advcash.com/sci/
+  accountId: exratesnew@gmail.com
+  payeeName: Exrates
+  paymentSuccess: http://dev.exrates.tech/merchants/advcash/payment/success
+  paymentFailure: http://dev.exrates.tech/merchants/advcash/payment/failure
+  paymentStatus: https://exrates.me/merchants/advcash/payment/status
+  USDAccount: U143527856819
+  EURAccount: E971693091461
+  payeePassword: s3Jb8$P69o
+  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;193.93.79.99;
+
+perfectmoney:
+  url: https://perfectmoney.is/api/step1.asp
+  accountId: S404847
+  accountPass: 66RwHvFG
+  payeeName: Exrates
+  paymentSuccess: http://193.93.79.99:9000/merchants/perfectmoney/payment/success
+  paymentFailure: http://193.93.79.99:9000/merchants/perfectmoney/payment/failure
+  paymentStatus: http://193.93.79.99:9000/merchants/perfectmoney/payment/status
+  USDAccount: U16666480
+  EURAccount: E15714655
+  alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
+  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;78.41.203.75;
+
+referral:
+  url: localhost:8080/register?ref=
+
+btcInvoice:
+  blockNotifyUsers: true
+
+upload:
+  userFilesDir: c:/Users/Public/upload/
+  userFilesLogicalDir: /userFiles
 
 ban:
   short:
     attempts:
-      num:
-      period:
-    time:
+      num: 3
+      period: 60
+    time: 60
   long:
     attempts:
-      num:
-      period:
-    time:
+      num: 6
+      period: 3000
+    time: 300
 
-referral:
-  url: localhost:8080/register?ref=
+stellar:
+  slt:
+    emitter: GC7Q4726KHPFK3LNMCSYJZ3YT7A2BFMGKEQYRLLTA2TSODUK3HBK2MOB

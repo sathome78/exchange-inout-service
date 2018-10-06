@@ -91,4 +91,9 @@ public interface RefillRequestDao {
     List<RefillRequestAddressDto> findByAddressMerchantAndCurrency(String address, int merchantId, int currencyId);
 
     Optional<String> getLastBlockHashForMerchantAndCurrency(Integer merchantId, Integer currencyId);
+
+    Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantTransactionId(String address, String merchantTransactionId, Integer merchantId, Integer currencyId);
+
+    List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId);
+
 }

@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -24,6 +25,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
@@ -32,6 +34,10 @@ import static java.util.Optional.of;
 
 @Repository
 public class RefillRequestDaoImpl implements RefillRequestDao {
+
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final Logger log = LogManager.getLogger("refill");
 
@@ -894,6 +900,51 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantTransactionId(String address, String merchantTransactionId, Integer merchantId, Integer currencyId) {
+        String sql = "SELECT RR.id, RR.merchant_transaction_id, RRA.address, RR.amount, RR.date_creation,  " +
+                "                 RR.status_modification_date, RRS.name AS status_name, USER.email " +
+                " FROM REFILL_REQUEST_ADDRESS RRA" +
+                "   LEFT JOIN REFILL_REQUEST RR ON (RRA.id = RR.refill_request_address_id AND RR.merchant_transaction_id = :merchant_transaction_id) " +
+                "   LEFT JOIN REFILL_REQUEST_STATUS RRS ON (RRS.id = RR.status_id) " +
+                "   JOIN USER ON USER.id = RRA.user_id" +
+                " WHERE RRA.merchant_id = :merchant_id " +
+                "       AND RRA.currency_id = :currency_id " +
+                "       AND RRA.address = :address";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("address", address);
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+            put("merchant_transaction_id", merchantTransactionId);
+        }};
+        try {
+            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, params, (rs, row) -> {
+                RefillRequestBtcInfoDto dto = new RefillRequestBtcInfoDto();
+                dto.setId(rs.getInt("id"));
+                dto.setAddress(rs.getString("address"));
+                dto.setTxId(rs.getString("merchant_transaction_id"));
+                dto.setAmount(rs.getBigDecimal("amount"));
+                Timestamp dateCreation = rs.getTimestamp("date_creation");
+                Timestamp dateModification = rs.getTimestamp("status_modification_date");
+                dto.setDateCreation(dateCreation == null ? null : dateCreation.toLocalDateTime());
+                dto.setDateModification(dateModification == null ? null : dateModification.toLocalDateTime());
+                dto.setStatus(rs.getString("status_name"));
+                dto.setUserEmail(rs.getString("email"));
+                return dto;
+            }));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId) {
+        String sql = "SELECT RR.currency_id FROM REFILL_REQUEST RR " +
+                " JOIN MERCHANT M ON M.id=RR.merchant_id " +
+                " WHERE M.tokens_parrent_id = ? AND RR.status_id = 6";
+        return jdbcTemplate.queryForList(sql, Integer.class, parentTokenId);
     }
 }
 

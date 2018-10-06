@@ -865,4 +865,17 @@ public class RefillServiceImpl implements RefillService {
         return refillRequestDao.getLastBlockHashForMerchantAndCurrency(merchantId, currencyId);
     }
 
+    @Override
+    public Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantTransactionId(String address, String merchantTransactionId, String merchantName, String currencyName) {
+        Integer merchantId = merchantService.findByName(merchantName).getId();
+        Integer currencyId = currencyService.findByName(currencyName).getId();
+        return refillRequestDao.findRefillRequestByAddressAndMerchantTransactionId(address, merchantTransactionId, merchantId, currencyId);
+    }
+
+    @Override
+    public List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId) {
+
+        return refillRequestDao.getUnconfirmedTxsCurrencyIdsForTokens(parentTokenId);
+
+    }
 }
