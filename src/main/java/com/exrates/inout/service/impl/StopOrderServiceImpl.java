@@ -16,7 +16,6 @@ import com.exrates.inout.exceptions.NotCreatableOrderException;
 import com.exrates.inout.exceptions.OrderCancellingException;
 import com.exrates.inout.exceptions.StopOrderNoConditionException;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.impl.TransactionDescription;
 import com.exrates.inout.util.Cache;
 import com.exrates.inout.util.CacheData;
 import lombok.extern.log4j.Log4j2;

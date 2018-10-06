@@ -5,6 +5,7 @@ import com.exrates.inout.domain.enums.OrderStatus;
 import com.exrates.inout.domain.main.CurrencyPair;
 import com.exrates.inout.domain.main.ExOrder;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

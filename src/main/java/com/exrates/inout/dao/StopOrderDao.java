@@ -11,6 +11,7 @@ import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.OrderStatus;
 import com.exrates.inout.domain.main.CurrencyPair;
 import com.exrates.inout.domain.main.PagingData;
+
 import java.util.List;
 import java.util.Locale;
 

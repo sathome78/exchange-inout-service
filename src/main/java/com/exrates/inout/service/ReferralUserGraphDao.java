@@ -3,6 +3,7 @@ package com.exrates.inout.service;
 import com.exrates.inout.domain.dto.RefFilterData;
 import com.exrates.inout.domain.dto.ReferralInfoDto;
 import com.exrates.inout.domain.dto.ReferralProfitDto;
+
 import java.util.List;
 
 public interface ReferralUserGraphDao {

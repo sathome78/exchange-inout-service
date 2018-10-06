@@ -2,6 +2,7 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.OperationType;
 import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Data

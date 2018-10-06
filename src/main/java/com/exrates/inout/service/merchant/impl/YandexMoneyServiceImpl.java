@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
-import static com.squareup.okhttp.MediaType.*;
+import static com.squareup.okhttp.MediaType.parse;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 @Service("yandexMoneyService")

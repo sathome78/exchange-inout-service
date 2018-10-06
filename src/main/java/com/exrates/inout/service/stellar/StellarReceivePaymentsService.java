@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;

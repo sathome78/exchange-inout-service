@@ -8,9 +8,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.PUT_FOR_AUTO;
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.PUT_FOR_CONFIRM;
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.PUT_FOR_MANUAL;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
 
 @Log4j2
 public enum WithdrawStatusEnum implements InvoiceStatus {

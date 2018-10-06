@@ -1,6 +1,5 @@
 package com.exrates.inout.service;
 
-import com.exrates.inout.domain.ReferralLevel;
 import com.exrates.inout.domain.dto.UpdateUserDto;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
 import com.exrates.inout.domain.enums.TokenType;
