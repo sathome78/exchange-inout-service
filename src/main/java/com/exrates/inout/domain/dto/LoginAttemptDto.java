@@ -14,7 +14,7 @@ import java.util.LinkedList;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class LoginAttemptDto {
+public class    LoginAttemptDto {
     private String ip;
     private Deque<LocalDateTime> attempts;
     private boolean wasInShortBan = false;

@@ -2,9 +2,11 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.OrderStatus;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 public class OrderDetailDto {
     private int orderId;
     private OrderStatus orderStatus;
@@ -31,47 +33,5 @@ public class OrderDetailDto {
         this.companyWalletId = companyWalletId;
         this.companyCommission = companyCommission;
     }
-
-    /*getters setters*/
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public BigDecimal getOrderCreatorReservedAmount() {
-        return orderCreatorReservedAmount;
-    }
-
-    public int getOrderCreatorReservedWalletId() {
-        return orderCreatorReservedWalletId;
-    }
-
-    public int getTransactionId() {
-        return transactionId;
-    }
-
-    public OperationType getTransactionType() {
-        return transactionType;
-    }
-
-    public BigDecimal getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public int getUserWalletId() {
-        return userWalletId;
-    }
-
-    public int getCompanyWalletId() {
-        return companyWalletId;
-    }
-
-    public BigDecimal getCompanyCommission() {
-        return companyCommission;
-    }
-};
+}
 

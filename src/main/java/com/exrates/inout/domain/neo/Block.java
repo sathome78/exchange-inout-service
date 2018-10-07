@@ -2,15 +2,12 @@ package com.exrates.inout.domain.neo;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Block {
     private String hash;

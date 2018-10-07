@@ -7,9 +7,8 @@ import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,9 +17,8 @@ import java.util.Map;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.WITHDRAW;
 
-@Getter
-@Setter
-@ToString
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class WithdrawRequestsAdminTableDto extends OnlineTableDto {
     private Integer id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)

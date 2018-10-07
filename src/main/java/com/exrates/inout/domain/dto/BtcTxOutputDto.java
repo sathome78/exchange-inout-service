@@ -1,16 +1,12 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.Objects;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@ToString
 public class BtcTxOutputDto {
     private final String txId;
     private final Integer vout;

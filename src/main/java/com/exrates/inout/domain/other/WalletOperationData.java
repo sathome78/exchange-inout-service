@@ -4,15 +4,11 @@ import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.main.Commission;
 import com.exrates.inout.domain.main.Transaction;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class WalletOperationData {
 
     private OperationType operationType;

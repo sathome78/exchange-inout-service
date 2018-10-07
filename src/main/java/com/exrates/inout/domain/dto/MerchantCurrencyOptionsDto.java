@@ -1,19 +1,10 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * Created by OLEG on 28.11.2016.
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class MerchantCurrencyOptionsDto {
     private Integer merchantId;
     private Integer currencyId;

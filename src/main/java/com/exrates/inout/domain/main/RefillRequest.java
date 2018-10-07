@@ -1,14 +1,12 @@
 package com.exrates.inout.domain.main;
 
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public class RefillRequest {
     private int id;
     private String address;

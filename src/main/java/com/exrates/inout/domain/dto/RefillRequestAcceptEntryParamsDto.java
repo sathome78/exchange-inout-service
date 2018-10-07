@@ -1,14 +1,10 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class RefillRequestAcceptEntryParamsDto {
     private Integer requestId;
     private BigDecimal amount;

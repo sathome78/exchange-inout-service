@@ -2,18 +2,14 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
+
+@Data
 public class RefillRequestCreateDto {
     private Integer id;
     private Integer userId;

@@ -2,11 +2,13 @@ package com.exrates.inout.domain;
 
 import com.exrates.inout.domain.dto.ReportGroupUserRole;
 import com.exrates.inout.domain.dto.UserGroupBalanceDto;
+import lombok.Data;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
 public class UserGroupBalanceDtoRowMapper implements RowMapper<UserGroupBalanceDto> {
     @Override
     public UserGroupBalanceDto mapRow(ResultSet rs, int i) throws SQLException {

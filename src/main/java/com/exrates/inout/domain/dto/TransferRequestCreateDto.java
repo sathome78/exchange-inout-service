@@ -3,20 +3,14 @@ package com.exrates.inout.domain.dto;
 import com.exrates.inout.domain.enums.invoice.TransferStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.util.BigDecimalProcessing;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
 import static com.exrates.inout.domain.enums.ActionType.ADD;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
+@Data
 public class TransferRequestCreateDto {
     private Integer id;
     private Integer userId;

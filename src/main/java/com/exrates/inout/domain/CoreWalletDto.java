@@ -1,18 +1,14 @@
 package com.exrates.inout.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 import java.util.Locale;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Log4j2(topic = "bitcoin_core")
 public class CoreWalletDto {
     private int id;

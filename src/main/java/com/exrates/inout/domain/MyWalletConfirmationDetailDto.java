@@ -1,8 +1,8 @@
 package com.exrates.inout.domain;
 
-/**
- * Created by Valk
- */
+import lombok.Data;
+
+@Data
 public class MyWalletConfirmationDetailDto {
     private String amount;
     private String commission;

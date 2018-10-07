@@ -3,9 +3,11 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class Notification {
     private Long id;
     @JsonIgnore

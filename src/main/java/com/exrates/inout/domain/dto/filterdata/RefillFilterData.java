@@ -1,19 +1,13 @@
 package com.exrates.inout.domain.dto.filterdata;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.exrates.inout.domain.dto.filterdata.FilterDataItem.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class RefillFilterData extends TableFilterData {
     private Integer requestId;
     private List<Integer> currencyIds;

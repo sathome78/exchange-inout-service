@@ -1,7 +1,10 @@
 package com.exrates.inout.domain.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class OrderCommissionsDto {
     private BigDecimal sellCommission;
     private BigDecimal buyCommission;

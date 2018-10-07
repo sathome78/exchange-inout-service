@@ -2,9 +2,11 @@ package com.exrates.inout.domain.main;
 
 
 import com.exrates.inout.util.BigDecimalProcessing;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 public class Wallet {
 
     private int id;

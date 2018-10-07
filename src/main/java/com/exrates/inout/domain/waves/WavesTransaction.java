@@ -1,13 +1,9 @@
 package com.exrates.inout.domain.waves;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WavesTransaction {
 

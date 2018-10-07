@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
-
 public class Currency {
 
     private int id;
@@ -12,9 +11,6 @@ public class Currency {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
-
-    public Currency() {
-    }
 
     public Currency(int id) {
         this.id = id;

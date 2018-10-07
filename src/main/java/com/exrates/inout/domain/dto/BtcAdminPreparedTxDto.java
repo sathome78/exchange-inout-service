@@ -3,15 +3,13 @@ package com.exrates.inout.domain.dto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@ToString
+@Data
 public class BtcAdminPreparedTxDto {
     private static final BigDecimal BTC_KB_TO_SAT_BYTE_MULTIPLIER = BigDecimal.valueOf(100_000);
 

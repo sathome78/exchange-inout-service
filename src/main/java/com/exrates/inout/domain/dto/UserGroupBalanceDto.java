@@ -1,12 +1,13 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class UserGroupBalanceDto {
     private int curId;
     private String currency;

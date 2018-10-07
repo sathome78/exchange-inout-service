@@ -1,15 +1,13 @@
 package com.exrates.inout.domain.neo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NeoTransaction {
     private String txid;
@@ -18,3 +16,4 @@ public class NeoTransaction {
     private Integer confirmations;
     private String blockhash;
 }
+

@@ -7,9 +7,7 @@ import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,9 +16,7 @@ import java.util.Map;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class RefillRequestsAdminTableDto extends OnlineTableDto {
     private Integer id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)

@@ -5,16 +5,12 @@ import com.exrates.inout.util.BigDecimalToDoubleSerializer;
 import com.exrates.inout.util.LocalDateTimeToLongSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class OrderHistoryItem {
     @JsonProperty("order_id")
     private Integer orderId;

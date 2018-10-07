@@ -2,13 +2,9 @@ package com.exrates.inout.domain.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BtcPaymentResultDto {
     private String txId;
@@ -16,9 +12,6 @@ public class BtcPaymentResultDto {
 
     public BtcPaymentResultDto(String txId) {
         this.txId = txId;
-    }
-
-    public BtcPaymentResultDto() {
     }
 
     public BtcPaymentResultDto(Exception e) {

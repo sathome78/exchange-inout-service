@@ -1,12 +1,8 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class MerchantCurrencyBasicInfoDto {
     private Integer merchantId;
     private String merchantName;

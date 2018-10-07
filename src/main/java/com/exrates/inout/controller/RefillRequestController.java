@@ -210,9 +210,7 @@ public class RefillRequestController {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({
-            InvalidAccountException.class,
-    })
+    @ExceptionHandler({InvalidAccountException.class})
     @ResponseBody
     public ErrorInfo ForbiddenExceptionHandler(HttpServletRequest req, InvalidAccountException exception) {
         log.error(exception);

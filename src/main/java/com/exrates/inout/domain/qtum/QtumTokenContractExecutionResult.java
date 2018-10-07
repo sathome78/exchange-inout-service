@@ -1,13 +1,12 @@
 package com.exrates.inout.domain.qtum;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+
+@Data
 @AllArgsConstructor
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QtumTokenContractExecutionResult {
     private String output; // tokenBalance

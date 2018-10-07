@@ -1,17 +1,13 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.function.Predicate;
 
 @Builder
-@Getter
-@Setter
-@ToString
+@Data
 public class RefillRequestAcceptDto {
     private Integer requestId;
     private Integer merchantId;

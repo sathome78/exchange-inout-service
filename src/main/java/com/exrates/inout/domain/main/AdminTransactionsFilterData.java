@@ -3,10 +3,7 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.dto.filterdata.FilterDataItem;
 import com.exrates.inout.domain.dto.filterdata.TableFilterData;
 import com.exrates.inout.domain.enums.TransactionType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,10 +15,7 @@ import java.util.stream.Collectors;
 import static com.exrates.inout.domain.dto.filterdata.FilterDataItem.DATE_FORMAT;
 import static com.exrates.inout.domain.dto.filterdata.FilterDataItem.IN_FORMAT;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class AdminTransactionsFilterData extends TableFilterData {
     private Integer status;
     private List<TransactionType> types;

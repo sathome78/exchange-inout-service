@@ -13,9 +13,6 @@ public class Payment {
     private String recipient;
     private OperationType operationType;
 
-    public Payment() {
-    }
-
     public Payment(OperationType operationType) {
         this.operationType = operationType;
     }

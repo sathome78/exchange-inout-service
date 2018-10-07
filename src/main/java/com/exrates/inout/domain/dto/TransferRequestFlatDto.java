@@ -4,16 +4,12 @@ import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.TransferStatusEnum;
 import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class TransferRequestFlatDto {
     private int id;
     private BigDecimal amount;

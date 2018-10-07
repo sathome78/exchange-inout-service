@@ -1,15 +1,11 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class OrderValidationDto {
   private Map<String, Object> errors = new HashMap<>();
   private Map<String, Object[]> errorParams = new HashMap<>();

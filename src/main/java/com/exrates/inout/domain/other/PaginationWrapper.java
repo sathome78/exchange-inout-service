@@ -1,12 +1,10 @@
 package com.exrates.inout.domain.other;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@ToString
+@Data
 public class PaginationWrapper<E extends List> {
     private E data;
     private int totalCount;

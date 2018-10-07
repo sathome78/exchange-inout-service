@@ -1,13 +1,10 @@
 package com.exrates.inout.domain.dto.filterdata;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class FilterDataItem {
 
     private static final String DEFAULT_FORMAT = ":%s";

@@ -4,15 +4,11 @@ import com.exrates.inout.domain.enums.OrderType;
 import com.exrates.inout.util.BigDecimalToDoubleSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class OrderBookItem {
 
     @JsonIgnore

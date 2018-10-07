@@ -2,16 +2,12 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class RefillRequestFlatDto extends RequestWithRemarkAbstractDto {
     private int id;
     private String address;

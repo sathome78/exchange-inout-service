@@ -2,17 +2,13 @@ package com.exrates.inout.domain;
 
 import com.exrates.inout.domain.dto.filterdata.FilterDataItem;
 import com.exrates.inout.domain.dto.filterdata.TableFilterData;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 import static com.exrates.inout.domain.dto.filterdata.FilterDataItem.DATE_FORMAT;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class AdminOrderFilterData extends TableFilterData {
 
     private Integer currencyPairId;

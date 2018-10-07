@@ -1,15 +1,11 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class BtcPreparedTransactionDto {
     private Map<String, BigDecimal> payments;
     private BigDecimal feeAmount;

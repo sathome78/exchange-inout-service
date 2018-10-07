@@ -2,13 +2,11 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Data
 public class CryptoAddressDto {
 
     private Integer merchantId;

@@ -1,13 +1,10 @@
 package com.exrates.inout.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+
+@Data
 public class TransferResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String message;

@@ -1,19 +1,15 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class WalletsForOrderCancelDto {
-    int orderId;
-    int orderStatusId;
-    BigDecimal reservedAmount;
-    int walletId;
-    BigDecimal activeBalance;
-    BigDecimal reservedBalance;
+    private int orderId;
+    private int orderStatusId;
+    private BigDecimal reservedAmount;
+    private int walletId;
+    private BigDecimal activeBalance;
+    private BigDecimal reservedBalance;
 }

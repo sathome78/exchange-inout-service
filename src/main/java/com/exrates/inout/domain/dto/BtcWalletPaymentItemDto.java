@@ -1,14 +1,12 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
 public class BtcWalletPaymentItemDto {
     private String address;
     private BigDecimal amount;

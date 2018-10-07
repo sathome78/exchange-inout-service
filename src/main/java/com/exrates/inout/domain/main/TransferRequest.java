@@ -2,16 +2,12 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.domain.dto.TransferRequestCreateDto;
 import com.exrates.inout.domain.enums.invoice.TransferStatusEnum;
-import lombok.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@Data
 public class TransferRequest {
     private Integer id;
     private Integer userId;

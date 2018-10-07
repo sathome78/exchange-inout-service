@@ -1,14 +1,10 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class CandleDto {
     private long time;
     private BigDecimal close;
@@ -16,9 +12,6 @@ public class CandleDto {
     private BigDecimal high;
     private BigDecimal low;
     private BigDecimal volume;
-
-    public CandleDto() {
-    }
 
     public CandleDto(CandleChartItemDto candleChartItemDto) {
         this.time = candleChartItemDto.getBeginDate().getTime();

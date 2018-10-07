@@ -1,14 +1,9 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
-/**
- * Created by ValkSam on 24.03.2017.
- */
-@Getter
-@ToString
+@Data
 @Builder
 public class WithdrawMerchantOperationDto {
   private String currency;

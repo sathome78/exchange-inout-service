@@ -1,7 +1,10 @@
 package com.exrates.inout.domain.other;
 
+import lombok.Data;
+
 import javax.validation.constraints.NotNull;
 
+@Data
 public class WithdrawData {
     @NotNull
     private String recipientBankName;

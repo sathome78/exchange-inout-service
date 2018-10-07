@@ -1,15 +1,11 @@
 package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class WithdrawRequestPostDto {
   private int id;
   private String wallet;

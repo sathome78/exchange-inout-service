@@ -1,16 +1,12 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 @Builder
-@ToString
 public class BtcPaymentFlatDto {
   private BigDecimal amount;
   private Integer confirmations;

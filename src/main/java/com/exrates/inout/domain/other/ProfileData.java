@@ -1,10 +1,10 @@
 package com.exrates.inout.domain.other;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Getter
+@Data
 public class ProfileData {
     private static final Logger profileLog = LogManager.getLogger("profile");
 

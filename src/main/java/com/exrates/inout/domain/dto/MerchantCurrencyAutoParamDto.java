@@ -1,16 +1,10 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class MerchantCurrencyAutoParamDto {
     private Boolean withdrawAutoEnabled;
     private Integer withdrawAutoDelaySeconds;

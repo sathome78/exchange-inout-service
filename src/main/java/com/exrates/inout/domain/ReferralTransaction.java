@@ -3,7 +3,9 @@ package com.exrates.inout.domain;
 import com.exrates.inout.domain.enums.ReferralTransactionStatusEnum;
 import com.exrates.inout.domain.main.ExOrder;
 import com.exrates.inout.domain.main.Transaction;
+import lombok.Data;
 
+@Data
 public class ReferralTransaction {
 
     private int id;

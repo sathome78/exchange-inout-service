@@ -1,15 +1,11 @@
 package com.exrates.inout.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class TransferMerchantApiDto {
     private Integer merchantId;
     private String name;

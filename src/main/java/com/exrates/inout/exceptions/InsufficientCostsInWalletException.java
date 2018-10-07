@@ -9,11 +9,7 @@ public class InsufficientCostsInWalletException extends MerchantException {
   public InsufficientCostsInWalletException(String message) {
     super(message);
   }
-  
-  public InsufficientCostsInWalletException(String message, Throwable cause) {
-    super(message, cause);
-  }
-  
+
   public InsufficientCostsInWalletException(Throwable cause) {
     super(cause);
   }

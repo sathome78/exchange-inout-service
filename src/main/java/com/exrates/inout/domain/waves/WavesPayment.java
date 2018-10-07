@@ -1,10 +1,8 @@
 package com.exrates.inout.domain.waves;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class WavesPayment {
     private String assetId;
     private String sender;

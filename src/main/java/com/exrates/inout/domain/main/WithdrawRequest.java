@@ -2,19 +2,12 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
-import lombok.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * @author Denis Savin (pilgrimm333@gmail.com)
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@Data
 public class WithdrawRequest {
     private Integer id;
     private String wallet;

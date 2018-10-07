@@ -2,16 +2,12 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class OrderInfoDto {
     private int id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)

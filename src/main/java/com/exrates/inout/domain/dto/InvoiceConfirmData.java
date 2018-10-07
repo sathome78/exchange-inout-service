@@ -1,17 +1,11 @@
 package com.exrates.inout.domain.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class InvoiceConfirmData extends RequestWithRemarkAbstractDto {
     @NotNull
     private Integer invoiceId;

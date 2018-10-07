@@ -13,8 +13,6 @@ import java.util.stream.Stream;
 @Setter
 public class OrdersCommissionSummaryDto {
     private Integer orderNum;
-    //wolper 19.04.18
-    //currency id added
     private int pairId;
     private String currencyPairName;
     private String currencyAccountingName;

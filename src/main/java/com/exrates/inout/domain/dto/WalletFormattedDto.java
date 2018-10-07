@@ -1,17 +1,11 @@
 package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.main.Wallet;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
 public class WalletFormattedDto {
   private Integer id;
   private String name;
@@ -23,9 +17,6 @@ public class WalletFormattedDto {
   private BigDecimal reserveWithdraw;
   private BigDecimal activeBalance;
   private BigDecimal reservedBalance;
-
-  public WalletFormattedDto() {
-  }
 
   public WalletFormattedDto(Wallet wallet) {
     this.id = wallet.getId();

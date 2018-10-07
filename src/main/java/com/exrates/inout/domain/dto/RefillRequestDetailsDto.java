@@ -5,10 +5,7 @@ import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.util.LocalDateTimeToLongSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,10 +14,7 @@ import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class RefillRequestDetailsDto {
 
     private Integer id;

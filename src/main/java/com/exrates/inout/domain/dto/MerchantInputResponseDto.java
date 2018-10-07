@@ -1,13 +1,9 @@
 package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.MerchantApiResponseType;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class MerchantInputResponseDto {
     private MerchantApiResponseType type;
     private String walletNumber;

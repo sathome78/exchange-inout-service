@@ -1,7 +1,10 @@
 package com.exrates.inout.domain;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class ReferralLevel {
 
     private int id;
