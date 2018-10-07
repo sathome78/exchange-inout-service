@@ -123,9 +123,6 @@ public class TokenScheduler {
         return jobs;
     }
 
-    /**
-     * deletes all jobs related with token through userId and token type
-     */
     public List<JobKey> deleteJobsRelatedWithToken(TemporalToken token) {
         List<JobKey> jobs = null;
         try {

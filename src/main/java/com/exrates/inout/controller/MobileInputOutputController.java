@@ -37,7 +37,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
-import static com.exrates.inout.domain.enums.OperationType.USER_TRANSFER;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREATE_BY_USER;
 import static com.exrates.inout.exceptions.entity.ErrorCode.*;
 import static org.springframework.http.HttpStatus.*;
@@ -350,36 +349,11 @@ public class MobileInputOutputController {
                 .orElseThrow(InvalidAmountException::new);
         RefillStatusEnum beginStatus = (RefillStatusEnum) RefillStatusEnum.X_STATE.nextState(CREATE_BY_USER);
         RefillRequestCreateDto refillRequest = new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, userLocale);
-        final Map<String, Object> result = refillService.createRefillRequest(refillRequest);
-        return result;
+        return refillService.createRefillRequest(refillRequest);
     }
 
     private String getAuthenticatedUserEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
-
-    // TODO temporary disable
-    // @RequestMapping(value = "/transfer/submit", method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public TransferResponseDto submitTransfer(@RequestBody TransferRequestParamsDto requestParamsDto) {
-        requestParamsDto.setOperationType(USER_TRANSFER);
-        Locale userLocale = userService.getUserLocaleForMobile(SecurityContextHolder.getContext().getAuthentication().getName());
-        String userEmail = getAuthenticatedUserEmail();
-        TransferStatusEnum beginStatus = (TransferStatusEnum) TransferStatusEnum.getBeginState();
-        Payment payment = new Payment(requestParamsDto.getOperationType());
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum() == null ? 0 : requestParamsDto.getSum().doubleValue());
-        payment.setRecipient(requestParamsDto.getRecipient());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userEmail, userLocale)
-                .orElseThrow(InvalidAmountException::new);
-        TransferRequestCreateDto request = new TransferRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, userLocale);
-        Map<String, Object> result = transferService.createTransferRequest(request);
-        TransferResponseDto responseDto = new TransferResponseDto();
-        responseDto.setBalance((String) result.get("balance"));
-        responseDto.setMessage((String) result.get("message"));
-        responseDto.setHash((String) result.get("hash"));
-        return responseDto;
     }
 
     @RequestMapping(value = "/lastAddress", method = GET)
