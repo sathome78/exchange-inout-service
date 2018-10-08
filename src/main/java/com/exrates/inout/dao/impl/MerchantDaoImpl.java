@@ -306,25 +306,7 @@ public class MerchantDaoImpl implements MerchantDao {
         params.put("process_types", processTypes);
 
 
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            MerchantCurrencyOptionsDto dto = new MerchantCurrencyOptionsDto();
-            dto.setMerchantId(rs.getInt("merchant_id"));
-            dto.setCurrencyId(rs.getInt("currency_id"));
-            dto.setMerchantName(rs.getString("merchant_name"));
-            dto.setCurrencyName(rs.getString("currency_name"));
-            dto.setInputCommission(rs.getBigDecimal("merchant_input_commission"));
-            dto.setOutputCommission(rs.getBigDecimal("merchant_output_commission"));
-            dto.setTransferCommission(rs.getBigDecimal("merchant_transfer_commission"));
-            dto.setIsRefillBlocked(rs.getBoolean("refill_block"));
-            dto.setIsWithdrawBlocked(rs.getBoolean("withdraw_block"));
-            dto.setIsTransferBlocked(rs.getBoolean("transfer_block"));
-            dto.setMinFixedCommission(rs.getBigDecimal("merchant_fixed_commission"));
-            dto.setWithdrawAutoEnabled(rs.getBoolean("withdraw_auto_enabled"));
-            dto.setWithdrawAutoDelaySeconds(rs.getInt("withdraw_auto_delay_seconds"));
-            dto.setWithdrawAutoThresholdAmount(rs.getBigDecimal("withdraw_auto_threshold_amount"));
-            dto.setIsMerchantCommissionSubtractedForWithdraw(rs.getBoolean("subtract_merchant_commission_for_withdraw"));
-            return dto;
-        });
+        return namedParameterJdbcTemplate.query(sql, params, new MerchantCurrencyOptionsDto());
     }
 
     @Override
@@ -483,13 +465,7 @@ public class MerchantDaoImpl implements MerchantDao {
         String sql = "SELECT currency_id, merchant_id, refill_lifetime_hours " +
                 " FROM MERCHANT_CURRENCY " +
                 " WHERE refill_lifetime_hours > 0 ";
-        return jdbcTemplate.query(sql, (rs, i) -> {
-            MerchantCurrencyLifetimeDto result =  new MerchantCurrencyLifetimeDto();
-            result.setCurrencyId(rs.getInt("currency_id"));
-            result.setMerchantId(rs.getInt("merchant_id"));
-            result.setRefillLifetimeHours(rs.getInt("refill_lifetime_hours"));
-            return result;
-        });
+        return jdbcTemplate.query(sql, new MerchantCurrencyLifetimeDto());
     }
 
     @Override
@@ -503,13 +479,7 @@ public class MerchantDaoImpl implements MerchantDao {
             put("merchant_id", merchantId);
             put("currency_id", currencyId);
         }};
-        return namedParameterJdbcTemplate.queryForObject(sql, params, (rs, i) -> {
-            MerchantCurrencyLifetimeDto result =  new MerchantCurrencyLifetimeDto();
-            result.setCurrencyId(rs.getInt("currency_id"));
-            result.setMerchantId(rs.getInt("merchant_id"));
-            result.setRefillLifetimeHours(rs.getInt("refill_lifetime_hours"));
-            return result;
-        });
+        return namedParameterJdbcTemplate.queryForObject(sql, params, new MerchantCurrencyLifetimeDto());
     }
 
     @Override

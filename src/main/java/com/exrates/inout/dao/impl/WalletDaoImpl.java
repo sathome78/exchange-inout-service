@@ -1136,7 +1136,7 @@ public class WalletDaoImpl implements WalletDao {
             }
         }};
 
-        ArrayList<UserWalletSummaryDto> result = (ArrayList<UserWalletSummaryDto>) slaveJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<UserWalletSummaryDto>() {
+        return slaveJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<UserWalletSummaryDto>() {
             @Override
             public UserWalletSummaryDto mapRow(ResultSet rs, int rowNumber) throws SQLException {
                 UserWalletSummaryDto userWalletSummaryDto = new UserWalletSummaryDto();
@@ -1150,7 +1150,6 @@ public class WalletDaoImpl implements WalletDao {
                 return userWalletSummaryDto;
             }
         });
-        return result;
     }
 
     @Override
