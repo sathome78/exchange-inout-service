@@ -43,18 +43,9 @@ public class CompanyWalletDaoImpl implements CompanyWalletDao {
 
     public CompanyWallet findByCurrencyId(Currency currency) {
         final String sql = "SELECT * FROM  COMPANY_WALLET WHERE currency_id = :currencyId";
-        final Map<String, Integer> params = new HashMap<String, Integer>() {{
-            put("currencyId", currency.getId());
-        }};
-        final CompanyWallet companyWallet = new CompanyWallet();
+        final Map<String, Integer> params = new HashMap<String, Integer>() {{ put("currencyId", currency.getId()); }};
         try {
-            return jdbcTemplate.queryForObject(sql, params, (resultSet, i) -> {
-                companyWallet.setId(resultSet.getInt("id"));
-                companyWallet.setBalance(resultSet.getBigDecimal("balance"));
-                companyWallet.setCommissionBalance(resultSet.getBigDecimal("commission_balance"));
-                companyWallet.setCurrency(currency);
-                return companyWallet;
-            });
+            return jdbcTemplate.queryForObject(sql, params, new CompanyWallet());
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -75,7 +66,7 @@ public class CompanyWalletDaoImpl implements CompanyWalletDao {
         String sql = "UPDATE COMPANY_WALLET " +
                 " SET commission_balance = commission_balance - :amount" +
                 " WHERE id = :company_wallet_id ";
-        Map<String, Object> params = new HashMap<String, Object>(){{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("company_wallet_id", id);
             put("amount", amount);
         }};

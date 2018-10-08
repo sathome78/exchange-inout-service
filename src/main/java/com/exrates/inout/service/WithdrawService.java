@@ -19,22 +19,12 @@ public interface WithdrawService {
 
   void rejectError(int requestId, long timeoutInMinutes, String reasonCode);
 
-  void rejectError(int requestId, String reasonCode);
-
-  void rejectToReview(int requestId);
-
-  void autoPostWithdrawalRequest(WithdrawRequestPostDto withdrawRequest);
-
   @Transactional
   void finalizePostWithdrawalRequest(Integer requestId);
 
   void postWithdrawalRequest(int requestId, Integer requesterAdminId, String txHash);
 
   List<ClientBank> findClientBanksForCurrency(Integer currencyId);
-
-  List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(String startDate, String endDate, List<Integer> roleIdList, List<Integer> currencyList);
-
-  void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto);
 
   MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
@@ -54,18 +44,11 @@ public interface WithdrawService {
 
   void confirmWithdrawalRequest(int requestId, Integer requesterAdminId);
 
-  void setAllAvailableInPostingStatus();
-
-  List<WithdrawRequestPostDto> dirtyReadForPostByStatusList(InvoiceStatus status);
-
   Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
 
   boolean checkOutputRequestsLimit(int merchantId, String email);
 
   List<Integer> getWithdrawalStatistic(String startDate, String endDate);
-
-  @Transactional(readOnly = true)
-  List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 
   @Transactional(readOnly = true)
   Optional<Integer> getRequestIdByHashAndMerchantId(String hash, int merchantId);

@@ -1,10 +1,13 @@
 package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.util.BigDecimalProcessing;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class UserSummaryOrdersDto {
+public class UserSummaryOrdersDto implements RowMapper<UserSummaryOrdersDto> {
     private String userEmail;
     private String wallet;
     private String role;
@@ -92,5 +95,20 @@ public class UserSummaryOrdersDto {
 
     public void setAmountSellFee(BigDecimal amountSellFee) {
         this.amountSellFee = amountSellFee;
+    }
+
+    @Override
+    public UserSummaryOrdersDto mapRow(ResultSet rs, int i) throws SQLException {
+
+
+        UserSummaryOrdersDto userSummaryOrdersDto = new UserSummaryOrdersDto();
+        userSummaryOrdersDto.setUserEmail(rs.getString("email"));
+        userSummaryOrdersDto.setWallet(rs.getString("currency_name"));
+        userSummaryOrdersDto.setRole(rs.getString("role"));
+        userSummaryOrdersDto.setAmountBuy(rs.getBigDecimal("amount_buy"));
+        userSummaryOrdersDto.setAmountBuyFee(rs.getBigDecimal("amount_buy_fee"));
+        userSummaryOrdersDto.setAmountSell(rs.getBigDecimal("amount_sell"));
+        userSummaryOrdersDto.setAmountSellFee(rs.getBigDecimal("amount_sell_fee"));
+        return userSummaryOrdersDto;
     }
 }

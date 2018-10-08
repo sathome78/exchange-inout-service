@@ -70,26 +70,10 @@ public class UserServiceImpl implements UserService {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
-    public static String APP_NAME = "Exrates";
-
-    private final int USER_FILES_THRESHOLD = 3;
-
-    private final int USER_2FA_NOTIFY_DAYS = 6;
-
     private final Set<String> USER_ROLES = Stream.of(UserRole.values()).map(UserRole::name).collect(Collectors.toSet());
     private final UserRole ROLE_DEFAULT_COMMISSION = UserRole.USER;
 
     private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
-
-    private final static List<String> LOCALES_LIST = new ArrayList<String>() {{
-        add("EN");
-        add("RU");
-        add("CN");
-        add("ID");
-        add("AR");
-    }};
-
 
     @Transactional(rollbackFor = Exception.class)
     public boolean create(User user, Locale locale, String source) {

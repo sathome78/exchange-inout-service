@@ -87,27 +87,6 @@ public class WithdrawServiceImpl implements WithdrawService {
     private MerchantService merchantService;
 
     @Override
-    @Transactional
-    public void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto) {
-        merchantDao.setAutoWithdrawParamsByMerchantAndCurrency(
-                merchantCurrencyOptionsDto.getMerchantId(),
-                merchantCurrencyOptionsDto.getCurrencyId(),
-                merchantCurrencyOptionsDto.getWithdrawAutoEnabled(),
-                merchantCurrencyOptionsDto.getWithdrawAutoDelaySeconds(),
-                merchantCurrencyOptionsDto.getWithdrawAutoThresholdAmount());
-    }
-
-    @Override
-    @Transactional
-    public List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
-            String startDate,
-            String endDate,
-            List<Integer> roleIdList,
-            List<Integer> currencyList) {
-        return withdrawRequestDao.findAllByDateIntervalAndRoleAndCurrency(startDate, endDate, roleIdList, currencyList);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId) {
         return merchantDao.findAutoWithdrawParamsByMerchantAndCurrency(merchantId, currencyId);
@@ -406,76 +385,6 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Override
     @Transactional
-    public void rejectError(int requestId, String reasonCode) {
-        rejectError(requestId, 0, reasonCode);
-    }
-
-
-    @Override
-    @Transactional
-    public void rejectToReview(int requestId) {
-        WithdrawRequestFlatDto withdrawRequest = withdrawRequestDao.getFlatByIdAndBlock(requestId)
-                .orElseThrow(() -> new InvoiceNotFoundException(String.format("withdraw request id: %s", requestId)));
-        InvoiceStatus newStatus = withdrawRequest.getStatus().nextState(REJECT_TO_REVIEW);
-        withdrawRequestDao.setStatusById(requestId, newStatus);
-        Locale locale = new Locale(userService.getPreferedLang(withdrawRequest.getUserId()));
-        String title = messageSource.getMessage("withdraw.rejectReview.title", null, locale);
-        String message = messageSource.getMessage("withdraw.rejectReview.body", new Object[]{withdrawRequest.getId()}, locale);
-        notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT, title, message);
-    }
-
-
-    @Override
-    @Transactional
-    public void autoPostWithdrawalRequest(WithdrawRequestPostDto withdrawRequest) {
-        log.debug("Posting withdrawal: " + withdrawRequest);
-        IWithdrawable merchantService = (IWithdrawable) merchantServiceContext.getMerchantService(withdrawRequest.getMerchantServiceBeanName());
-        CommissionDataDto dto = commissionService
-                .normalizeAmountAndCalculateCommission(withdrawRequest.getUserId(), withdrawRequest.getAmount(), OperationType.OUTPUT,
-                        withdrawRequest.getCurrencyId(), withdrawRequest.getMerchantId(), withdrawRequest.getDestinationTag());
-        log.debug("Commission data: " + dto);
-        BigDecimal finalAmount = dto.getResultAmount();
-        log.debug("Final amount: " + BigDecimalProcessing.formatNoneComma(finalAmount, false));
-        WithdrawMerchantOperationDto withdrawMerchantOperation = WithdrawMerchantOperationDto.builder()
-                .currency(withdrawRequest.getCurrencyName())
-                .amount(finalAmount.toString())
-                .accountTo(withdrawRequest.getWallet())
-                .destinationTag(withdrawRequest.getDestinationTag())
-                .build();
-        log.debug("Withdraw merchant operation summary: " + withdrawMerchantOperation);
-        try {
-            log.debug("before post");
-            WithdrawRequestFlatDto withdrawRequestResult = postWithdrawal(withdrawRequest.getId(), null, merchantService.withdrawTransferringConfirmNeeded());
-            log.debug("before withdraw {}", merchantService.getClass().getName());
-            Map<String, String> transactionParams = merchantService.withdraw(withdrawMerchantOperation);
-            log.debug("withdrawed");
-            if (transactionParams != null) {
-                withdrawRequestDao.setHashAndParamsById(withdrawRequestResult.getId(), transactionParams);
-            }
-            /**/
-            if (withdrawRequestResult.getStatus().isSuccessEndStatus()) {
-                try {
-                    Locale locale = new Locale(userService.getPreferedLang(withdrawRequestResult.getUserId()));
-                    String title = messageSource.getMessage("withdrawal.posted.title", new Integer[]{withdrawRequest.getId()}, locale);
-                    String comment = messageSource.getMessage("merchants.withdrawNotification.".concat(withdrawRequestResult.getStatus().name()), new Integer[]{withdrawRequest.getId()}, locale);
-                    String userEmail = userService.getEmailById(withdrawRequestResult.getUserId());
-                    userService.addUserComment(WITHDRAW_POSTED, comment, userEmail, false);
-                    notificationService.notifyUser(withdrawRequestResult.getUserId(), NotificationEvent.IN_OUT, title, comment);
-                } catch (Exception e) {
-                    log.error("cant send notification on withdraw {}", e);
-                }
-            }
-        } catch (MerchantException e) {
-            log.error(e);
-            throw e;
-        } catch (Exception e) {
-            log.error(e);
-            throw new WithdrawRequestPostException(String.format("withdraw data: %s via merchant: %s", withdrawMerchantOperation.toString(), merchantService.toString()));
-        }
-    }
-
-    @Override
-    @Transactional
     public void finalizePostWithdrawalRequest(Integer requestId) {
         WithdrawRequestFlatDto withdrawRequest = withdrawRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new InvoiceNotFoundException(String.format("withdraw request id: %s", requestId)));
@@ -598,35 +507,12 @@ public class WithdrawServiceImpl implements WithdrawService {
         }
     }
 
-    @Override
-    @Transactional
-    public void setAllAvailableInPostingStatus() {
-        InvoiceActionTypeEnum action = HOLD_TO_POST;
-        List<Integer> invoiceRequestStatusIdList = WithdrawStatusEnum.getAvailableForActionStatusesList(action).stream()
-                .map(InvoiceStatus::getCode)
-                .collect(Collectors.toList());
-        WithdrawStatusEnum newStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getInvoiceStatusAfterAction(action);
-        withdrawRequestDao.setInPostingStatusByStatus(
-                newStatus.getCode(),
-                invoiceRequestStatusIdList);
-    }
 
-    @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    public List<WithdrawRequestPostDto> dirtyReadForPostByStatusList(InvoiceStatus status) {
-        return withdrawRequestDao.getForPostByStatusList(status.getCode());
-    }
 
     @Override
     @Transactional(readOnly = true)
     public boolean checkOutputRequestsLimit(int merchantId, String email) {
         return withdrawRequestDao.checkOutputRequests(merchantId, email);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses) {
-        return withdrawRequestDao.findRequestsByStatusAndMerchant(merchantId, statuses);
     }
 
     @Transactional(readOnly = true)

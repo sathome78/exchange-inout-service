@@ -17,13 +17,4 @@ public interface AlgorithmService {
 
     String base64Encode(String string);
 
-    String base64Decode(String string);
-
-    BigDecimal computeAmount(BigDecimal amount, BigDecimal commission, OperationType type);
-
-    BigDecimal computeCommission(BigDecimal amount, OperationType type);
-
-    BigDecimal fromSatoshi(String amount);
-
-    BigDecimal toBigDecimal(String value);
 }

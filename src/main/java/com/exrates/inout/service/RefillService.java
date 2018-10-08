@@ -97,11 +97,6 @@ public interface RefillService {
 
     List<RefillRequestFlatDto> getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(int merchantId, int currencyId);
 
-    Optional<Integer> getRequestIdByMerchantIdAndCurrencyIdAndHash(
-            Integer merchantId,
-            Integer currencyId,
-            String hash);
-
     List<RefillRequestAddressDto> findAllAddressesNeededToTransfer(int merchantId, int currencyId);
 
     List<RefillRequestFlatDto> getInExamineByMerchantIdAndCurrencyIdList(Integer merchantId, Integer currencyId);

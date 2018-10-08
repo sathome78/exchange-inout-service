@@ -2,10 +2,12 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.main.Wallet;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 public class WalletFormattedDto {
   private Integer id;
   private String name;

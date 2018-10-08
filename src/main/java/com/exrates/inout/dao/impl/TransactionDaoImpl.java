@@ -767,21 +767,9 @@ public  class TransactionDaoImpl implements TransactionDao {
             put("role_id_list", roleIdList);
             put("requester_user_id", requesterUserId);
         }};
-        return slaveJdbcTemplate.query(sql, namedParameters, (rs, idx) -> {
-            UserSummaryOrdersDto userSummaryOrdersDto = new UserSummaryOrdersDto();
-            userSummaryOrdersDto.setUserEmail(rs.getString("email"));
-            userSummaryOrdersDto.setWallet(rs.getString("currency_name"));
-            userSummaryOrdersDto.setRole(rs.getString("role"));
-            userSummaryOrdersDto.setAmountBuy(rs.getBigDecimal("amount_buy"));
-            userSummaryOrdersDto.setAmountBuyFee(rs.getBigDecimal("amount_buy_fee"));
-            userSummaryOrdersDto.setAmountSell(rs.getBigDecimal("amount_sell"));
-            userSummaryOrdersDto.setAmountSellFee(rs.getBigDecimal("amount_sell_fee"));
-            return userSummaryOrdersDto;
-        });
+        return slaveJdbcTemplate.query(sql, namedParameters,new UserSummaryOrdersDto());
     }
 
-
-    @Override
     public List<Transaction> getPayedRefTransactionsByOrderId(int orderId) {
         String sql = " SELECT TRANSACTION.*, CURRENCY.*, COMMISSION.*, COMPANY_WALLET.*, WALLET.* FROM TRANSACTION " +
                 "   JOIN REFERRAL_TRANSACTION RTX ON RTX.ID = TRANSACTION.source_id AND TRANSACTION.source_type = 'REFERRAL' " +

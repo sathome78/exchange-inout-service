@@ -19,13 +19,6 @@ public class Connector {
         this.URL = URL;
     }
 
-    /**
-     * Makes an HTTP request using POST method to the specified URL.
-     *
-     * @param params A map containing POST data in form of key-value pairs
-     * @return An HttpURLConnection object
-     * @throws IOException thrown if any I/O error occurred
-     */
     public static HttpURLConnection sendPostRequest(String requestURL, Map<String, String> params) throws IOException {
         java.net.URL url = new URL(requestURL);
         httpConn = (HttpURLConnection) url.openConnection();

@@ -46,11 +46,6 @@ public class TronServiceImpl implements TronService {
         this.messageSource = messageSource;
     }
 
-    @Override
-    public Set<String> getAddressesHEX() {
-        return addressesHEX;
-    }
-
     @PostConstruct
     private void init() {
         merchantId = merchantService.findByName(MERCHANT_NAME).getId();
@@ -74,43 +69,6 @@ public class TronServiceImpl implements TronService {
         }};
     }
 
-    @Override
-    public RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto) {
-        if (isTransactionDuplicate(dto.getHash(), currencyId, merchantId)) {
-            log.error("tron transaction allready received!!! {}", dto);
-            throw new RuntimeException("tron transaction allready received!!!");
-        }
-        RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
-                .address(dto.getAddressBase58())
-                .merchantId(merchantId)
-                .currencyId(currencyId)
-                .amount(new BigDecimal(dto.getAmount()))
-                .merchantTransactionId(dto.getHash())
-                .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
-                .build();
-        Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
-        requestAcceptDto.setRequestId(requestId);
-        return requestAcceptDto;
-    }
-
-    @Override
-    public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
-        try {
-            refillService.putOnBchExamRefillRequest(
-                    RefillRequestPutOnBchExamDto.builder()
-                            .requestId(requestAcceptDto.getRequestId())
-                            .merchantId(merchantId)
-                            .currencyId(currencyId)
-                            .address(requestAcceptDto.getAddress())
-                            .amount(requestAcceptDto.getAmount())
-                            .hash(requestAcceptDto.getMerchantTransactionId())
-                            .build());
-        } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
-        }
-    }
-
-    @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         String address = params.get("address");
         String hash = params.get("hash");

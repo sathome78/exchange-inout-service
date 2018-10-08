@@ -1,6 +1,7 @@
-package com.exrates.inout.service;
+package com.exrates.inout.service.impl;
 
 import com.exrates.inout.domain.ReferralLevel;
+import com.exrates.inout.service.ReferralLevelDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;

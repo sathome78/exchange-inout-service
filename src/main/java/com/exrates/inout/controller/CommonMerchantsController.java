@@ -144,8 +144,6 @@ public class CommonMerchantsController {
             modelAndView.addObject("minTransferSum", minTransferSum);
             modelAndView.addObject("scaleForCurrency", scaleForCurrency);
             modelAndView.addObject("merchantCurrencyData", merchantCurrencyData);
-     /* List<String> initialWarningCodeList = currencyService.getWarningForCurrency(currency.getId(), INITIAL_TRANSFER_CURRENCY_WARNING);
-      modelAndView.addObject("initialWarningCodeList", initialWarningCodeList);*/
             modelAndView.addObject("warningCodeList", warningCodeList);
             return modelAndView;
         } catch (Exception e) {

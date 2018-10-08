@@ -2,8 +2,10 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.domain.enums.OperationType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class Payment {
     private int currency;
     private int merchant;

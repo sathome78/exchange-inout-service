@@ -5,6 +5,5 @@ public class TransferRequestRevokeException extends RuntimeException {
         super(message);
     }
 
-    public TransferRequestRevokeException() {
-    }
+    public TransferRequestRevokeException(){}
 }

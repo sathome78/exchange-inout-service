@@ -28,10 +28,6 @@ public class TokenScheduler {
     private Scheduler scheduler = null;
     private static TokenScheduler tokenScheduler = null;
 
-    public static TokenScheduler getTokenScheduler() {
-        return tokenScheduler;
-    }
-
     @Autowired
     protected UserService userService;
 
@@ -59,9 +55,6 @@ public class TokenScheduler {
 
     private List<TemporalToken> tokens = new ArrayList<>();
 
-    /**
-     * collects all tokens and schedules job for it deleting when it expires
-     */
     public List<JobKey> initTrigers() {
         List<JobKey> jobsInQueue = getAllJobKeys();
         Integer jobsInQueueCount = jobsInQueue == null ? 0 : jobsInQueue.size();
@@ -100,16 +93,6 @@ public class TokenScheduler {
         return getAllJobKeys();
     }
 
-    public List<JobKey> reInitTriggers() {
-        LOGGER.error("expired token scheduler: start re init ");
-        try {
-            scheduler.unscheduleJobs(scheduler.getTriggerKeys(GroupMatcher.groupEquals(TRIGGER_GROUP)).stream().collect(Collectors.toList()));
-        } catch (SchedulerException e) {
-            LOGGER.error("error while token clean triggers re init " + e.getLocalizedMessage());
-        }
-        return initTrigers();
-    }
-
     public List<JobKey> getAllJobKeys() {
         List<JobKey> jobs = null;
         try {
@@ -122,25 +105,6 @@ public class TokenScheduler {
         }
         return jobs;
     }
-
-    public List<JobKey> deleteJobsRelatedWithToken(TemporalToken token) {
-        List<JobKey> jobs = null;
-        try {
-            jobs = scheduler.getJobKeys(GroupMatcher.groupEquals(TRIGGER_GROUP))
-                    .stream()
-                    .filter(e -> e.toString().contains(token.getUserId() + "::" + token.getTokenType().getTokenType()))
-                    .collect(Collectors.toList());
-            if (scheduler.deleteJobs(jobs)) {
-                LOGGER.debug(String.format("removed %s jobs in the token tracking scheduler : %s" + "\n" + "  in queue now %s jobs remain",
-                        jobs.size(), jobs, scheduler.getJobKeys(GroupMatcher.jobGroupEquals(TRIGGER_GROUP)).size()));
-            }
-        } catch (SchedulerException e) {
-            LOGGER.error("error while token jobs deleting: " + e.getLocalizedMessage());
-            jobs = null;
-        }
-        return jobs;
-    }
-
 
     @PreDestroy
     public void shutdown() {

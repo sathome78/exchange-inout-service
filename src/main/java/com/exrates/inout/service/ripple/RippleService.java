@@ -5,10 +5,6 @@ import com.exrates.inout.service.IWithdrawable;
 
 public interface RippleService extends IRefillable, IWithdrawable {
 
-    /*return: true if tx validated; false if not validated but validationin process,
-        throws Exception if declined*/
-    boolean checkSendedTransaction(String hash, String additionalParams);
-
     void onTransactionReceive(String hash, Integer destinationTag, String amount);
 
   @Override

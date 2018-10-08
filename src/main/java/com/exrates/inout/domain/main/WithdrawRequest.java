@@ -3,11 +3,13 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 public class WithdrawRequest {
     private Integer id;
     private String wallet;

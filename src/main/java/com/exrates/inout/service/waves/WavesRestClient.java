@@ -19,6 +19,4 @@ public interface WavesRestClient {
     List<WavesTransaction> getTransactionsForAddress(String address);
 
     Optional<WavesTransaction> getTransactionById(String id);
-
-    Long getAccountWavesBalance(String account);
 }

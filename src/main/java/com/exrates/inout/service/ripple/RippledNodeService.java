@@ -14,7 +14,5 @@ public interface RippledNodeService {
 
     JSONObject getAccountInfo(String accountName);
 
-    RippleAccount porposeAccount();
-
     JSONObject getServerState();
 }

@@ -57,13 +57,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
     public List<Currency> getCurrList() {
         String sql = "SELECT id, name FROM CURRENCY WHERE hidden IS NOT TRUE ";
         List<Currency> currList;
-        currList = jdbcTemplate.query(sql, (rs, row) -> {
-            Currency currency = new Currency();
-            currency.setId(rs.getInt("id"));
-            currency.setName(rs.getString("name"));
-            return currency;
-
-        });
+        currList = jdbcTemplate.query(sql, new Currency());
         return currList;
     }
 
@@ -122,8 +116,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 " WHERE CUR.hidden IS NOT TRUE " +
                 " ORDER BY CUR.id ";
         Map<String, Object> params = new HashMap<String, Object>() {{
-            put("user_id", userId);
-            put("operation_direction", operationDirection);
+            put("user_id", userId);put("operation_direction", operationDirection);
         }};
         return jdbcTemplate.query(sql, params, (rs, row) -> {
             UserCurrencyOperationPermissionDto dto = new UserCurrencyOperationPermissionDto();
@@ -173,17 +166,8 @@ public class CurrencyDaoImpl implements CurrencyDao {
 
     public MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId) {
         String sql = "SELECT id, max_scale_for_refill, max_scale_for_withdraw FROM CURRENCY WHERE id = :currency_id";
-        Map<String, Object> params = new HashMap<String, Object>() {{
-            put("currency_id", currencyId);
-        }};
-        return jdbcTemplate.queryForObject(sql, params, (rs, i) -> {
-            MerchantCurrencyScaleDto result = new MerchantCurrencyScaleDto();
-            result.setCurrencyId(rs.getInt("id"));
-            result.setMerchantId(null);
-            result.setScaleForRefill((Integer) rs.getObject("max_scale_for_refill"));
-            result.setScaleForWithdraw((Integer) rs.getObject("max_scale_for_withdraw"));
-            return result;
-        });
+        Map<String, Object> params = new HashMap<String, Object>() {{put("currency_id", currencyId);}};
+        return jdbcTemplate.queryForObject(sql, params, new MerchantCurrencyScaleDto());
     }
 
     public boolean isCurrencyIco(Integer currencyId) {
@@ -239,16 +223,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         namedParameters.put("currency_pair_id", currencyPairId);
         namedParameters.put("user_role_id", roleId);
         namedParameters.put("order_type_id", orderTypeId);
-        return jdbcTemplate.queryForObject(sql, namedParameters, (rs, rowNum) -> {
-            CurrencyPairLimitDto dto = new CurrencyPairLimitDto();
-            dto.setCurrencyPairId(rs.getInt("currency_pair_id"));
-            dto.setCurrencyPairName(rs.getString("currency_pair_name"));
-            dto.setMinRate(rs.getBigDecimal("min_rate"));
-            dto.setMaxRate(rs.getBigDecimal("max_rate"));
-            dto.setMinAmount(rs.getBigDecimal("min_amount"));
-            dto.setMaxAmount(rs.getBigDecimal("max_amount"));
-            return dto;
-        });
+        return jdbcTemplate.queryForObject(sql, namedParameters, new CurrencyPairLimitDto());
 
     }
 

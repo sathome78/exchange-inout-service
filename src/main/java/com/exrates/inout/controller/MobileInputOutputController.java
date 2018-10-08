@@ -146,29 +146,6 @@ public class MobileInputOutputController {
                 userLocale, 2) + " " + currencyService.getCurrencyName(flatDto.getCurrencyId())}, userLocale));
     }
 
-    // TODO temporary disable
-    // @RequestMapping(value="/withdraw", method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Map<String, String>> withdraw(@RequestBody @Valid WithdrawRequestParamsDto requestParamsDto) {
-
-
-        Payment payment = new Payment();
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum().doubleValue());
-        payment.setDestination(requestParamsDto.getDestination());
-        payment.setDestinationTag(requestParamsDto.getDestinationTag());
-        payment.setOperationType(OperationType.OUTPUT);
-
-        String userEmail = getAuthenticatedUserEmail();
-        Locale userLocale = userService.getUserLocaleForMobile(userEmail);
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userEmail, userLocale).orElseThrow(InvalidAmountException::new);
-        WithdrawStatusEnum beginStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getBeginState();
-        WithdrawRequestCreateDto withdrawRequestCreateDto = new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
-        Map<String, String> response = withdrawService.createWithdrawalRequest(withdrawRequestCreateDto, userLocale);
-        return new ResponseEntity<>(response, OK);
-
-    }
-
     @RequestMapping(value = "/preparePayment", method = POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public MerchantInputResponseDto preparePayment(@RequestBody @Valid RefillRequestParamsDto requestParamsDto, HttpServletRequest request) {
         String userEmail = getAuthenticatedUserEmail();

@@ -1,4 +1,4 @@
-package com.exrates.inout.service;
+package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.impl.TransactionDaoImpl;
 import com.exrates.inout.domain.ReferralLevel;
@@ -7,6 +7,7 @@ import com.exrates.inout.domain.dto.MyReferralDetailedDto;
 import com.exrates.inout.domain.enums.ReferralTransactionStatusEnum;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.main.Transaction;
+import com.exrates.inout.service.ReferralTransactionDao;
 import com.exrates.inout.util.BigDecimalProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

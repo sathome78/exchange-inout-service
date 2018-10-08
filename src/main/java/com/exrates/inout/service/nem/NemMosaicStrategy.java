@@ -8,9 +8,6 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Maks on 27.02.2018.
- */
 @Component
 public class NemMosaicStrategy {
 

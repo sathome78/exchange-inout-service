@@ -1,8 +1,9 @@
-package com.exrates.inout.service;
+package com.exrates.inout.service.impl;
 
 import com.exrates.inout.domain.dto.RefFilterData;
 import com.exrates.inout.domain.dto.ReferralInfoDto;
 import com.exrates.inout.domain.dto.ReferralProfitDto;
+import com.exrates.inout.service.ReferralUserGraphDao;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

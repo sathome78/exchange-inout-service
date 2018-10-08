@@ -25,8 +25,6 @@ public interface UserService {
 
     User findByNickname(String nickname);
 
-    List<UserFile> findUserDoc(int userId);
-
     boolean isGlobal2FaActive();
 
     boolean create(User user, Locale locale, String source);

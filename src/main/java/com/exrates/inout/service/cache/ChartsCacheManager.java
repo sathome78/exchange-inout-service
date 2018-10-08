@@ -67,10 +67,6 @@ public class ChartsCacheManager {
         return lastOnly ? cacheUnit.getLastData() : cacheUnit.getData();
     }
 
-    public String getPreparedData(int pairId, ChartTimeFrame timeFrame, boolean lastOnly) {
-        return prepareDataToSend(getData(pairId, timeFrame, lastOnly), pairId, timeFrame);
-    }
-
     private ChartsCacheInterface getRequiredCache(Integer pairId, ChartTimeFrame timeFrame) {
         return cacheMap.computeIfAbsent(pairId, p -> {
             Map<String, ChartCacheUnit> map = new ConcurrentHashMap<>();

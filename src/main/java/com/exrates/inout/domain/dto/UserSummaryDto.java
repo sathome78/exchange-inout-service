@@ -3,6 +3,7 @@ package com.exrates.inout.domain.dto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserSummaryDto {
   private String userNickname;
   private String userEmail;

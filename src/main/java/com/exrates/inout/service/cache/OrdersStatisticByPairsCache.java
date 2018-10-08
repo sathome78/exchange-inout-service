@@ -23,10 +23,6 @@ public class OrdersStatisticByPairsCache {
 
     @Autowired
     private OrderDao orderDao;
-    @Autowired
-    private CurrencyDao currencyDao;
-
-    private List<CurrencyPair> allPairs = new ArrayList<>();
 
     private List<ExOrderStatisticsShortByPairsDto> allStatsCachedList = new CopyOnWriteArrayList<>();
 
@@ -66,80 +62,4 @@ public class OrdersStatisticByPairsCache {
         }
     }
 
-    public List<ExOrderStatisticsShortByPairsDto> getAllPairsCahedList() {
-        log.info("get cache");
-        checkCache();
-        return allStatsCachedList;
-    }
-
-/*    public List<ExOrderStatisticsShortByPairsDto> getCachedList() {
-        log.info("get cache");
-        checkCache();
-        return cachedList;
-    }*/
-
-    public void setNeedUpdate(boolean newNeedUpdate) {
-        needUpdate.set(newNeedUpdate);
-    }
-
-    public List<ExOrderStatisticsShortByPairsDto> getCachedList() {
-        log.info("get cache");
-        if (needUpdate.get()) {
-            if (semaphore.tryAcquire()) {
-                updateCache();
-                barrier.reset();
-            } else {
-                try {
-                    barrier.await(10, TimeUnit.SECONDS);
-                } catch (Exception e) {
-                    barrier.reset();
-                }
-                /*LocalTime startTime = LocalTime.now();
-                while (needUpdate.get()) {
-                    if (startTime.until(LocalDateTime.now(),  ChronoUnit.SECONDS) > 10) {
-                        break;
-                    }
-                }*/
-            }
-        }
-        return cachedList;
-    }
-
-    private void checkCache() {
-        if (needUpdate.get()) {
-            if (semaphore.tryAcquire()) {
-                updateCache();
-                barrier.reset();
-            } else {
-                try {
-                    barrier.await(10, TimeUnit.SECONDS);
-                } catch (Exception e) {
-                    barrier.reset();
-                }
-            }
-        }
-    }
-
-    private void updateAllPairs() {
-        allStatsCachedList.clear();
-        allStatsCachedList.addAll(this.cachedList);
-        allPairs.forEach(pair -> {
-            boolean available = false;
-            for (ExOrderStatisticsShortByPairsDto order : this.cachedList) {
-                if (order.getCurrencyPairName().equals(pair.getName())) {
-                    available = true;
-                    break;
-                }
-            }
-            if (!available) {
-                ExOrderStatisticsShortByPairsDto dto = new ExOrderStatisticsShortByPairsDto();
-                dto.setCurrencyPairName(pair.getName());
-                dto.setNeedRefresh(true);
-                dto.setLastOrderRate(BigDecimal.ZERO.toPlainString());
-                dto.setPredLastOrderRate(BigDecimal.ZERO.toPlainString());
-                dto.setPercentChange(BigDecimal.ZERO.toPlainString());
-                allStatsCachedList.add(dto);
-            }
-        });
-    }
 }

@@ -2,7 +2,6 @@ package com.exrates.inout.service.tron;
 
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.RefillService;
@@ -32,8 +31,6 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
         this.tronService = tronService;
         this.refillService = refillService;
     }
-
-
 
     private @Value("${tron.mainAccountHEXAddress}")
     String MAIN_ADDRESS_HEX;
@@ -81,18 +78,11 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
         easyTransferByPrivate(dto.getPrivKey(), MAIN_ADDRESS_HEX, accountAmount);
     }
 
-    @Override
     public boolean checkIsTransactionConfirmed(String txHash) {
         JSONObject rawResponse = tronNodeService.getTransaction(txHash);
         return rawResponse.getBoolean("confirmed");
     }
 
-    @Override
-    public void processTransaction(TronReceivedTransactionDto p) {
-        processTransaction(p.getAddressBase58(), p.getHash(), p.getAmount());
-    }
-
-    @Override
     public void processTransaction(String address, String hash, String amount) {
         Map<String, String> map = new HashMap<>();
         map.put("address", address);
@@ -114,34 +104,5 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
             throw new RuntimeException("erro trnasfer to main account");
         }
     }
-
-
-    /*
-    interface CommonConstant {
-        byte ADD_PRE_FIX_BYTE_MAINNET = (byte) 0x41;   //41 + address
-        byte ADD_PRE_FIX_BYTE_TESTNET = (byte) 0xa0;   //a0 + address
-        int ADDRESS_SIZE = 21;
-    }
-
-    private static boolean addressValid(byte[] address) {
-        if (ArrayUtils.isEmpty(address)) {
-            log.warn("Warning: Address is empty !!");
-            return false;
-        }
-        if (address.length != CommonConstant.ADDRESS_SIZE) {
-            log.warn(
-                    "Warning: Address length need " + CommonConstant.ADDRESS_SIZE + " but " + address.length
-                            + " !!");
-            return false;
-        }
-        byte preFixbyte = address[0];
-        if (preFixbyte != CommonConstant.ADD_PRE_FIX_BYTE_MAINNET) {
-            log.warn("Warning: Address need prefix with " + CommonConstant.ADD_PRE_FIX_BYTE_MAINNET + " but "
-                            + preFixbyte + " !!");
-            return false;
-        }
-        //Other rule;
-        return true;
-    }*/
 
 }

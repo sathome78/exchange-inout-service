@@ -13,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Created by maks on 05.05.2017.
- */
 @Log4j2(topic = "ripple_log")
 @Service
 public class RippledNodeServiceImpl implements RippledNodeService {
@@ -143,19 +140,6 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         }
         log.debug("xrp_acc {}", response.getBody());
         return new JSONObject(response.getBody()).getJSONObject("result");
-    }
-
-    @Override
-    public RippleAccount porposeAccount() {
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, WALLET_PORPOSE_RPC, String.class);
-        if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
-            throw new RuntimeException("cant generate new address");
-        }
-        JSONObject responseBody = new JSONObject(response.getBody()).getJSONObject("result");
-        return RippleAccount.builder()
-                .name(responseBody.getString("account_id"))
-                .secret(responseBody.getString("master_seed"))
-                .build();
     }
 
     @Override

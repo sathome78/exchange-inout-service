@@ -50,10 +50,6 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
         this.companyWalletService = companyWalletService;
     }
 
-    public Object getSubscriptionByUserId(int userId) {
-        return subscriptionDao.getByUserId(userId);
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String sendMessageToUser(String userEmail, String message, String subject) throws MessageUndeliweredException {
         int userId = userService.getIdByEmail(userEmail);

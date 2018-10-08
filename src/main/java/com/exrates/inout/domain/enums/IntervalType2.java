@@ -4,9 +4,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 
-/**
- * Created by Valk on 27.04.2016.
- */
 public enum IntervalType2 {
     HOUR(ChronoUnit.HOURS, 3L, true, "H"),
     DAY(ChronoUnit.DAYS, 5L, true, "D"),
@@ -33,22 +30,9 @@ public enum IntervalType2 {
         return correspondingTimeUnit;
     }
 
-    public Long getChartRefreshInterval() {
-        return chartRefreshInterval;
-    }
-
-    public boolean isChartLazyUpdate() {
-        return chartLazyUpdate;
-    }
-
     public String getShortName() {
         return shortName;
     }
 
-    public static IntervalType2 fromShortName(String shortName) {
-        return Arrays.stream(IntervalType2.values()).filter(item -> item.getShortName().equals(shortName))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException(shortName));
-
-    }
 
 }

@@ -31,28 +31,10 @@ public class ExchangeRatesHolderImpl implements ExchangeRatesHolder {
         list.forEach(p-> ratesMap.put(p.getCurrencyPairId(), p));
     }
 
-    @Override
-    public void onRatesChange(Integer pairId, BigDecimal rate) {
-        System.out.println("set holder rates");
-        setRates(pairId, rate);
-    }
-
-    private synchronized void setRates(Integer pairId, BigDecimal rate) {
-        if (ratesMap.containsKey(pairId)) {
-            ExOrderStatisticsShortByPairsDto dto = ratesMap.get(pairId);
-            dto.setPredLastOrderRate(dto.getLastOrderRate());
-            dto.setLastOrderRate(rate.toPlainString());
-        } else {
-            ratesMap.put(pairId, orderDao.getOrderStatisticForSomePairs(Collections.singletonList(pairId)).get(0));
-        }
-    }
-
-    @Override
     public List<ExOrderStatisticsShortByPairsDto> getAllRates() {
         return new ArrayList<>(ratesMap.values());
     }
 
-    @Override
     public List<ExOrderStatisticsShortByPairsDto> getCurrenciesRates(List<Integer> id) {
         if (id == null || id.isEmpty()) {
             return Collections.emptyList();

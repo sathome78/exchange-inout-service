@@ -67,17 +67,10 @@ public class MerchantServiceImpl implements MerchantService {
     @Qualifier("bitcoinServiceImpl")
     private BitcoinService bitcoinService;
 
-    @Override
-    public List<Merchant> findAllByCurrency(Currency currency) {
-        return merchantDao.findAllByCurrency(currency.getId());
-    }
-
-    @Override
     public List<Merchant> findAll() {
         return merchantDao.findAll();
     }
 
-    @Override
     public String resolveTransactionStatus(final Transaction transaction, final Locale locale) {
         if (transaction.getSourceType() == TransactionSourceType.WITHDRAW) {
             WithdrawStatusEnum status = transaction.getWithdrawRequest().getStatus();
@@ -95,41 +88,6 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
-    @Override
-    public String sendDepositNotification(final String toWallet,
-                                          final String email,
-                                          final Locale locale,
-                                          final CreditsOperation creditsOperation,
-                                          final String depositNotification) {
-        final BigDecimal amount = creditsOperation
-                .getAmount()
-                .add(creditsOperation.getCommissionAmount());
-        final String sumWithCurrency = BigDecimalProcessing.formatSpacePoint(amount, false) + " " +
-                creditsOperation
-                        .getCurrency()
-                        .getName();
-        final String notification = messageSource.getMessage(depositNotification,
-                new Object[]{sumWithCurrency, toWallet},
-                locale);
-        final Email mail = new Email();
-        mail.setTo(email);
-        mail.setSubject(messageSource
-                .getMessage("merchants.depositNotification.header", null, locale));
-        mail.setMessage(notification);
-
-        try {
-      /* TODO temporary disable
-      notificationService.createLocalizedNotification(email, NotificationEvent.IN_OUT,
-          "merchants.depositNotification.header", depositNotification,
-          new Object[]{sumWithCurrency, toWallet});*/
-            sendMailService.sendInfoMail(mail);
-        } catch (MailException e) {
-            LOG.error(e);
-        }
-        return notification;
-    }
-
-    @Override
     public Merchant findById(int id) {
         return merchantDao.findById(id);
     }
@@ -197,11 +155,6 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
-        return merchantDao.findMerchantCurrencyOptions(processTypes);
-    }
-
-    @Override
     public Map<String, String> formatResponseMessage(CreditsOperation creditsOperation) {
         final OperationType operationType = creditsOperation.getOperationType();
         final String commissionPercent = creditsOperation
@@ -251,43 +204,6 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
-    @Override
-    public Map<String, String> formatResponseMessage(Transaction transaction) {
-        final CreditsOperation creditsOperation = new CreditsOperation.Builder()
-                .operationType(transaction.getOperationType())
-                .amount(transaction.getAmount())
-                .commissionAmount(transaction.getCommissionAmount())
-                .commission(transaction.getCommission())
-                .currency(transaction.getCurrency())
-                .build();
-        return formatResponseMessage(creditsOperation);
-
-    }
-
-    @Override
-    public void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw) {
-        merchantDao.toggleSubtractMerchantCommissionForWithdraw(merchantId, currencyId, subtractMerchantCommissionForWithdraw);
-    }
-
-    @Override
-    @Transactional
-    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
-        merchantDao.toggleMerchantBlock(merchantId, currencyId, operationType);
-    }
-
-    @Override
-    @Transactional
-    public void setBlockForAll(OperationType operationType, boolean blockStatus) {
-        merchantDao.setBlockForAllNonTransfer(operationType, blockStatus);
-    }
-
-    @Override
-    @Transactional
-    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
-        merchantDao.setBlockForMerchant(merchantId, currencyId, operationType, blockStatus);
-    }
-
-    @Override
     @Transactional
     public BigDecimal getMinSum(Integer merchantId, Integer currencyId) {
         return merchantDao.getMinSum(merchantId, currencyId);
@@ -301,15 +217,6 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
-    /*============================*/
-
-    @Override
-    @Transactional
-    public List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime() {
-        return merchantDao.findMerchantCurrencyWithRefillLifetime();
-    }
-
-    @Override
     @Transactional
     public MerchantCurrencyLifetimeDto getMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -317,7 +224,6 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantDao.findMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(merchantId, currencyId);
     }
 
-    @Override
     @Transactional
     public MerchantCurrencyScaleDto getMerchantCurrencyScaleByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -336,26 +242,6 @@ public class MerchantServiceImpl implements MerchantService {
         if (isBlocked) {
             throw new MerchantCurrencyBlockedException("Operation " + operationType + " is blocked for this currency! ");
         }
-    }
-
-    @Override
-    public List<String> retrieveBtcCoreBasedMerchantNames() {
-        return merchantDao.retrieveBtcCoreBasedMerchantNames();
-    }
-
-    @Override
-    public CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale) {
-        CoreWalletDto result = merchantDao.retrieveCoreWalletByMerchantName(merchantName).orElseThrow(() -> new MerchantNotFoundException(merchantName));
-        result.localizeTitle(messageSource, locale);
-        return result;
-    }
-
-    @Override
-    public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
-
-        List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
-        result.forEach(dto -> dto.localizeTitle(messageSource, locale));
-        return result;
     }
 
     @Override

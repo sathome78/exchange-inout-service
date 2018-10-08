@@ -9,31 +9,15 @@ import java.util.List;
 
 public interface UserRoleService {
 
-  List<UserRole> getRealUserRoleByBusinessRoleList(BusinessUserRoleEnum businessUserRoleEnum);
+    List<UserRole> getRealUserRoleByBusinessRoleList(BusinessUserRoleEnum businessUserRoleEnum);
 
-  List<Integer> getRealUserRoleIdByBusinessRoleList(BusinessUserRoleEnum businessUserRoleEnum);
+    List<Integer> getRealUserRoleIdByBusinessRoleList(BusinessUserRoleEnum businessUserRoleEnum);
 
-  String[] getRealUserRoleNameByBusinessRoleArray(BusinessUserRoleEnum businessUserRoleEnum);
+    List<UserRole> getRealUserRoleByGroupRoleList(GroupUserRoleEnum groupUserRoleEnum);
 
-  List<Integer> getRealUserRoleIdByBusinessRoleList(String businessUserRoleName);
+    List<Integer> getRealUserRoleIdByGroupRoleList(GroupUserRoleEnum groupUserRoleEnum);
 
-  List<UserRole> getRealUserRoleByGroupRoleList(GroupUserRoleEnum groupUserRoleEnum);
-
-  List<Integer> getRealUserRoleIdByGroupRoleList(GroupUserRoleEnum groupUserRoleEnum);
-
-  List<Integer> getRealUserRoleIdByGroupRoleList(String groupUserRoleName);
-
-  boolean isOrderAcceptionAllowedForUser(Integer userId);
+    boolean isOrderAcceptionAllowedForUser(Integer userId);
 
     UserRoleSettings retrieveSettingsForRole(Integer roleId);
-
-    List<UserRole> getRolesAvailableForChangeByAdmin();
-
-    List<UserRoleSettings> retrieveSettingsForAllRoles();
-
-    void updateSettingsForRole(UserRoleSettings settings);
-
-    List<UserRole> getRolesConsideredForPriceRangeComputation();
-
-  List<UserRole> getRolesUsingRealMoney();
 }

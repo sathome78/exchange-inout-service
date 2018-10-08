@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,18 +116,18 @@ public class SendMailServiceImpl implements SendMailService {
     private void sendMail(Email email, String fromAddress, JavaMailSender mailSender) {
         email.setFrom(fromAddress);
         try {
-//            mailSender.send(mimeMessage -> {
-//                MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-//                message.setFrom(email.getFrom());
-//                message.setTo(email.getTo());
-//                message.setSubject(email.getSubject());
-//                message.setText(email.getMessage(), true);
-//                if (email.getAttachments() != null) {
-//                    for (Email.Attachment attachment : email.getAttachments())
-//                        message.addAttachment(attachment.getName(), attachment.getResource(), attachment.getContentType());
-//                }
-//            });
-//            logger.info("Email sent: " + email);
+            mailSender.send(mimeMessage -> {
+                MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                message.setFrom(email.getFrom());
+                message.setTo(email.getTo());
+                message.setSubject(email.getSubject());
+                message.setText(email.getMessage(), true);
+                if (email.getAttachments() != null) {
+                    for (Email.Attachment attachment : email.getAttachments())
+                        message.addAttachment(attachment.getName(), attachment.getResource(), attachment.getContentType());
+                }
+            });
+            logger.info("Email sent: " + email);
         } catch (Exception e) {
             logger.error("Could not send email {}. Reason: {}", email, e.getMessage());
         }

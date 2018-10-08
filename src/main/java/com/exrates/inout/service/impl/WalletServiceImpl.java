@@ -56,12 +56,6 @@ public class WalletServiceImpl implements WalletService {
     private NotificationService notificationService;
     @Autowired
     private MessageSource messageSource;
-    @Autowired
-    private OrderService orderService;
-
-
-    @Autowired
-    private CryptoCurrencyBalances cryptoCurrencyBalances;
 
     @Override
     public void balanceRepresentation(final Wallet wallet) {
@@ -78,42 +72,6 @@ public class WalletServiceImpl implements WalletService {
         return wallets;
     }
 
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<WalletFormattedDto> getAllUserWalletsForAdminDetailed(Integer userId) {
-        return walletDao.getAllUserWalletsForAdminDetailed(userId,
-                WithdrawStatusEnum.getEndStatesSet().stream().map(InvoiceStatus::getCode).collect(Collectors.toList()),
-                WithdrawStatusEnum.getEndStatesSet().stream().filter(InvoiceStatus::isSuccessEndStatus).map(InvoiceStatus::getCode).collect(Collectors.toList()),
-                RefillStatusEnum.getEndStatesSet().stream().filter(InvoiceStatus::isSuccessEndStatus).map(InvoiceStatus::getCode).collect(Collectors.toList()));
-    }
-
-
-
-
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<MyWalletsDetailedDto> getAllWalletsForUserDetailed(CacheData cacheData,
-                                                                   String email, Locale locale) {
-        List<Integer> withdrawStatusIdForWhichMoneyIsReserved = WithdrawStatusEnum.getEndStatesSet().stream().map(InvoiceStatus::getCode).collect(Collectors.toList());
-        List<MyWalletsDetailedDto> result = walletDao.getAllWalletsForUserDetailed(email, withdrawStatusIdForWhichMoneyIsReserved, locale);
-        if (Cache.checkCache(cacheData, result)) {
-            result = new ArrayList<MyWalletsDetailedDto>() {{
-                add(new MyWalletsDetailedDto(false));
-            }};
-        }
-        return result;
-    }
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<MyWalletsStatisticsDto> getAllWalletsForUserReduced(CacheData cacheData, String email, Locale locale, CurrencyPairType type) {
-        List<CurrencyPair> pairList = currencyService.getAllCurrencyPairs(type);
-        Set<Integer> currencies = pairList.stream().map(p -> p.getCurrency2().getId()).collect(Collectors.toSet());
-        currencies.addAll(pairList.stream().map(p -> p.getCurrency1().getId()).collect(toSet()));
-        return walletDao.getAllWalletsForUserAndCurrenciesReduced(email, locale, currencies);
-    }
-
     @Override
     public int getWalletId(int userId, int currencyId) {
         return walletDao.getWalletId(userId, currencyId);
@@ -123,12 +81,6 @@ public class WalletServiceImpl implements WalletService {
     @Transactional(propagation = Propagation.NESTED)
     public BigDecimal getWalletABalance(int walletId) {
         return walletDao.getWalletABalance(walletId);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.NESTED)
-    public BigDecimal getWalletRBalance(int walletId) {
-        return walletDao.getWalletRBalance(walletId);
     }
 
     @Transactional(readOnly = true)
@@ -148,11 +100,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public int createNewWallet(Wallet wallet) {
         return walletDao.createNewWallet(wallet);
-    }
-
-    @Override
-    public int getUserIdFromWallet(int walletId) {
-        return walletDao.getUserIdFromWallet(walletId);
     }
 
     @Override
@@ -176,39 +123,12 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public void withdrawActiveBalance(final Wallet wallet, final BigDecimal sum) {
-        final BigDecimal newBalance = wallet.getActiveBalance().subtract(sum).setScale(decimalPlaces, ROUND_HALF_UP);
-        if (newBalance.compareTo(ZERO) < 0) {
-            throw new NotEnoughUserWalletMoneyException("Not enough money to withdraw on user wallet " +
-                    wallet.toString());
-        }
-        walletDao.addToWalletBalance(wallet.getId(), sum.negate(), BigDecimal.ZERO);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.NESTED)
-    public void depositReservedBalance(final Wallet wallet, final BigDecimal sum) {
-        wallet.setActiveBalance(wallet.getActiveBalance().subtract(sum).setScale(decimalPlaces, ROUND_HALF_UP));
-        if (wallet.getActiveBalance().compareTo(ZERO) < 0) {
-            throw new NotEnoughUserWalletMoneyException("Not enough money to withdraw on user wallet " + wallet);
-        }
-        walletDao.addToWalletBalance(wallet.getId(), sum.negate(), sum);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.NESTED)
     public void withdrawReservedBalance(final Wallet wallet, final BigDecimal sum) {
         wallet.setReservedBalance(wallet.getReservedBalance().subtract(sum).setScale(decimalPlaces, ROUND_HALF_UP));
         if (wallet.getReservedBalance().compareTo(ZERO) < 0) {
             throw new NotEnoughUserWalletMoneyException("Not enough money to withdraw on user wallet " + wallet);
         }
         walletDao.addToWalletBalance(wallet.getId(), BigDecimal.ZERO, sum.negate());
-    }
-
-    @Override
-    @Transactional
-    public WalletTransferStatus walletInnerTransfer(int walletId, BigDecimal amount, TransactionSourceType sourceType, int sourceId) {
-        return walletInnerTransfer(walletId, amount, sourceType, sourceId, null);
     }
 
     @Override
@@ -222,59 +142,7 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.walletBalanceChange(walletOperationData);
     }
 
-    @Override
-    public List<MyWalletConfirmationDetailDto> getWalletConfirmationDetail(Integer walletId, Locale locale) {
-        return walletDao.getWalletConfirmationDetail(walletId, locale);
-    }
 
-    @Override
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    public MyWalletsStatisticsApiDto getUserWalletShortStatistics(int walletId) {
-        return walletDao.getWalletShortStatistics(walletId);
-    }
-
-    /*
-     * Methods defined below are overloaded versions of dashboard info supplier methods.
-     * They are supposed to use with REST API which is stateless and cannot use session-based caching.
-     * */
-
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<MyWalletsDetailedDto> getAllWalletsForUserDetailed(String email, List<Integer> currencyIds, Locale locale) {
-        List<Integer> withdrawStatusIdForWhichMoneyIsReserved = WithdrawStatusEnum.getEndStatesSet().stream().map(InvoiceStatus::getCode).collect(Collectors.toList());
-        return walletDao.getAllWalletsForUserDetailed(email, currencyIds, withdrawStatusIdForWhichMoneyIsReserved, locale);
-    }
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<MyWalletsStatisticsDto> getAllWalletsForUserReduced(String email) {
-        return walletDao.getAllWalletsForUserReduced(email);
-    }
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<WalletBalanceDto> getBalancesForUser() {
-        String userEmail = userService.getUserEmailFromSecurityContext();
-        return walletDao.getBalancesForUser(userEmail);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void manualBalanceChange(Integer userId, Integer currencyId, BigDecimal amount, String adminEmail) {
-        if (amount.equals(BigDecimal.ZERO)) {
-            return;
-        }
-        Wallet wallet = walletDao.findByUserAndCurrency(userId, currencyId);
-        if (amount.signum() == -1 && amount.abs().compareTo(wallet.getActiveBalance()) > 0) {
-            throw new InvalidAmountException("Negative amount exceeds current balance!");
-        }
-        if (!isUserAllowedToManuallyChangeWalletBalance(adminEmail, wallet.getUser().getId())) {
-            throw new ForbiddenOperationException(String.format("admin: %s, wallet %s", adminEmail, wallet.getId()));
-        }
-        changeWalletActiveBalance(amount, wallet, OperationType.MANUAL, TransactionSourceType.MANUAL);
-
-    }
 
 
     private void changeWalletActiveBalance(BigDecimal amount, Wallet wallet, OperationType operationType,
@@ -386,25 +254,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    public List<UserWalletSummaryDto> getUsersWalletsSummaryForPermittedCurrencyList(Integer requesterUserId, List<Integer> roleIds) {
-        List<UserWalletSummaryDto> roleFilteredPaginData = walletDao.getUsersWalletsSummaryNew(requesterUserId, roleIds);
-
-        List<UserWalletSummaryDto> userWalletSummaryDtos = new ArrayList<>();
-        for (UserWalletSummaryDto item : roleFilteredPaginData) {
-            if (!userWalletSummaryDtos.contains(item)) {
-                userWalletSummaryDtos.add(new UserWalletSummaryDto(item));
-            } else {
-                UserWalletSummaryDto storedItem = userWalletSummaryDtos.stream().filter(e -> e.equals(item)).findAny().get();
-                storedItem.increment(item);
-            }
-        }
-        userWalletSummaryDtos.forEach(UserWalletSummaryDto::calculate);
-
-        return userWalletSummaryDtos;
-    }
-
-    @Override
     @Transactional
     public List<OrderDetailDto> getOrderRelatedDataAndBlock(int orderId) {
         return walletDao.getOrderRelatedDataAndBlock(orderId);
@@ -434,93 +283,8 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.isUserAllowedToManuallyChangeWalletBalance(userService.getIdByEmail(adminEmail), walletHolderUserId);
     }
 
-
-    @Override
-    public List<UserRoleTotalBalancesReportDto<ReportGroupUserRole>> getWalletBalancesSummaryByGroups() {
-        Supplier<Map<String, BigDecimal>> balancesMapSupplier = () -> Arrays.stream(ReportGroupUserRole.values())
-                .collect(toMap(Enum::name, val -> BigDecimal.ZERO));
-        return walletDao.getWalletBalancesSummaryByGroups().stream()
-                .collect(Collectors.groupingBy(UserGroupBalanceDto::getCurAndId)).entrySet().stream()
-
-                .map(entry -> new UserRoleTotalBalancesReportDto<>(entry.getKey().getCurrency(), entry.getKey().getId(), entry.getValue().stream()
-                        .collect(toMap(dto -> dto.getReportGroupUserRole().name(),
-                                UserGroupBalanceDto::getTotalBalance, (oldValue, newValue) -> newValue,
-                                balancesMapSupplier)), ReportGroupUserRole.class))
-                .sorted(comparing(dto -> dto.getCurId()))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public List<UserRoleTotalBalancesReportDto<ReportGroupUserRole>> getWalletBalancesSummaryByGroupId(int id) {
-        Supplier<Map<String, BigDecimal>> balancesMapSupplier = () -> Arrays.stream(ReportGroupUserRole.values())
-                .collect(toMap(Enum::name, val -> BigDecimal.ZERO));
-        return walletDao.getWalletBalancesSummaryByGroupsById(id).stream()
-                .collect(Collectors.groupingBy(UserGroupBalanceDto::getCurAndId)).entrySet().stream()
-
-                .map(entry -> new UserRoleTotalBalancesReportDto<>(entry.getKey().getCurrency(), entry.getKey().getId(), entry.getValue().stream()
-                        .collect(toMap(dto -> dto.getReportGroupUserRole().name(),
-                                UserGroupBalanceDto::getTotalBalance, (oldValue, newValue) -> newValue,
-                                balancesMapSupplier)), ReportGroupUserRole.class))
-                .sorted(comparing(dto -> dto.getCurId()))
-                .collect(Collectors.toList());
-
-    }
-
-
-    @Override
-    public List<UserRoleTotalBalancesReportDto<UserRole>> getWalletBalancesSummaryByRoles(List<UserRole> roles) {
-        return walletDao.getWalletBalancesSummaryByRoles(roles.stream().map(UserRole::getRole).collect(Collectors.toList()))
-                .stream()
-                //wolper 19.04.18
-                .collect(Collectors.groupingBy(UserRoleBalanceDto::getCurAndId)).entrySet().stream()
-                .map(entry -> new UserRoleTotalBalancesReportDto<>(entry.getKey().getCurrency(), entry.getKey().getId(), entry.getValue().stream()
-                        .collect(Collectors.toMap(dto -> dto.getUserRole().name(), UserRoleBalanceDto::getTotalBalance)), UserRole.class))
-                .sorted(comparing(dto -> dto.getCurId()))
-                .collect(Collectors.toList());
-    }
-
     @Override
     public int getWalletIdAndBlock(Integer userId, Integer currencyId) {
         return walletDao.getWalletIdAndBlock(userId, currencyId);
-    }
-
-
-    @Override
-    public List<ExternalWalletsDto> getExternalWallets() {
-        List<ExternalWalletsDto> externalWalletsDtos = walletDao.getExternalWallets();
-        Map<Integer, String> mapCryptoCurrencyBalances = cryptoCurrencyBalances.getBalances();
-
-        externalWalletsDtos.stream().forEach(w -> {
-            mapCryptoCurrencyBalances.forEach((k,v)-> {
-                if (w.getMerchantId().equals(k)){
-                    try {
-                        w.setMainWalletBalance(new BigDecimal(v));
-                    }catch (Exception e){
-                        log.error(e);
-                    }
-                }
-            });
-
-            try {
-                w.setMainWalletBalanceUSD(w.getRateUsdAdditional().multiply(w.getMainWalletBalance()));
-            }catch (Exception e){
-                log.error(e);
-            }
-
-            try {
-                w.setTotalWalletsBalance(w.getMainWalletBalance().add(w.getReservedWalletBalance()).add(w.getColdWalletBalance()));
-                w.setTotalWalletsBalanceUSD(w.getRateUsdAdditional().multiply(w.getTotalWalletsBalance()));
-
-            }catch (Exception e){
-                log.error(e);
-            }
-        });
-        return externalWalletsDtos;
-    }
-
-    @Override
-    public void updateExternalWallets(ExternalWalletsDto externalWalletsDto) {
-        walletDao.updateExternalWallets(externalWalletsDto);
     }
 }

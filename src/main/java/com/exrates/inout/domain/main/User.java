@@ -27,4 +27,14 @@ public class User {
     private UserRole role = UserRole.USER;
     private String parentEmail;
     private List<UserFile> userFiles = Collections.emptyList();
+
+
+    public String getIp() {
+        return ipaddress;
+    }
+
+    public void setIp(String ip) {
+        this.ipaddress = ip;
+    }
+
 }

@@ -49,12 +49,6 @@ public interface TronService extends IRefillable, IWithdrawable {
         return true;
     }
 
-    Set<String> getAddressesHEX();
-
-    RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto);
-
-    void putOnBchExam(RefillRequestAcceptDto requestAcceptDto);
-
     int getMerchantId();
 
     int getCurrencyId();

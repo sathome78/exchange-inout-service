@@ -92,12 +92,7 @@ public class StopOrderServiceImpl implements StopOrderService {
     public void proceedStopOrders(int pairId, NavigableSet<StopOrderSummaryDto> orders) {
            orders.forEach(p->{
                try {
-                   ordersExecutors.execute(new Runnable() {
-                       @Override
-                       public void run() {
-                           proceedStopOrderAndRemove(p.getOrderId());
-                       }
-                   });
+                   ordersExecutors.execute(() -> proceedStopOrderAndRemove(p.getOrderId()));
                } catch (Exception e) {
                    log.error("error processing stop order {}", e);
                }
@@ -186,53 +181,6 @@ public class StopOrderServiceImpl implements StopOrderService {
         return stopOrderDao.getOrderById(orderId, forUpdate);
     }
 
-    @Override
-    @TransactionalEventListener
-    public void onLimitOrderAccept(AcceptOrderEvent event) {
-        log.debug("orderAcceptedd");
-        ExOrder exOrder = (ExOrder) event.getSource();
-        ratesHolder.onRateChange(exOrder.getCurrencyPairId(), exOrder.getOperationType(), exOrder.getExRate());
-        checkExecutors.execute(() -> {
-            checkOrders(exOrder, OperationType.BUY);
-
-        });
-        checkExecutors.execute(() -> {
-            checkOrders(exOrder, OperationType.SELL);
-        });
-    }
-
-
-    /*check stop orders on order accepted and rates changed*/
-    private void checkOrders(ExOrder exOrder, OperationType operationType) {
-        try {
-            NavigableSet<StopOrderSummaryDto> result;
-            switch (operationType) {
-                case SELL: {
-                    synchronized (getLock(exOrder.getCurrencyPairId(), operationType)) {
-                        result = stopOrdersHolder.getSellOrdersForPairAndStopRate(exOrder.getCurrencyPairId(), exOrder.getExRate());
-                        log.debug("proc order result {}", result.size());
-                        if (!result.isEmpty()) {
-                            this.proceedStopOrders(exOrder.getCurrencyPairId(), result);
-                        }
-                        break;
-                    }
-                }
-                case BUY: {
-                    synchronized (getLock(exOrder.getCurrencyPairId(), operationType)) {
-                        result = stopOrdersHolder.getBuyOrdersForPairAndStopRate(exOrder.getCurrencyPairId(), exOrder.getExRate());
-                        log.debug("buy order result {}", result.size());
-                        if (!result.isEmpty()) {
-                            this.proceedStopOrders(exOrder.getCurrencyPairId(), result);
-                        }
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("cant check stop orders {}", e);
-        }
-    }
-
     private Object getLock(Integer currencyId, OperationType operationType) {
         switch (operationType) {
             case BUY: {
@@ -283,54 +231,6 @@ public class StopOrderServiceImpl implements StopOrderService {
         } catch (Exception e) {
             log.error("cant check stop orders on order create {}", e);
         }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<OrderWideListDto> getMyOrdersWithState(CacheData cacheData,
-                                                       String email, CurrencyPair currencyPair, OrderStatus status,
-                                                       OperationType operationType,
-                                                       String scope, Integer offset, Integer limit, Locale locale) {
-        List<OrderWideListDto> result = stopOrderDao.getMyOrdersWithState(email, currencyPair, status, operationType, scope, offset, limit, locale);
-        if (Cache.checkCache(cacheData, result)) {
-            result = new ArrayList<OrderWideListDto>() {{
-                add(new OrderWideListDto(false));
-            }};
-        }
-        return result;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<OrderWideListDto> getUsersStopOrdersWithStateForAdmin(String email, CurrencyPair currencyPair, OrderStatus status,
-                                                                      OperationType operationType,
-                                                                      Integer offset, Integer limit, Locale locale) {
-        return stopOrderDao.getMyOrdersWithState(email, currencyPair, status, operationType, null, offset, limit, locale);
-    }
-
-    @Override
-    @Transactional
-    public DataTable<List<OrderBasicInfoDto>> searchOrdersByAdmin(AdminStopOrderFilterData adminOrderFilterData, DataTableParams dataTableParams, Locale locale) {
-
-        PagingData<List<OrderBasicInfoDto>> searchResult = stopOrderDao.searchOrders(adminOrderFilterData, dataTableParams, locale);
-        DataTable<List<OrderBasicInfoDto>> output = new DataTable<>();
-        output.setData(searchResult.getData());
-        output.setRecordsTotal(searchResult.getTotal());
-        output.setRecordsFiltered(searchResult.getFiltered());
-        return output;
-    }
-
-    @Transactional
-    @Override
-    public OrderInfoDto getStopOrderInfo(int orderId, Locale locale) {
-        return stopOrderDao.getStopOrderInfo(orderId, locale);
-    }
-
-    @Override
-    public Object deleteOrderByAdmin(int id, Locale locale) {
-        OrderCreateDto orderCreateDto = this.getOrderById(id, true);
-        log.debug("order {}", orderCreateDto);
-        return this.cancelOrder(new ExOrder(orderCreateDto), locale);
     }
 
     @PreDestroy

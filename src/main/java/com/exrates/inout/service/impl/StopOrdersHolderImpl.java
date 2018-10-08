@@ -37,7 +37,6 @@ public class StopOrdersHolderImpl implements StopOrdersHolder {
             .thenComparing(StopOrderSummaryDto::getOrderId);
 
 
-    /*----methods-----*/
     @PostConstruct
     public void init() {
         List<CurrencyPair> currencyPairs = currencyService.getAllCurrencyPairs(CurrencyPairType.MAIN);

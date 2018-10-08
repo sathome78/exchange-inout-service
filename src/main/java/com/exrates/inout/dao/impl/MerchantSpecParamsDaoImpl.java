@@ -30,20 +30,12 @@ public class MerchantSpecParamsDaoImpl implements MerchantSpecParamsDao {
         params.put("merchant_name", merchantName);
         params.put("param_name", paramName);
         try {
-            return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
-                MerchantSpecParamDto dto = new MerchantSpecParamDto();
-                dto.setId(rs.getInt("id"));
-                dto.setMerchantId(rs.getInt("merchant_id"));
-                dto.setParamName(rs.getString("param_name"));
-                dto.setParamValue(rs.getString("param_value"));
-                return dto;
-            });
+            return jdbcTemplate.queryForObject(sql, params, new MerchantSpecParamDto());
         } catch (DataAccessException e) {
             return null;
         }
     }
 
-    @Override
     public MerchantSpecParamDto getByMerchantIdAndParamName(int merchantId, String paramName) {
         String sql = " SELECT MSP.* FROM MERCHANT_SPEC_PARAMETERS MSP " +
                 " INNER JOIN MERCHANT M ON M.id = MSP.merchant_id " +
@@ -52,20 +44,12 @@ public class MerchantSpecParamsDaoImpl implements MerchantSpecParamsDao {
         params.put("merchant_id", merchantId);
         params.put("param_name", paramName);
         try {
-            return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
-                MerchantSpecParamDto dto = new MerchantSpecParamDto();
-                dto.setId(rs.getInt("id"));
-                dto.setMerchantId(rs.getInt("merchant_id"));
-                dto.setParamName(rs.getString("param_name"));
-                dto.setParamValue(rs.getString("param_value"));
-                return dto;
-            });
+            return jdbcTemplate.queryForObject(sql, params, new MerchantSpecParamDto());
         } catch (DataAccessException e) {
             return null;
         }
     }
 
-    @Override
     public boolean updateParam(String merchantName, String paramName, String newValue) {
         String sql = " UPDATE MERCHANT_SPEC_PARAMETERS MSP " +
                 " INNER JOIN MERCHANT M ON M.id = MSP.merchant_id " +

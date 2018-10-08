@@ -63,7 +63,6 @@ public class TelegramSubscriptionDaoImpl implements TelegramSubscriptionDao {
         }
     }
 
-    @Override
     public void updateSubscription(TelegramSubscription subscribtion) {
         final String sql = " UPDATE TELEGRAM_SUBSCRIPTION " +
                 " SET code = :code, subscription_state = :subscription_state, user_account = :user_account, chat_id = :chat_id " +
@@ -77,7 +76,6 @@ public class TelegramSubscriptionDaoImpl implements TelegramSubscriptionDao {
         jdbcTemplate.update(sql, params);
     }
 
-    @Override
     public int create(TelegramSubscription subscription) {
         final String sql = " INSERT INTO TELEGRAM_SUBSCRIPTION (user_id, chat_id, subscription_state, user_account, code)" +
                 " VALUES (:user_id, :chat_id, :state, :user_account, :code) ";
