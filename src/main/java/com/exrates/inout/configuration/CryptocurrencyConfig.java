@@ -39,8 +39,10 @@ import org.nem.core.model.primitive.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import java.util.Map;
 
 @Log4j2(topic = "config")
 @Configuration
+@ComponentScan({"com.exrates.inout.service"})
 public class CryptocurrencyConfig {
 
     @Autowired
@@ -798,18 +801,20 @@ public class CryptocurrencyConfig {
     }
 */
     //NEO and Forks
-   /* @Bean(name = "neoServiceImpl")
+    @Bean(name = "neoServiceImpl")
     public NeoService neoService() {
+        System.out.println("merchant service " + merchantService);
         Merchant mainMerchant = merchantService.findByName(NeoAsset.NEO.name());
         Currency mainCurrency = currencyService.findByName(NeoAsset.NEO.name());
+        System.out.println("main curr " + mainCurrency);
         Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
             put(NeoAsset.NEO.getId(), new AssetMerchantCurrencyDto(NeoAsset.NEO, mainMerchant, mainCurrency));
             put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService.findByName(NeoAsset.GAS.name()), currencyService.findByName(NeoAsset.GAS.name())));
         }};
         return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/neo.properties");
-    }*/
+    }
 
-   /* @Bean(name = "kazeServiceImpl")
+    @Bean(name = "kazeServiceImpl")
     public NeoService kazeService() {
         Merchant mainMerchant = merchantService.findByName(NeoAsset.KAZE.name());
         Currency mainCurrency = currencyService.findByName(NeoAsset.KAZE.name());
@@ -818,7 +823,7 @@ public class CryptocurrencyConfig {
             put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService.findByName(NeoAsset.STREAM.name()), currencyService.findByName(NeoAsset.STREAM.name())));
         }};
         return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/kaze.properties");
-    }*/
+    }
 
     //    Qtum tokens:
     @Bean(name = "spcServiceImpl")
@@ -838,7 +843,7 @@ public class CryptocurrencyConfig {
     }
 
     //**** Monero ****/
-  /*  @Bean(name = "moneroServiceImpl")
+    @Bean(name = "moneroServiceImpl")
     public MoneroService moneroService() {
         return new MoneroServiceImpl("merchants/monero.properties",
                 "Monero", "XMR", 10, 12);
@@ -854,7 +859,7 @@ public class CryptocurrencyConfig {
     public MoneroService sumoService() {
         return new MoneroServiceImpl("merchants/sumokoin.properties",
                 "SUMO", "SUMO", 10, 9);
-    }*/
+    }
 
     /***tokens based on xem mosaic)****/
     @Bean(name = "dimCoinServiceImpl")

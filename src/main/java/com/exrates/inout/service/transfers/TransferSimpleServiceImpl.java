@@ -1,7 +1,6 @@
 package com.exrates.inout.service.transfers;
 
 import com.exrates.inout.domain.dto.TransferRequestCreateDto;
-import com.exrates.inout.service.merchant.TransferSimpleService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

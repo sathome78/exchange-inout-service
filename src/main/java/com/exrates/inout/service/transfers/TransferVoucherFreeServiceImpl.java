@@ -2,7 +2,6 @@ package com.exrates.inout.service.transfers;
 
 import com.exrates.inout.domain.dto.TransferRequestCreateDto;
 import com.exrates.inout.service.AlgorithmService;
-import com.exrates.inout.service.merchant.TransferVoucherFreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

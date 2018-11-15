@@ -12,8 +12,6 @@ import com.exrates.inout.exceptions.RefillRequestGeneratingAdditionalAddressNotA
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.WithdrawService;
-import com.exrates.inout.service.merchant.IotaService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import jota.IotaAPI;
 import jota.model.Transfer;

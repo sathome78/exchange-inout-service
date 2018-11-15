@@ -10,6 +10,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ajet
  */
+@Log4j2(topic = "monero.log")
 public class MoneroServiceImpl implements MoneroService {
 
     private MoneroWallet wallet;
@@ -84,8 +86,6 @@ public class MoneroServiceImpl implements MoneroService {
 
     private static final int INTEGRATED_ADDRESS_DIGITS = 16;
 
-    private Logger log;
-
     public MoneroServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer decimals) {
 
         Properties props = new Properties();
@@ -101,7 +101,6 @@ public class MoneroServiceImpl implements MoneroService {
             this.currencyName = currencyName;
             this.minConfirmations = minConfirmations;
             this.decimals = decimals;
-            this.log = LogManager.getLogger(props.getProperty("monero.log"));
         } catch (IOException e) {
             log.error(e);
         }
@@ -171,7 +170,7 @@ public class MoneroServiceImpl implements MoneroService {
         merchant = merchantService.findByName(merchantName);
 
         ADDRESSES = refillService.findAllAddresses(merchant.getId(), currency.getId());
-
+        System.out.println("init monero");
         if (MODE.equals("main")){
             log.info(merchantName + " starting...");
             try {

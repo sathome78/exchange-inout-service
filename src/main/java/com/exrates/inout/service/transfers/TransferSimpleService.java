@@ -1,4 +1,4 @@
-package com.exrates.inout.service.merchant;
+package com.exrates.inout.service.transfers;
 
 import com.exrates.inout.domain.enums.TransferProcessTypeEnum;
 import com.exrates.inout.service.ITransferable;
