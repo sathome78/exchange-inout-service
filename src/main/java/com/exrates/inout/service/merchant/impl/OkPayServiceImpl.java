@@ -13,6 +13,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.OkPayService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -61,6 +62,9 @@ public class OkPayServiceImpl implements OkPayService {
 
     @Autowired
     private RefillService refillService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -159,5 +163,11 @@ public class OkPayServiceImpl implements OkPayService {
         }
 
         return returnResponse.equals("VERIFIED");
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

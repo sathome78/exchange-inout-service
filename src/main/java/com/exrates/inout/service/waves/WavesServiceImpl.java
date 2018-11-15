@@ -11,6 +11,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.SendMailService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.ParamMapUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class WavesServiceImpl implements WavesService {
 
     @Autowired
     private SendMailService sendMailService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private Integer minConfirmations;
     private String mainAccount;
@@ -323,7 +327,7 @@ public class WavesServiceImpl implements WavesService {
         payment.setRecipient(recipientAddress);
         payment.setAmount(unscaleToLong(amount, scale));
         payment.setFee(WAVES_DEFAULT_FEE);
-  //      payment.setFeeAssetId(assetId);
+        //      payment.setFeeAssetId(assetId);
         return restClient.transferCosts(payment);
     }
 
@@ -339,6 +343,13 @@ public class WavesServiceImpl implements WavesService {
     public void shutdown() {
         scheduler.shutdown();
     }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
+    }
+
 
     void initAssets(Properties wavesProps) {
         currencyBase = currencyService.findByName(currencyBaseName);

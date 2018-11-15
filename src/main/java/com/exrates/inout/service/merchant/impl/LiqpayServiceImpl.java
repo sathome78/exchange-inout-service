@@ -9,6 +9,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.LiqpayService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +50,9 @@ public class LiqpayServiceImpl implements LiqpayService {
 
   @Autowired
   private AlgorithmService algorithmService;
+
+  @Autowired
+  private WithdrawUtils withdrawUtils;
 
 
   @Transactional
@@ -159,5 +163,11 @@ public class LiqpayServiceImpl implements LiqpayService {
   @Override
   public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
     throw new NotImplimentedMethod("for " + params);
+  }
+
+  @Override
+  public boolean isValidDestinationAddress(String address) {
+
+    return withdrawUtils.isValidDestinationAddress(address);
   }
 }

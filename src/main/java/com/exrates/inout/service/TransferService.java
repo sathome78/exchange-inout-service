@@ -27,6 +27,9 @@ public interface TransferService {
 
     void revokeByAdmin(int requestId, Principal principal);
 
+    @Transactional(readOnly = true)
+    List<TransferRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
+
     TransferRequestFlatDto getFlatById(Integer id);
 
     Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale);

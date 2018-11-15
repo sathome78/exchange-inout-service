@@ -28,6 +28,8 @@ public interface WalletService {
 
     int createNewWallet(Wallet wallet);
 
+    int getUserIdFromWallet(int walletId);
+
     Wallet findByUserAndCurrency(User user, Currency currency);
 
     Wallet create(User user, Currency currency);

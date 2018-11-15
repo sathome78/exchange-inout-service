@@ -100,6 +100,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         return getFlatById(id);
     }
 
+    @Override
     public Optional<TransferRequestFlatDto> getFlatById(int id) {
         String sql = "SELECT TR.*, U1.email AS email, U2.email AS recipient_email, " +
                 "CU.name AS currency, M.name AS merchant_name " +
@@ -113,6 +114,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         return of(jdbcTemplate.queryForObject(sql, singletonMap("id", id), extendedTransferRequestFlatDtoRowMapper));
     }
 
+    @Override
     public Optional<TransferRequestFlatDto> getFlatByHashAndStatus(String hash, Integer requiredStatus, boolean block) {
         String sql = "SELECT * " +
                 " FROM TRANSFER_REQUEST " +
@@ -133,6 +135,8 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         return dto;
     }
 
+
+    @Override
     public void setStatusById(Integer id, InvoiceStatus newStatus) {
         final String sql = "UPDATE TRANSFER_REQUEST " +
                 "  SET status_id = :new_status_id, " +
@@ -144,6 +148,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         jdbcTemplate.update(sql, params);
     }
 
+    @Override
     public void setRecipientById(Integer id, Integer recipientId) {
         final String sql = "UPDATE TRANSFER_REQUEST " +
                 "  SET recipient_user_id = :recipient_id, " +
@@ -155,6 +160,21 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         jdbcTemplate.update(sql, params);
     }
 
+    @Override
+    public List<TransferRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId) {
+        String sql = "SELECT TRANSFER_REQUEST.* " +
+                " FROM TRANSFER_REQUEST " +
+                " WHERE TRANSFER_REQUEST.merchant_id = :merchant_id  AND TRANSFER_REQUEST.status_id IN (:statuses)";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("statuses", statusId);
+        }};
+        return jdbcTemplate.query(sql, params, (rs, i) -> {
+            return transferRequestFlatDtoRowMapper.mapRow(rs, i);
+        });
+    }
+
+    @Override
     public void setHashById(Integer id, Map<String, String> params) {
         final String sql = "UPDATE TRANSFER_REQUEST " +
                 "  SET hash = :hash " +
@@ -165,6 +185,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         jdbcTemplate.update(sql, sqlParams);
     }
 
+    @Override
     public String getCreatorEmailById(int id) {
         String sql = " SELECT U.email " +
                 " FROM TRANSFER_REQUEST TR " +
@@ -173,6 +194,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         return jdbcTemplate.queryForObject(sql, Collections.singletonMap("id", id), String.class);
     }
 
+    @Override
     public PagingData<List<TransferRequestFlatDto>> getPermittedFlat(
             Integer requesterUserId,
             DataTableParams dataTableParams,
@@ -233,6 +255,7 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
                 "	  			AND (IOP.operation_direction=:operation_direction) ";
     }
 
+    @Override
     public String getHashById(Integer id) {
         String sql = " SELECT TR.hash " +
                 " FROM TRANSFER_REQUEST TR " +

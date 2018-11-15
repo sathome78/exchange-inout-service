@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,33 +38,29 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     private static final Logger log = LogManager.getLogger("inputoutput");
 
-    private final MessageSource messageSource;
-
-    private final InputOutputDao inputOutputDao;
-
-    private final CommissionService commissionService;
-
-    private final UserService userService;
-
-    private final WalletService walletService;
-
-    private final MerchantService merchantService;
-
-    private final CurrencyService currencyService;
-
-    private final MerchantServiceContext merchantServiceContext;
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
-    public InputOutputServiceImpl(MessageSource messageSource, InputOutputDao inputOutputDao, CommissionService commissionService, UserService userService, WalletService walletService, MerchantService merchantService, CurrencyService currencyService, MerchantServiceContext merchantServiceContext) {
-        this.messageSource = messageSource;
-        this.inputOutputDao = inputOutputDao;
-        this.commissionService = commissionService;
-        this.userService = userService;
-        this.walletService = walletService;
-        this.merchantService = merchantService;
-        this.currencyService = currencyService;
-        this.merchantServiceContext = merchantServiceContext;
-    }
+    InputOutputDao inputOutputDao;
+
+    @Autowired
+    private CommissionService commissionService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private WalletService walletService;
+
+    @Autowired
+    private MerchantService merchantService;
+
+    @Autowired
+    private CurrencyService currencyService;
+    @Autowired
+    MerchantServiceContext merchantServiceContext;
+
 
     private void setAdditionalFields(List<MyInputOutputHistoryDto> inputOutputList, Locale locale) {
         inputOutputList.forEach(e ->
@@ -74,6 +71,7 @@ public class InputOutputServiceImpl implements InputOutputService {
         });
     }
 
+    @Override
     public PaginationWrapper<List<MyInputOutputHistoryDto>> findUnconfirmedInvoices(String userEmail, String currencyName, Integer limit, Integer offset, Locale locale) {
         PaginationWrapper<List<MyInputOutputHistoryDto>> result = inputOutputDao.findUnconfirmedInvoices(userService.getIdByEmail(userEmail),
                 currencyService.findByName(currencyName).getId(), limit, offset);
@@ -81,6 +79,8 @@ public class InputOutputServiceImpl implements InputOutputService {
         return result;
     }
 
+
+    @Override
     public List<Map<String, Object>> generateAndGetButtonsSet(
             InvoiceStatus status,
             InvoiceOperationPermission permittedOperation,
@@ -93,7 +93,7 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .build();
         return status.getAvailableActionList(paramsValue).stream()
                 .filter(e -> e.getActionTypeButton() != null)
-                .map(e -> new HashMap<>(e.getActionTypeButton().getProperty()))
+                .map(e -> new HashMap<String, Object>(e.getActionTypeButton().getProperty()))
                 .peek(e -> e.put("buttonTitle", messageSource.getMessage((String) e.get("buttonTitle"), null, locale)))
                 .collect(Collectors.toList());
     }
@@ -134,6 +134,7 @@ public class InputOutputServiceImpl implements InputOutputService {
         }
     }
 
+    @Override
     @Transactional
     public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, String userEmail, Locale locale) {
         merchantService.checkMerchantIsBlocked(payment.getMerchant(), payment.getCurrency(), payment.getOperationType());
@@ -143,7 +144,7 @@ public class InputOutputServiceImpl implements InputOutputService {
         Currency currency = currencyService.findById(payment.getCurrency());
         String destination = payment.getDestination();
         String destinationTag = payment.getDestinationTag();
-        if (!(merchant.getProcessType() == MerchantProcessType.CRYPTO && operationType == INPUT)) {
+        if (!(merchant.getProcessType() == MerchantProcessType.CRYPTO && operationType == OperationType.INPUT)) {
             try {
                 merchantService.checkAmountForMinSum(merchant.getId(), currency.getId(), amount);
             } catch (EmptyResultDataAccessException e) {

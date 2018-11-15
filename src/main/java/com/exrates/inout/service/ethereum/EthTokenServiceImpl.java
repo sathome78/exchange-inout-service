@@ -63,7 +63,7 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(96000);
+    private final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
 
     private final BigDecimal feeAmount = new BigDecimal("0.01");
 
@@ -262,8 +262,8 @@ public class EthTokenServiceImpl implements EthTokenService {
                 log.info("Start method transferFundsToMainAccount...");
                 Credentials credentials = Credentials.create(new ECKeyPair(new BigInteger(refillRequestAddressDto.getPrivKey()),
                         new BigInteger(refillRequestAddressDto.getPubKey())));
-//                BigInteger GAS_PRICE = ethereumCommonService.getWeb3j().ethGasPrice().send().getGasPrice();
-                BigInteger GAS_PRICE = new BigInteger("21000000000");
+                BigInteger GAS_PRICE = ethereumCommonService.getWeb3j().ethGasPrice().send().getGasPrice();
+                /*BigInteger GAS_PRICE = new BigInteger("21000000000");*/
 
                 Class clazz = Class.forName("me.exrates.service.ethereum.ethTokensWrappers." + merchantName);
                 Method method = clazz.getMethod("load", String.class, Web3j.class, Credentials.class, BigInteger.class, BigInteger.class);

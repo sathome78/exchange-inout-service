@@ -12,6 +12,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class QtumServiceImpl implements QtumService {
 
     @Autowired
     private RefillService refillService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private @Value("${qtum.min.confirmations}")
     Integer minConfirmations;
@@ -207,6 +211,12 @@ public class QtumServiceImpl implements QtumService {
 
         profileData.setTime1();
         log.debug("Profile results: " + profileData);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 
     @PreDestroy

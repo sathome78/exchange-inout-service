@@ -7,6 +7,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,6 +29,7 @@ public class TronServiceImpl implements TronService {
     private final CurrencyService currencyService;
     private final MerchantService merchantService;
     private final MessageSource messageSource;
+    private final WithdrawUtils withdrawUtils;
 
 
     private final static String CURRENCY_NAME = "TRX";
@@ -38,12 +40,13 @@ public class TronServiceImpl implements TronService {
     private Set<String> addressesHEX = Collections.synchronizedSet(new HashSet<>());
 
     @Autowired
-    public TronServiceImpl(TronNodeService tronNodeService, RefillService refillService, CurrencyService currencyService, MerchantService merchantService, MessageSource messageSource) {
+    public TronServiceImpl(TronNodeService tronNodeService, RefillService refillService, CurrencyService currencyService, MerchantService merchantService, WithdrawUtils withdrawUtils, MessageSource messageSource) {
         this.tronNodeService = tronNodeService;
         this.refillService = refillService;
         this.currencyService = currencyService;
         this.merchantService = merchantService;
         this.messageSource = messageSource;
+        this.withdrawUtils = withdrawUtils;
     }
 
     @PostConstruct
@@ -109,5 +112,11 @@ public class TronServiceImpl implements TronService {
     @Override
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
         return new BigDecimal(0.1).setScale(3, RoundingMode.HALF_UP);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

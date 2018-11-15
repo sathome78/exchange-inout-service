@@ -41,6 +41,10 @@ public interface StellarService extends IRefillable, IWithdrawable {
         return false;
     }
 
+    void manualCheckNotReceivedTransaction(String hash);
+
+    boolean checkSendedTransaction(String hash, String additionalParams);
+
     void onTransactionReceive(TransactionResponse payment, String amount, String currencyName, String merchant);
 
     @Override

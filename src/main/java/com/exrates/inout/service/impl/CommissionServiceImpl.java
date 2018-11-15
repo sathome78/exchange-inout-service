@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -28,52 +29,61 @@ import static java.math.BigDecimal.*;
 @Service
 public class CommissionServiceImpl implements CommissionService {
 
-    private final CommissionDao commissionDao;
-
-    private final UserService userService;
-
-    private final MerchantService merchantService;
-
-    private final CurrencyService currencyService;
-
-    private final MerchantServiceContext merchantServiceContext;
-
-    private final MessageSource messageSource;
+    @Autowired
+    CommissionDao commissionDao;
 
     @Autowired
-    public CommissionServiceImpl(CommissionDao commissionDao, UserService userService,  MerchantService merchantService, CurrencyService currencyService, MerchantServiceContext merchantServiceContext, MessageSource messageSource) {
-        this.commissionDao = commissionDao;
-        this.userService = userService;
-        this.merchantService = merchantService;
-        this.currencyService = currencyService;
-        this.merchantServiceContext = merchantServiceContext;
-        this.messageSource = messageSource;
-    }
+    UserService userService;
 
+    @Autowired
+    UserRoleService userRoleService;
+
+    @Autowired
+    MerchantService merchantService;
+
+    @Autowired
+    CurrencyService currencyService;
+
+    @Autowired
+    MerchantServiceContext merchantServiceContext;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Override
     public Commission findCommissionByTypeAndRole(OperationType operationType, UserRole userRole) {
         return commissionDao.getCommission(operationType, userRole);
     }
 
+    @Override
+    public Commission getDefaultCommission(OperationType operationType) {
+        return commissionDao.getDefaultCommission(operationType);
+    }
+
+    @Override
     @Transactional
     public BigDecimal getCommissionMerchant(String merchant, String currency, OperationType operationType) {
-        if (!(operationType == INPUT || operationType == OUTPUT)) {
+        if (!(operationType == OperationType.INPUT || operationType == OperationType.OUTPUT)) {
             throw new IllegalArgumentException("Invalid operation type");
         }
         return commissionDao.getCommissionMerchant(merchant, currency, operationType);
     }
 
+    @Override
     @Transactional
     public BigDecimal getCommissionMerchant(Integer merchantId, Integer currencyId, OperationType operationType) {
-        if (!(operationType == INPUT || operationType == OUTPUT || operationType == OperationType.USER_TRANSFER)) {
-            throw new IllegalArgumentException("Invalid operation type: " + operationType);
+        if (!(operationType == OperationType.INPUT || operationType == OperationType.OUTPUT || operationType == OperationType.USER_TRANSFER)) {
+            throw new IllegalArgumentException("Invalid operation type: "+operationType);
         }
         return commissionDao.getCommissionMerchant(merchantId, currencyId, operationType);
     }
 
+    @Override
     public BigDecimal getMinFixedCommission(Integer currencyId, Integer merchantId) {
         return commissionDao.getMinFixedCommission(currencyId, merchantId);
     }
 
+    @Override
     @Transactional
     public Map<String, String> computeCommissionAndMapAllToString(
             Integer userId,
@@ -108,6 +118,7 @@ public class CommissionServiceImpl implements CommissionService {
         return result;
     }
 
+    @Override
     @Transactional
     public CommissionDataDto normalizeAmountAndCalculateCommission(
             Integer userId,
@@ -115,9 +126,10 @@ public class CommissionServiceImpl implements CommissionService {
             OperationType type,
             Integer currencyId,
             Integer merchantId, String destinationTag) {
+        Map<String, String> result = new HashMap<>();
         Boolean specMerchantComissionCount = false;
         Commission companyCommission;
-        if (type == OUTPUT && currencyService.isIco(currencyId)) {
+        if (type == OperationType.OUTPUT && currencyService.isIco(currencyId)) {
             companyCommission = Commission.zeroComission();
         } else {
             companyCommission = findCommissionByTypeAndRole(type, userService.getUserRoleFromDB(userId));
@@ -127,7 +139,7 @@ public class CommissionServiceImpl implements CommissionService {
         Merchant merchant = merchantService.findById(merchantId);
         if (!(merchant.getProcessType() == MerchantProcessType.CRYPTO) || amount.compareTo(BigDecimal.ZERO) != 0) {
             BigDecimal merchantCommissionRate = getCommissionMerchant(merchantId, currencyId, type);
-            BigDecimal merchantMinFixedCommission = getMinFixedCommission(currencyId, merchantId);
+            BigDecimal merchantMinFixedCommission  = getMinFixedCommission(currencyId, merchantId);
             BigDecimal merchantCommissionAmount;
             BigDecimal companyCommissionAmount;
             String merchantCommissionUnit = "%";
@@ -137,7 +149,7 @@ public class CommissionServiceImpl implements CommissionService {
                 merchantCommissionAmount = BigDecimalProcessing.doAction(amount, merchantCommissionRate, MULTIPLY_PERCENT);
                 companyCommissionAmount = BigDecimalProcessing.doAction(amount.subtract(merchantCommissionAmount), companyCommissionRate, MULTIPLY_PERCENT);
             } else if (type == OUTPUT) {
-                IWithdrawable wMerchant = (IWithdrawable) merchantServiceContext.getMerchantService(merchantId);
+                IWithdrawable wMerchant = (IWithdrawable)merchantServiceContext.getMerchantService(merchantId);
                 int currencyScale = merchantService.getMerchantCurrencyScaleByMerchantIdAndCurrencyId(merchantId, currencyId).getScaleForWithdraw();
                 amount = amount.setScale(currencyScale, ROUND_DOWN);
                 companyCommissionAmount = BigDecimalProcessing.doAction(amount, companyCommissionRate, MULTIPLY_PERCENT).setScale(currencyScale, ROUND_UP);
@@ -203,15 +215,12 @@ public class CommissionServiceImpl implements CommissionService {
     }
 
 
+
+    @Override
     @Transactional
     public BigDecimal calculateCommissionForRefillAmount(BigDecimal amount, Integer commissionId) {
         BigDecimal companyCommissionRate = commissionDao.getCommissionById(commissionId).getValue();
         return BigDecimalProcessing.doAction(amount, companyCommissionRate, MULTIPLY_PERCENT);
-    }
-
-    @Override
-    public Commission getDefaultCommission(OperationType operationType) {
-        return commissionDao.getDefaultCommission(operationType);
     }
 
 }

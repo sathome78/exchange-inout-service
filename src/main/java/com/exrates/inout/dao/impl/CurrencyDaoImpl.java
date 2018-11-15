@@ -25,7 +25,9 @@ import java.util.*;
 @Repository
 public class CurrencyDaoImpl implements CurrencyDao {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    @Autowired
+    @Qualifier(value = "masterTemplate")
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     protected static RowMapper<CurrencyPair> currencyPairRowMapper = (rs, row) -> {
         CurrencyPair currencyPair = new CurrencyPair();
@@ -49,18 +51,34 @@ public class CurrencyDaoImpl implements CurrencyDao {
 
     };
 
-    @Autowired
-    public CurrencyDaoImpl(@Qualifier(value = "masterTemplate") NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<Currency> getCurrList() {
+    @Override
+    public List<Currency> getAllActiveCurrencies() {
         String sql = "SELECT id, name FROM CURRENCY WHERE hidden IS NOT TRUE ";
         List<Currency> currList;
-        currList = jdbcTemplate.query(sql, new Currency());
+        currList = jdbcTemplate.query(sql, (rs, row) -> {
+            Currency currency = new Currency();
+            currency.setId(rs.getInt("id"));
+            currency.setName(rs.getString("name"));
+            return currency;
+
+        });
         return currList;
     }
 
+    public List<Currency> getAllCurrencies() {
+        String sql = "SELECT id, name FROM CURRENCY";
+        List<Currency> currList;
+        currList = jdbcTemplate.query(sql, (rs, row) -> {
+            Currency currency = new Currency();
+            currency.setId(rs.getInt("id"));
+            currency.setName(rs.getString("name"));
+            return currency;
+
+        });
+        return currList;
+    }
+
+    @Override
     public int getCurrencyId(int walletId) {
         String sql = "SELECT currency_id FROM WALLET WHERE id = :walletId ";
         Map<String, String> namedParameters = new HashMap<>();
@@ -68,6 +86,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, namedParameters, Integer.class);
     }
 
+    @Override
     public String getCurrencyName(int currencyId) {
         String sql = "SELECT name FROM CURRENCY WHERE  id = :id ";
         Map<String, String> namedParameters = new HashMap<>();
@@ -75,6 +94,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, namedParameters, String.class);
     }
 
+    @Override
     public Currency findByName(String name) {
         final String sql = "SELECT * FROM CURRENCY WHERE name = :name";
         final Map<String, String> params = new HashMap<String, String>() {
@@ -85,6 +105,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(Currency.class));
     }
 
+    @Override
     public Currency findById(int id) {
         final String sql = "SELECT * FROM CURRENCY WHERE id = :id";
         final Map<String, Integer> params = new HashMap<String, Integer>() {
@@ -95,6 +116,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(Currency.class));
     }
 
+    @Override
     public BigDecimal retrieveMinLimitForRoleAndCurrency(UserRole userRole, OperationType operationType, Integer currencyId) {
         String sql = "SELECT min_sum FROM CURRENCY_LIMIT " +
                 "WHERE user_role_id = :role_id AND operation_type_id = :operation_type_id AND currency_id = :currency_id";
@@ -106,6 +128,19 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, params, BigDecimal.class);
     }
 
+
+    @Override
+    public CurrencyPair findCurrencyPairById(int currencyPairId) {
+        String sql = "SELECT id, currency1_id, currency2_id, name, market, type," +
+                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
+                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
+                " FROM CURRENCY_PAIR WHERE id = :currencyPairId";
+        Map<String, String> namedParameters = new HashMap<>();
+        namedParameters.put("currencyPairId", String.valueOf(currencyPairId));
+        return jdbcTemplate.queryForObject(sql, namedParameters, currencyPairRowMapper);
+    }
+
+    @Override
     public List<UserCurrencyOperationPermissionDto> findCurrencyOperationPermittedByUserAndDirection(Integer userId, String operationDirection) {
         String sql = "SELECT CUR.id, CUR.name, IOP.invoice_operation_permission_id" +
                 " FROM CURRENCY CUR " +
@@ -116,7 +151,8 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 " WHERE CUR.hidden IS NOT TRUE " +
                 " ORDER BY CUR.id ";
         Map<String, Object> params = new HashMap<String, Object>() {{
-            put("user_id", userId);put("operation_direction", operationDirection);
+            put("user_id", userId);
+            put("operation_direction", operationDirection);
         }};
         return jdbcTemplate.query(sql, params, (rs, row) -> {
             UserCurrencyOperationPermissionDto dto = new UserCurrencyOperationPermissionDto();
@@ -129,7 +165,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         });
     }
 
-
+    @Override
     public List<String> getWarningForCurrency(Integer currencyId, UserCommentTopicEnum currencyWarningTopicEnum) {
         String sql = "SELECT PHT.template " +
                 " FROM PHRASE_TEMPLATE PHT " +
@@ -142,6 +178,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForList(sql, params, String.class);
     }
 
+    @Override
     public List<String> getWarningsByTopic(UserCommentTopicEnum currencyWarningTopicEnum) {
         String sql = "SELECT PHT.template " +
                 " FROM PHRASE_TEMPLATE PHT " +
@@ -151,6 +188,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForList(sql, params, String.class);
     }
 
+    @Override
     public List<String> getWarningForMerchant(Integer merchantId, UserCommentTopicEnum currencyWarningTopicEnum) {
         String sql = "SELECT PHT.template " +
                 " FROM PHRASE_TEMPLATE PHT " +
@@ -161,70 +199,6 @@ public class CurrencyDaoImpl implements CurrencyDao {
         params.put("merchant_id", merchantId);
         params.put("topic", currencyWarningTopicEnum.name());
         return jdbcTemplate.queryForList(sql, params, String.class);
-    }
-
-
-    public MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId) {
-        String sql = "SELECT id, max_scale_for_refill, max_scale_for_withdraw FROM CURRENCY WHERE id = :currency_id";
-        Map<String, Object> params = new HashMap<String, Object>() {{put("currency_id", currencyId);}};
-        return jdbcTemplate.queryForObject(sql, params, new MerchantCurrencyScaleDto());
-    }
-
-    public boolean isCurrencyIco(Integer currencyId) {
-        String sql = "SELECT id FROM CURRENCY_PAIR WHERE hidden IS NOT TRUE AND type = 'ICO' AND currency1_id =:currency_id";
-        return !jdbcTemplate.queryForList(sql, Collections.singletonMap("currency_id", currencyId), Integer.class).isEmpty();
-    }
-
-    @Override
-    public List<CurrencyPair> getAllCurrencyPairs(CurrencyPairType type) {
-        String typeClause = "";
-        if (type != null && type != CurrencyPairType.ALL) {
-            typeClause = " AND type =:pairType ";
-        }
-        String sql = "SELECT id, currency1_id, currency2_id, name, market, type, " +
-                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
-                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
-                " FROM CURRENCY_PAIR " +
-                " WHERE hidden IS NOT TRUE " + typeClause +
-                " ORDER BY -pair_order DESC";
-        return jdbcTemplate.query(sql, Collections.singletonMap("pairType", type.name()), currencyPairRowMapper);
-    }
-
-    @Override
-    public CurrencyPair findCurrencyPairById(int currencyPair) {
-        String sql = "SELECT id, currency1_id, currency2_id, name, market, type," +
-                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
-                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
-                " FROM CURRENCY_PAIR WHERE id = :currencyPairId";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("currencyPairId", String.valueOf(currencyPair));
-        return jdbcTemplate.queryForObject(sql, namedParameters, currencyPairRowMapper);
-    }
-
-    @Override
-    public Optional<Integer> findOpenCurrencyPairIdByName(String pairName) {
-
-        String sql = "SELECT id FROM CURRENCY_PAIR WHERE name = :pair_name AND hidden != 1";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, Collections.singletonMap("pair_name", pairName), Integer.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public CurrencyPairLimitDto findCurrencyPairLimitForRoleByPairAndType(int currencyPairId, int roleId, int orderTypeId) {
-        String sql = "SELECT CURRENCY_PAIR.id AS currency_pair_id, CURRENCY_PAIR.name AS currency_pair_name, lim.min_rate, lim.max_rate, " +
-                "lim.min_amount, lim.max_amount " +
-                " FROM CURRENCY_PAIR_LIMIT lim " +
-                " JOIN CURRENCY_PAIR ON lim.currency_pair_id = CURRENCY_PAIR.id AND CURRENCY_PAIR.hidden != 1 " +
-                " WHERE lim.currency_pair_id = :currency_pair_id AND lim.user_role_id = :user_role_id AND lim.order_type_id = :order_type_id";
-        Map<String, Integer> namedParameters = new HashMap<>();
-        namedParameters.put("currency_pair_id", currencyPairId);
-        namedParameters.put("user_role_id", roleId);
-        namedParameters.put("order_type_id", orderTypeId);
-        return jdbcTemplate.queryForObject(sql, namedParameters, new CurrencyPairLimitDto());
-
     }
 
     @Override
@@ -242,15 +216,31 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public CurrencyPair findCurrencyPairByName(String pairName) {
-        String sql = "SELECT id, currency1_id, currency2_id, name, market, type," +
-                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
-                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
-                " FROM CURRENCY_PAIR WHERE name = :currencyPairName";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("currencyPairName", String.valueOf(pairName));
-        return jdbcTemplate.queryForObject(sql, namedParameters, currencyPairRowMapper);
-
+    public MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId) {
+        String sql = "SELECT id, " +
+                "  max_scale_for_refill, max_scale_for_withdraw " +
+                "  FROM CURRENCY " +
+                "  WHERE id = :currency_id";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("currency_id", currencyId);
+        }};
+        return jdbcTemplate.queryForObject(sql, params, (rs, i) -> {
+            MerchantCurrencyScaleDto result = new MerchantCurrencyScaleDto();
+            result.setCurrencyId(rs.getInt("id"));
+            result.setMerchantId(null);
+            result.setScaleForRefill((Integer) rs.getObject("max_scale_for_refill"));
+            result.setScaleForWithdraw((Integer) rs.getObject("max_scale_for_withdraw"));
+            return result;
+        });
     }
+
+    @Override
+    public boolean isCurrencyIco(Integer currencyId) {
+        String sql = "SELECT id " +
+                "         FROM CURRENCY_PAIR " +
+                "         WHERE hidden IS NOT TRUE AND type = 'ICO' AND currency1_id =:currency_id ";
+        return !jdbcTemplate.queryForList(sql, Collections.singletonMap("currency_id", currencyId), Integer.class).isEmpty();
+    }
+
 
 }

@@ -43,6 +43,7 @@ public class AchainServiceImpl implements AchainService {
         this.messageSource = messageSource;
     }
 
+
     @Override
     public String getMainAddress() {
         return nodeService.getMainAccountAddress();
@@ -114,5 +115,11 @@ public class AchainServiceImpl implements AchainService {
             return ACT_COMISSION;
         }
         return TOKENS_COMISSION;
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return !address.startsWith(nodeService.getMainAccountAddress());
     }
 }

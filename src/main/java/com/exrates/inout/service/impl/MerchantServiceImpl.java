@@ -13,17 +13,23 @@ import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.merchant.BitcoinService;
+import com.exrates.inout.service.btc.BitcoinService;
 import com.exrates.inout.util.BigDecimalProcessing;
+import javafx.util.Pair;
+import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,9 +41,12 @@ import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @Service
+@PropertySource("classpath:/merchants.properties")
 public class MerchantServiceImpl implements MerchantService {
 
     private static final Logger LOG = LogManager.getLogger("merchant");
+
+    private @Value("${btc.walletspass.folder}") String walletPropsFolder;
 
     @Autowired
     private MerchantDao merchantDao;
@@ -67,10 +76,17 @@ public class MerchantServiceImpl implements MerchantService {
     @Qualifier("bitcoinServiceImpl")
     private BitcoinService bitcoinService;
 
+    @Override
+    public List<Merchant> findAllByCurrency(Currency currency) {
+        return merchantDao.findAllByCurrency(currency.getId());
+    }
+
+    @Override
     public List<Merchant> findAll() {
         return merchantDao.findAll();
     }
 
+    @Override
     public String resolveTransactionStatus(final Transaction transaction, final Locale locale) {
         if (transaction.getSourceType() == TransactionSourceType.WITHDRAW) {
             WithdrawStatusEnum status = transaction.getWithdrawRequest().getStatus();
@@ -88,6 +104,48 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
+    @Override
+    public String sendDepositNotification(final String toWallet,
+                                          final String email,
+                                          final Locale locale,
+                                          final CreditsOperation creditsOperation,
+                                          final String depositNotification) {
+        final BigDecimal amount = creditsOperation
+                .getAmount()
+                .add(creditsOperation.getCommissionAmount());
+        final String sumWithCurrency = BigDecimalProcessing.formatSpacePoint(amount, false) + " " +
+                creditsOperation
+                        .getCurrency()
+                        .getName();
+        final String notification = messageSource.getMessage(depositNotification,
+                new Object[]{sumWithCurrency, toWallet},
+                locale);
+        final Email mail = new Email();
+        mail.setTo(email);
+        mail.setSubject(messageSource
+                .getMessage("merchants.depositNotification.header", null, locale));
+        mail.setMessage(notification);
+
+        try {
+      /* TODO temporary disable
+      notificationService.createLocalizedNotification(email, NotificationEvent.IN_OUT,
+          "merchants.depositNotification.header", depositNotification,
+          new Object[]{sumWithCurrency, toWallet});*/
+            sendMailService.sendInfoMail(mail);
+        } catch (MailException e) {
+            LOG.error(e);
+        }
+        return notification;
+    }
+
+    private Map<Integer, List<Merchant>> mapMerchantsToCurrency(List<Currency> currencies) {
+        return currencies.stream()
+                .map(Currency::getId)
+                .map(currencyId -> new Pair<>(currencyId, merchantDao.findAllByCurrency(currencyId)))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    }
+
+    @Override
     public Merchant findById(int id) {
         return merchantDao.findById(id);
     }
@@ -155,6 +213,11 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
+        return merchantDao.findMerchantCurrencyOptions(processTypes);
+    }
+
+    @Override
     public Map<String, String> formatResponseMessage(CreditsOperation creditsOperation) {
         final OperationType operationType = creditsOperation.getOperationType();
         final String commissionPercent = creditsOperation
@@ -204,6 +267,54 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
+    @Override
+    public Map<String, String> formatResponseMessage(Transaction transaction) {
+        final CreditsOperation creditsOperation = new CreditsOperation.Builder()
+                .operationType(transaction.getOperationType())
+                .amount(transaction.getAmount())
+                .commissionAmount(transaction.getCommissionAmount())
+                .commission(transaction.getCommission())
+                .currency(transaction.getCurrency())
+                .build();
+        return formatResponseMessage(creditsOperation);
+
+    }
+
+    @Override
+    public void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw) {
+        merchantDao.toggleSubtractMerchantCommissionForWithdraw(merchantId, currencyId, subtractMerchantCommissionForWithdraw);
+    }
+
+    @Override
+    @Transactional
+    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
+        merchantDao.toggleMerchantBlock(merchantId, currencyId, operationType);
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForAll(OperationType operationType, boolean blockStatus) {
+
+        if (blockStatus) {
+            if(merchantDao.isBlockStateValid(operationType)){
+                merchantDao.backupBlockState(operationType);
+            }
+            merchantDao.setBlockForAllNonTransfer(operationType);
+        } else {
+            //check for do not restore all 1 or all 0
+            if(merchantDao.isBlockStateBackupValid(operationType)){
+                merchantDao.restoreBlockState(operationType);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
+        merchantDao.setBlockForMerchant(merchantId, currencyId, operationType, blockStatus);
+    }
+
+    @Override
     @Transactional
     public BigDecimal getMinSum(Integer merchantId, Integer currencyId) {
         return merchantDao.getMinSum(merchantId, currencyId);
@@ -217,6 +328,15 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
+    /*============================*/
+
+    @Override
+    @Transactional
+    public List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime() {
+        return merchantDao.findMerchantCurrencyWithRefillLifetime();
+    }
+
+    @Override
     @Transactional
     public MerchantCurrencyLifetimeDto getMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -224,6 +344,7 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantDao.findMerchantCurrencyLifetimeByMerchantIdAndCurrencyId(merchantId, currencyId);
     }
 
+    @Override
     @Transactional
     public MerchantCurrencyScaleDto getMerchantCurrencyScaleByMerchantIdAndCurrencyId(
             Integer merchantId,
@@ -245,8 +366,45 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public List<String> retrieveBtcCoreBasedMerchantNames() {
+        return merchantDao.retrieveBtcCoreBasedMerchantNames();
+    }
+
+    @Override
+    public CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale) {
+        CoreWalletDto result = merchantDao.retrieveCoreWalletByMerchantName(merchantName).orElseThrow(() -> new MerchantNotFoundException(merchantName));
+        result.localizeTitle(messageSource, locale);
+        return result;
+    }
+
+    @Override
+    public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
+
+        List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
+        result.forEach(dto -> dto.localizeTitle(messageSource, locale));
+        return result;
+    }
+
+
+    @Override
     public Optional<String> getCoreWalletPassword(String merchantName, String currencyName) {
-        return merchantDao.getCoreWalletPassword(merchantName, currencyName);
+        Properties props = getPassMerchantProperties(merchantName);
+        return Optional.ofNullable(props.getProperty("wallet.password"));
+    }
+
+    /*pass file format : classpath: merchants/pass/<merchant>_pass.properties
+     * stored values: wallet.password
+     *                node.bitcoind.rpc.user
+     *                node.bitcoind.rpc.password
+     * */
+    @SneakyThrows
+    @Override
+    public Properties getPassMerchantProperties(String merchantName) {
+        Properties props = new Properties();
+        String fullPath = String.join("", walletPropsFolder, merchantName, "_pass.properties");
+        FileInputStream inputStream = new FileInputStream(new File(fullPath));
+        props.load(inputStream);
+        return props;
     }
 
     @Override
@@ -284,6 +442,17 @@ public class MerchantServiceImpl implements MerchantService {
         IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
         if (merchantService instanceof IWithdrawable && ((IWithdrawable) merchantService).additionalTagForWithdrawAddressIsUsed()) {
             ((IWithdrawable) merchantService).checkDestinationTag(destinationTag);
+        }
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(Integer merchantId, String address) {
+
+        IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
+        if (merchantService instanceof IWithdrawable) {
+            return ((IWithdrawable) merchantService).isValidDestinationAddress(address);
+        } else {
+            return true;
         }
     }
 

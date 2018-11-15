@@ -43,45 +43,47 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection.T
 @Service
 public class TransferServiceImpl implements TransferService {
 
+
     private static final Logger log = LogManager.getLogger("transfer");
 
-    private final CurrencyService currencyService;
-
-    private final MessageSource messageSource;
-
-    private final TransferRequestDao transferRequestDao;
-
-    private final WalletService walletService;
-
-    private final UserService userService;
-
-    private final NotificationService notificationService;
-
-    private final TransactionDescription transactionDescription;
-
-    private final MerchantServiceContext merchantServiceContext;
-
-    private final CommissionService commissionService;
-
-    private final InputOutputService inputOutputService;
-
-    private final MerchantService merchantService;
 
     @Autowired
-    public TransferServiceImpl(TransferRequestDao transferRequestDao, CurrencyService currencyService, MessageSource messageSource, WalletService walletService, UserService userService, NotificationService notificationService, TransactionDescription transactionDescription, MerchantServiceContext merchantServiceContext, CommissionService commissionService, InputOutputService inputOutputService, MerchantService merchantService) {
-        this.transferRequestDao = transferRequestDao;
-        this.currencyService = currencyService;
-        this.messageSource = messageSource;
-        this.walletService = walletService;
-        this.userService = userService;
-        this.notificationService = notificationService;
-        this.transactionDescription = transactionDescription;
-        this.merchantServiceContext = merchantServiceContext;
-        this.commissionService = commissionService;
-        this.inputOutputService = inputOutputService;
-        this.merchantService = merchantService;
-    }
+    private CurrencyService currencyService;
 
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private TransferRequestDao transferRequestDao;
+
+    @Autowired
+    private WalletService walletService;
+
+    @Autowired
+    private CompanyWalletService companyWalletService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    TransactionDescription transactionDescription;
+
+    @Autowired
+    MerchantServiceContext merchantServiceContext;
+
+    @Autowired
+    private CommissionService commissionService;
+
+    @Autowired
+    InputOutputService inputOutputService;
+
+    @Autowired
+    private MerchantService merchantService;
+
+    @Override
     @Transactional
     public Map<String, Object> createTransferRequest(TransferRequestCreateDto request) {
         ProfileData profileData = new ProfileData(1000);
@@ -169,6 +171,7 @@ public class TransferServiceImpl implements TransferService {
         return createdTransferRequestId;
     }
 
+    @Override
     @Transactional
     public List<MerchantCurrency> retrieveAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies) {
         merchantCurrencies.forEach(e -> {
@@ -182,6 +185,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Transactional
+    @Override
     public void revokeByUser(int requestId, Principal principal) {
         TransferRequestFlatDto transferRequest = transferRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new InvoiceNotFoundException(String.format("withdraw request id: %s", requestId)));
@@ -195,6 +199,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Transactional
+    @Override
     public void revokeByAdmin(int requestId, Principal principal) {
         TransferRequestFlatDto transferRequest = transferRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new InvoiceNotFoundException(String.format("withdraw request id: %s", requestId)));
@@ -207,7 +212,7 @@ public class TransferServiceImpl implements TransferService {
 
         }
         TransferStatusEnum currentStatus = transferRequest.getStatus();
-        TransferStatusEnum newStatus = (TransferStatusEnum) currentStatus.nextState(REVOKE, InvoiceActionTypeEnum.InvoiceActionParamsValue.builder()
+        TransferStatusEnum newStatus = (TransferStatusEnum) currentStatus.nextState(REVOKE, InvoiceActionParamsValue.builder()
                 .authorisedUserIsHolder(true)
                 .permittedOperation(permission)
                 .availableForCurrentContext(false).build());
@@ -231,6 +236,13 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<TransferRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses) {
+        return transferRequestDao.findRequestsByStatusAndMerchant(merchantId, statuses);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public TransferRequestFlatDto getFlatById(Integer id) {
         return transferRequestDao.getFlatById(id)
@@ -255,6 +267,7 @@ public class TransferServiceImpl implements TransferService {
         return notification;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Map<String, String> correctAmountAndCalculateCommissionPreliminarily(
             Integer userId,
@@ -271,16 +284,19 @@ public class TransferServiceImpl implements TransferService {
         return result;
     }
 
+    @Override
     public Optional<TransferRequestFlatDto> getByHashAndStatus(String code, Integer requiredStatus, boolean block) {
         return transferRequestDao.getFlatByHashAndStatus(code, requiredStatus, block);
     }
 
+    @Override
     public boolean checkRequest(TransferRequestFlatDto transferRequestFlatDto, String userEmail) {
         ITransferable merchantService = (ITransferable) merchantServiceContext.getMerchantService(transferRequestFlatDto.getMerchantId());
         return !merchantService.recipientUserIsNeeded() || transferRequestFlatDto.getRecipientId().equals(userService.getIdByEmail(userEmail));
     }
 
     @Transactional
+    @Override
     public TransferDto performTransfer(TransferRequestFlatDto dto, Locale locale, InvoiceActionTypeEnum action) {
         checkTransferToSelf(dto.getUserId(), dto.getRecipientId(), locale);
         IMerchantService merchantService = merchantServiceContext.getMerchantService(dto.getMerchantId());
@@ -311,10 +327,12 @@ public class TransferServiceImpl implements TransferService {
         return resDto;
     }
 
+    @Override
     public String getUserEmailByTrnasferId(int id) {
         return transferRequestDao.getCreatorEmailById(id);
     }
 
+    @Override
     @Transactional
     public DataTable<List<VoucherAdminTableDto>> getAdminVouchersList(
             DataTableParams dataTableParams,
@@ -343,6 +361,8 @@ public class TransferServiceImpl implements TransferService {
         return output;
     }
 
+
+    @Override
     public String getHash(Integer id, Principal principal) {
         TransferRequestFlatDto dto = getFlatById(id);
         if (dto == null || !dto.getCreatorEmail().equals(principal.getName())

@@ -12,6 +12,7 @@ import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
@@ -57,6 +58,8 @@ public class NemServiceImpl implements NemService {
     private NemMosaicStrategy mosaicStrategy;
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
 
     private static final String NEM_MERCHANT = "NEM";
@@ -349,5 +352,11 @@ public class NemServiceImpl implements NemService {
     @Override
     public List<MosaicIdDto> getDeniedMosaicList() {
         return deniedMosaicsList;
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(this.address, address);
     }
 }

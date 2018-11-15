@@ -6,6 +6,7 @@ import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -25,6 +26,16 @@ public interface WithdrawService {
   void postWithdrawalRequest(int requestId, Integer requesterAdminId, String txHash);
 
   List<ClientBank> findClientBanksForCurrency(Integer currencyId);
+
+    @Transactional
+    void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto);
+
+  @Transactional
+  List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
+          String startDate,
+          String endDate,
+          List<Integer> roleIdList,
+          List<Integer> currencyList);
 
   MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
@@ -55,4 +66,22 @@ public interface WithdrawService {
 
   @Transactional(readOnly = true)
   WithdrawRequestInfoDto getWithdrawalInfo(Integer id, Locale locale);
+
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    List<WithdrawRequestPostDto> dirtyReadForPostByStatusList(InvoiceStatus status);
+
+  @Transactional
+  void autoPostWithdrawalRequest(WithdrawRequestPostDto withdrawRequest);
+
+  @Transactional
+  void rejectToReview(int requestId);
+
+  @Transactional
+  void rejectError(int requestId, String reasonCode);
+
+  @Transactional
+  void setAllAvailableInPostingStatus();
+
+  @Transactional(readOnly = true)
+  List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 }

@@ -12,6 +12,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.TransactionService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,9 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     @Autowired
     private EthTokensContext ethTokensContext;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private String url;
 
@@ -527,6 +531,12 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private EthTokenService getByCurrencyId(int currencyId) {
         return ethTokensContext.getByCurrencyId(currencyId);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 
 }

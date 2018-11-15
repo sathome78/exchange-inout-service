@@ -9,6 +9,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.Privat24Service;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.squareup.okhttp.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +55,8 @@ public class Privat24ServiceImpl implements Privat24Service {
     @Autowired
     private AlgorithmService algorithmService;
 
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     @Override
     @Transactional
@@ -117,6 +120,12 @@ public class Privat24ServiceImpl implements Privat24Service {
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         throw new NotImplimentedMethod("for "+params);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 
 }

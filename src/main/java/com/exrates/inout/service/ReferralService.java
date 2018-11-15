@@ -21,12 +21,38 @@ public interface ReferralService {
 
     String generateReferral(String userEmail);
 
+    Optional<Integer> reduceReferralRef(String ref);
+
     void processReferral(ExOrder exOrder, final BigDecimal commissionAmount, Currency currency, int userId);
 
     List<ReferralTransaction> findAll(int userId);
 
+    List<ReferralLevel> findAllReferralLevels();
+
+    String getParentEmail(int childId);
+
     Integer getReferralParentId(int childId);
+
+    int updateReferralLevel(int level, int oldLevelId, BigDecimal percent);
+
+    void bindChildAndParent(int childUserId, int parentUserId);
+
+    List<MyReferralDetailedDto> findAllMyReferral(CacheData cacheData, String email, Integer offset, Integer limit, Locale locale);
+
+    List<MyReferralDetailedDto> findAllMyReferral(String email, Integer offset, Integer limit, Locale locale);
+
+    List<Integer> getChildrenForParentAndBlock(Integer parentId);
+
+    @Transactional
+    void updateReferralParentForChildren(User user);
+
+    RefsListContainer getRefsContainerForReq(String action, Integer userId, int profitUserId,
+                                             int onPage, int page, RefFilterData refFilterData);
+
+    List<String> getRefsListForDownload(int profitUser, RefFilterData filterData);
 
     @Transactional
     void setRefTransactionStatus(ReferralTransactionStatusEnum status, int refTransactionId);
+
+
 }

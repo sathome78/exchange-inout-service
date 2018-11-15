@@ -32,4 +32,6 @@ public interface IWithdrawable extends IMerchantService {
     default boolean comissionDependsOnDestinationTag() {
         return false;
     }
+
+    boolean isValidDestinationAddress(String address);
 }

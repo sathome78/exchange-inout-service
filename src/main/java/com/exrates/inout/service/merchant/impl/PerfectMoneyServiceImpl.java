@@ -15,6 +15,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.PerfectMoneyService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,9 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
     @Autowired
     private RefillService refillService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -131,6 +135,12 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
                 ":"+passpphraseHash +
                 ":"+params.get("TIMESTAMPGMT");
         return algorithmService.computeMD5Hash(hashParams).toUpperCase();
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 
 }

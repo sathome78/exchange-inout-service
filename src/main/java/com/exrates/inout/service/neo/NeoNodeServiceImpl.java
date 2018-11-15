@@ -1,14 +1,15 @@
 package com.exrates.inout.service.neo;
 
-import com.exrates.inout.domain.neo.*;
+
+import com.exrates.inout.domain.neo.Block;
+import com.exrates.inout.domain.neo.NeoAsset;
+import com.exrates.inout.domain.neo.NeoJsonRpcRequest;
+import com.exrates.inout.domain.neo.NeoJsonRpcResponse;
+import com.exrates.inout.domain.neo.NeoTransaction;
 import com.exrates.inout.exceptions.NeoApiException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -18,22 +19,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @Log4j2(topic = "neo_log")
-@PropertySource("classpath:/merchants/neo.properties")
 public class NeoNodeServiceImpl implements NeoNodeService {
 
-    @Autowired
-    private RestTemplate restTemplate;
 
-    @Autowired
+    private String endpoint;
+    private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
 
-    private @Value("${neo.node.endpoint}")
-    String endpoint;
-
-
-
+    NeoNodeServiceImpl(String endpoint, RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.endpoint = endpoint;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public String getNewAddress() {

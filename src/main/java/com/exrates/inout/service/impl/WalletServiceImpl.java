@@ -17,6 +17,8 @@ import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.Cache;
 import com.exrates.inout.util.CacheData;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Comparator.comparing;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -56,6 +61,7 @@ public class WalletServiceImpl implements WalletService {
     private NotificationService notificationService;
     @Autowired
     private MessageSource messageSource;
+    private CryptoCurrencyBalances cryptoCurrencyBalances;
 
     @Override
     public void balanceRepresentation(final Wallet wallet) {
@@ -83,6 +89,7 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.getWalletABalance(walletId);
     }
 
+
     @Transactional(readOnly = true)
     @Override
     public boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck) {
@@ -103,6 +110,11 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public int getUserIdFromWallet(int walletId) {
+        return walletDao.getUserIdFromWallet(walletId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Wallet findByUserAndCurrency(User user, Currency currency) {
         return walletDao.findByUserAndCurrency(user.getId(), currency.getId());
@@ -120,6 +132,7 @@ public class WalletServiceImpl implements WalletService {
     public void depositActiveBalance(final Wallet wallet, final BigDecimal sum) {
         walletDao.addToWalletBalance(wallet.getId(), sum, BigDecimal.ZERO);
     }
+
 
     @Override
     @Transactional(propagation = Propagation.NESTED)
@@ -142,8 +155,10 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.walletBalanceChange(walletOperationData);
     }
 
-
-
+    /*
+     * Methods defined below are overloaded versions of dashboard info supplier methods.
+     * They are supposed to use with REST API which is stateless and cannot use session-based caching.
+     * */
 
     private void changeWalletActiveBalance(BigDecimal amount, Wallet wallet, OperationType operationType,
                                            TransactionSourceType transactionSourceType) {
@@ -213,7 +228,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String transferCostsToUser(Integer userId, Integer fromUserWalletId, Integer toUserId, BigDecimal amount,
@@ -247,7 +261,7 @@ public class WalletServiceImpl implements WalletService {
         if (totalAmount.compareTo(fromUserWallet.getActiveBalance()) > 0) {
             throw new InvalidAmountException(messageSource.getMessage("transfer.invalidAmount", null, locale));
         }
-        if (Integer.compare(fromUserWallet.getCurrencyId(), toUserWallet.getCurrencyId()) !=0) {
+        if (Integer.compare(fromUserWallet.getCurrencyId(), toUserWallet.getCurrencyId()) != 0) {
             throw new BalanceChangeException("ncorrect wallets");
         }
 

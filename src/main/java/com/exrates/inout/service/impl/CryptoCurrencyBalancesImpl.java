@@ -3,7 +3,7 @@ package com.exrates.inout.service.impl;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.service.CryptoCurrencyBalances;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.merchant.BitcoinService;
+import com.exrates.inout.service.btc.BitcoinService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -24,6 +24,8 @@ public interface TransferRequestDao {
 
     void setRecipientById(Integer id, Integer recipientId);
 
+    List<TransferRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId);
+
     void setHashById(Integer id, Map<String, String> params);
 
     String getCreatorEmailById(int id);

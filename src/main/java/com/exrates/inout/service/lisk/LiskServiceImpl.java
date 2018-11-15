@@ -11,6 +11,7 @@ import com.exrates.inout.exceptions.WithdrawRequestPostException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.ParamMapUtils;
 import com.mysql.jdbc.StringUtils;
 import lombok.extern.log4j.Log4j2;
@@ -44,9 +45,10 @@ public class LiskServiceImpl implements LiskService {
     private MerchantService merchantService;
 
     private LiskRestClient liskRestClient;
-
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private LiskSpecialMethodService liskSpecialMethodService;
 
@@ -281,6 +283,12 @@ public class LiskServiceImpl implements LiskService {
     @Override
     public LiskAccount getAccountByAddress(String address) {
         return liskRestClient.getAccountByAddress(address);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 
 }

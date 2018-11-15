@@ -17,6 +17,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.AdvcashService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,6 +69,9 @@ public class AdvcashServiceImpl implements AdvcashService {
 
     @Autowired
     private RefillService refillService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -129,5 +133,11 @@ public class AdvcashServiceImpl implements AdvcashService {
                     .build();
             refillService.autoAcceptRefillRequest(requestAcceptDto);
         }
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

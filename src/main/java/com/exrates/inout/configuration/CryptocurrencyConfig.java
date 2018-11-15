@@ -1,22 +1,42 @@
 package com.exrates.inout.configuration;
 
 import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
+import com.exrates.inout.domain.neo.NeoAsset;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
-import com.exrates.inout.service.ethereum.*;
-import com.exrates.inout.service.lisk.*;
-import com.exrates.inout.service.merchant.BitcoinService;
-import com.exrates.inout.service.merchant.MoneroService;
-import com.exrates.inout.service.merchant.impl.BitcoinServiceImpl;
-import com.exrates.inout.service.merchant.impl.MoneroServiceImpl;
+import com.exrates.inout.service.crypto_currencies.MoneroService;
+import com.exrates.inout.service.crypto_currencies.MoneroServiceImpl;
+import com.exrates.inout.service.ethereum.EthTokenService;
+import com.exrates.inout.service.ethereum.EthTokenServiceImpl;
+import com.exrates.inout.service.ethereum.EthereumCommonService;
+import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
+import com.exrates.inout.service.ethereum.ExConvert;
+import com.exrates.inout.service.lisk.ArkSpecialMethodServiceImpl;
+import com.exrates.inout.service.lisk.LiskRestClient;
+import com.exrates.inout.service.lisk.LiskRestClientImpl;
+import com.exrates.inout.service.lisk.LiskService;
+import com.exrates.inout.service.lisk.LiskServiceImpl;
+import com.exrates.inout.service.lisk.LiskSpecialMethodService;
+import com.exrates.inout.service.lisk.LiskSpecialMethodServiceImpl;
+import com.exrates.inout.service.btc.BitcoinService;
+import com.exrates.inout.service.btc.BitcoinServiceImpl;
 import com.exrates.inout.service.nem.XemMosaicService;
 import com.exrates.inout.service.nem.XemMosaicServiceImpl;
+import com.exrates.inout.service.neo.NeoService;
+import com.exrates.inout.service.neo.NeoServiceImpl;
 import com.exrates.inout.service.qtum.QtumTokenService;
 import com.exrates.inout.service.qtum.QtumTokenServiceImpl;
 import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
 import lombok.extern.log4j.Log4j2;
+
 import org.nem.core.model.primitive.Supply;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +44,20 @@ import org.springframework.context.annotation.Scope;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
+
+    @Autowired
+    private MerchantService merchantService;
+    @Autowired
+    private CurrencyService currencyService;
+
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
         return new BitcoinServiceImpl("merchants/bitcoin_wallet.properties",
@@ -38,43 +67,43 @@ public class CryptocurrencyConfig {
     @Bean(name = "litecoinServiceImpl")
     public BitcoinService litecoinService() {
         return new BitcoinServiceImpl("merchants/litecoin_wallet.properties",
-                "Litecoin", "LTC", 4, 20, false);
+                "Litecoin", "LTC", 12, 20, false);
     }
 
     @Bean(name = "dashServiceImpl")
     public BitcoinService dashService() {
         return new BitcoinServiceImpl("merchants/dash_wallet.properties",
-                "Dash", "DASH", 4, 20, false);
+                "Dash", "DASH", 12, 20, false);
     }
 
     @Bean(name = "atbServiceImpl")
     public BitcoinService atbService() {
         return new BitcoinServiceImpl("merchants/atb_wallet.properties",
-                "ATB", "ATB", 10, 20, false);
+                "ATB", "ATB", 20, 20, false);
     }
 
     @Bean(name = "bitcoinCashServiceImpl")
     public BitcoinService bchService() {
         return new BitcoinServiceImpl("merchants/bitcoin_cash_wallet.properties",
-                "Bitcoin Cash", "BCH", 4, 20, false);
+                "Bitcoin Cash", "BCH", 12, 20, false);
     }
 
     @Bean(name = "dogecoinServiceImpl")
     public BitcoinService dogeService() {
         return new BitcoinServiceImpl("merchants/dogecoin_wallet.properties",
-                "Dogecoin", "DOGE", 4, 20, false);
+                "Dogecoin", "DOGE", 12, 20, false);
     }
 
     @Bean(name = "btgServiceImpl")
     public BitcoinService btgService() {
         return new BitcoinServiceImpl("merchants/bitcoin_gold_wallet.properties",
-                "BTG", "BTG", 4, 20, false);
+                "BTG", "BTG", 20, 20, false);
     }
 
     @Bean(name = "zcashServiceImpl")
     public BitcoinService zecService() {
         return new BitcoinServiceImpl("merchants/zec_wallet.properties",
-                "Zcash", "ZEC", 4, 20, false);
+                "Zcash", "ZEC", 12, 20, false);
     }
 
     @Bean(name = "b2xServiceImpl")
@@ -86,237 +115,226 @@ public class CryptocurrencyConfig {
     @Bean(name = "bcdServiceImpl")
     public BitcoinService bcdService() {
         return new BitcoinServiceImpl("merchants/bcd_wallet.properties",
-                "BCD", "BCD", 4, 20, false);
+                "BCD", "BCD", 20, 20, false);
     }
 
     @Bean(name = "plcServiceImpl")
     public BitcoinService pbtcService() {
         return new BitcoinServiceImpl("merchants/plc_wallet.properties",
-                "PLC", "PLC", 4, 20, false);
+                "PLC", "PLC", 20, 20, false);
     }
 
     @Bean(name = "bcxServiceImpl")
     public BitcoinService bcxService() {
         return new BitcoinServiceImpl("merchants/bcx_wallet.properties",
-                "BCX", "BCX", 4, 20, false);
+                "BCX", "BCX", 20, 20, false);
     }
 
     @Bean(name = "bciServiceImpl")
     public BitcoinService bciService() {
         return new BitcoinServiceImpl("merchants/bci_wallet.properties",
-                "BCI", "BCI", 4, 20, false);
+                "BCI", "BCI", 20, 20, false);
     }
 
     @Bean(name = "occServiceImpl")
     public BitcoinService occService() {
         return new BitcoinServiceImpl("merchants/occ_wallet.properties",
-                "OCC", "OCC", 4, 20, false);
+                "OCC", "OCC", 20, 20, false);
     }
 
     @Bean(name = "btczServiceImpl")
     public BitcoinService btczService() {
         return new BitcoinServiceImpl("merchants/btcz_wallet.properties",
-                "BTCZ", "BTCZ", 4, 20, false);
+                "BTCZ", "BTCZ", 20, 20, false);
     }
 
     @Bean(name = "lccServiceImpl")
     public BitcoinService lccService() {
         return new BitcoinServiceImpl("merchants/lcc_wallet.properties",
-                "LCC", "LCC", 4, 20, false);
+                "LCC", "LCC", 20, 20, false);
     }
 
     @Bean(name = "bitcoinAtomServiceImpl")
     public BitcoinService bitcoinAtomService() {
         return new BitcoinServiceImpl("merchants/bca_wallet.properties",
-                "BitcoinAtom", "BCA", 4, 20, false);
+                "BitcoinAtom", "BCA", 20, 20, false);
     }
 
     @Bean(name = "btcpServiceImpl")
     public BitcoinService btcpService() {
         return new BitcoinServiceImpl("merchants/btcp_wallet.properties",
-                "BTCP", "BTCP", 4, 20, false);
+                "BTCP", "BTCP", 30, 20, false);
     }
 
     @Bean(name = "szcServiceImpl")
     public BitcoinService szcService() {
         return new BitcoinServiceImpl("merchants/szc_wallet.properties",
-                "SZC", "SZC", 4, 20, false, false);
+                "SZC", "SZC", 20, 20, false, false);
     }
 
     @Bean(name = "btxServiceImpl")
     public BitcoinService btxService() {
         return new BitcoinServiceImpl("merchants/btx_wallet.properties",
-                "BTX", "BTX", 4, 20, false, false);
+                "BTX", "BTX", 20, 20, false, false);
     }
 
     @Bean(name = "bitdollarServiceImpl")
     public BitcoinService bitdollarService() {
         return new BitcoinServiceImpl("merchants/xbd_wallet.properties",
-                "BitDollar", "XBD", 4, 20, false, false);
+                "BitDollar", "XBD", 20, 20, false, false);
     }
 
     @Bean(name = "beetServiceImpl")
     public BitcoinService beetService() {
         return new BitcoinServiceImpl("merchants/beet_wallet.properties",
-                "BEET", "BEET", 4, 20, false, false);
+                "BEET", "BEET", 20, 20, false, false);
     }
 
     @Bean(name = "nycoinServiceImpl")
     public BitcoinService nycoinService() {
         return new BitcoinServiceImpl("merchants/nyc_wallet.properties",
-                "NYC", "NYC", 4, 20, false, false);
+                "NYC", "NYC", 20, 20, false, true);
     }
 
     @Bean(name = "ptcServiceImpl")
     public BitcoinService ptcService() {
         return new BitcoinServiceImpl("merchants/perfectcoin_wallet.properties",
-                "Perfectcoin", "PTC", 4, 20, false, false);
+                "Perfectcoin", "PTC", 20, 20, false, false);
     }
 
     @Bean(name = "fgcServiceImpl")
     public BitcoinService fgcService() {
         return new BitcoinServiceImpl("merchants/fgc_wallet.properties",
-                "FGC", "FGC", 4, 20, false, false);
+                "FGC", "FGC", 20, 20, false, false);
     }
 
     @Bean(name = "bclServiceImpl")
     public BitcoinService bitcoinCleanService() {
         return new BitcoinServiceImpl("merchants/bcl_wallet.properties",
-                "BitcoinClean", "BCL", 4, 20, false);
+                "BitcoinClean", "BCL", 20, 20, false);
     }
 
     @Bean(name = "brecoServiceImpl")
     public BitcoinService brecoService() {
         return new BitcoinServiceImpl("merchants/breco_wallet.properties",
-                "BRECO", "BRECO", 4, 20, false,
+                "BRECO", "BRECO", 20, 20, false,
                 false, true, true);
     }
 
     @Bean(name = "ftoServiceImpl")
     public BitcoinService ftoService() {
         return new BitcoinServiceImpl("merchants/fto_wallet.properties",
-                "FTO", "FTO", 4, 20, false, false);
+                "FTO", "FTO", 20, 20, false, false);
     }
 
     @Bean(name = "sabrServiceImpl")
     public BitcoinService sabrService() {
         return new BitcoinServiceImpl("merchants/sabr_wallet.properties",
-                "SABR", "SABR", 4, 20, false, false);
+                "SABR", "SABR", 20, 20, false, false);
     }
 
     @Bean(name = "eqlServiceImpl")
     public BitcoinService eqlService() {
         return new BitcoinServiceImpl("merchants/eql_wallet.properties",
-                "EQL", "EQL", 4, 20, false);
+                "EQL", "EQL", 20, 20, false);
     }
 
     @Bean(name = "lbtcServiceImpl")
     public BitcoinService lbtcService() {
         return new BitcoinServiceImpl("merchants/lbtc_wallet.properties",
-                "LBTC", "LBTC", 4, 20, false);
+                "LBTC", "LBTC", 20, 20, false);
     }
 
     @Bean(name = "brbServiceImpl")
     public BitcoinService brbService() {
         return new BitcoinServiceImpl("merchants/brb_wallet.properties",
-                "BRB", "BRB", 4, 20, false, false);
+                "BRB", "BRB", 20, 20, false, false);
     }
 
     @Bean(name = "rizServiceImpl")
     public BitcoinService rizService() {
         return new BitcoinServiceImpl("merchants/riz_wallet.properties",
-                "RIZ", "RIZ", 4, 20, false);
+                "RIZ", "RIZ", 20, 20, false);
     }
 
     @Bean(name = "sicServiceImpl")
     public BitcoinService sicService() {
-        return new BitcoinServiceImpl("merchants/sic_wallet.properties", "SIC", "SIC", 4, 20, false, false);
+        return new BitcoinServiceImpl("merchants/sic_wallet.properties", "SIC", "SIC", 20, 20, false, false);
     }
 
     @Bean(name = "clxServiceImpl")
     public BitcoinService clxService() {
         return new BitcoinServiceImpl("merchants/clx_wallet.properties",
-                "CLX", "CLX", 4, 20, false, false);
+                "CLX", "CLX", 20, 20, false, false);
     }
 
-    // LISK-like cryptos
-
-
-    @Bean(name = "liskServiceImpl")
-    public LiskService liskService() {
-        LiskRestClient restClient = liskRestClient();
-        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient),
-                "Lisk", "LSK", "merchants/lisk.properties");
+    @Bean(name = "qrkServiceImpl")
+    public BitcoinService qrkService() {
+        return new BitcoinServiceImpl("merchants/qrk_wallet.properties",
+                "QRK", "QRK", 20, 20, false, false);
     }
 
-    @Bean(name = "btwServiceImpl")
-    public LiskService btwService() {
-        LiskRestClient restClient = liskRestClient();
-        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient), "BitcoinWhite", "BTW", "merchants/bitcoin_white.properties");
+    @Bean(name="cmkServiceImpl")
+    public BitcoinService cmkService(){
+        return new BitcoinServiceImpl("merchants/cmk_wallet.properties", "CMK", "CMK", 20, 20, false, true);
     }
 
-    @Bean(name = "riseServiceImpl")
-    public LiskService riseService() {
-        LiskRestClient restClient = liskRestClient();
-        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient),
-                "RiseVision", "RISE", "merchants/rise_vision.properties");
+    @Bean(name="mbcServiceImpl")
+    public BitcoinService mbcService(){
+        return new BitcoinServiceImpl("merchants/mbc_wallet.properties", "MBC", "MBC", 20, 20, false, true);
     }
 
-    @Bean(name = "arkServiceImpl")
-    public LiskService arkService() {
-        return new LiskServiceImpl(liskRestClient(), arkSendTxService(), "Ark", "ARK", "merchants/ark.properties");
+    @Bean(name = "ddxServiceImpl")
+    public BitcoinService ddxService() {
+        return new BitcoinServiceImpl("merchants/ddx_wallet.properties",
+                "DDX", "DDX", 4, 20, false, true);
     }
 
-    @Bean
-    @Scope("prototype")
-    public LiskRestClient liskRestClient() {
-        return new LiskRestClientImpl();
+    @Bean(name="lpcServiceImpl")
+    public BitcoinService lpcService(){
+        return new BitcoinServiceImpl("merchants/lpc_wallet.properties", "LPC", "LPC", 20, 20, false, false);
+    }
+    @Bean(name = "xfcServiceImpl")
+    public BitcoinService xfcServiceImpl() {
+        return new BitcoinServiceImpl("merchants/xfc_wallet.properties",
+                "XFC", "XFC", 20, 20, false, false);
     }
 
-    @Bean
-    @Scope("prototype")
-    public LiskSpecialMethodService arkSendTxService() {
-        return new ArkSpecialMethodServiceImpl("merchants/ark.properties");
+    @Bean(name="TOAServiceImpl")
+    public BitcoinService taoServiceImpl(){
+        return new BitcoinServiceImpl("merchants/toa_wallet.properties", "TOA", "TOA", 20, 20, false, false);
     }
 
-
-    // WAVES-like
-
-    @Bean(name = "wavesServiceImpl")
-    public WavesService wavesService() {
-        return new WavesServiceImpl("WAVES", "Waves", "merchants/waves.properties");
+    @Bean(name = "crypServiceImpl")
+    public BitcoinService crypService() {
+        return new BitcoinServiceImpl("merchants/cryp_wallet.properties", "CRYP", "CRYP", 20, 20, false, true);
     }
-
-    @Bean(name = "lunesServiceImpl")
-    public WavesService lunesService() {
-        return new WavesServiceImpl("LUNES", "LUNES", "merchants/lunes.properties");
-    }
-
 
     @Bean(name = "nsrServiceImpl")
     public BitcoinService nsrService() {
         return new BitcoinServiceImpl("merchants/nushares_wallet.properties",
-                "NuShares", "NSR", 4, 20, false, false);
+                "NuShares", "NSR", 20, 20, false, false);
     }
 
     @Bean(name = "amlServiceImpl")
     public BitcoinService amlService() {
         return new BitcoinServiceImpl("merchants/aml_wallet.properties",
-                "AML", "ABTC", 4, 20, false);
+                "AML", "ABTC", 20, 20, false);
     }
 
     @Bean(name = "bbccServiceImpl")
     public BitcoinService bbccService() {
         return new BitcoinServiceImpl("merchants/bbcc_wallet.properties",
-                "BBX", "BBX", 4, 20, false, false, false);
+                "BBX", "BBX", 20, 20, false, false, false);
     }
 
     @Bean(name = "hsrServiceImpl")
     public BitcoinService hcasheService() {
         return new BitcoinServiceImpl("merchants/hsr_wallet.properties",
-                "HSR", "HSR", 4, 20, false, false);
+                "HSR", "HSR", 20, 20, false, false);
     }
 
+    //ETH Services
     @Bean(name = "ethereumServiceImpl")
     public EthereumCommonService ethereumService() {
         return new EthereumCommonServiceImpl("merchants/ethereum.properties",
@@ -371,24 +389,15 @@ public class CryptocurrencyConfig {
                 "ETI", "ETI", 12);
     }
 
-    @Bean(name = "eosServiceImpl")
-    public EthTokenService EosService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "EOS",
-                "EOS", true, ExConvert.Unit.ETHER);
-    }
-
+    //Eth tokens
     @Bean(name = "repServiceImpl")
     public EthTokenService RepService() {
         List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xe94327d07fc17907b4db788e5adf2ed424addff6");
+        tokensList.add("0x1985365e9f78359a9b6ad760e32412f4a445e862");
         return new EthTokenServiceImpl(
                 tokensList,
                 "REP",
-                "REP", true, ExConvert.Unit.ETHER);
+                "REP", false, ExConvert.Unit.ETHER);
     }
 
     @Bean(name = "golemServiceImpl")
@@ -735,447 +744,81 @@ public class CryptocurrencyConfig {
                 "TNR", true, ExConvert.Unit.ETHER);
     }
 
-    //    Qtum tokens:
-    @Bean(name = "inkServiceImpl")
-    public EthTokenService InkService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf4c90e18727c5c76499ea6369c856a6d61d3e92e");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "Ink",
-                "INK", true, ExConvert.Unit.GWEI);
+
+
+    // LISK-like cryptos
+    @Bean(name = "liskServiceImpl")
+    public LiskService liskService() {
+        LiskRestClient restClient = liskRestClient();
+        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient),
+                "Lisk", "LSK", "merchants/lisk.properties");
     }
 
-    @Bean(name = "rthServiceImpl")
-    public EthTokenService rthService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x3fd8f39a962efda04956981c31ab89fab5fb8bc8");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "RTH",
-                "RTH", true, ExConvert.Unit.ETHER);
+    @Bean(name = "btwServiceImpl")
+    public LiskService btwService() {
+        LiskRestClient restClient = liskRestClient();
+        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient), "BitcoinWhite", "BTW", "merchants/bitcoin_white.properties");
     }
 
-    @Bean(name = "spdServiceImpl")
-    public EthTokenService SpdService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x1dea979ae76f26071870f824088da78979eb91c8");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "SPD",
-                "SPD", false, ExConvert.Unit.ETHER);
+    @Bean(name = "riseServiceImpl")
+    public LiskService riseService() {
+        LiskRestClient restClient = liskRestClient();
+        return new LiskServiceImpl(restClient, new LiskSpecialMethodServiceImpl(restClient),
+                "RiseVision", "RISE", "merchants/rise_vision.properties");
     }
 
-    @Bean(name = "mtcServiceImpl")
-    public EthTokenService MtcService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x905e337c6c8645263d3521205aa37bf4d034e745");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "MTC",
-                "MTC", true, ExConvert.Unit.ETHER);
+    @Bean(name = "arkServiceImpl")
+    public LiskService arkService() {
+        return new LiskServiceImpl(liskRestClient(), arkSendTxService(), "Ark", "ARK", "merchants/ark.properties");
     }
 
-    @Bean(name = "arnServiceImpl")
-    public EthTokenService arnService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xba5f11b16b155792cf3b2e6880e8706859a8aeb6");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "ARN",
-                "ARN", true, ExConvert.Unit.AIWEI);
+    @Bean
+    @Scope("prototype")
+    public LiskRestClient liskRestClient() {
+        return new LiskRestClientImpl();
     }
 
-    @Bean(name = "hstServiceImpl")
-    public EthTokenService hstService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x554c20b7c486beee439277b4540a434566dc4c02");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "HST",
-                "HST", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "dtrcServiceImpl")
-    public EthTokenService DtrcService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xc20464e0c373486d2b3335576e83a218b1618a5e");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "DTRC",
-                "DTRC", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "ceekServiceImpl")
-    public EthTokenService CeekService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xb056c38f6b7dc4064367403e26424cd2c60655e1");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "CEEK",
-                "CEEK", false, ExConvert.Unit.ETHER);
+    @Bean
+    @Scope("prototype")
+    public LiskSpecialMethodService arkSendTxService() {
+        return new ArkSpecialMethodServiceImpl("merchants/ark.properties");
     }
 
 
-    @Bean(name = "anyServiceImpl")
-    public EthTokenService anyService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xdf67cf04f1f268e431bfecf2c76843afb8e536c1");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "ANY",
-                "ANY", false, ExConvert.Unit.AIWEI);
+    // WAVES-like
+
+    @Bean(name = "wavesServiceImpl")
+    public WavesService wavesService() {
+        return new WavesServiceImpl("WAVES", "Waves", "merchants/waves.properties");
     }
 
-    @Bean(name = "tgameServiceImpl")
-    public EthTokenService tgameService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf8e06e4e4a80287fdca5b02dccecaa9d0954840f");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "TGAME",
-                "TGAME", true, ExConvert.Unit.ETHER);
+  /*  @Bean(name = "lunesServiceImpl")
+    public WavesService lunesService() {
+        return new WavesServiceImpl("LUNES", "LUNES", "merchants/lunes.properties");
     }
+*/
+    //NEO and Forks
+   /* @Bean(name = "neoServiceImpl")
+    public NeoService neoService() {
+        Merchant mainMerchant = merchantService.findByName(NeoAsset.NEO.name());
+        Currency mainCurrency = currencyService.findByName(NeoAsset.NEO.name());
+        Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
+            put(NeoAsset.NEO.getId(), new AssetMerchantCurrencyDto(NeoAsset.NEO, mainMerchant, mainCurrency));
+            put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService.findByName(NeoAsset.GAS.name()), currencyService.findByName(NeoAsset.GAS.name())));
+        }};
+        return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/neo.properties");
+    }*/
 
-    @Bean(name = "mtlServiceImpl")
-    public EthTokenService mtlServiceImpl() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf433089366899d83a9f26a773d59ec7ecf30355e");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "MTL",
-                "MTL", true, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "leduServiceImpl")
-    public EthTokenService leduService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x5b26c5d0772e5bbac8b3182ae9a13f9bb2d03765");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "LEDU",
-                "LEDU", true, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "adbServiceImpl")
-    public EthTokenService adbService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x2baac9330cf9ac479d819195794d79ad0c7616e3");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "ADB",
-                "ADB", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "cedexServiceImpl")
-    public EthTokenService cedexService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf4065e4477e91c177ded71a7a6fb5ee07dc46bc9");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "CEDEX",
-                "CEDEX", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "gstServiceImpl")
-    public EthTokenService gstService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x67a9099f0008c35c61c00042cd9fb03684451097");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "GST",
-                "GST", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "satServiceImpl")
-    public EthTokenService satService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xc56b13ebbcffa67cfb7979b900b736b3fb480d78");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "SAT",
-                "SAT", true, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "cheServiceImpl")
-    public EthTokenService cheService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x632f62fcf63cb56380ffd27d63afcf5f1349f73f");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "CHE",
-                "CHE", false, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "daccServiceImpl")
-    public EthTokenService daccService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf8c595d070d104377f58715ce2e6c93e49a87f3c");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "DACC",
-                "DACC", true, ExConvert.Unit.MWEI);
-    }
-
-    @Bean(name = "engtServiceImpl")
-    public EthTokenService engtService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x5dbac24e98e2a4f43adc0dc82af403fca063ce2c");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "ENGT",
-                "ENGT", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "tavittServiceImpl")
-    public EthTokenService tavittService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xdd690d8824c00c84d64606ffb12640e932c1af56");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "TAVITT",
-                "TAVITT", true, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "umtServiceImpl")
-    public EthTokenService umtService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xc6be00f7ed386015a3c751d38c126c62f231138d");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "UMT",
-                "UMT", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "maspServiceImpl")
-    public EthTokenService maspService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xce958ecf2c752c74973e89674faa30404b15a498");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "MASP",
-                "MASP", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "skillServiceImpl")
-    public EthTokenService skillService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x417d6feeae8b2fcb73d14d64be7f192e49431978");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "SKILL",
-                "SKILL", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "storServiceImpl")
-    public EthTokenService storService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xa3ceac0aac5c5d868973e546ce4731ba90e873c2");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "STOR",
-                "STOR", true, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "quintServiceImpl")
-    public EthTokenService quintService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x45b73654e464945a268032cdcb8d551fe8b733ca");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "QUiNT",
-                "QUiNT", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "ttcServiceImpl")
-    public EthTokenService ttcService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x53e28b07e0795869b727ee4d585b3c025b016952");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "TTC",
-                "TTC", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "bfgServiceImpl")
-    public EthTokenService bfgService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x2ee3b3804f695355ddc4f8e1c54654416d7ee95a");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "BFG",
-                "BFG", false, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "jetServiceImpl")
-    public EthTokenService jetService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x8727c112c712c4a03371ac87a74dd6ab104af768");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "JET",
-                "JET", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "patServiceImpl")
-    public EthTokenService patService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xf3b3cad094b89392fce5fafd40bc03b80f2bc624");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "PAT",
-                "PAT", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "mtvServiceImpl")
-    public EthTokenService mtvService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x07a7ed332c595b53a317afcee50733af571475e7");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "eMTV",
-                "eMTV", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "kwattServiceImpl")
-    public EthTokenService kwattService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x241ba672574a78a3a604cdd0a94429a73a84a324");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "KWATT",
-                "KWATT", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "tusdServiceImpl")
-    public EthTokenService tusdService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x8dd5fbce2f6a956c3022ba3663759011dd51e73e");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "TUSD",
-                "TUSD", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "fpwrServiceImpl")
-    public EthTokenService fpwrService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xdd92e60563250012ee1c4cb4b26810c45a0591da");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "FPWR",
-                "FPWR", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "crbtServiceImpl")
-    public EthTokenService crbtService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x2cf618c19041d9db330d8222b860a624021f30fb");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "CRBT",
-                "CRBT", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "hiveServiceImpl")
-    public EthTokenService hiveService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x895f5d0b8456b980786656a33f21642807d1471c");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "HIVE",
-                "HIVE", false, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "cmitServiceImpl")
-    public EthTokenService cmitService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xe11609b9a51caf7d32a55896386ac52ed90e66f1");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "CMIT",
-                "CMIT", false, ExConvert.Unit.AIWEI);
-    }
-
-    @Bean(name = "hdrServiceImpl")
-    public EthTokenService hdrService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x52494fbffe10f8c29411521040ae8618c334981e");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "HDR",
-                "HDR", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "racServiceImpl")
-    public EthTokenService racService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x342ba159f988f24f0b033f3cc5232377ee500543");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "RAC",
-                "RAC", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "iqnServiceImpl")
-    public EthTokenService iqnService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x0db8d8b76bc361bacbb72e2c491e06085a97ab31");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "IQN",
-                "IQN", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "gexServiceImpl")
-    public EthTokenService gexService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xdac15794f0fadfdcf3a93aeaabdc7cac19066724");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "GEX",
-                "GEX", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "ixeServiceImpl")
-    public EthTokenService ixeService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x7a07e1a0c2514d51132183ecfea2a880ec3b7648");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "IXE",
-                "IXE", false, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "nerServiceImpl")
-    public EthTokenService nerService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0xee5dfb5ddd54ea2fb93b796a8a1b83c3fe38e0e6");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "NER",
-                "NER", true, com.exrates.inout.service.ethereum.ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "phiServiceImpl")
-    public EthTokenService phiService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x13c2fab6354d3790d8ece4f0f1a3280b4a25ad96");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "PHI",
-                "PHI", true, ExConvert.Unit.ETHER);
-    }
-
-    @Bean(name = "mftuServiceImpl")
-    public EthTokenService mftuService() {
-        List<String> tokensList = new ArrayList<>();
-        tokensList.add("0x05d412ce18f24040bb3fa45cf2c69e506586d8e8");
-        return new EthTokenServiceImpl(
-                tokensList,
-                "MFTU",
-                "MFTU", true, ExConvert.Unit.ETHER);
-    }
+   /* @Bean(name = "kazeServiceImpl")
+    public NeoService kazeService() {
+        Merchant mainMerchant = merchantService.findByName(NeoAsset.KAZE.name());
+        Currency mainCurrency = currencyService.findByName(NeoAsset.KAZE.name());
+        Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
+            put(NeoAsset.KAZE.getId(), new AssetMerchantCurrencyDto(NeoAsset.KAZE, mainMerchant, mainCurrency));
+            put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService.findByName(NeoAsset.STREAM.name()), currencyService.findByName(NeoAsset.STREAM.name())));
+        }};
+        return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/kaze.properties");
+    }*/
 
     //    Qtum tokens:
     @Bean(name = "spcServiceImpl")
@@ -1195,7 +838,7 @@ public class CryptocurrencyConfig {
     }
 
     //**** Monero ****/
-    @Bean(name = "moneroServiceImpl")
+  /*  @Bean(name = "moneroServiceImpl")
     public MoneroService moneroService() {
         return new MoneroServiceImpl("merchants/monero.properties",
                 "Monero", "XMR", 10, 12);
@@ -1211,7 +854,7 @@ public class CryptocurrencyConfig {
     public MoneroService sumoService() {
         return new MoneroServiceImpl("merchants/sumokoin.properties",
                 "SUMO", "SUMO", 10, 9);
-    }
+    }*/
 
     /***tokens based on xem mosaic)****/
     @Bean(name = "dimCoinServiceImpl")
@@ -1271,4 +914,5 @@ public class CryptocurrencyConfig {
                 "VNT",
                 "GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO");
     }
+
 }

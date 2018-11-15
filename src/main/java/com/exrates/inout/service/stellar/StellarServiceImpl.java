@@ -9,6 +9,7 @@ import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class StellarServiceImpl implements StellarService {
     private RefillService refillService;
     @Autowired
     private StellarTransactionService stellarTransactionService;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private Merchant merchant;
     private Currency currency;
@@ -237,5 +240,11 @@ public class StellarServiceImpl implements StellarService {
                 return new BigDecimal(0.1).setScale(5, RoundingMode.HALF_UP);
         }
 
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(ACCOUNT_NAME, address);
     }
 }

@@ -16,6 +16,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.InterkassaService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +57,9 @@ public class InterkassaServiceImpl implements InterkassaService {
 
     @Autowired
     private RefillRequestDao refillRequestDao;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     private static final Logger LOG = LogManager.getLogger("merchant");
 
@@ -136,5 +140,11 @@ public class InterkassaServiceImpl implements InterkassaService {
         byte[] signMD5 = algorithmService.computeMD5Byte(stringValues);
 
         return Base64.getEncoder().encodeToString(signMD5);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

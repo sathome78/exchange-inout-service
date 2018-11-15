@@ -9,6 +9,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.YandexKassaService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class YandexKassaServiceImpl implements YandexKassaService {
 
     @Autowired
     private AlgorithmService algorithmService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
 
     @Override
@@ -114,5 +118,11 @@ public class YandexKassaServiceImpl implements YandexKassaService {
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         throw new NotImplimentedMethod("for "+params);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

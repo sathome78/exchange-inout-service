@@ -11,28 +11,40 @@ import com.exrates.inout.domain.main.CurrencyPair;
 import com.exrates.inout.exceptions.CurrencyPairNotFoundException;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
 import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.UserRoleService;
 import com.exrates.inout.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.util.Objects.isNull;
 
 @Service
 @Slf4j
 public class CurrencyServiceImpl implements CurrencyService {
 
-    private final CurrencyDao currencyDao;
+    @Autowired
+    private CurrencyDao currencyDao;
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    UserRoleService userRoleService;
+
 
     private static final Set<String> CRYPTO = new HashSet<String>() {
         {
@@ -49,58 +61,70 @@ public class CurrencyServiceImpl implements CurrencyService {
     private static final int DEFAULT_PRECISION = 2;
     private static final int EDC_OUTPUT_PRECISION = 3;
 
-    @Autowired
-    public CurrencyServiceImpl(CurrencyDao currencyDao, UserService userService) {
-        this.currencyDao = currencyDao;
-        this.userService = userService;
-    }
-
+    @Override
     @Transactional(readOnly = true)
     public String getCurrencyName(int currencyId) {
         return currencyDao.getCurrencyName(currencyId);
     }
 
+
+    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
+    @Override
     public List<Currency> getAllCurrencies() {
-        return currencyDao.getCurrList();
+        return currencyDao.getAllActiveCurrencies();
     }
 
+    @Override
     public Currency findByName(String name) {
         return currencyDao.findByName(name);
     }
 
-    public com.exrates.inout.domain.main.Currency findById(int id) {
+    @Override
+    public Currency findById(int id) {
         return currencyDao.findById(id);
     }
 
+
+    @Override
     public BigDecimal retrieveMinLimitForRoleAndCurrency(UserRole userRole, OperationType operationType, Integer currencyId) {
         return currencyDao.retrieveMinLimitForRoleAndCurrency(userRole, operationType, currencyId);
     }
 
+    @Override
     public String amountToString(final BigDecimal amount, final String currency) {
         return amount.setScale(resolvePrecision(currency), ROUND_HALF_UP)
 //                .stripTrailingZeros()
                 .toPlainString();
     }
 
+    @Override
     public int resolvePrecision(final String currency) {
         return CRYPTO.contains(currency) ? CRYPTO_PRECISION : DEFAULT_PRECISION;
     }
 
+    @Override
     public int resolvePrecisionByOperationType(final String currency, OperationType operationType) {
+
         return currency.equals(currencyDao.findByName("EDR").getName()) && (operationType == OperationType.OUTPUT) ?
-                EDC_OUTPUT_PRECISION : CRYPTO.contains(currency) ? CRYPTO_PRECISION : DEFAULT_PRECISION;
+                EDC_OUTPUT_PRECISION :
+                CRYPTO.contains(currency) ? CRYPTO_PRECISION :
+                        DEFAULT_PRECISION;
     }
 
+
+    @Override
     @Transactional(readOnly = true)
     public List<UserCurrencyOperationPermissionDto> findWithOperationPermissionByUserAndDirection(Integer userId, InvoiceOperationDirection operationDirection) {
         return currencyDao.findCurrencyOperationPermittedByUserAndDirection(userId, operationDirection.name());
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<UserCurrencyOperationPermissionDto> getCurrencyOperationPermittedForRefill(String userEmail) {
         return getCurrencyOperationPermittedList(userEmail, InvoiceOperationDirection.REFILL);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<UserCurrencyOperationPermissionDto> getCurrencyOperationPermittedForWithdraw(String userEmail) {
         return getCurrencyOperationPermittedList(userEmail, InvoiceOperationDirection.WITHDRAW);
@@ -111,23 +135,30 @@ public class CurrencyServiceImpl implements CurrencyService {
         return findWithOperationPermissionByUserAndDirection(userId, direction);
     }
 
+    @Override
     public List<String> getWarningForCurrency(Integer currencyId, UserCommentTopicEnum currencyWarningTopicEnum) {
         return currencyDao.getWarningForCurrency(currencyId, currencyWarningTopicEnum);
     }
 
+    @Override
     public List<String> getWarningsByTopic(UserCommentTopicEnum currencyWarningTopicEnum) {
         return currencyDao.getWarningsByTopic(currencyWarningTopicEnum);
     }
 
+    @Override
     public List<String> getWarningForMerchant(Integer merchantId, UserCommentTopicEnum currencyWarningTopicEnum) {
         return currencyDao.getWarningForMerchant(merchantId, currencyWarningTopicEnum);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Currency getById(int id) {
         return currencyDao.findById(id);
     }
 
+
+
+    @Override
     public BigDecimal computeRandomizedAddition(Integer currencyId, OperationType operationType) {
         Optional<OperationType.AdditionalRandomAmountParam> randomAmountParam = operationType.getRandomAmountParam(currencyId);
         if (!randomAmountParam.isPresent()) {
@@ -138,43 +169,12 @@ public class CurrencyServiceImpl implements CurrencyService {
         }
     }
 
+    @Override
     public boolean isIco(Integer currencyId) {
         return currencyDao.isCurrencyIco(currencyId);
     }
 
     @Override
-    public List<CurrencyPair> getAllCurrencyPairs(CurrencyPairType type) {
-        return currencyDao.getAllCurrencyPairs(type);
-    }
-
-    @Override
-    public CurrencyPair findCurrencyPairById(int id) {
-        try {
-            return currencyDao.findCurrencyPairById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CurrencyPairNotFoundException("Currency pair not found");
-        }
-    }
-
-    @Override
-    public Integer findCurrencyPairIdByName(String pairName) {
-        return currencyDao.findOpenCurrencyPairIdByName(pairName).orElseThrow(() -> new CurrencyPairNotFoundException(pairName));
-    }
-
-    @Override
-    public CurrencyPairLimitDto findLimitForRoleByCurrencyPairAndType(int currencyPairId, OperationType operationType) {
-        UserRole userRole = userService.getUserRoleFromSecurityContext();
-        OrderType orderType = OrderType.convert(operationType.name());
-        return currencyDao.findCurrencyPairLimitForRoleByPairAndType(currencyPairId, userRole.getRole(), orderType.getType());
-
-    }
-
-    @Override
-    public CurrencyPair getCurrencyPairByName(String pairName) {
-
-        return currencyDao.findCurrencyPairByName(pairName);
-    }
-
     @Transactional
     public MerchantCurrencyScaleDto getCurrencyScaleByCurrencyId(Integer currencyId) {
         MerchantCurrencyScaleDto result = currencyDao.findCurrencyScaleByCurrencyId(currencyId);

@@ -13,6 +13,7 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.merchant.YandexMoneyService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
@@ -74,6 +75,9 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     @Override
     public List<String> getAllTokens() {
@@ -238,5 +242,11 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         throw new NotImplimentedMethod("for "+params);
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(address);
     }
 }

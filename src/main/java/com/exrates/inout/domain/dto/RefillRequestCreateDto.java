@@ -4,12 +4,14 @@ import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
 
 @Data
+@NoArgsConstructor
 public class RefillRequestCreateDto {
     private Integer id;
     private Integer userId;

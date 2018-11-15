@@ -14,6 +14,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.PayeerService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -49,6 +50,9 @@ public class PayeerServiceImpl implements PayeerService {
 
   @Autowired
   private CurrencyService currencyService;
+
+  @Autowired
+  private WithdrawUtils withdrawUtils;
 
   @Override
   public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -111,4 +115,9 @@ public class PayeerServiceImpl implements PayeerService {
     }
   }
 
+  @Override
+  public boolean isValidDestinationAddress(String address) {
+
+    return withdrawUtils.isValidDestinationAddress(address);
+  }
 }

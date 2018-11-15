@@ -12,6 +12,7 @@ import com.exrates.inout.exceptions.WithdrawRequestPostException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,8 @@ public class RippleServiceImpl implements RippleService {
   private MessageSource messageSource;
   @Autowired
   private RefillService refillService;
+  @Autowired
+  private WithdrawUtils withdrawUtils;
   private static final String XRP_MERCHANT = "Ripple";
 
   private static final int MAX_TAG_DESTINATION_DIGITS = 9;
@@ -168,5 +171,11 @@ public class RippleServiceImpl implements RippleService {
             && Long.valueOf(destinationTag) <= 4294967295L)) {
       throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());
     }
+  }
+
+  @Override
+  public boolean isValidDestinationAddress(String address) {
+
+    return withdrawUtils.isValidDestinationAddress(systemAddress, address);
   }
 }
