@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.util.Objects.isNull;
 
-@Service
+
 @Slf4j
 public class CurrencyServiceImpl implements CurrencyService {
 

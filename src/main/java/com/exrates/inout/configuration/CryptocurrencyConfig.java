@@ -15,6 +15,8 @@ import com.exrates.inout.service.ethereum.EthTokenServiceImpl;
 import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
 import com.exrates.inout.service.ethereum.ExConvert;
+import com.exrates.inout.service.impl.CurrencyServiceImpl;
+import com.exrates.inout.service.impl.MerchantServiceImpl;
 import com.exrates.inout.service.lisk.ArkSpecialMethodServiceImpl;
 import com.exrates.inout.service.lisk.LiskRestClient;
 import com.exrates.inout.service.lisk.LiskRestClientImpl;
@@ -41,6 +43,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -53,13 +57,18 @@ import java.util.Map;
 
 @Log4j2(topic = "config")
 @Configuration
-@ComponentScan({"com.exrates.inout.service"})
 public class CryptocurrencyConfig {
 
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private CurrencyService currencyService;
+
+    @Bean
+    public CurrencyService currencyService() {
+        return new CurrencyServiceImpl();
+    }
+
+    @Bean
+    public MerchantService merchantService() {
+        return new MerchantServiceImpl();
+    }
 
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
@@ -803,29 +812,28 @@ public class CryptocurrencyConfig {
     //NEO and Forks
     @Bean(name = "neoServiceImpl")
     public NeoService neoService() {
-        System.out.println("merchant service " + merchantService);
-        Merchant mainMerchant = merchantService.findByName(NeoAsset.NEO.name());
-        Currency mainCurrency = currencyService.findByName(NeoAsset.NEO.name());
-        System.out.println("main curr " + mainCurrency);
+        Merchant mainMerchant = merchantService().findByName(NeoAsset.NEO.name());
+        Currency mainCurrency = currencyService().findByName(NeoAsset.NEO.name());
         Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
             put(NeoAsset.NEO.getId(), new AssetMerchantCurrencyDto(NeoAsset.NEO, mainMerchant, mainCurrency));
-            put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService.findByName(NeoAsset.GAS.name()), currencyService.findByName(NeoAsset.GAS.name())));
+            put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService().findByName(NeoAsset.GAS.name()), currencyService().findByName(NeoAsset.GAS.name())));
         }};
         return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/neo.properties");
     }
 
     @Bean(name = "kazeServiceImpl")
     public NeoService kazeService() {
-        Merchant mainMerchant = merchantService.findByName(NeoAsset.KAZE.name());
-        Currency mainCurrency = currencyService.findByName(NeoAsset.KAZE.name());
+        Merchant mainMerchant = merchantService().findByName(NeoAsset.KAZE.name());
+        Currency mainCurrency = currencyService().findByName(NeoAsset.KAZE.name());
         Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
             put(NeoAsset.KAZE.getId(), new AssetMerchantCurrencyDto(NeoAsset.KAZE, mainMerchant, mainCurrency));
-            put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService.findByName(NeoAsset.STREAM.name()), currencyService.findByName(NeoAsset.STREAM.name())));
+            put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService().findByName(NeoAsset.STREAM.name()), currencyService().findByName(NeoAsset.STREAM.name())));
         }};
         return new NeoServiceImpl(mainMerchant, mainCurrency, neoAssetMap, "merchants/kaze.properties");
     }
 
     //    Qtum tokens:
+
     @Bean(name = "spcServiceImpl")
     public QtumTokenService spcService() {
         List<String> tokensList = new ArrayList<>();
