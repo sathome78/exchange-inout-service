@@ -1,6 +1,8 @@
 package com.exrates.inout.service.btc;
 
 import com.exrates.inout.domain.dto.*;
+import com.neemre.btcdcli4j.core.BitcoindException;
+import com.neemre.btcdcli4j.core.CommunicationException;
 import reactor.core.publisher.Flux;
 
 import javax.annotation.Nullable;
@@ -65,4 +67,6 @@ public interface CoreWalletService {
   String getLastBlockHash();
 
   BtcBlockDto getBlockByHash(String blockHash);
+
+  Integer getBlocksAmount() throws BitcoindException, CommunicationException;
 }

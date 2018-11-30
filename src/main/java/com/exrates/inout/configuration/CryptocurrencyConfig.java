@@ -6,7 +6,9 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
 import com.exrates.inout.domain.neo.NeoAsset;
 import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.IMerchantService;
 import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NodeChecker;
 import com.exrates.inout.service.achain.AchainContract;
 import com.exrates.inout.service.crypto_currencies.MoneroService;
 import com.exrates.inout.service.crypto_currencies.MoneroServiceImpl;
@@ -39,27 +41,20 @@ import lombok.extern.log4j.Log4j2;
 
 import org.nem.core.model.primitive.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
-
-
+    
     @Bean
     public CurrencyService currencyService() {
         return new CurrencyServiceImpl();
@@ -69,6 +64,9 @@ public class CryptocurrencyConfig {
     public MerchantService merchantService() {
         return new MerchantServiceImpl();
     }
+
+    @Autowired
+    public Map<String, NodeChecker> nodeServices;
 
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
@@ -286,13 +284,13 @@ public class CryptocurrencyConfig {
                 "QRK", "QRK", 20, 20, false, false);
     }
 
-    @Bean(name="cmkServiceImpl")
-    public BitcoinService cmkService(){
+    @Bean(name = "cmkServiceImpl")
+    public BitcoinService cmkService() {
         return new BitcoinServiceImpl("merchants/cmk_wallet.properties", "CMK", "CMK", 20, 20, false, true);
     }
 
-    @Bean(name="mbcServiceImpl")
-    public BitcoinService mbcService(){
+    @Bean(name = "mbcServiceImpl")
+    public BitcoinService mbcService() {
         return new BitcoinServiceImpl("merchants/mbc_wallet.properties", "MBC", "MBC", 20, 20, false, true);
     }
 
@@ -302,18 +300,19 @@ public class CryptocurrencyConfig {
                 "DDX", "DDX", 4, 20, false, true);
     }
 
-    @Bean(name="lpcServiceImpl")
-    public BitcoinService lpcService(){
+    @Bean(name = "lpcServiceImpl")
+    public BitcoinService lpcService() {
         return new BitcoinServiceImpl("merchants/lpc_wallet.properties", "LPC", "LPC", 20, 20, false, false);
     }
+
     @Bean(name = "xfcServiceImpl")
     public BitcoinService xfcServiceImpl() {
         return new BitcoinServiceImpl("merchants/xfc_wallet.properties",
                 "XFC", "XFC", 20, 20, false, false);
     }
 
-    @Bean(name="TOAServiceImpl")
-    public BitcoinService taoServiceImpl(){
+    @Bean(name = "TOAServiceImpl")
+    public BitcoinService taoServiceImpl() {
         return new BitcoinServiceImpl("merchants/toa_wallet.properties", "TOA", "TOA", 20, 20, false, false);
     }
 
@@ -757,7 +756,6 @@ public class CryptocurrencyConfig {
     }
 
 
-
     // LISK-like cryptos
     @Bean(name = "liskServiceImpl")
     public LiskService liskService() {
@@ -804,11 +802,11 @@ public class CryptocurrencyConfig {
         return new WavesServiceImpl("WAVES", "Waves", "merchants/waves.properties");
     }
 
-  /*  @Bean(name = "lunesServiceImpl")
-    public WavesService lunesService() {
-        return new WavesServiceImpl("LUNES", "LUNES", "merchants/lunes.properties");
-    }
-*/
+    /*  @Bean(name = "lunesServiceImpl")
+      public WavesService lunesService() {
+          return new WavesServiceImpl("LUNES", "LUNES", "merchants/lunes.properties");
+      }
+  */
     //NEO and Forks
     @Bean(name = "neoServiceImpl")
     public NeoService neoService() {

@@ -6,8 +6,11 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NodeChecker;
 import com.exrates.inout.service.RefillService;
 import com.google.common.hash.Hashing;
+import com.neemre.btcdcli4j.core.BitcoindException;
+import com.neemre.btcdcli4j.core.CommunicationException;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -96,8 +99,8 @@ public class AunitNodeServiceImpl {
 
     @PostConstruct
     public void init() {
-        WS_SERVER_URL = URI.create(wsUrl);
-        connectAndSubscribe();
+//        WS_SERVER_URL = URI.create(wsUrl);
+//        connectAndSubscribe();
     }
 
     private void connectAndSubscribe() {
@@ -287,7 +290,6 @@ public class AunitNodeServiceImpl {
             log.error("error closing session");
         }
     }
-
 //    public static void main(String[] args) throws NoSuchAlgorithmException {
 //        String s = decryptBTSmemo("5JZ4ZrZ7GXKGKVgqJ6ZKHNDfJAe2K1B58sUVHspA9iLQ3UBG6Lh",
 //                "{\"from\":\"AUNIT7k3nL56J7hh2yGHgWTUk9bGdjG2LL1S7egQDJYZ71MQtU3CqB5\",\"to\":\"AUNIT6Y1omrtPmYEHBaK7gdAeqdGASPariaCXGm83Phjc2NDEuxYfzV\",\"nonce\":\"394357881684245\",\"message\":\"70c9c5459c69e2182693c604f6102dee\"}");

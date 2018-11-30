@@ -7,10 +7,13 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NodeChecker;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.ParamMapUtils;
+import com.neemre.btcdcli4j.core.BitcoindException;
+import com.neemre.btcdcli4j.core.CommunicationException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,8 @@ import java.util.stream.Collectors;
 @Log4j2(topic = "bitcoin_core")
 public class BitcoinServiceImpl implements BitcoinService {
 
+  private static final String BLOCK_CHECKER = "BlockChecker";
+
   @Value("${btcInvoice.blockNotifyUsers}")
   private Boolean BLOCK_NOTIFYING;
 
@@ -54,6 +59,9 @@ public class BitcoinServiceImpl implements BitcoinService {
 
   @Autowired
   private WithdrawUtils withdrawUtils;
+
+  @Autowired
+  private Map<String, BitcoinBlocksCheckerService> bitcoinBlocksCheckerServiceMap;
 
   private String backupFolder;
 
@@ -82,8 +90,6 @@ public class BitcoinServiceImpl implements BitcoinService {
   private Boolean supportReferenceLine;
 
   private ScheduledExecutorService newTxCheckerScheduler = Executors.newSingleThreadScheduledExecutor();
-
-
 
   @Override
   public Integer minConfirmationsRefill() {
@@ -274,6 +280,7 @@ public class BitcoinServiceImpl implements BitcoinService {
     } catch (Exception e) {
       log.error(e);
     }
+
   }
 
   void processBtcPayment(BtcPaymentFlatDto btcPaymentFlatDto) {
@@ -605,4 +612,23 @@ public class BitcoinServiceImpl implements BitcoinService {
     newTxCheckerScheduler.shutdown();
   }
 
+  @Override
+  public Long getBlocksAmount() {
+    try {
+      return Long.valueOf(bitcoinWalletService.getBlocksAmount());
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  @Override
+  public Long getBlocksAmountFromExplorer() {
+    return bitcoinBlocksCheckerServiceMap.get(merchantName + BLOCK_CHECKER).getExplorerBlocksAmount();
+  }
+
+  @Override
+  public boolean isAlive() {
+    return getBlocksAmount() != null;
+  }
+  
 }

@@ -5,6 +5,7 @@ import com.exrates.inout.event.BtcBlockEvent;
 import com.exrates.inout.event.BtcWalletEvent;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
+import com.exrates.inout.service.NodeChecker;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -12,7 +13,7 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface BitcoinService extends IRefillable, IWithdrawable {
+public interface BitcoinService extends IRefillable, IWithdrawable, NodeChecker {
 
     boolean isRawTxEnabled();
 

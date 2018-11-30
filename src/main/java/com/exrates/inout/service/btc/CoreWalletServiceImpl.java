@@ -635,7 +635,10 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         outputUnlockingExecutor.shutdown();
     }
 
-
+    @Override
+    public Integer getBlocksAmount() throws BitcoindException, CommunicationException {
+        return btcdClient.getBlockCount();
+    }
 
 
 }
