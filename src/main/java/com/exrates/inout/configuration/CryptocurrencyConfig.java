@@ -65,9 +65,6 @@ public class CryptocurrencyConfig {
         return new MerchantServiceImpl();
     }
 
-    @Autowired
-    public Map<String, NodeChecker> nodeServices;
-
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
         return new BitcoinServiceImpl("merchants/bitcoin_wallet.properties",

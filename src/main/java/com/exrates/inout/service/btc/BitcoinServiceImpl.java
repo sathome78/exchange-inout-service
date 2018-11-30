@@ -623,7 +623,7 @@ public class BitcoinServiceImpl implements BitcoinService {
 
   @Override
   public Long getBlocksAmountFromExplorer() {
-    return bitcoinBlocksCheckerServiceMap.get(merchantName + BLOCK_CHECKER).getExplorerBlocksAmount();
+    return bitcoinBlocksCheckerServiceMap.get(merchantName.toLowerCase() + BLOCK_CHECKER).getExplorerBlocksAmount();
   }
 
   @Override

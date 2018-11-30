@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 
 import javax.ws.rs.client.Client;
 
-@Service("SICBlockChecker")
+@Service("dimeBlockChecker")
 @PropertySource("classpath:/coins_api_endpoints.properties")
-public class SICBlockChecker extends APIExplorer {
-        public SICBlockChecker(@Value("#{sic.blocks.endpoint}") String endpoint, Client client) {
+public class DIMEBlockChecker extends APIExplorer {
+
+    @Autowired
+    Client client;
+
+    public DIMEBlockChecker(@Value("#{dime.blocks.endpoint}") String endpoint, Client client) {
         super(endpoint, client);
     }
 }

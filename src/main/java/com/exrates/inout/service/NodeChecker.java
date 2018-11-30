@@ -5,9 +5,13 @@ import com.neemre.btcdcli4j.core.CommunicationException;
 
 public interface NodeChecker {
 
-    Long getBlocksAmount() throws BitcoindException, CommunicationException;
+    default Long getBlocksAmount() throws BitcoindException, CommunicationException {
+        return 1L;
+    }
 
-    Long getBlocksAmountFromExplorer();
+    default Long getBlocksAmountFromExplorer() {
+        return 1L;
+    }
 
     default boolean isSynchronized() throws BitcoindException, CommunicationException {
         long module = Math.abs(getBlocksAmount() / getBlocksAmountFromExplorer());

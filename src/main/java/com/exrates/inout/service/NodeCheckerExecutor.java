@@ -13,21 +13,19 @@ public class NodeCheckerExecutor {
 
     private Map<String, NodeChecker> nodes;
 
-    @Scheduled
-    public void check(){
-        ExecutorService executor = Executors.newFixedThreadPool(nodes.size());
-
-        nodes.forEach((name, service) -> {
-            checkIfAlive(service);
-            checkSynchronizing(service);
-        });
-    }
+//    @Scheduled(cron = "* * 0 * * ?")
+//    public void check(){
+//        ExecutorService executor = Executors.newFixedThreadPool(nodes.size());
+//
+//        nodes.forEach((name, service) -> {
+//            checkIfAlive(service);
+//            checkSynchronizing(service);
+//        });
+//    }
 
     private void checkSynchronizing(NodeChecker service) {
        try {
-           if(!service.isSynchronized()){
-               throw new NoSynchronizedException();
-           }
+           if(!service.isSynchronized()) throw new NoSynchronizedException();
        } catch (Exception e){
             //todo send email/telegram with info
        }
