@@ -5,7 +5,7 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-        sh 'mvn -P bintray,$ENVIRONMENT clean install -e'
+        sh 'mvn -P bintray,$ENVIRONMENT clean install -DskipTests=true'
         sh 'docker build -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
       }
     } 
