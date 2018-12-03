@@ -5,8 +5,8 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-        sh 'mvn clean package -DskipTests'
-        sh 'docker build --build-arg ENVIRONMENT -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
+        sh 'mvn -P ENVIRONMENT clean package'
+        sh 'docker build -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
       }
     } 
     stage('Docker pull') {
