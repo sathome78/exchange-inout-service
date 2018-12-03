@@ -5,7 +5,7 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-        sh 'mvn -P ENVIRONMENT clean package'
+        sh 'mvn -P $ENVIRONMENT clean package'
         sh 'docker build -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
       }
     } 
