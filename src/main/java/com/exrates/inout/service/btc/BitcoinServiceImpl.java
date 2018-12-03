@@ -7,13 +7,10 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.NodeChecker;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.ParamMapUtils;
-import com.neemre.btcdcli4j.core.BitcoindException;
-import com.neemre.btcdcli4j.core.CommunicationException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -619,11 +616,6 @@ public class BitcoinServiceImpl implements BitcoinService {
     } catch (Exception e) {
       return null;
     }
-  }
-
-  @Override
-  public Long getBlocksAmountFromExplorer() {
-    return bitcoinBlocksCheckerServiceMap.get(merchantName.toLowerCase() + BLOCK_CHECKER).getExplorerBlocksAmount();
   }
 
   @Override

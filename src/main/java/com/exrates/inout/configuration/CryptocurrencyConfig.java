@@ -221,7 +221,7 @@ public class CryptocurrencyConfig {
                 "BitcoinClean", "BCL", 20, 20, false);
     }
 
-    @Bean(name = "brecoServiceImpl")
+    @Bean(name = "brecoServiceImpl")//todo from here to up
     public BitcoinService brecoService() {
         return new BitcoinServiceImpl("merchants/breco_wallet.properties",
                 "BRECO", "BRECO", 20, 20, false,
@@ -324,13 +324,13 @@ public class CryptocurrencyConfig {
                 "NuShares", "NSR", 20, 20, false, false);
     }
 
-    @Bean(name = "amlServiceImpl")
+    @Bean(name = "amlServiceImpl")//x3
     public BitcoinService amlService() {
         return new BitcoinServiceImpl("merchants/aml_wallet.properties",
                 "AML", "ABTC", 20, 20, false);
     }
 
-    @Bean(name = "bbccServiceImpl")
+    @Bean(name = "bbccServiceImpl") //x3
     public BitcoinService bbccService() {
         return new BitcoinServiceImpl("merchants/bbcc_wallet.properties",
                 "BBX", "BBX", 20, 20, false, false, false);
