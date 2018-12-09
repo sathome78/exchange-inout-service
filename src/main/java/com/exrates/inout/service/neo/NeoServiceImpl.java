@@ -19,6 +19,7 @@ import com.exrates.inout.exceptions.MerchantException;
 import com.exrates.inout.exceptions.NeoApiException;
 import com.exrates.inout.exceptions.NeoPaymentProcessingException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.NeoProperty;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.ParamMapUtils;
@@ -34,10 +35,10 @@ import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +50,8 @@ import java.util.stream.Stream;
 @Log4j2(topic = "neo_log")
 @PropertySource("classpath:/merchants/neo.properties")
 public class NeoServiceImpl implements NeoService {
+
+    private static final String NEO_SPEC_PARAM_NAME = "LastRecievedBlock";
 
     @Autowired
     private RefillService refillService;
@@ -63,29 +66,23 @@ public class NeoServiceImpl implements NeoService {
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    private String mainAccount;
-    private Integer minConfirmations;
+    private String merchantName;
+    private String currencyName;
+    private int minConfirmations;
 
+    private String endpoint;
+    private String address;
+
+    private Merchant merchant;
+    private Currency currency;
     private Map<String, AssetMerchantCurrencyDto> neoAssetMap;
-    private final String neoSpecParamName = "LastRecievedBlock";
-    private Merchant mainMerchant;
-    private Currency mainCurency;
+
     private NeoNodeService neoNodeService;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private Properties props = new Properties();
-    private String propertySource;
 
     @PostConstruct
     public void init() {
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-        } catch (Exception e) {
-            log.error("{} error load", propertySource);
-            throw new RuntimeException(e);
-        }
-        this.mainAccount = props.getProperty("neo.main.address");
-        this.minConfirmations = Integer.valueOf(props.getProperty("neo.min.confirmations"));
-        this.neoNodeService = new NeoNodeServiceImpl(props.getProperty("neo.node.endpoint"), restTemplate, objectMapper);
+        this.neoNodeService = new NeoNodeServiceImpl(endpoint, restTemplate, objectMapper);
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 scanLastBlocksAndUpdatePayments();
@@ -95,11 +92,15 @@ public class NeoServiceImpl implements NeoService {
         }, 3L, 5L, TimeUnit.MINUTES);
     }
 
-    public NeoServiceImpl(Merchant mainMerchant, Currency mainCurrency, Map<String, AssetMerchantCurrencyDto> neoAssetMap, String propertySource) {
-        this.neoAssetMap = neoAssetMap;
-        this.mainMerchant = mainMerchant;
-        this.mainCurency = mainCurrency;
-        this.propertySource = propertySource;
+    public NeoServiceImpl(NeoProperty property) {
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.minConfirmations = property.getMinConfirmations();
+        this.endpoint = property.getEndpoint();
+        this.address = property.getAddress();
+        this.merchant = property.getMerchant();
+        this.currency = property.getCurrency();
+        this.neoAssetMap = property.getNeoAssetMap();
     }
 
     @Override
@@ -129,22 +130,20 @@ public class NeoServiceImpl implements NeoService {
         BigDecimal withdrawAmount = new BigDecimal(withdrawMerchantOperationDto.getAmount());
         NeoAsset asset = NeoAsset.valueOf(withdrawMerchantOperationDto.getCurrency());
         try {
-            NeoTransaction neoTransaction = neoNodeService.sendToAddress(asset, withdrawMerchantOperationDto.getAccountTo(), withdrawAmount, mainAccount);
+            NeoTransaction neoTransaction = neoNodeService.sendToAddress(asset, withdrawMerchantOperationDto.getAccountTo(), withdrawAmount, address);
             return Collections.singletonMap("hash", neoTransaction.getTxid());
         } catch (NeoApiException e) {
-           if (e.getCode() == -300) {
-               throw new InsufficientCostsInWalletException();
-           } else if (e.getCode() == -2146233033) {
-               throw new InvalidAccountException();
-           } else {
-               throw new MerchantException(e.getMessage());
-           }
-        }
-        catch (Exception e) {
+            if (e.getCode() == -300) {
+                throw new InsufficientCostsInWalletException();
+            } else if (e.getCode() == -2146233033) {
+                throw new InvalidAccountException();
+            } else {
+                throw new MerchantException(e.getMessage());
+            }
+        } catch (Exception e) {
             throw new MerchantException(e);
         }
     }
-
 
     @Override
     public void scanLastBlocksAndUpdatePayments() {
@@ -157,13 +156,11 @@ public class NeoServiceImpl implements NeoService {
         log.debug("Profile results: " + profileData);
     }
 
-    void scanBlocks() {
-        Merchant merchantNeo = mainMerchant;
-        Currency currencyNeo = mainCurency;
-        final int lastReceivedBlock = Integer.parseInt(specParamsDao.getByMerchantNameAndParamName(mainMerchant.getName(),
-                neoSpecParamName).getParamValue());
+    private void scanBlocks() {
+        final int lastReceivedBlock = Integer.parseInt(specParamsDao.getByMerchantNameAndParamName(merchant.getName(),
+                NEO_SPEC_PARAM_NAME).getParamValue());
         final int blockCount = neoNodeService.getBlockCount();
-        Set<String> addresses = refillService.findAllAddresses(merchantNeo.getId(), currencyNeo.getId()).stream().distinct().collect(Collectors.toSet());
+        Set<String> addresses = new HashSet<>(refillService.findAllAddresses(merchant.getId(), currency.getId()));
         List<NeoVout> outputs = IntStream.range(lastReceivedBlock, blockCount).parallel().mapToObj(neoNodeService::getBlock).filter(Optional::isPresent).map(Optional::get)
                 .flatMap(block -> block.getTx().stream().filter(tx -> "ContractTransaction".equals(tx.getType()))
                         .flatMap(tx -> tx.getVout().stream().filter(vout -> addresses.contains(vout.getAddress()))
@@ -177,14 +174,14 @@ public class NeoServiceImpl implements NeoService {
                                 }))
                 ).collect(Collectors.toList());
         log.debug("Processed outputs: " + outputs);
-        specParamsDao.updateParam(mainMerchant.getName(), neoSpecParamName, String.valueOf(blockCount));
+        specParamsDao.updateParam(merchant.getName(), NEO_SPEC_PARAM_NAME, String.valueOf(blockCount));
     }
 
-    void updateExistingPayments() {
+    private void updateExistingPayments() {
         log.debug("Check and update existing payments");
         neoAssetMap.forEach((key, value) ->
                 refillService.getInExamineByMerchantIdAndCurrencyIdList(value.getMerchant().getId(), value.getCurrency().getId())
-        .stream().flatMap(dto -> Stream.of(neoNodeService.getTransactionById(dto.getMerchantTransactionId())).filter(Optional::isPresent).map(Optional::get)
+                        .stream().flatMap(dto -> Stream.of(neoNodeService.getTransactionById(dto.getMerchantTransactionId())).filter(Optional::isPresent).map(Optional::get)
                         .flatMap(tx -> tx.getVout().stream().filter(vout -> dto.getAddress().equals(vout.getAddress())).peek(vout -> {
                             try {
                                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -200,10 +197,9 @@ public class NeoServiceImpl implements NeoService {
                                 log.error(e);
                             }
                         }))).forEach(vout -> log.debug("Payment updated: " + vout)));
-
     }
 
-    void processNeoPayment(String txId, NeoVout vout, Integer confirmations, String blockhash) {
+    private void processNeoPayment(String txId, NeoVout vout, Integer confirmations, String blockhash) {
         AssetMerchantCurrencyDto assetMerchantCurrencyDto = neoAssetMap.get(vout.getAsset());
         String address = vout.getAddress();
         BigDecimal amount = new BigDecimal(vout.getValue());
@@ -227,12 +223,12 @@ public class NeoServiceImpl implements NeoService {
             Optional<Integer> refillRequestIdResult = refillService.getRequestIdInPendingByAddressAndMerchantIdAndCurrencyId(
                     address, merchantId, currencyId);
             Integer requestId = refillRequestIdResult.orElseGet(() -> {
-                        RefillRequestAcceptDto refillRequestAcceptDto = RefillRequestAcceptDto.builder()
-                                .address(address)
-                                .amount(amount)
-                                .merchantId(merchantId)
-                                .currencyId(currencyId)
-                                .merchantTransactionId(txId).build();
+                RefillRequestAcceptDto refillRequestAcceptDto = RefillRequestAcceptDto.builder()
+                        .address(address)
+                        .amount(amount)
+                        .merchantId(merchantId)
+                        .currencyId(currencyId)
+                        .merchantTransactionId(txId).build();
 
                 log.debug("Create request by fact! : " + refillRequestAcceptDto);
                 return refillService.createRefillRequestByFact(refillRequestAcceptDto);
@@ -264,7 +260,7 @@ public class NeoServiceImpl implements NeoService {
         }
     }
 
-    void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto, String assetId) {
+    private void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto, String assetId) {
         try {
             if (dto.getConfirmations() != null) {
                 refillService.setConfirmationCollectedNumber(dto);
@@ -285,11 +281,10 @@ public class NeoServiceImpl implements NeoService {
         } catch (RefillRequestAppropriateNotFoundException e) {
             log.error(e);
         }
-
     }
 
     private void transferCostsToMainAccount(String assetId, BigDecimal amount) {
-        neoNodeService.sendToAddress(neoAssetMap.get(assetId).getAsset(), mainAccount, amount, mainAccount);
+        neoNodeService.sendToAddress(neoAssetMap.get(assetId).getAsset(), address, amount, address);
     }
 
     @Override
@@ -302,5 +297,4 @@ public class NeoServiceImpl implements NeoService {
     public void shutdown() {
         scheduler.shutdown();
     }
-
 }

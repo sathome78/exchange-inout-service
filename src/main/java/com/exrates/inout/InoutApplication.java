@@ -3,7 +3,7 @@ package com.exrates.inout;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(exclude = {
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class
 })
 @EnableTransactionManagement
+@EnableEurekaClient
 public class InoutApplication {
 
     public static void main(String[] args) {

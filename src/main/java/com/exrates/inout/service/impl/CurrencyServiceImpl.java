@@ -34,17 +34,15 @@ import static java.util.Objects.isNull;
 
 
 @Slf4j
+@Service
 public class CurrencyServiceImpl implements CurrencyService {
 
     @Autowired
     private CurrencyDao currencyDao;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     UserRoleService userRoleService;
-
 
     private static final Set<String> CRYPTO = new HashSet<String>() {
         {

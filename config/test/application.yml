@@ -1,4 +1,10 @@
 spring:
+  profiles:
+    active: test
+  application:
+    admin:
+      enabled: true
+    name: input-output-service
   datasource:
     hikari:
       password: root
@@ -9,15 +15,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  profiles:
-    active: container
   redis:
-      host: 172.10.10.236
+    host: 172.10.10.236
     port: 6379
-  application:
-    name: input_output_api
-server:
-  port: 8080
 
 slave:
   datasource:
@@ -30,11 +30,25 @@ slave:
 
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://172.50.50.245:8091/eureka}
+    should-unregister-on-shutdown: true
+    registry-fetch-interval-seconds: 5
   instance:
-    prefer-ip-address: true
+    preferIpAddress: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    lease-renewal-interval-in-seconds: 10
+    metadata-map:
+      startup: ${random.int}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
 
 mail:
   mail_support:

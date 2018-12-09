@@ -2,21 +2,44 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.MerchantDao;
 import com.exrates.inout.domain.CoreWalletDto;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyOptionsDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
+import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserCommentTopicEnum;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
-import com.exrates.inout.domain.main.*;
+import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.exceptions.*;
-import com.exrates.inout.service.*;
+import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.MerchantCurrency;
+import com.exrates.inout.domain.main.Transaction;
+import com.exrates.inout.exceptions.InvalidAmountException;
+import com.exrates.inout.exceptions.MerchantCurrencyBlockedException;
+import com.exrates.inout.exceptions.MerchantNotFoundException;
+import com.exrates.inout.exceptions.MerchantServiceBeanNameNotDefinedException;
+import com.exrates.inout.exceptions.MerchantServiceNotFoundException;
+import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
+import com.exrates.inout.service.CommissionService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.IMerchantService;
+import com.exrates.inout.service.IRefillable;
+import com.exrates.inout.service.ITransferable;
+import com.exrates.inout.service.IWithdrawable;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NotificationService;
+import com.exrates.inout.service.SendMailService;
+import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.btc.BitcoinService;
 import com.exrates.inout.util.BigDecimalProcessing;
-import javafx.util.Pair;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +54,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,23 +75,19 @@ public class MerchantServiceImpl implements MerchantService {
 
     private static final Logger LOG = LogManager.getLogger("merchant");
 
-    private @Value("${btc.walletspass.folder}") String walletPropsFolder;
+    private @Value("${btc.walletspass.folder}")
+    String walletPropsFolder;
 
     @Autowired
     private MerchantDao merchantDao;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private SendMailService sendMailService;
-
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private NotificationService notificationService;
-
     @Autowired
     private MerchantServiceContext merchantServiceContext;
     @Autowired
@@ -141,7 +166,7 @@ public class MerchantServiceImpl implements MerchantService {
     private Map<Integer, List<Merchant>> mapMerchantsToCurrency(List<Currency> currencies) {
         return currencies.stream()
                 .map(Currency::getId)
-                .map(currencyId -> new Pair<>(currencyId, merchantDao.findAllByCurrency(currencyId)))
+                .map(currencyId -> Pair.of(currencyId, merchantDao.findAllByCurrency(currencyId)))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
@@ -296,13 +321,13 @@ public class MerchantServiceImpl implements MerchantService {
     public void setBlockForAll(OperationType operationType, boolean blockStatus) {
 
         if (blockStatus) {
-            if(merchantDao.isBlockStateValid(operationType)){
+            if (merchantDao.isBlockStateValid(operationType)) {
                 merchantDao.backupBlockState(operationType);
             }
             merchantDao.setBlockForAllNonTransfer(operationType);
         } else {
             //check for do not restore all 1 or all 0
-            if(merchantDao.isBlockStateBackupValid(operationType)){
+            if (merchantDao.isBlockStateBackupValid(operationType)) {
                 merchantDao.restoreBlockState(operationType);
             }
         }

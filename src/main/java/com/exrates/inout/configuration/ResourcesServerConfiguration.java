@@ -36,6 +36,7 @@ public class ResourcesServerConfiguration extends ResourceServerConfigurerAdapte
         http
                 .antMatcher("/api/**")
                 .authorizeRequests()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers(POST, "/withdraw/request/**").authenticated()
                 .antMatchers("/withdrawal/request/accept", "/withdrawal/request/decline").hasAuthority(PROCESS_WITHDRAW.name())

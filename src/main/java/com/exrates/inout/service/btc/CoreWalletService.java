@@ -1,6 +1,8 @@
 package com.exrates.inout.service.btc;
 
 import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.properties.models.BitcoinNode;
+import com.exrates.inout.properties.models.BitcoinProperty;
 import reactor.core.publisher.Flux;
 
 import javax.annotation.Nullable;
@@ -12,7 +14,7 @@ import java.util.Properties;
 
 public interface CoreWalletService {
 
-  void initCoreClient(String nodePropertySource, Properties passPropertySource, boolean supportInstantSend, boolean supportSubtractFee, boolean supportReferenceLine);
+  void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine);
 
   void initBtcdDaemon(boolean zmqEnabled);
 

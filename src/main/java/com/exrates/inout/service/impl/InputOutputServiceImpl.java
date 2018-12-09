@@ -40,27 +40,20 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     InputOutputDao inputOutputDao;
-
     @Autowired
     private CommissionService commissionService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private WalletService walletService;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
     @Autowired
     MerchantServiceContext merchantServiceContext;
-
 
     private void setAdditionalFields(List<MyInputOutputHistoryDto> inputOutputList, Locale locale) {
         inputOutputList.forEach(e ->
@@ -79,7 +72,6 @@ public class InputOutputServiceImpl implements InputOutputService {
         return result;
     }
 
-
     @Override
     public List<Map<String, Object>> generateAndGetButtonsSet(
             InvoiceStatus status,
@@ -97,7 +89,6 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .peek(e -> e.put("buttonTitle", messageSource.getMessage((String) e.get("buttonTitle"), null, locale)))
                 .collect(Collectors.toList());
     }
-
 
     private String generateAndGetSummaryStatus(MyInputOutputHistoryDto row, Locale locale) {
         log.debug("status1 {}", row);
@@ -192,5 +183,4 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .build();
         return Optional.of(creditsOperation);
     }
-
 }

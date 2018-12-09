@@ -1,11 +1,21 @@
 package com.exrates.inout.service.btc;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.BtcBlockDto;
+import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDto;
+import com.exrates.inout.domain.dto.BtcPreparedTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
+import com.exrates.inout.domain.dto.BtcTxOutputDto;
+import com.exrates.inout.domain.dto.BtcTxPaymentDto;
+import com.exrates.inout.domain.dto.BtcWalletInfoDto;
+import com.exrates.inout.domain.dto.TxReceivedByAddressFlatDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.exceptions.BitcoinCoreException;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.service.btc.BtcDaemon.BtcDaemon;
 import com.exrates.inout.service.btc.BtcDaemon.BtcHttpDaemonImpl;
 import com.exrates.inout.service.btc.BtcDaemon.BtcdZMQDaemonImpl;
@@ -14,7 +24,16 @@ import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
-import com.neemre.btcdcli4j.core.domain.*;
+import com.neemre.btcdcli4j.core.domain.Address;
+import com.neemre.btcdcli4j.core.domain.Block;
+import com.neemre.btcdcli4j.core.domain.FundingResult;
+import com.neemre.btcdcli4j.core.domain.OutputOverview;
+import com.neemre.btcdcli4j.core.domain.RawTransactionOverview;
+import com.neemre.btcdcli4j.core.domain.SignatureResult;
+import com.neemre.btcdcli4j.core.domain.SinceBlock;
+import com.neemre.btcdcli4j.core.domain.SmartFee;
+import com.neemre.btcdcli4j.core.domain.Transaction;
+import com.neemre.btcdcli4j.core.domain.WalletInfo;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -33,19 +52,29 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Created by OLEG on 14.03.2017.
- */
+import static java.util.Objects.nonNull;
+
 @Component
 @Scope("prototype")
 @Log4j2(topic = "bitcoin_core")
 public class CoreWalletServiceImpl implements CoreWalletService {
-
 
     private static final int KEY_POOL_LOW_THRESHOLD = 10;
     private static final int MIN_CONFIRMATIONS_FOR_SPENDING = 3;
@@ -53,9 +82,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     @Autowired
     private ZMQ.Context zmqContext;
 
-
     private BtcdClient btcdClient;
-
     private BtcDaemon btcDaemon;
 
     private Boolean supportInstantSend;
@@ -70,29 +97,66 @@ public class CoreWalletServiceImpl implements CoreWalletService {
 
 
     @Override
-    public void initCoreClient(String nodePropertySource, Properties passPropertySource, boolean supportInstantSend, boolean supportSubtractFee, boolean supportReferenceLine) {
+    public void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine) {
+        final String rpcProtocol = node.getRpcProtocol();
+        final String rpcHost = node.getRpcHost();
+        final String rpcPort = node.getRpcPort();
+        final String rpcUser = node.getRpcUser();
+        final String rpcPassword = node.getRpcPassword();
+        final String httpAuthSchema = node.getHttpAuthSchema();
+        final String notificationAlertPort = node.getNotificationAlertPort();
+        final String notificationBlockPort = node.getNotificationBlockPort();
+        final String notificationWalletPort = node.getNotificationWalletPort();
+        final String notificationInstantSendPort = node.getNotificationInstantSendPort();
         try {
             PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
             CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
                     .build();
             Properties nodeConfig = new Properties();
-            nodeConfig.load(getClass().getClassLoader().getResourceAsStream(nodePropertySource));
-            nodeConfig.setProperty("node.bitcoind.rpc.user", passPropertySource.getProperty("node.bitcoind.rpc.user"));
-            nodeConfig.setProperty("node.bitcoind.rpc.password", passPropertySource.getProperty("node.bitcoind.rpc.password"));
+            if (nonNull(rpcProtocol)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.protocol", rpcProtocol);
+            }
+            if (nonNull(rpcHost)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.host", rpcHost);
+            }
+            if (nonNull(rpcPort)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.port", rpcPort);
+            }
+            if (nonNull(rpcUser)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.user", rpcUser);
+            }
+            if (nonNull(rpcPassword)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.password", rpcPassword);
+            }
+            if (nonNull(httpAuthSchema)) {
+                nodeConfig.setProperty("node.bitcoind.http.auth_scheme", httpAuthSchema);
+            }
+            if (nonNull(notificationAlertPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.alert.port", notificationAlertPort);
+            }
+            if (nonNull(notificationBlockPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.block.port", notificationBlockPort);
+            }
+            if (nonNull(notificationWalletPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.wallet.port", notificationWalletPort);
+            }
+            if (nonNull(notificationInstantSendPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.instantsend.port", notificationInstantSendPort);
+            }
             log.info("Node config: " + nodeConfig);
             btcdClient = new BtcdClientImpl(httpProvider, nodeConfig);
-            this.supportInstantSend = supportInstantSend;
+            this.supportInstantSend = node.isSupportInstantSend();
             this.supportSubtractFee = supportSubtractFee;
             this.supportReferenceLine = supportReferenceLine;
-        } catch (Exception e) {
-            log.error("Could not initialize BTCD client of config {}. Reason: {} ", nodePropertySource, e.getMessage());
-            log.error(ExceptionUtils.getStackTrace(e));
+        } catch (Exception ex) {
+            log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
+            log.error(ExceptionUtils.getStackTrace(ex));
         }
 
     }
 
     @Override
-    public void initBtcdDaemon(boolean zmqEnabled)  {
+    public void initBtcdDaemon(boolean zmqEnabled) {
         if (zmqEnabled) {
             btcDaemon = new BtcdZMQDaemonImpl(btcdClient, zmqContext);
         } else {
@@ -284,7 +348,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
 
 
     @Override
-    public List<BtcPaymentFlatDto> listSinceBlockEx(@Nullable String blockHash, Integer merchantId, Integer currencyId)  {
+    public List<BtcPaymentFlatDto> listSinceBlockEx(@Nullable String blockHash, Integer merchantId, Integer currencyId) {
         try {
             return listSinceBlockExChecked(blockHash, merchantId, currencyId);
         } catch (Exception e) {
@@ -308,7 +372,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     }
 
 
-
     @Override
     public List<BtcPaymentFlatDto> listSinceBlock(@Nullable String blockHash, Integer merchantId, Integer currencyId) {
         try {
@@ -318,7 +381,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             return Collections.emptyList();
         }
     }
-
 
 
     @Override
@@ -409,8 +471,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                 throw new InsufficientCostsInWalletException();
             }
             throw new MerchantException(e.getMessage());
-        }
-        catch (CommunicationException e) {
+        } catch (CommunicationException e) {
             log.error(e);
             throw new MerchantException(e.getMessage());
         }
@@ -426,7 +487,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
 
     private void unlockWallet(String password, int authTimeout, boolean forceUnlock) throws BitcoindException, CommunicationException {
         Long unlockedUntil = getUnlockedUntil();
-        if (unlockedUntil != null && (forceUnlock || unlockedUntil == 0) ) {
+        if (unlockedUntil != null && (forceUnlock || unlockedUntil == 0)) {
             btcdClient.walletPassphrase(password, authTimeout);
         }
     }
@@ -465,14 +526,12 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                             "", subtractFeeAddresses);
                 } else if (supportReferenceLine) {
                     txId = btcdClient.sendMany("", payments, "", MIN_CONFIRMATIONS_FOR_SPENDING);
-                }
-
-                else {
+                } else {
                     if (supportSubtractFee) {
                         txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING,
                                 "", subtractFeeAddresses);
                     } else {
-                        txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING,"");
+                        txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING, "");
                     }
                 }
             }
@@ -551,7 +610,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     }
 
 
-    private void lockUnspentFromHex(String hex, boolean unlock)  {
+    private void lockUnspentFromHex(String hex, boolean unlock) {
         try {
             RawTransactionOverview txOverview = btcdClient.decodeRawTransaction(hex);
             btcdClient.lockUnspent(unlock, txOverview.getVIn().stream()
@@ -634,8 +693,4 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     private void shutDown() {
         outputUnlockingExecutor.shutdown();
     }
-
-
-
-
 }

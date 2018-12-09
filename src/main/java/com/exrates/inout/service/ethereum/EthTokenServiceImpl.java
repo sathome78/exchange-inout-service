@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.EthereumTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -42,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -59,7 +61,7 @@ public class EthTokenServiceImpl implements EthTokenService {
     private String currencyName;
     private int minConfirmations;
     private BigInteger currentBlockNumber;
-    List<RefillRequestFlatDto> pendingTransactions;
+    private List<RefillRequestFlatDto> pendingTransactions;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -91,27 +93,14 @@ public class EthTokenServiceImpl implements EthTokenService {
         return currency.getId();
     }
 
-    public EthTokenServiceImpl(List<String> contractAddress, String merchantName,
-                               String currencyName, boolean isERC20, ExConvert.Unit unit) {
-        this.contractAddress = contractAddress;
-        this.merchantName = merchantName;
-        this.currencyName = currencyName;
-        this.isERC20 = isERC20;
-        this.unit = unit;
-        this.minWalletBalance = new BigInteger("0");
+    public EthTokenServiceImpl(EthereumTokenProperty property) {
+        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.isERC20 = property.isERC20();
+        this.unit = property.getUnit();
+        this.minWalletBalance = property.getMinWalletBalance().toBigInteger();
     }
-
-    public EthTokenServiceImpl(List<String> contractAddress, String merchantName,
-                               String currencyName, boolean isERC20, ExConvert.Unit unit, BigInteger minWalletBalance) {
-        this.contractAddress = contractAddress;
-        this.merchantName = merchantName;
-        this.currencyName = currencyName;
-        this.isERC20 = isERC20;
-        this.unit = unit;
-        this.minWalletBalance = minWalletBalance;
-    }
-
-
 
     @PostConstruct
     public void init() {
@@ -343,8 +332,9 @@ public class EthTokenServiceImpl implements EthTokenService {
     @Override
     public TransferEventResponse extractData(List<String> topics, String data) {
         final Event event = new Event("Transfer",
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                Arrays.asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
+                Collections.singletonList(new TypeReference<Uint256>() {
+                }));
         String encodedEventSignature = EventEncoder.encode(event);
         if (!topics.get(0).equals(encodedEventSignature)) {
             return null;

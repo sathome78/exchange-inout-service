@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-
 public class AssetMerchantCurrencyDto {
     NeoAsset asset;
     Merchant merchant;
