@@ -14,12 +14,12 @@ public class NemMosaicStrategy {
     @Autowired
     Map<String, XemMosaicService> mosaicMap;
 
-    Map<MosaicIdDto, XemMosaicService> mosaicIdMap = new HashMap<>();
-    Map<String, XemMosaicService> byMerchantNameMap = new HashMap<>();
+    private Map<MosaicIdDto, XemMosaicService> mosaicIdMap = new HashMap<>();
+    private Map<String, XemMosaicService> byMerchantNameMap = new HashMap<>();
 
     @PostConstruct
     private void init() {
-        mosaicMap.forEach((k,v)-> {
+        mosaicMap.forEach((k, v) -> {
             mosaicIdMap.put(v.getMosaicId(), v);
             byMerchantNameMap.put(v.getMerchantName(), v);
         });

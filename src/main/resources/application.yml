@@ -1848,10 +1848,10 @@ qtum-merchants:
       endpoint: http://127.0.0.1:38891
       user: wayfarer88
       password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      minTransferAmount: 1
-      mainAddressForTransfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
-      walletPassword: jet2103
-      backupFolder: /data/.qtum/qtum_backup/
+      min-transfer-amount: 1
+      main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
+      wallet-password: jet2103
+      backup-folder: /data/.qtum/qtum_backup/
   hlc:
     merchant-name: HLC
     currency-name: HLC
@@ -1862,7 +1862,65 @@ qtum-merchants:
       endpoint: http://127.0.0.1:38891
       user: wayfarer88
       password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      minTransferAmount: 1
-      mainAddressForTransfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
-      walletPassword: jet2103
-      backupFolder: /data/.qtum/qtum_backup/
+      min-transfer-amount: 1
+      main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
+      wallet-password: jet2103
+      backup-folder: /data/.qtum/qtum_backup/
+
+monero-merchants:
+  xmr:
+    merchant-name: Monero
+    currency-name: XMR
+    min-confirmations: 10
+    decimals: 12
+    node:
+      host: 127.0.0.1
+      port: 18082
+      login: monero_rpc
+      password: asdfretrgh2423534wrf
+      mode: test
+      log: monero_log
+  dit:
+    merchant-name: DIT
+    currency-name: DIT
+    min-confirmations: 10
+    decimals: 8
+    node:
+      host: ec2-18-221-189-33.us-east-2.compute.amazonaws.com
+      port: 18085
+      login: monero_rpc
+      password: jhkasdfu75tghs
+      mode: test
+      log: ditcoin_log
+  sumo:
+    merchant-name: SUMO
+    currency-name: SUMO
+    min-confirmations: 10
+    decimals: 9
+    node:
+      host: 127.0.0.1
+      port: 18087
+      login: monero_rpc
+      password: jhkasdfu75tghs
+      mode: test
+      log: sumokoin_log
+
+xem-merchants:
+  dim:
+    merchant-mame: DimCoin
+    currency-name: DIM
+    name-space-id: dim
+    name: coin
+    decimals: 1000000
+    divisibility: 6
+    levy-fee: 10
+    supply: 9000000000
+  npxs:
+    merchant-mame: NPXSXEM
+    currency-name: NPXSXEM
+    name-space-id: pundix
+    name: npxs
+    decimals: 1000000
+    divisibility: 6
+    levy-fee: 0
+    supply: 9000000000

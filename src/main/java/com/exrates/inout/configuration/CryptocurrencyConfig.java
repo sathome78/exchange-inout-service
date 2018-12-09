@@ -1,6 +1,5 @@
 package com.exrates.inout.configuration;
 
-import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
@@ -10,9 +9,11 @@ import com.exrates.inout.properties.models.BitcoinProperty;
 import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.properties.models.EthereumTokenProperty;
 import com.exrates.inout.properties.models.LiskProperty;
+import com.exrates.inout.properties.models.MoneroProperty;
 import com.exrates.inout.properties.models.NeoProperty;
 import com.exrates.inout.properties.models.QtumProperty;
 import com.exrates.inout.properties.models.WavesProperty;
+import com.exrates.inout.properties.models.XemProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
@@ -41,16 +42,13 @@ import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
 import lombok.extern.log4j.Log4j2;
-import org.nem.core.model.primitive.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -622,61 +620,51 @@ public class CryptocurrencyConfig {
     //Qtum tokens:
     @Bean(name = "spcServiceImpl")
     public QtumTokenService spcService() {
-        return createWavesService(cryptoCurrencyProperties.getQtumMerchants().getSpc());
+        return createQtumService(cryptoCurrencyProperties.getQtumMerchants().getSpc());
     }
 
     @Bean(name = "hlcServiceImpl")
     public QtumTokenService hlcService() {
-        return createWavesService(cryptoCurrencyProperties.getQtumMerchants().getHlc());
+        return createQtumService(cryptoCurrencyProperties.getQtumMerchants().getHlc());
     }
 
-    private QtumTokenService createWavesService(QtumProperty property) {
+    private QtumTokenService createQtumService(QtumProperty property) {
         return new QtumTokenServiceImpl(property);
     }
 
     //**** Monero ****/
     @Bean(name = "moneroServiceImpl")
     public MoneroService moneroService() {
-        return new MoneroServiceImpl("merchants/monero.properties",
-                "Monero", "XMR", 10, 12);
+        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getXmr());
     }
 
     @Bean(name = "ditcoinServiceImpl")
     public MoneroService ditcoinService() {
-        return new MoneroServiceImpl("merchants/ditcoin.properties",
-                "DIT", "DIT", 10, 8);
+        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getDit());
     }
 
     @Bean(name = "sumoServiceImpl")
     public MoneroService sumoService() {
-        return new MoneroServiceImpl("merchants/sumokoin.properties",
-                "SUMO", "SUMO", 10, 9);
+        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getSumo());
+    }
+
+    private MoneroService createMoneroService(MoneroProperty property) {
+        return new MoneroServiceImpl(property);
     }
 
     /***tokens based on xem mosaic)****/
     @Bean(name = "dimCoinServiceImpl")
     public XemMosaicService dimCoinService() {
-        return new XemMosaicServiceImpl(
-                "DimCoin",
-                "DIM",
-                new MosaicIdDto("dim", "coin"),
-                1000000,
-                6,
-                new Supply(9000000000L),
-                10);
+        return createXemMosaicService(cryptoCurrencyProperties.getXemMerchants().getDim());
     }
-
 
     @Bean(name = "npxsServiceImpl")
     public XemMosaicService npxsService() {
-        return new XemMosaicServiceImpl(
-                "NPXSXEM",
-                "NPXSXEM",
-                new MosaicIdDto("pundix", "npxs"),
-                1000000,
-                6,
-                new Supply(9000000000L),
-                0);
+        return createXemMosaicService(cryptoCurrencyProperties.getXemMerchants().getNpxs());
+    }
+
+    private XemMosaicService createXemMosaicService(XemProperty property) {
+        return new XemMosaicServiceImpl(property);
     }
 
     /***stellarAssets****/
