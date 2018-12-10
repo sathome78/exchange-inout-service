@@ -51,29 +51,13 @@ import static java.util.Objects.nonNull;
 @Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {
 
-    @Autowired
-    private WavesRestClient restClient;
-    @Autowired
-    private RefillService refillService;
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private CurrencyService currencyService;
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private SendMailService sendMailService;
-    @Autowired
-    private WithdrawUtils withdrawUtils;
-
-    private final Locale notifyEmailLocale = new Locale("RU");
-
-    private final int WAVES_AMOUNT_SCALE = 8;
-    private final long WAVES_DEFAULT_FEE = 100000L;
+    private static final int WAVES_AMOUNT_SCALE = 8;
+    private static final long WAVES_DEFAULT_FEE = 100000L;
 
     //IMPORTANT!! WAVES does not accept capital letters in attachments. lower case only!!!
-    private final String FEE_TRANSFER_ATTACHMENT = "inner";
+    private static final String FEE_TRANSFER_ATTACHMENT = "inner";
 
+    private final Locale notifyEmailLocale = new Locale("RU");
 
     private Map<String, MerchantCurrencyBasicInfoDto> tokenMerchantCurrencyMap;
 
@@ -94,6 +78,21 @@ public class WavesServiceImpl implements WavesService {
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ExecutorService sendFeePool = Executors.newSingleThreadExecutor();
+
+    @Autowired
+    private WavesRestClient restClient;
+    @Autowired
+    private RefillService refillService;
+    @Autowired
+    private MerchantService merchantService;
+    @Autowired
+    private CurrencyService currencyService;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private SendMailService sendMailService;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
     public WavesServiceImpl(WavesProperty property) {
         this.currencyBaseName = property.getCurrencyName();
@@ -314,7 +313,6 @@ public class WavesServiceImpl implements WavesService {
                     feeAccount}, notifyEmailLocale));
 
             sendMailService.sendInfoMail(email);
-
         } catch (Exception e) {
             log.error(e);
         }

@@ -36,6 +36,4 @@ public class IcoServiceImpl implements IcoService {
 
         return withdrawUtils.isValidDestinationAddress(address);
     }
-
-
 }

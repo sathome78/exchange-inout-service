@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 public interface StellarTransactionService {
+
     TransactionResponse getTxByURI(String serverURI, URI txUri) throws IOException, URISyntaxException;
 
     Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto, String serverUrl, String accountSecret);

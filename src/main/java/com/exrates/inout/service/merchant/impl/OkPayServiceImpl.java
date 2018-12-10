@@ -7,7 +7,11 @@ import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.exceptions.*;
+import com.exrates.inout.exceptions.MerchantInternalException;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.exceptions.RefillRequestIdNeededException;
+import com.exrates.inout.exceptions.RefillRequestNotFoundException;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -21,7 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,45 +33,39 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("classpath:/merchants/okpay.properties")
 public class OkPayServiceImpl implements OkPayService {
 
-    private @Value("${okpay.ok_receiver}")
-    String ok_receiver;
-    private @Value("${okpay.ok_receiver_email}")
-    String ok_receiver_email;
-    private @Value("${okpay.ok_item_1_name}")
-    String ok_item_1_name;
-    private @Value("${okpay.ok_s_title}")
-    String ok_s_title;
-    private @Value("${okpay.url}")
-    String url;
-    private @Value("${okpay.urlReturn}")
-    String urlReturn;
+    private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    private static final Logger logger = LogManager.getLogger("merchant");
+    @Value("${okpay.receiver}")
+    private String ok_receiver;
+    @Value("${okpay.receiver-email}")
+    private String ok_receiver_email;
+    @Value("${okpay.item-1-name}")
+    private String ok_item_1_name;
+    @Value("${okpay.s-title}")
+    private String ok_s_title;
+    @Value("${okpay.url}")
+    private String url;
+    @Value("${okpay.urlReturn}")
+    private String urlReturn;
 
     @Autowired
     private AlgorithmService algorithmService;
-
     @Autowired
     private RefillRequestDao refillRequestDao;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
-        throw new NotImplimentedMethod("for "+withdrawMerchantOperationDto);
+        throw new NotImplimentedMethod("for " + withdrawMerchantOperationDto);
     }
 
     @Override
@@ -96,28 +93,26 @@ public class OkPayServiceImpl implements OkPayService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-
-        if (!sendReturnRequest(params)){
+        if (!sendReturnRequest(params)) {
             throw new RefillRequestAppropriateNotFoundException(params.toString());
         }
-
         Integer requestId = Integer.valueOf(params.get("ok_invoice"));
         String merchantTransactionId = params.get("ok_txn_id");
         Currency currency = currencyService.findByName(params.get("ok_txn_currency"));
         Merchant merchant = merchantService.findByName("OkPay");
         BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(params.get("ok_txn_gross"))).setScale(9);
 
-        logger.info("Okpay processPayment: " + requestId + ", " + merchantTransactionId + ", " + currency + ", " +  merchant + ", " + amount);
+        LOGGER.info("Okpay processPayment: " + requestId + ", " + merchantTransactionId + ", " + currency + ", " + merchant + ", " + amount);
         RefillRequestFlatDto refillRequest = refillRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new RefillRequestNotFoundException(String.format("refill request id: %s", requestId)));
 
-        logger.info("Okpay processPayment: " + refillRequest.toString());
+        LOGGER.info("Okpay processPayment: " + refillRequest.toString());
 
-        if(refillRequest.getAmount().equals(amount)
+        if (refillRequest.getAmount().equals(amount)
                 && currency.equals(currencyService.getById(refillRequest.getCurrencyId()))
                 && params.get("ok_txn_status").equals("completed")
-                && params.get("ok_receiver_email").equals(ok_receiver_email)){
-            logger.info("Okpay processPayment: before requestAcceptDto");
+                && params.get("ok_receiver_email").equals(ok_receiver_email)) {
+            LOGGER.info("Okpay processPayment: before requestAcceptDto");
             RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                     .requestId(requestId)
                     .merchantId(merchant.getId())
@@ -126,48 +121,42 @@ public class OkPayServiceImpl implements OkPayService {
                     .merchantTransactionId(merchantTransactionId)
                     .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                     .build();
-            logger.info("Okpay processPayment: after requestAcceptDto");
+            LOGGER.info("Okpay processPayment: after requestAcceptDto");
             refillService.autoAcceptRefillRequest(requestAcceptDto);
-            logger.info("Okpay processPayment: after autoAcceptRefillRequest");
+            LOGGER.info("Okpay processPayment: after autoAcceptRefillRequest");
         }
-
     }
 
-    private boolean sendReturnRequest(Map<String,String> params) {
+    private boolean sendReturnRequest(Map<String, String> params) {
 
         final OkHttpClient client = new OkHttpClient();
         final FormEncodingBuilder formBuilder = new FormEncodingBuilder();
         formBuilder.add("ok_verify", "true");
 
-
-        for (Map.Entry<String, String> entry : params.entrySet()){
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             formBuilder.add(entry.getKey(), entry.getValue());
         }
-
         final Request request = new Request.Builder()
                 .url(urlReturn)
                 .post(formBuilder.build())
                 .build();
         final String returnResponse;
-
         try {
-            returnResponse =client
+            returnResponse = client
                     .newCall(request)
                     .execute()
                     .body()
                     .string();
-            logger.info("returnResponse: " + returnResponse);
+            LOGGER.info("returnResponse: " + returnResponse);
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error(e);
             throw new MerchantInternalException(e);
         }
-
         return returnResponse.equals("VERIFIED");
     }
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(address);
     }
 }

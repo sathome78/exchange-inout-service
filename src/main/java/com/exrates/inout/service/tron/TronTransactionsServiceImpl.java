@@ -24,22 +24,24 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TronTransactionsServiceImpl implements TronTransactionsService {
 
+    @Value("${tron.node.main-account-hex-address}")
+    private String mainAddressHex;
 
-    @Autowired
-    public TronTransactionsServiceImpl(TronNodeService tronNodeService, TronService tronService, RefillService refillService) {
-        this.tronNodeService = tronNodeService;
-        this.tronService = tronService;
-        this.refillService = refillService;
-    }
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService transferScheduler = Executors.newScheduledThreadPool(1);
 
-    private @Value("${tron.mainAccountHEXAddress}")
-    String MAIN_ADDRESS_HEX;
     private final TronNodeService tronNodeService;
     private final TronService tronService;
     private final RefillService refillService;
 
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledExecutorService transferScheduler = Executors.newScheduledThreadPool(1);
+    @Autowired
+    public TronTransactionsServiceImpl(TronNodeService tronNodeService,
+                                       TronService tronService,
+                                       RefillService refillService) {
+        this.tronNodeService = tronNodeService;
+        this.tronService = tronService;
+        this.refillService = refillService;
+    }
 
     @PostConstruct
     private void init() {
@@ -49,7 +51,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
 
     private void checkUnconfirmedJob() {
         List<RefillRequestFlatDto> dtos = refillService.getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(tronService.getMerchantId(), tronService.getCurrencyId());
-        dtos.forEach(p->{
+        dtos.forEach(p -> {
             try {
                 if (checkIsTransactionConfirmed(p.getMerchantTransactionId())) {
                     processTransaction(p.getAddress(), p.getMerchantTransactionId(), p.getAmount().toString());
@@ -58,12 +60,11 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                 log.error(e);
             }
         });
-
     }
 
     private void transferToMainAccountJob() {
         List<RefillRequestAddressDto> listRefillRequestAddressDto = refillService.findAllAddressesNeededToTransfer(tronService.getMerchantId(), tronService.getCurrencyId());
-        listRefillRequestAddressDto.forEach(p->{
+        listRefillRequestAddressDto.forEach(p -> {
             try {
                 transferToMainAccount(p);
                 refillService.updateAddressNeedTransfer(p.getAddress(), tronService.getMerchantId(), tronService.getCurrencyId(), false);
@@ -75,7 +76,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
 
     private void transferToMainAccount(RefillRequestAddressDto dto) {
         Long accountAmount = tronNodeService.getAccount(dto.getAddress()).getJSONObject("data").getLong("balance");
-        easyTransferByPrivate(dto.getPrivKey(), MAIN_ADDRESS_HEX, accountAmount);
+        easyTransferByPrivate(dto.getPrivKey(), mainAddressHex, accountAmount);
     }
 
     public boolean checkIsTransactionConfirmed(String txHash) {
@@ -104,5 +105,4 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
             throw new RuntimeException("erro trnasfer to main account");
         }
     }
-
 }

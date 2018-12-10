@@ -17,6 +17,7 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.PerfectMoneyService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,60 +29,56 @@ import java.util.Properties;
 @Service
 public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
-    private @Value("${perfectmoney.url}")
-    String url;
-    private @Value("${perfectmoney.accountId}")
-    String accountId;
-    private @Value("${perfectmoney.accountPass}")
-    String accountPass;
-    private @Value("${perfectmoney.payeeName}")
-    String payeeName;
-    private @Value("${perfectmoney.paymentSuccess}")
-    String paymentSuccess;
-    private @Value("${perfectmoney.paymentFailure}")
-    String paymentFailure;
-    private @Value("${perfectmoney.paymentStatus}")
-    String paymentStatus;
-    private @Value("${perfectmoney.USDAccount}")
-    String usdCompanyAccount;
-    private @Value("${perfectmoney.EURAccount}")
-    String eurCompanyAccount;
-    private @Value("${perfectmoney.alternatePassphrase}")
-    String alternatePassphrase;
+    private static final Logger LOGGER = LogManager.getLogger(PerfectMoneyServiceImpl.class);
 
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PerfectMoneyServiceImpl.class);
+    @Value("${perfectmoney.url}")
+    private String url;
+    @Value("${perfectmoney.accountId}")
+    private String accountId;
+    @Value("${perfectmoney.accountPass}")
+    private String accountPass;
+    @Value("${perfectmoney.payeeName}")
+    private String payeeName;
+    @Value("${perfectmoney.paymentSuccess}")
+    private String paymentSuccess;
+    @Value("${perfectmoney.paymentFailure}")
+    private String paymentFailure;
+    @Value("${perfectmoney.paymentStatus}")
+    private String paymentStatus;
+    @Value("${perfectmoney.USDAccount}")
+    private String usdCompanyAccount;
+    @Value("${perfectmoney.EURAccount}")
+    private String eurCompanyAccount;
+    @Value("${perfectmoney.alternatePassphrase}")
+    private String alternatePassphrase;
 
     @Autowired
     private AlgorithmService algorithmService;
-
     @Autowired
     private RefillRequestDao refillRequestDao;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
-        throw new NotImplimentedMethod("for "+withdrawMerchantOperationDto);
+        throw new NotImplimentedMethod("for " + withdrawMerchantOperationDto);
     }
 
     @Override
-    public Map<String, String> refill(RefillRequestCreateDto request){
+    public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer orderId = request.getId();
         BigDecimal sum = request.getAmount();
         String currency = request.getCurrencyName();
         Number amountToPay = "GOLD".equals(currency) ? sum.toBigInteger() : sum.setScale(2, BigDecimal.ROUND_HALF_UP);
         /**/
-        Properties properties = new Properties() {{
+        Properties properties = new Properties() {
+            {
                 put("PAYEE_ACCOUNT", currency.equals("USD") ? usdCompanyAccount : eurCompanyAccount);
                 put("PAYEE_NAME", payeeName);
                 put("PAYMENT_AMOUNT", amountToPay);
@@ -121,19 +118,18 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
                     .build();
             refillService.autoAcceptRefillRequest(requestAcceptDto);
         }
-
     }
 
     private String computePaymentHash(Map<String, String> params) {
         final String passpphraseHash = algorithmService.computeMD5Hash(alternatePassphrase).toUpperCase();
         final String hashParams = params.get("PAYMENT_ID") +
-                ":"+params.get("PAYEE_ACCOUNT") +
-                ":"+params.get("PAYMENT_AMOUNT") +
-                ":"+params.get("PAYMENT_UNITS") +
-                ":"+params.get("PAYMENT_BATCH_NUM") +
-                ":"+params.get("PAYER_ACCOUNT") +
-                ":"+passpphraseHash +
-                ":"+params.get("TIMESTAMPGMT");
+                ":" + params.get("PAYEE_ACCOUNT") +
+                ":" + params.get("PAYMENT_AMOUNT") +
+                ":" + params.get("PAYMENT_UNITS") +
+                ":" + params.get("PAYMENT_BATCH_NUM") +
+                ":" + params.get("PAYER_ACCOUNT") +
+                ":" + passpphraseHash +
+                ":" + params.get("TIMESTAMPGMT");
         return algorithmService.computeMD5Hash(hashParams).toUpperCase();
     }
 
@@ -142,5 +138,4 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
         return withdrawUtils.isValidDestinationAddress(address);
     }
-
 }

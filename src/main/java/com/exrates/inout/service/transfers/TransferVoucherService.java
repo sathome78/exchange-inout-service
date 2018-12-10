@@ -5,19 +5,18 @@ import com.exrates.inout.service.ITransferable;
 
 public interface TransferVoucherService extends ITransferable {
 
-  @Override
-  default public Boolean isVoucher() {
-    return true;
-  }
+    @Override
+    default Boolean isVoucher() {
+        return true;
+    }
 
-  @Override
-  default public Boolean recipientUserIsNeeded() {
-    return true;
-  }
+    @Override
+    default Boolean recipientUserIsNeeded() {
+        return true;
+    }
 
-  @Override
-  default public TransferProcessTypeEnum processType() {
-    return TransferProcessTypeEnum.VOUCHER;
-  }
-
+    @Override
+    default TransferProcessTypeEnum processType() {
+        return TransferProcessTypeEnum.VOUCHER;
+    }
 }

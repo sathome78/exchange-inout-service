@@ -33,7 +33,7 @@ public interface IcoService extends IRefillable, IWithdrawable {
     @Override
     default Boolean additionalFieldForRefillIsUsed() {
         return false;
-    };
+    }
 
     @Override
     default Boolean withdrawTransferringConfirmNeeded() {

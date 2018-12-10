@@ -5,7 +5,11 @@ import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.exceptions.*;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
+import com.exrates.inout.exceptions.MerchantInternalException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.exceptions.WithdrawRequestPostException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -15,7 +19,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,19 +31,26 @@ import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 @Log4j2(topic = "stellar_log")
 @Service
-@PropertySource("classpath:/merchants/stellar.properties")
 public class StellarServiceImpl implements StellarService {
 
-    private @Value("${stellar.horizon.url}")
-    String SEVER_URL;
-    private @Value("${stellar.account.name}")
-    String ACCOUNT_NAME;
-    private @Value("${stellar.account.seed}")
-    String ACCOUNT_SECRET;
+    private static final String DESTINATION_TAG_ERR_MSG = "message.stellar.tagError";
+    private static final String XLM_MERCHANT = "Stellar";
+    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
+
+    @Value("${stellar.node.horizon-url}")
+    private String severUrl;
+    @Value("${stellar.node.account-name}")
+    private String accountName;
+    @Value("${stellar.node.account-seed}")
+    private String accountSecret;
 
     @Autowired
     private MerchantService merchantService;
@@ -57,18 +67,12 @@ public class StellarServiceImpl implements StellarService {
 
     private Merchant merchant;
     private Currency currency;
-    private static final String DESTINATION_TAG_ERR_MSG = "message.stellar.tagError";
 
     @PostConstruct
     public void init() {
         currency = currencyService.findByName("XLM");
         merchant = merchantService.findByName(XLM_MERCHANT);
     }
-
-
-    private static final String XLM_MERCHANT = "Stellar";
-
-    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
     @Override
     public void manualCheckNotReceivedTransaction(String hash) {
@@ -86,7 +90,7 @@ public class StellarServiceImpl implements StellarService {
         if (!"XLM".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
             throw new WithdrawRequestPostException("Currency not supported by merchant");
         }
-        return stellarTransactionService.withdraw(withdrawMerchantOperationDto, SEVER_URL, ACCOUNT_SECRET);
+        return stellarTransactionService.withdraw(withdrawMerchantOperationDto, severUrl, accountSecret);
     }
 
     @Synchronized
@@ -104,7 +108,7 @@ public class StellarServiceImpl implements StellarService {
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("hash", payment.getHash());
         String memo = defineAndGetMemo(payment.getMemo());
-        if(memo == null) {
+        if (memo == null) {
             log.warn("memo is null");
             return;
         }
@@ -135,18 +139,18 @@ public class StellarServiceImpl implements StellarService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.xlm",
-                new Object[]{ACCOUNT_NAME, destinationTag}, request.getLocale());
+                new Object[]{accountName, destinationTag}, request.getLocale());
         DecimalFormat myFormatter = new DecimalFormat("###.##");
         return new HashMap<String, String>() {{
-            put("address",  String.valueOf(destinationTag));
+            put("address", String.valueOf(destinationTag));
             put("message", message);
-            put("qr", ACCOUNT_NAME);
+            put("qr", accountName);
         }};
     }
 
     private boolean checkTransactionForDuplicate(TransactionResponse payment) {
         return StringUtils.isEmpty(payment.getHash()) || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchant.getId(), currency.getId(),
-                                                                            payment.getHash()).isPresent();
+                payment.getHash()).isPresent();
     }
 
     private Integer generateUniqDestinationTag(int userId) {
@@ -198,15 +202,15 @@ public class StellarServiceImpl implements StellarService {
 
     @Override
     public String getMainAddress() {
-        return ACCOUNT_NAME;
+        return accountName;
     }
-  //TODO remove after changes in mobile api
+
+    //TODO remove after changes in mobile api
     @Override
     public String getPaymentMessage(String additionalTag, Locale locale) {
         return messageSource.getMessage("merchants.refill.xlm",
-                new Object[]{ACCOUNT_NAME, additionalTag}, locale);
+                new Object[]{accountName, additionalTag}, locale);
     }
-
 
     /*must bee only unsigned int = Memo.id - unsigned 64-bit number, MAX_SAFE_INTEGER  memo 0 - 9007199254740991*/
     @Override
@@ -224,27 +228,26 @@ public class StellarServiceImpl implements StellarService {
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
         Merchant merchant = merchantService.findById(merchantId);
         switch (merchant.getName()) {
-            case "Stellar" : {
+            case "Stellar": {
                 return new BigDecimal(0.001).setScale(5, RoundingMode.HALF_UP);
             }
-            case "SLT" : {
+            case "SLT": {
                 return new BigDecimal(1).setScale(5, RoundingMode.HALF_UP);
             }
-            case "VNT" : {
+            case "VNT": {
                 return new BigDecimal(1).setScale(5, RoundingMode.HALF_UP);
             }
-            case "TERN" : {
+            case "TERN": {
                 return new BigDecimal(1).setScale(5, RoundingMode.HALF_UP);
             }
             default:
                 return new BigDecimal(0.1).setScale(5, RoundingMode.HALF_UP);
         }
-
     }
 
     @Override
     public boolean isValidDestinationAddress(String address) {
 
-        return withdrawUtils.isValidDestinationAddress(ACCOUNT_NAME, address);
+        return withdrawUtils.isValidDestinationAddress(accountName, address);
     }
 }

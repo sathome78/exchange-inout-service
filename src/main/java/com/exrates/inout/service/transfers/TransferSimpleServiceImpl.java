@@ -9,8 +9,7 @@ import java.util.Map;
 @Service
 public class TransferSimpleServiceImpl implements TransferSimpleService {
 
-  public Map<String, String> transfer(TransferRequestCreateDto transferRequestCreateDto) {
-    return new HashMap<>();
-  }
-
+    public Map<String, String> transfer(TransferRequestCreateDto transferRequestCreateDto) {
+        return new HashMap<>();
+    }
 }

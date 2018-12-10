@@ -22,46 +22,46 @@ import java.util.Map;
 @Log4j2
 public class InvoiceServiceImpl implements InvoiceService {
 
-  @Autowired
-  private MessageSource messageSource;
-  @Autowired
-  private MerchantService merchantService;
-  @Autowired
-  private CurrencyService currencyService;
-  @Autowired
-  private WithdrawUtils withdrawUtils;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private MerchantService merchantService;
+    @Autowired
+    private CurrencyService currencyService;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
 
-  @Override
-  @Transactional
-  public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
-    throw new NotApplicableException("for " + withdrawMerchantOperationDto);
-  }
+    @Override
+    @Transactional
+    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
+        throw new NotApplicableException("for " + withdrawMerchantOperationDto);
+    }
 
-  @Override
-  @Transactional
-  public Map<String, String> refill(RefillRequestCreateDto request) {
-    String toWallet = String.format("%s: %s - %s",
-        request.getRefillRequestParam().getRecipientBankName(),
-        request.getAddress(),
-        request.getRefillRequestParam().getRecipient());
-    String message = messageSource.getMessage("merchants.refill.invoice",
-        new String[]{request.getAmount().toPlainString().concat(currencyService.getCurrencyName(request.getCurrencyId()))
-                , toWallet}, request.getLocale());
-    return new HashMap<String, String>() {{
-      put("message", message);
-      put("walletNumber", request.getAddress());
-    }};
-  }
+    @Override
+    @Transactional
+    public Map<String, String> refill(RefillRequestCreateDto request) {
+        String toWallet = String.format("%s: %s - %s",
+                request.getRefillRequestParam().getRecipientBankName(),
+                request.getAddress(),
+                request.getRefillRequestParam().getRecipient());
+        String message = messageSource.getMessage("merchants.refill.invoice",
+                new String[]{request.getAmount().toPlainString().concat(currencyService.getCurrencyName(request.getCurrencyId()))
+                        , toWallet}, request.getLocale());
+        return new HashMap<String, String>() {{
+            put("message", message);
+            put("walletNumber", request.getAddress());
+        }};
+    }
 
-  @Override
-  public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-    throw new NotApplicableException("for " + params);
-  }
+    @Override
+    public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        throw new NotApplicableException("for " + params);
+    }
 
-  @Override
-  public boolean isValidDestinationAddress(String address) {
+    @Override
+    public boolean isValidDestinationAddress(String address) {
 
-    return withdrawUtils.isValidDestinationAddress(address);
-  }
+        return withdrawUtils.isValidDestinationAddress(address);
+    }
 }
 

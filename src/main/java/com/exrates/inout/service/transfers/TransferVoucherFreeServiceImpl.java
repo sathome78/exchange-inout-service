@@ -12,20 +12,19 @@ import java.util.StringJoiner;
 @Service
 public class TransferVoucherFreeServiceImpl implements TransferVoucherFreeService {
 
-  @Autowired
-  private AlgorithmService algorithmService;
+    @Autowired
+    private AlgorithmService algorithmService;
 
-  public Map<String, String> transfer(TransferRequestCreateDto transferRequestCreateDto) {
-    String hash = algorithmService.sha256(new StringJoiner(":")
-        .add(transferRequestCreateDto.getId().toString())
-        .add(transferRequestCreateDto.getAmount().toString())
-        .add(transferRequestCreateDto.getCurrencyName())
-        .add(transferRequestCreateDto.getRecipient())
-        .toString()
-        .toUpperCase());
-    return new HashMap<String, String>() {{
-      put("hash", hash);
-    }};
-  }
-
+    public Map<String, String> transfer(TransferRequestCreateDto transferRequestCreateDto) {
+        String hash = algorithmService.sha256(new StringJoiner(":")
+                .add(transferRequestCreateDto.getId().toString())
+                .add(transferRequestCreateDto.getAmount().toString())
+                .add(transferRequestCreateDto.getCurrencyName())
+                .add(transferRequestCreateDto.getRecipient())
+                .toString()
+                .toUpperCase());
+        return new HashMap<String, String>() {{
+            put("hash", hash);
+        }};
+    }
 }

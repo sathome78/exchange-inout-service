@@ -1,6 +1,10 @@
 package com.exrates.inout.service.tron;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.TronNewAddressDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
@@ -17,12 +21,24 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Log4j2(topic = "tron")
 @Service
 public class TronServiceImpl implements TronService {
+
+    private final static String CURRENCY_NAME = "TRX";
+    private final static String MERCHANT_NAME = "TRX";
+
+    private int merchantId;
+    private int currencyId;
+
+    private Set<String> addressesHEX = Collections.synchronizedSet(new HashSet<>());
 
     private final TronNodeService tronNodeService;
     private final RefillService refillService;
@@ -31,16 +47,13 @@ public class TronServiceImpl implements TronService {
     private final MessageSource messageSource;
     private final WithdrawUtils withdrawUtils;
 
-
-    private final static String CURRENCY_NAME = "TRX";
-    private final static String MERCHANT_NAME = "TRX";
-    private int merchantId;
-    private int currencyId;
-
-    private Set<String> addressesHEX = Collections.synchronizedSet(new HashSet<>());
-
     @Autowired
-    public TronServiceImpl(TronNodeService tronNodeService, RefillService refillService, CurrencyService currencyService, MerchantService merchantService, WithdrawUtils withdrawUtils, MessageSource messageSource) {
+    public TronServiceImpl(TronNodeService tronNodeService,
+                           RefillService refillService,
+                           CurrencyService currencyService,
+                           MerchantService merchantService,
+                           WithdrawUtils withdrawUtils,
+                           MessageSource messageSource) {
         this.tronNodeService = tronNodeService;
         this.refillService = refillService;
         this.currencyService = currencyService;
@@ -56,7 +69,6 @@ public class TronServiceImpl implements TronService {
         addressesHEX.addAll(refillService.findAddressDtos(merchantId, currencyId).stream().map(RefillRequestAddressDto::getPubKey).collect(Collectors.toList()));
     }
 
-
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
         TronNewAddressDto dto = tronNodeService.getNewAddress();
@@ -64,7 +76,7 @@ public class TronServiceImpl implements TronService {
                 new Object[]{dto.getAddress()}, request.getLocale());
         addressesHEX.add(dto.getHexAddress());
         return new HashMap<String, String>() {{
-            put("address",  dto.getAddress());
+            put("address", dto.getAddress());
             put("privKey", dto.getPrivateKey());
             put("pubKey", dto.getHexAddress());
             put("message", message);
@@ -116,7 +128,6 @@ public class TronServiceImpl implements TronService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(address);
     }
 }

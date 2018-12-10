@@ -24,11 +24,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class StellarReceivePaymentsService {
 
-    @Value("${stellar.horizon.url}")
+    private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
+    private static final String MERCHANT_NAME = "Stellar";
+
+    @Value("${stellar.node.horizon-url}")
     private String severUrl;
-    @Value("${stellar.account.name}")
+    @Value("${stellar.node.account-name}")
     private String accountName;
-    @Value("${stellar.account.seed}")
+    @Value("${stellar.node.account-seed}")
     private String accountSecret;
 
     @Autowired
@@ -42,12 +45,9 @@ public class StellarReceivePaymentsService {
 
     private Server server;
     private KeyPair account;
-    private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
-    private static final String MERCHANT_NAME = "Stellar";
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private EventSource eventSource;
-
 
     @PostConstruct
     public void init() {
@@ -72,7 +72,7 @@ public class StellarReceivePaymentsService {
                     PaymentOperationResponse response = ((PaymentOperationResponse) payment);
                     log.debug(response.getAsset().getType());
                     if (response.getAsset().equals(new AssetTypeNative())) {
-                       processPayment(response, "XLM", MERCHANT_NAME);
+                        processPayment(response, "XLM", MERCHANT_NAME);
                     } else {
                         log.debug("asset {}", response.getAsset().toString());
                         StellarAsset asset = asssetsContext.getStellarAssetByAssetObject(response.getAsset());
@@ -114,7 +114,6 @@ public class StellarReceivePaymentsService {
             checkIncomePayment();
         }
     }
-
 
     private void savePagingToken(String pagingToken) {
         specParamsDao.updateParam(MERCHANT_NAME, LAST_PAGING_TOKEN_PARAM, pagingToken);
