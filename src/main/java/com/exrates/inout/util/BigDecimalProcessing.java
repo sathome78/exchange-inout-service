@@ -13,11 +13,11 @@ import java.text.ParseException;
 import java.util.Locale;
 
 public class BigDecimalProcessing {
-    protected static final int SCALE = 9;
-    protected static final RoundingMode ROUND_TYPE = RoundingMode.HALF_UP;
-    protected static final String PATTERN = "###,##0." + new String(new char[SCALE]).replace("\0", "0");
-    protected static final String PATTERN_SHORT = "###,##0." + new String(new char[SCALE]).replace("\0", "#");
 
+    private static final int SCALE = 9;
+    private static final RoundingMode ROUND_TYPE = RoundingMode.HALF_UP;
+    private static final String PATTERN = "###,##0." + new String(new char[SCALE]).replace("\0", "0");
+    private static final String PATTERN_SHORT = "###,##0." + new String(new char[SCALE]).replace("\0", "#");
 
     /**
      * Checks operands and if operand is "null" sets it to 0
@@ -280,7 +280,7 @@ public class BigDecimalProcessing {
         return formatLocaleFixedDecimal(new BigDecimal(value), locale, decimalDigits);
     }
 
-    public static String formatLocaleFixedDecimal(BigDecimal bigDecimal, Locale locale, Integer decimalDigits) {
+    private static String formatLocaleFixedDecimal(BigDecimal bigDecimal, Locale locale, Integer decimalDigits) {
         DecimalFormat df = new DecimalFormat("###,##0." +
                 new String(new char[decimalDigits]).replace("\0", "0"));
         DecimalFormatSymbols dfs = new DecimalFormatSymbols(locale);
@@ -306,7 +306,7 @@ public class BigDecimalProcessing {
      * @param bigDecimalString strin to quated
      * @return 123456.123 => "123456.123"
      */
-    public static String toQuoted(String bigDecimalString) {
+    private static String toQuoted(String bigDecimalString) {
         return '"' + bigDecimalString + '"';
     }
 
@@ -329,7 +329,7 @@ public class BigDecimalProcessing {
         }
     }
 
-    public static BigDecimal parseLocale(String bigDecimal, Locale locale, boolean trailingZeros) {
+    private static BigDecimal parseLocale(String bigDecimal, Locale locale, boolean trailingZeros) {
         if (bigDecimal == null || locale == null) {
             return null;
         }

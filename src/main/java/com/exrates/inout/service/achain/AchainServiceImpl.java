@@ -25,24 +25,28 @@ import java.util.Map;
 @Service
 public class AchainServiceImpl implements AchainService {
 
+    private static final BigDecimal ACT_COMMISSION = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
+    private static final BigDecimal TOKENS_COMMISSION = new BigDecimal(0.1).setScale(2, RoundingMode.HALF_UP);
+    private static final String MERCHANT_NAME = "ACHAIN";
+
     private final NodeService nodeService;
     private final CurrencyService currencyService;
     private final MerchantService merchantService;
     private final RefillService refillService;
     private final MessageSource messageSource;
-    private final BigDecimal ACT_COMISSION = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
-    private final BigDecimal TOKENS_COMISSION = new BigDecimal(0.1).setScale(2, RoundingMode.HALF_UP);
-    private static final String MERCHANT_NAME = "ACHAIN";
 
     @Autowired
-    public AchainServiceImpl(NodeService nodeService, CurrencyService currencyService, MerchantService merchantService, RefillService refillService, MessageSource messageSource) {
+    public AchainServiceImpl(NodeService nodeService,
+                             CurrencyService currencyService,
+                             MerchantService merchantService,
+                             RefillService refillService,
+                             MessageSource messageSource) {
         this.nodeService = nodeService;
         this.currencyService = currencyService;
         this.merchantService = merchantService;
         this.refillService = refillService;
         this.messageSource = messageSource;
     }
-
 
     @Override
     public String getMainAddress() {
@@ -112,9 +116,9 @@ public class AchainServiceImpl implements AchainService {
         log.debug("comission merchant {}", merchantId);
         Merchant merchant = merchantService.findById(merchantId);
         if (merchant.getName().equals(MERCHANT_NAME)) {
-            return ACT_COMISSION;
+            return ACT_COMMISSION;
         }
-        return TOKENS_COMISSION;
+        return TOKENS_COMMISSION;
     }
 
     @Override

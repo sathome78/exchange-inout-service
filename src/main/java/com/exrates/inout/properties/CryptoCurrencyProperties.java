@@ -7,6 +7,7 @@ import com.exrates.inout.properties.models.LiskMerchants;
 import com.exrates.inout.properties.models.MoneroMerchants;
 import com.exrates.inout.properties.models.NeoMerchants;
 import com.exrates.inout.properties.models.QtumMerchants;
+import com.exrates.inout.properties.models.StellarAssetMerchants;
 import com.exrates.inout.properties.models.WavesMerchants;
 import com.exrates.inout.properties.models.XemMerchants;
 import lombok.Getter;
@@ -23,7 +24,10 @@ import org.springframework.stereotype.Component;
         LiskMerchants.class,
         WavesMerchants.class,
         NeoMerchants.class,
-        QtumMerchants.class})
+        QtumMerchants.class,
+        MoneroMerchants.class,
+        XemMerchants.class,
+        StellarAssetMerchants.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinMerchants bitcoinMerchants;
@@ -35,6 +39,7 @@ public class CryptoCurrencyProperties {
     private final QtumMerchants qtumMerchants;
     private final MoneroMerchants moneroMerchants;
     private final XemMerchants xemMerchants;
+    private final StellarAssetMerchants stellarAssetMerchants;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinMerchants bitcoinMerchants,
@@ -45,7 +50,8 @@ public class CryptoCurrencyProperties {
                                     NeoMerchants neoMerchants,
                                     QtumMerchants qtumMerchants,
                                     MoneroMerchants moneroMerchants,
-                                    XemMerchants xemMerchants) {
+                                    XemMerchants xemMerchants,
+                                    StellarAssetMerchants stellarAssetMerchants) {
         this.bitcoinMerchants = bitcoinMerchants;
         this.ethereumMerchants = ethereumMerchants;
         this.ethereumTokenMerchants = ethereumTokenMerchants;
@@ -55,5 +61,6 @@ public class CryptoCurrencyProperties {
         this.qtumMerchants = qtumMerchants;
         this.moneroMerchants = moneroMerchants;
         this.xemMerchants = xemMerchants;
+        this.stellarAssetMerchants = stellarAssetMerchants;
     }
 }

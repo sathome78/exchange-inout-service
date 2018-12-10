@@ -12,6 +12,7 @@ import com.exrates.inout.properties.models.LiskProperty;
 import com.exrates.inout.properties.models.MoneroProperty;
 import com.exrates.inout.properties.models.NeoProperty;
 import com.exrates.inout.properties.models.QtumProperty;
+import com.exrates.inout.properties.models.StellarProperty;
 import com.exrates.inout.properties.models.WavesProperty;
 import com.exrates.inout.properties.models.XemProperty;
 import com.exrates.inout.service.CurrencyService;
@@ -43,7 +44,6 @@ import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -667,37 +667,27 @@ public class CryptocurrencyConfig {
         return new XemMosaicServiceImpl(property);
     }
 
-    /***stellarAssets****/
-    private @Value("${stellar.slt.emitter}")
-    String SLT_EMMITER;
-
     @Bean(name = "sltStellarService")
     public StellarAsset sltStellarService() {
-        return new StellarAsset("SLT",
-                "SLT",
-                "SLT",
-                SLT_EMMITER);
+        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getSlt());
     }
 
     @Bean(name = "ternStellarService")
     public StellarAsset ternStellarService() {
-        return new StellarAsset("TERN",
-                "TERN",
-                "TERN",
-                "GDGQDVO6XPFSY4NMX75A7AOVYCF5JYGW2SHCJJNWCQWIDGOZB53DGP6C");
+        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getTern());
+    }
+
+    @Bean(name = "vntStellarService")
+    public StellarAsset vntStellarService() {
+        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getVnt());
+    }
+
+    private StellarAsset createStellarService(StellarProperty property) {
+        return new StellarAsset(property);
     }
 
     @Bean("vexaniumContract")
     public AchainContract achainContractService() {
         return new AchainContract("ACT9XnhX5FtQqGFAa3KgrgkPCCEDPmuzgtSx", "VEX", "VEX", "Vexanium_Token");
     }
-
-    @Bean(name = "vntStellarService")
-    public StellarAsset vntStellarService() {
-        return new StellarAsset("VNT",
-                "VNT",
-                "VNT",
-                "GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO");
-    }
-
 }

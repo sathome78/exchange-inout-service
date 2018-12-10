@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 
 public interface AdkService extends BitcoinLikeCurrency, IRefillable, IWithdrawable {
 
-
     @Override
     default Boolean createdRefillRequestRecordNeeded() {
         return false;

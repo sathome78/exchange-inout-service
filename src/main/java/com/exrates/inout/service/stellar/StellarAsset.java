@@ -1,5 +1,6 @@
 package com.exrates.inout.service.stellar;
 
+import com.exrates.inout.properties.models.StellarProperty;
 import lombok.Data;
 import org.stellar.sdk.Asset;
 import org.stellar.sdk.KeyPair;
@@ -14,12 +15,12 @@ public class StellarAsset {
     private KeyPair issuer;
     private Asset asset;
 
-    public StellarAsset(String currencyName, String merchantName, String assetName, String emmitentAccount) {
-        this.currencyName = currencyName;
-        this.merchantName = merchantName;
-        this.assetName = assetName;
-        this.emmitentAccount = emmitentAccount;
-        issuer = KeyPair.fromAccountId(emmitentAccount);
-        asset = Asset.createNonNativeAsset(assetName, issuer);
+    public StellarAsset(StellarProperty property) {
+        this.currencyName = property.getCurrencyName();
+        this.merchantName = property.getMerchantName();
+        this.assetName = property.getAssetName();
+        this.emmitentAccount = property.getEmmitentAccount();
+        this.issuer = KeyPair.fromAccountId(property.getEmmitentAccount());
+        this.asset = Asset.createNonNativeAsset(property.getAssetName(), this.issuer);
     }
 }

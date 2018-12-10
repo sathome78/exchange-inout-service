@@ -1840,32 +1840,25 @@ qtum-merchants:
   spc:
     merchant-name: SPC
     currency-name: SPC
-    min-confirmations: 2
-    node:
-      contract: 57931faffdec114056a49adfcaa1caac159a1a25
-      unit: AIWEI
-      #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
-      endpoint: http://127.0.0.1:38891
-      user: wayfarer88
-      password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      min-transfer-amount: 1
-      main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
-      wallet-password: jet2103
-      backup-folder: /data/.qtum/qtum_backup/
+    contract: 57931faffdec114056a49adfcaa1caac159a1a25
+    unit: AIWEI
   hlc:
     merchant-name: HLC
     currency-name: HLC
+    contract: b27d7bf95b03e02b55d5eb63d3f1692762101bf9
+    unit: GWEI
+
+qtum:
+  node:
+    #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
+    endpoint: http://127.0.0.1:38891
+    user: wayfarer88
+    password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
     min-confirmations: 2
-    node:
-      contract: b27d7bf95b03e02b55d5eb63d3f1692762101bf9
-      unit: GWEI
-      endpoint: http://127.0.0.1:38891
-      user: wayfarer88
-      password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      min-transfer-amount: 1
-      main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
-      wallet-password: jet2103
-      backup-folder: /data/.qtum/qtum_backup/
+    min-transfer-amount: 1
+    main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
+    wallet-password: jet2103
+    backup-folder: /data/.qtum/qtum_backup/
 
 monero-merchants:
   xmr:
@@ -1924,3 +1917,46 @@ xem-merchants:
     divisibility: 6
     levy-fee: 0
     supply: 9000000000
+
+stellar-merchants:
+  slt:
+    merchant-name: SLT
+    currency-name: SLT
+    asset-name: SLT
+    emmitent-account: GC7Q4726KHPFK3LNMCSYJZ3YT7A2BFMGKEQYRLLTA2TSODUK3HBK2MOB
+  tern:
+    merchant-name: TERN
+    currency-name: TERN
+    asset-name: TERN
+    emmitent-account: GDGQDVO6XPFSY4NMX75A7AOVYCF5JYGW2SHCJJNWCQWIDGOZB53DGP6C
+  vnt:
+    merchant-name: VNT
+    currency-name: VNT
+    asset-name: VNT
+    emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
+
+achain:
+  node:
+    url: http://127.0.0.1:8078/rpc
+    rpc-user: admin:123456
+    main-address: ACT54nD2uNstDg3AYfGJJ9g8ZxiC4RPs7EAG
+    account-name: newone
+
+adk:
+  node:
+    rpc-host: http://172.10.13.150:16322
+    rpc-user: wayfarer88
+    rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+    enabled: true
+    wallet-password: 12345678
+
+apollo:
+  node:
+    url: http://172.10.13.74:7876/apl
+    main-address: APL-PERW-X5U2-9YLF-7YRAC
+
+aunit:
+  node:
+    main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
+    main-address-Num: 1.2.23845
+    ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090

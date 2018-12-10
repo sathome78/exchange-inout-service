@@ -17,7 +17,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -29,13 +28,16 @@ import java.util.Optional;
 
 
 @Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloServiceImpl implements ApolloService {
 
-    private @Value("${apollo.url}")String SEVER_URL;
-    private @Value("${apollo.main_address}")String MAIN_ADDRESS;
     private static final String APOLLO_MERCHANT_CURRENCY = "APL";
+
+    @Value("${apollo.url}")
+    private String url;
+    @Value("${apollo.main_address}")
+    private String mainAddress;
+
     private Merchant merchant;
     private Currency currency;
 
@@ -62,11 +64,11 @@ public class ApolloServiceImpl implements ApolloService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         String destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.apl",
-                new Object[]{MAIN_ADDRESS, destinationTag}, request.getLocale());
+                new Object[]{mainAddress, destinationTag}, request.getLocale());
         return new HashMap<String, String>() {{
-            put("address",  destinationTag);
+            put("address", destinationTag);
             put("message", message);
-            put("qr", MAIN_ADDRESS);
+            put("qr", mainAddress);
         }};
     }
 
@@ -79,7 +81,6 @@ public class ApolloServiceImpl implements ApolloService {
         } while (id.isPresent());
         return destinationTag;
     }
-
 
     @Override
     public RefillRequestAcceptDto createRequest(String address, BigDecimal amount, String hash) {
@@ -138,16 +139,10 @@ public class ApolloServiceImpl implements ApolloService {
         throw new RuntimeException("not implemented");
     }
 
-
     private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
         return StringUtils.isEmpty(hash)
                 || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchantId, currencyId, hash).isPresent();
     }
-
-    /*@Override
-    public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
-        return new BigDecimal(10).setScale(3, RoundingMode.HALF_UP);
-    }*/
 
     @Override
     public Merchant getMerchant() {
@@ -161,12 +156,11 @@ public class ApolloServiceImpl implements ApolloService {
 
     @Override
     public String getMainAddress() {
-        return MAIN_ADDRESS;
+        return mainAddress;
     }
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
-        return withdrawUtils.isValidDestinationAddress(MAIN_ADDRESS, address);
+        return withdrawUtils.isValidDestinationAddress(mainAddress, address);
     }
 }

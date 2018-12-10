@@ -21,7 +21,6 @@ import java.util.Random;
 @Service
 public class SDKHttpClient {
 
-
     private CloseableHttpClient httpclient;
 
     @Autowired

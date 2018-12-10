@@ -13,9 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class RateLimitService {
 
-
     private static final int TIME_LIMIT_SECONDS = 3600;
-
     private static final int ATTEMPS = 5;
 
     private Map<String, CopyOnWriteArrayList<LocalDateTime>> map = new ConcurrentHashMap<>();
@@ -23,7 +21,7 @@ public class RateLimitService {
     @Scheduled(cron = "* 5 * * * *")
     public void clearExpiredRequests() {
         new HashMap<>(map).forEach((k, v) -> {
-            if (v.stream().filter(p -> p.isAfter(LocalDateTime.now().minusSeconds(TIME_LIMIT_SECONDS))).count() == 0) {
+            if (v.stream().noneMatch(p -> p.isAfter(LocalDateTime.now().minusSeconds(TIME_LIMIT_SECONDS)))) {
                 map.remove(k);
             }
         });

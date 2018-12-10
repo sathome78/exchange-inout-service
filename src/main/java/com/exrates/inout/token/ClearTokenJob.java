@@ -8,6 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.impl.matchers.GroupMatcher;
 
 public class ClearTokenJob implements Job {
+
     private static final Logger LOGGER = LogManager.getLogger(TokenScheduler.class);
 
     @Override

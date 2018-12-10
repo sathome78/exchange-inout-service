@@ -4,7 +4,15 @@ import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.*;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +24,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component
 public class TokenScheduler {
     private static final Logger LOGGER = LogManager.getLogger(TokenScheduler.class);
-    public static final String TRIGGER_GROUP = "token";
-    public static final Integer TOKEN_LIFE_TIME_DAYS = 1;
+    private static final String TRIGGER_GROUP = "token";
+    private static final Integer TOKEN_LIFE_TIME_DAYS = 1;
 
     private Scheduler scheduler = null;
-    private static TokenScheduler tokenScheduler = null;
 
     @Autowired
     protected UserService userService;
@@ -34,12 +40,11 @@ public class TokenScheduler {
     @PostConstruct
     private void init() {
         try {
-            TokenScheduler.tokenScheduler = this;
             scheduler = new StdSchedulerFactory().getScheduler();
             scheduler.start();
             LOGGER.debug("TokenScheduler is started ");
-        } catch (SchedulerException e) {
-            LOGGER.error("error while TokenScheduler init " + e.getLocalizedMessage());
+        } catch (SchedulerException ex) {
+            LOGGER.error("error while TokenScheduler init " + ex.getLocalizedMessage());
         }
     }
 
@@ -48,17 +53,15 @@ public class TokenScheduler {
         try {
             scheduler.shutdown(true);
             LOGGER.debug("TokenScheduler is stoped");
-        } catch (SchedulerException e) {
-            LOGGER.error("error while TokenScheduler destroy " + e.getLocalizedMessage());
+        } catch (SchedulerException ex) {
+            LOGGER.error("error while TokenScheduler destroy " + ex.getLocalizedMessage());
         }
     }
 
-    private List<TemporalToken> tokens = new ArrayList<>();
-
-    public List<JobKey> initTrigers() {
+    public void initTrigers() {
         List<JobKey> jobsInQueue = getAllJobKeys();
-        Integer jobsInQueueCount = jobsInQueue == null ? 0 : jobsInQueue.size();
-        tokens = userService.getAllTokens();
+        int jobsInQueueCount = jobsInQueue == null ? 0 : jobsInQueue.size();
+        List<TemporalToken> tokens = userService.getAllTokens();
         try {
             for (TemporalToken token : tokens) {
                 Trigger trigger = scheduler.getTrigger(new TriggerKey(String.valueOf(token.getId()), TRIGGER_GROUP));
@@ -87,20 +90,18 @@ public class TokenScheduler {
                     (scheduler.getJobKeys(GroupMatcher.jobGroupEquals(TRIGGER_GROUP)).size() - jobsInQueueCount),
                     scheduler.getJobKeys(GroupMatcher.jobGroupEquals(TRIGGER_GROUP)).size(),
                     getAllJobKeys()));
-        } catch (SchedulerException e) {
-            LOGGER.error("error while token clean triggers init " + e.getLocalizedMessage());
+        } catch (SchedulerException ex) {
+            LOGGER.error("error while token clean triggers init " + ex.getLocalizedMessage());
         }
-        return getAllJobKeys();
+        getAllJobKeys();
     }
 
-    public List<JobKey> getAllJobKeys() {
-        List<JobKey> jobs = null;
+    private List<JobKey> getAllJobKeys() {
+        List<JobKey> jobs;
         try {
-            jobs = scheduler.getJobKeys(GroupMatcher.groupEquals(TRIGGER_GROUP))
-                    .stream()
-                    .collect(Collectors.toList());
-        } catch (SchedulerException e) {
-            LOGGER.error("error while token jobs list retrieving: " + e.getLocalizedMessage());
+            jobs = new ArrayList<>(scheduler.getJobKeys(GroupMatcher.groupEquals(TRIGGER_GROUP)));
+        } catch (SchedulerException ex) {
+            LOGGER.error("error while token jobs list retrieving: " + ex.getLocalizedMessage());
             jobs = null;
         }
         return jobs;
@@ -111,8 +112,8 @@ public class TokenScheduler {
         if (scheduler != null) {
             try {
                 scheduler.shutdown();
-            } catch (SchedulerException e) {
-                LOGGER.error(e);
+            } catch (SchedulerException ex) {
+                LOGGER.error(ex);
             }
         }
     }

@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,37 +45,39 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
-
 @Log4j2(topic = "adk_log")
-@PropertySource("classpath:/merchants/adk.properties")
 @Service
 public class AdkServiceImpl implements AdkService {
+
+    private static final String CURRENCY_NAME = "ADK";
+    private static final String MERCHANT_NAME = "ADK";
+    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
+    private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
 
     private final AidosNodeService aidosNodeService;
     private final MessageSource messageSource;
     private final MerchantService merchantService;
     private final CurrencyService currencyService;
     private final RefillService refillService;
+    private final WithdrawUtils withdrawUtils;
 
-    private static final String CURRENCY_NAME = "ADK";
-    private static final String MERCHANT_NAME = "ADK";
     private Merchant merchant;
     private Currency currency;
-    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
-    private static final Object SEND_MONITOR = new Object();
-    private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
 
     @Autowired
-    public AdkServiceImpl(AidosNodeService aidosNodeService, MessageSource messageSource, MerchantService merchantService, CurrencyService currencyService, RefillService refillService) {
+    public AdkServiceImpl(AidosNodeService aidosNodeService,
+                          MessageSource messageSource,
+                          MerchantService merchantService,
+                          CurrencyService currencyService,
+                          RefillService refillService,
+                          WithdrawUtils withdrawUtils) {
         this.aidosNodeService = aidosNodeService;
         this.messageSource = messageSource;
         this.merchantService = merchantService;
         this.currencyService = currencyService;
         this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
     }
-
-    @Autowired
-    private WithdrawUtils withdrawUtils;
 
     @PostConstruct
     private void inti() {
@@ -192,21 +193,21 @@ public class AdkServiceImpl implements AdkService {
                 .map(transaction -> dtoMapper((JSONObject) transaction))
                 .collect(groupingBy(BtcTransactionHistoryDto::getTxId));
         List<BtcTransactionHistoryDto> resultList = new ArrayList<>();
-        map.forEach((k,v) -> {
-                    if (v.stream().anyMatch(p -> Double.valueOf(p.getAmount()) < 0)) {
-                        List<BtcTransactionHistoryDto> dtos = v.stream().filter(p -> !p.getCategory().equals("send") && adresses.contains(p.getAddress())).collect(toList());
-                        resultList.addAll(dtos);
-                        v.removeAll(dtos);
-                        if (!v.isEmpty()) {
-                            resultList.add(v.stream()
-                                    .reduce((a, b) -> new BtcTransactionHistoryDto(a.getTxId(), "", "send",
-                                            new BigDecimal(a.getAmount()).add(new BigDecimal(b.getAmount())).setScale(8, RoundingMode.HALF_DOWN).toPlainString(),
-                                            a.getConfirmations(), a.getTime()))
-                                    .orElse(new BtcTransactionHistoryDto(v.get(0).getTxId())));
-                        }
-                    } else {
-                        resultList.addAll(v);
-                    }
+        map.forEach((k, v) -> {
+            if (v.stream().anyMatch(p -> Double.valueOf(p.getAmount()) < 0)) {
+                List<BtcTransactionHistoryDto> dtos = v.stream().filter(p -> !p.getCategory().equals("send") && adresses.contains(p.getAddress())).collect(toList());
+                resultList.addAll(dtos);
+                v.removeAll(dtos);
+                if (!v.isEmpty()) {
+                    resultList.add(v.stream()
+                            .reduce((a, b) -> new BtcTransactionHistoryDto(a.getTxId(), "", "send",
+                                    new BigDecimal(a.getAmount()).add(new BigDecimal(b.getAmount())).setScale(8, RoundingMode.HALF_DOWN).toPlainString(),
+                                    a.getConfirmations(), a.getTime()))
+                            .orElse(new BtcTransactionHistoryDto(v.get(0).getTxId())));
+                }
+            } else {
+                resultList.addAll(v);
+            }
         });
         return resultList;
         /* to return list without transformations

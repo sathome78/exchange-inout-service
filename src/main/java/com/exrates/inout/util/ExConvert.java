@@ -12,19 +12,19 @@ public class ExConvert {
         return fromWei(new BigDecimal(number), unit);
     }
 
-    public static BigDecimal fromWei(BigDecimal number, ExConvert.Unit unit) {
+    private static BigDecimal fromWei(BigDecimal number, ExConvert.Unit unit) {
         return number.divide(unit.getWeiFactor());
     }
 
-    public static BigDecimal toWei(String number, ExConvert.Unit unit) {
+    public static BigDecimal toWei(int number, ExConvert.Unit unit) {
         return toWei(new BigDecimal(number), unit);
     }
 
-    public static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
+    private static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
         return number.multiply(unit.getWeiFactor());
     }
 
-    public static enum Unit {
+    public enum Unit {
         WEI("wei", 0),
         KWEI("kwei", 3),
         MWEI("mwei", 6),
@@ -40,7 +40,7 @@ public class ExConvert {
         private String name;
         private BigDecimal weiFactor;
 
-        private Unit(String name, int factor) {
+        Unit(String name, int factor) {
             this.name = name;
             this.weiFactor = BigDecimal.TEN.pow(factor);
         }
@@ -54,20 +54,14 @@ public class ExConvert {
         }
 
         public static ExConvert.Unit fromString(String name) {
-            if(name != null) {
-                ExConvert.Unit[] var1 = values();
-                int var2 = var1.length;
-
-                for(int var3 = 0; var3 < var2; ++var3) {
-                    ExConvert.Unit unit = var1[var3];
-                    if(name.equalsIgnoreCase(unit.name)) {
+            if (name != null) {
+                for (Unit unit : values()) {
+                    if (name.equalsIgnoreCase(unit.name)) {
                         return unit;
                     }
                 }
             }
-
             return valueOf(name);
         }
     }
-
 }

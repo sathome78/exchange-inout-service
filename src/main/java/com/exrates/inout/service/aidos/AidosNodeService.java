@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface AidosNodeService {
+
     String generateNewAddress();
 
     BigDecimal getBalance();
@@ -18,7 +19,6 @@ public interface AidosNodeService {
     JSONArray getAllTransactions(Integer count, Integer from);
 
     JSONObject sendToAddress(String address, BigDecimal amount);
-
 
     JSONObject sendMany(List<BtcWalletPaymentItemDto> payments);
 

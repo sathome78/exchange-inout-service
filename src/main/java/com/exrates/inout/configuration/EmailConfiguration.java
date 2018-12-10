@@ -89,5 +89,4 @@ public class EmailConfiguration {
         mailSenderImpl.setJavaMailProperties(javaMailProps);
         return mailSenderImpl;
     }
-
 }

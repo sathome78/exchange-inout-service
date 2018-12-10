@@ -1,39 +1,17 @@
 package com.exrates.inout.util;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.servlet.http.HttpServletRequest;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CacheData {
+
     private HttpServletRequest request;
     private String cacheKey;
     private Boolean forceUpdate;
-    /*constructor*/
-
-    public CacheData(HttpServletRequest request, String cacheKey, Boolean forceUpdate) {
-        this.request = request;
-        this.cacheKey = cacheKey;
-        this.forceUpdate = forceUpdate;
-    }
-
-    @Override
-    public String toString() {
-        return "CacheData{" +
-                "request=" + request +
-                ", cacheKey='" + cacheKey + '\'' +
-                ", forceUpdate=" + forceUpdate +
-                '}';
-    }
-
-    /*getters*/
-
-    public HttpServletRequest getRequest() {
-        return request;
-    }
-
-    public String getCacheKey() {
-        return cacheKey;
-    }
-
-    public Boolean getForceUpdate() {
-        return forceUpdate;
-    }
 }

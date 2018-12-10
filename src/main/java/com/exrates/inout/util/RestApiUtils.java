@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class RestApiUtils {
 
-
     public static String decodePassword(String password, String keyString) {
         final byte[] txt = Base64.getDecoder().decode(password);
         final byte[] key = keyString.getBytes();

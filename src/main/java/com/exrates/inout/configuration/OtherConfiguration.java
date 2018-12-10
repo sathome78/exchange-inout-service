@@ -17,7 +17,6 @@ import java.util.Locale;
 @Configuration
 public class OtherConfiguration {
 
-
     @Bean
     public RestTemplate restTemplate() {
         HttpClientBuilder b = HttpClientBuilder.create();

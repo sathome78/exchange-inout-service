@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,15 +24,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
 @Component
 public class ApolloReceiveServiceImpl {
 
-
-    private @Value("${apollo.main_address}")String MAIN_ADDRESS;
     private static final String PARAM_NAME = "LastBlockTime";
     private static final String MERCHANT_NAME = "APL";
     private static final long GENESIS_TIME = 1515931200;
+
+    @Value("${apollo.node.main-address}")
+    private String mainAddress;
+
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
@@ -43,9 +45,6 @@ public class ApolloReceiveServiceImpl {
     private ApolloService apolloService;
     @Autowired
     private RefillService refillService;
-
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
 
     @PostConstruct
     private void init() {
@@ -57,7 +56,7 @@ public class ApolloReceiveServiceImpl {
         try {
             log.debug("start check apl transactions");
             long lastBLockTime = loadLastBlockTime();
-            JSONArray transactions = new JSONObject(apolloNodeService.getTransactions(MAIN_ADDRESS, lastBLockTime)).getJSONArray("transactions");
+            JSONArray transactions = new JSONObject(apolloNodeService.getTransactions(mainAddress, lastBLockTime)).getJSONArray("transactions");
             log.debug("txs {}", transactions);
             if (transactions.length() > 0) {
                 long lastTxBlockTimestamp = transactions.getJSONObject(0).getLong("blockTimestamp");
@@ -72,8 +71,8 @@ public class ApolloReceiveServiceImpl {
                     if (!tx.getBoolean("phased")
                             && attachment.has("message")
                             && attachment.getBoolean("messageIsText")
-                            && !sender.equalsIgnoreCase(MAIN_ADDRESS)
-                            && recipient.equalsIgnoreCase(MAIN_ADDRESS)) {
+                            && !sender.equalsIgnoreCase(mainAddress)
+                            && recipient.equalsIgnoreCase(mainAddress)) {
                         String hash = tx.getString("fullHash");
                         BigDecimal amount = parseAmount(tx.getString("amountATM"));
                         String address = attachment.getString("message");
@@ -101,7 +100,6 @@ public class ApolloReceiveServiceImpl {
         }
     }
 
-
     private void checkUnconfirmed() {
         log.debug("check unconfirmed apl ");
         try {
@@ -125,7 +123,6 @@ public class ApolloReceiveServiceImpl {
             log.error(e);
         }
     }
-
 
     private JSONObject getTransaction(String txHash) {
         return new JSONObject(apolloNodeService.getTransaction(txHash));
@@ -155,6 +152,4 @@ public class ApolloReceiveServiceImpl {
         MerchantSpecParamDto specParamsDto = specParamsDao.getByMerchantNameAndParamName(MERCHANT_NAME, PARAM_NAME);
         return specParamsDto.getParamValue() == null ? 0 : Long.valueOf(specParamsDto.getParamValue());
     }
-
-
 }

@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -44,34 +43,37 @@ import static com.exrates.inout.service.autist.MemoDecryptor.decryptBTSmemo;
 
 
 @Log4j2(topic = "aunit")
-@PropertySource("classpath:/merchants/aunit.properties")
 @ClientEndpoint
 @Service
 public class AunitNodeServiceImpl {
 
-    private @Value("${aunit.node.ws}") String wsUrl;
-    private @Value("${aunit.mainAddress}")String systemAddress;
+    @Value("${aunit.node.ws}")
+    private String wsUrl;
+    @Value("${aunit.node.main-address}")
+    private String systemAddress;
+    @Value("${aunit.node.main-address-num}")
+    private String accountAddress;
+
     private URI WS_SERVER_URL;
     private Session session;
     private volatile RemoteEndpoint.Basic endpoint = null;
     private Merchant merchant;
     private Currency currency;
+    private String privateKey;
 
     private MerchantSpecParamsDao merchantSpecParamsDao;
     private AunitService aunitService;
     private RefillService refillService;
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-
-    private String privateKey;
-    private @Value("${aunit.mainAddressNum}") String accountAddress;
 
     private int latIrreversableBlocknumber;
     private final String lastIrreversebleBlock = "last_irreversible_block_num";
 
-
     @Autowired
-    public AunitNodeServiceImpl(MerchantService merchantService, CurrencyService currencyService, MerchantSpecParamsDao merchantSpecParamsDao, AunitService aunitService, RefillService refillService) throws NoSuchAlgorithmException {
+    public AunitNodeServiceImpl(MerchantService merchantService,
+                                CurrencyService currencyService,
+                                MerchantSpecParamsDao merchantSpecParamsDao,
+                                AunitService aunitService,
+                                RefillService refillService) throws NoSuchAlgorithmException {
         try {
             this.merchant = merchantService.findByName(AUNIT_MERCHANT);
             this.currency = currencyService.findByName(AUNIT_CURRENCY);
@@ -80,16 +82,15 @@ public class AunitNodeServiceImpl {
             this.aunitService = aunitService;
             this.refillService = refillService;
             privateKey = merchantService.getPassMerchantProperties("AUNIT").getProperty("privateKey");
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> {
                 try {
                     reconnect();
                 } catch (Exception e) {
                     log.info(e);
                 }
-
             }, 0L, 3L, TimeUnit.MINUTES); //todo
-
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("AUNIT not started: \n" + e.getMessage());
         }
     }
@@ -116,8 +117,8 @@ public class AunitNodeServiceImpl {
         }
     }
 
-    private void reconnect(){
-        if(!session.isOpen()){
+    private void reconnect() {
+        if (!session.isOpen()) {
             try {
                 init();
             } catch (Exception e) {
@@ -169,21 +170,13 @@ public class AunitNodeServiceImpl {
         subscribe.put("params", new JSONArray().put(2).put("set_subscribe_callback").put(new JSONArray().put(0).put(false)));
 
         endpoint.sendText(login.toString());
-
         endpoint.sendText(db.toString());
-
         endpoint.sendText(netw.toString());
-
         endpoint.sendText(history.toString());
-
         endpoint.sendText(orders.toString());
-
         endpoint.sendText(chainId.toString());
-
         endpoint.sendText(subscribe.toString());
-
         endpoint.sendText(get_object.toString());
-
     }
 
     @OnMessage()
@@ -192,10 +185,9 @@ public class AunitNodeServiceImpl {
             if (msg.contains("notice")) setIrreversableBlock(msg);
             else if (msg.contains("previous")) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from aunit \n" + msg);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Web socket error AUNIT : \n" + e.getMessage());
         }
-
     }
 
     @SneakyThrows
@@ -217,16 +209,14 @@ public class AunitNodeServiceImpl {
             for (int i = 0; i < transactions.length(); i++) {
                 JSONObject transaction = transactions.getJSONObject(i).getJSONArray("operations").getJSONArray(0).getJSONObject(1);
 
-                if (transaction.getString("to").equals(accountAddress)) makeRefill(lisfOfMemo, transaction);
-
+                if (transaction.getString("to").equals(accountAddress)) {
+                    makeRefill(lisfOfMemo, transaction);
+                }
             }
-
         } catch (JSONException e) {
             log.debug(e);
         }
-
     }
-
 
     @SneakyThrows
     private void makeRefill(List<String> lisfOfMemo, JSONObject transaction) {
@@ -239,13 +229,11 @@ public class AunitNodeServiceImpl {
                 prepareAndProcessTx(Hashing.sha256()
                         .hashString(memo.toString(), StandardCharsets.UTF_8)
                         .toString(), memoText, amount);
-
             }
         } catch (NoSuchAlgorithmException e) {
             log.error("Memo can not be decrypted : " + e.getClass());
         }
     }
-
 
     private void prepareAndProcessTx(String hash, String address, BigDecimal amount) {
         Map<String, String> map = new HashMap<>();
@@ -287,14 +275,5 @@ public class AunitNodeServiceImpl {
             log.error("error closing session");
         }
     }
-
-//    public static void main(String[] args) throws NoSuchAlgorithmException {
-//        String s = decryptBTSmemo("5JZ4ZrZ7GXKGKVgqJ6ZKHNDfJAe2K1B58sUVHspA9iLQ3UBG6Lh",
-//                "{\"from\":\"AUNIT7k3nL56J7hh2yGHgWTUk9bGdjG2LL1S7egQDJYZ71MQtU3CqB5\",\"to\":\"AUNIT6Y1omrtPmYEHBaK7gdAeqdGASPariaCXGm83Phjc2NDEuxYfzV\",\"nonce\":\"394357881684245\",\"message\":\"70c9c5459c69e2182693c604f6102dee\"}");
-//        System.out.println(s);
-//
-//        System.out.println(String.valueOf(digest.digest("test".getBytes(StandardCharsets.UTF_8))));
-//    }
-
 }
 

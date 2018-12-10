@@ -38,42 +38,32 @@ public class QtumServiceImpl implements QtumService {
 
     @Autowired
     private QtumNodeService qtumNodeService;
-
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    private @Value("${qtum.min.confirmations}")
-    Integer minConfirmations;
-
-    private @Value("${qtum.min.transfer.amount}")
-    BigDecimal minTransferAmount;
-
-    private @Value("${qtum.main.address.for.transfer}")
-    String mainAddressForTransfer;
-
-    private @Value("${qtum.node.endpoint}")
-    String endpoint;
+    @Value("${qtum.node.min-confirmations}")
+    private Integer minConfirmations;
+    @Value("${qtum.node.min-transfer-amount}")
+    private BigDecimal minTransferAmount;
+    @Value("${qtum.node.main-address-for-transfer}")
+    private String mainAddressForTransfer;
+    @Value("${qtum.node.endpoint}")
+    private String endpoint;
 
     private Merchant merchant;
-
     private Currency currency;
 
-    private final String qtumSpecParamName = "LastRecievedBlock";
+    private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -82,14 +72,12 @@ public class QtumServiceImpl implements QtumService {
         merchant = merchantService.findByName("Qtum");
         currency = currencyService.findByName("QTUM");
 
-
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 scanBlocks();
             } catch (Exception e) {
                 log.error(e);
             }
-
         }, 5L, 25L, TimeUnit.MINUTES);
 
         scheduler.scheduleAtFixedRate(() -> {
@@ -98,7 +86,6 @@ public class QtumServiceImpl implements QtumService {
             } catch (Exception e) {
                 log.error(e);
             }
-
         }, 90L, 120L, TimeUnit.MINUTES);
 
         scheduler.scheduleAtFixedRate(() -> {
@@ -107,7 +94,6 @@ public class QtumServiceImpl implements QtumService {
             } catch (Exception e) {
                 log.error(e);
             }
-
         }, 1L, 12L, TimeUnit.HOURS);
     }
 
@@ -121,11 +107,11 @@ public class QtumServiceImpl implements QtumService {
             put("message", message);
             put("address", address);
             put("qr", address);
-        }};    }
+        }};
+    }
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                 .address(params.get("address"))
                 .merchantId(merchant.getId())
@@ -140,18 +126,17 @@ public class QtumServiceImpl implements QtumService {
     }
 
     @Override
-    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
+    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
         return new HashMap<>();
     }
 
     @Synchronized
     private void scanBlocks() {
-
         log.debug("Start scanning blocks Qtum");
         ProfileData profileData = new ProfileData(500);
 
         final int lastReceivedBlock = Integer.parseInt(specParamsDao.getByMerchantNameAndParamName(merchant.getName(),
-                qtumSpecParamName).getParamValue());
+                QTUM_SPEC_PARAM_NAME).getParamValue());
         Set<String> addresses = refillService.findAllAddresses(merchant.getId(), currency.getId()).stream().distinct().collect(Collectors.toSet());
 
         String blockNumberHash = qtumNodeService.getBlockHash(lastReceivedBlock);
@@ -160,12 +145,12 @@ public class QtumServiceImpl implements QtumService {
         log.info("qtum transactions: " + transactions.toString());
         transactions.stream()
                 .filter(t -> addresses.contains(t.getAddress()))
-                .filter(t -> !refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(t.getAddress(),merchant.getId(),currency.getId(),t.getTxid()).isPresent())
+                .filter(t -> !refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(t.getAddress(), merchant.getId(), currency.getId(), t.getTxid()).isPresent())
                 .filter(t -> transactions.stream().filter(tInner -> tInner.getTxid().equals(t.getTxid())).count() < 2)
                 .filter(t -> t.getCategory().equals("receive"))
                 .filter(t -> t.getConfirmations() >= minConfirmations)
                 .filter(t -> t.getWalletconflicts().size() == 0)
-                .filter(t -> t.isTrusted())
+                .filter(QtumTransaction::isTrusted)
                 .filter(t -> t.getAmount() > 0)
                 .filter(t -> t.getVout() < 10)
                 .forEach(t -> {
@@ -177,8 +162,8 @@ public class QtumServiceImpl implements QtumService {
                                 mapPayment.put("amount", String.valueOf(t.getAmount()));
                                 processPayment(mapPayment);
                                 log.info("after qtum transfer");
-                                specParamsDao.updateParam(merchant.getName(), qtumSpecParamName, String.valueOf(qtumNodeService.getBlock(t.getBlockhash()).getHeight()));
-                            }catch (Exception e){
+                                specParamsDao.updateParam(merchant.getName(), QTUM_SPEC_PARAM_NAME, String.valueOf(qtumNodeService.getBlock(t.getBlockhash()).getHeight()));
+                            } catch (Exception e) {
                                 log.error(e);
                             }
                         }
@@ -187,21 +172,21 @@ public class QtumServiceImpl implements QtumService {
         log.debug("Profile results: " + profileData);
     }
 
-    private void checkBalanceAndTransfer(){
+    private void checkBalanceAndTransfer() {
         log.debug("Start checking balance");
         ProfileData profileData = new ProfileData(500);
 
         qtumNodeService.setWalletPassphrase();
 
         BigDecimal balance = qtumNodeService.getBalance();
-        if (balance.compareTo(minTransferAmount) > 0){
+        if (balance.compareTo(minTransferAmount) > 0) {
             qtumNodeService.transfer(mainAddressForTransfer, balance.subtract(minTransferAmount));
         }
         profileData.setTime1();
         log.debug("Profile results: " + profileData);
     }
 
-    private void backupWallet(){
+    private void backupWallet() {
         log.debug("Start backup wallet");
         ProfileData profileData = new ProfileData(500);
 
@@ -215,7 +200,6 @@ public class QtumServiceImpl implements QtumService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(address);
     }
 

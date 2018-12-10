@@ -33,7 +33,6 @@ import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.ITransferable;
 import com.exrates.inout.service.IWithdrawable;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.SendMailService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.btc.BitcoinService;
@@ -86,8 +85,6 @@ public class MerchantServiceImpl implements MerchantService {
     private SendMailService sendMailService;
     @Autowired
     private MessageSource messageSource;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private MerchantServiceContext merchantServiceContext;
     @Autowired

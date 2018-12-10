@@ -16,6 +16,7 @@ import com.exrates.inout.util.ExConvert;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.EventValues;
 import org.web3j.abi.FunctionReturnDecoder;
@@ -60,14 +61,17 @@ public class QtumTokenServiceImpl implements QtumTokenService {
     @Autowired
     private RefillService refillService;
 
+    @Value("${qtum.node.min-confirmations}")
+    private int minConfirmations;
+    @Value("${qtum.node.min-transfer-amount}")
+    private int minTransferAmount;
+    @Value("${qtum.node.main-address-for-transfer}")
+    private String mainAddressForTransfer;
+
     private List<String> contractAddress;
     private String merchantName;
     private String currencyName;
     private ExConvert.Unit unit;
-    private Integer minConfirmations;
-    private BigDecimal minTransferAmount;
-    private String mainAddressForTransfer;
-    private String endpoint;
 
     private Merchant merchant;
     private Currency currency;
@@ -75,10 +79,10 @@ public class QtumTokenServiceImpl implements QtumTokenService {
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public QtumTokenServiceImpl(QtumProperty property) {
-        this.contractAddress = Arrays.asList(property.getNode().getContract().replaceAll(" ", "").split(","));
+        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
         this.merchantName = property.getMerchantName();
         this.currencyName = property.getCurrencyName();
-        this.unit = property.getNode().getUnit();
+        this.unit = property.getUnit();
     }
 
     @PostConstruct
@@ -156,7 +160,6 @@ public class QtumTokenServiceImpl implements QtumTokenService {
         refillService.autoAcceptRefillRequest(requestAcceptDto);
         refillService.updateAddressNeedTransfer(String.valueOf(params.get("address")), merchant.getId(),
                 currency.getId(), true);
-
     }
 
     private void checkBalanceAndTransfer() {

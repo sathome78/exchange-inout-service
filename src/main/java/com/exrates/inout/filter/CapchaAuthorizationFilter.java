@@ -33,29 +33,27 @@ import java.util.HashMap;
 @Log4j2
 public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private static final String AUTHENTICATION_PARAM_NAME = "authentication";
+
     @Autowired
     MessageSource messageSource;
-
     @Autowired
     LocaleResolver localeResolver;
     @Autowired
     private UserService userService;
     @Autowired
     private SecureService secureServiceImpl;
-
     @Autowired
     private IpBlockingService ipBlockingService;
-
     @Autowired
     private GeetestLib geetest;
+
     @Value("${session.checkPinParam}")
     private String checkPinParam;
     @Value("${session.pinParam}")
     private String pinParam;
     @Value("${session.passwordParam}")
     private String passwordParam;
-    private String authenticationParamName = "authentication";
-
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         HttpSession session = request.getSession(false);
@@ -74,7 +72,6 @@ public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFil
                 durationMessage = messageSource.getMessage("ip.ban.time.hours", new Object[]{durationHours},
                         localeResolver.resolveLocale(request));
             }
-
             // rethrow to add localization message
             throw new BannedIpException(messageSource.getMessage("ip.ban.message", new Object[]{durationMessage},
                     localeResolver.resolveLocale(request)), banDuration);
@@ -83,8 +80,8 @@ public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFil
         if (session.getAttribute(checkPinParam) != null && request.getParameter(pinParam) != null
                 && request.getParameter(super.getUsernameParameter()) == null
                 && request.getParameter(super.getPasswordParameter()) == null
-                && session.getAttribute(authenticationParamName) != null) {
-            Authentication authentication = (Authentication) session.getAttribute(authenticationParamName);
+                && session.getAttribute(AUTHENTICATION_PARAM_NAME) != null) {
+            Authentication authentication = (Authentication) session.getAttribute(AUTHENTICATION_PARAM_NAME);
             User principal = (User) authentication.getPrincipal();
             if (!userService.checkPin(principal.getUsername(), request.getParameter(pinParam), NotificationMessageEventEnum.LOGIN)) {
                 PinDto res = secureServiceImpl.reSendLoginMessage(request, authentication.getName(), true);
@@ -158,14 +155,13 @@ public class CapchaAuthorizationFilter extends UsernamePasswordAuthenticationFil
         if (userService.isGlobal2FaActive() || userService.getUse2Fa(principal.getUsername())) {
             userService.createSendAndSaveNewPinForUser(principal.getUsername(), request);
             request.getSession().setAttribute(checkPinParam, "");
-            request.getSession().setAttribute(authenticationParamName, authentication);
+            request.getSession().setAttribute(AUTHENTICATION_PARAM_NAME, authentication);
             request.getSession().setAttribute(passwordParam, request.getParameter(super.getPasswordParameter()));
             authentication.setAuthenticated(false);
             throw new PinCodeCheckNeedException("");
         }*/
         return authentication;
     }
-
 
     private Authentication attemptAuthentication(String username, String password, HttpServletRequest request,
                                                  HttpServletResponse response) throws AuthenticationException {

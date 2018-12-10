@@ -54,7 +54,6 @@ public class ResourcesServerConfiguration extends ResourceServerConfigurerAdapte
 //                .antMatchers(HttpMethod.PUT, "/**").access("#oauth2.hasScope('write')")
 //                .antMatchers(HttpMethod.DELETE, "/**").access("#oauth2.hasScope('write')")
                 .and()
-
                 .headers().addHeaderWriter((request, response) -> {
             response.addHeader("Access-Control-Allow-Origin", "*");
             if (request.getMethod().equals("OPTIONS")) {

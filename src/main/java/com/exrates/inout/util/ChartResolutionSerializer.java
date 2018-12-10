@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 public class ChartResolutionSerializer extends JsonSerializer<ChartResolution> {
+
     @Override
     public void serialize(ChartResolution value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
         gen.writeString(value.toString());

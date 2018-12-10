@@ -21,25 +21,23 @@ import java.util.*;
 
 @Service
 @Log4j2(topic = "qtum_log")
-@PropertySource("classpath:/merchants/qtum.properties")
 public class QtumNodeServiceImpl implements QtumNodeService {
 
     @Autowired
     private RestTemplate restTemplate;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    private @Value("${qtum.node.endpoint}")
-    String endpoint;
-    private @Value("${qtum.node.user}")
-    String user;
-    private @Value("${qtum.node.password}")
-    String password;
-    private @Value("${qtum.wallet.password}")
-    String walletPassphrase;
-    private @Value("${qtum.backup.folder}")
-    String backupDestination;
+    @Value("${qtum.node.endpoint}")
+    private String endpoint;
+    @Value("${qtum.node.user}")
+    private String user;
+    @Value("${qtum.node.password}")
+    private String password;
+    @Value("${qtum.node.wallet-password}")
+    private String walletPassphrase;
+    @Value("${qtum.node.backup-folder}")
+    private String backupDestination;
 
     @PostConstruct
     private void init() {
@@ -54,18 +52,18 @@ public class QtumNodeServiceImpl implements QtumNodeService {
 
     @Override
     public String getBlockHash(Integer height) {
-        return invokeJsonRpcMethod("getblockhash", Arrays.asList(height), new TypeReference<QtumJsonRpcResponse<String>>() {});
+        return invokeJsonRpcMethod("getblockhash", Collections.singletonList(height), new TypeReference<QtumJsonRpcResponse<String>>() {});
     }
 
     @Override
     public Block getBlock(String hash) {
-        return invokeJsonRpcMethod("getblock", Arrays.asList(hash), new TypeReference<QtumJsonRpcResponse<Block>>() {});
+        return invokeJsonRpcMethod("getblock", Collections.singletonList(hash), new TypeReference<QtumJsonRpcResponse<Block>>() {});
     }
 
     @Override
     public Optional<QtumListTransactions> listSinceBlock(String blockHash) {
         try {
-            return Optional.of(invokeJsonRpcMethod("listsinceblock", Arrays.asList(blockHash), new TypeReference<QtumJsonRpcResponse<QtumListTransactions>>() {}));
+            return Optional.of(invokeJsonRpcMethod("listsinceblock", Collections.singletonList(blockHash), new TypeReference<QtumJsonRpcResponse<QtumListTransactions>>() {}));
         }catch (Exception e){
             log.error(e);
             return Optional.empty();
@@ -89,36 +87,34 @@ public class QtumNodeServiceImpl implements QtumNodeService {
 
     @Override
     public void backupWallet() {
-        invokeJsonRpcMethod("backupwallet", Arrays.asList(backupDestination), new TypeReference<QtumJsonRpcResponse<String>>() {});
+        invokeJsonRpcMethod("backupwallet", Collections.singletonList(backupDestination), new TypeReference<QtumJsonRpcResponse<String>>() {});
     }
 
     @Override
     public QtumTransaction getTransaction(String hash) {
-        return invokeJsonRpcMethod("gettransaction", Arrays.asList(hash), new TypeReference<QtumJsonRpcResponse<QtumTransaction>>() {});
+        return invokeJsonRpcMethod("gettransaction", Collections.singletonList(hash), new TypeReference<QtumJsonRpcResponse<QtumTransaction>>() {});
     }
 
     @Override
     public List<QtumTokenTransaction> getTokenHistory(Integer blockStart, List<String> tokenAddressList){
-
-        Map<String, List<String>> addressesMap = new HashMap<>();
-        addressesMap.put("addresses", tokenAddressList);
-
-        List<String> topicsList = new ArrayList();
-        topicsList.add("ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
-        Map<String, List<String>> topicsMap = new HashMap<>();
-        topicsMap.put("topics", topicsList);
-
-        return invokeJsonRpcMethodList("searchlogs", Arrays.asList(blockStart, -1, addressesMap, topicsList), new TypeReference<QtumJsonRpcResponseList<QtumTokenTransaction>>() {});
+        return invokeJsonRpcMethodList(
+                "searchlogs",
+                Arrays.asList(
+                        blockStart,
+                        -1,
+                        Collections.singletonMap("addresses", tokenAddressList),
+                        Collections.singletonList("ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef")),
+                new TypeReference<QtumJsonRpcResponseList<QtumTokenTransaction>>() {});
     }
 
     @Override
     public String fromHexAddress(String address) {
-        return invokeJsonRpcMethod("fromhexaddress", Arrays.asList(address), new TypeReference<QtumJsonRpcResponse<String>>() {});
+        return invokeJsonRpcMethod("fromhexaddress", Collections.singletonList(address), new TypeReference<QtumJsonRpcResponse<String>>() {});
     }
 
     @Override
     public String getHexAddress(String address) {
-        return invokeJsonRpcMethod("gethexaddress", Arrays.asList(address), new TypeReference<QtumJsonRpcResponse<String>>() {});
+        return invokeJsonRpcMethod("gethexaddress", Collections.singletonList(address), new TypeReference<QtumJsonRpcResponse<String>>() {});
     }
 
     @Override
@@ -181,5 +177,4 @@ public class QtumNodeServiceImpl implements QtumNodeService {
             throw new QtumApiException(e);
         }
     }
-
 }
