@@ -3,22 +3,23 @@ package com.exrates.inout.service.autist;
 import javax.annotation.Nullable;
 
 public final class Preconditions {
+
     private Preconditions() {
     }
 
-    public static void checkArgument(boolean expression) {
+    static void checkArgument(boolean expression) {
         if (!expression) {
             throw new IllegalArgumentException();
         }
     }
 
-    public static void checkArgument(boolean expression, @Nullable Object errorMessage) {
+    static void checkArgument(boolean expression, @Nullable Object errorMessage) {
         if (!expression) {
             throw new IllegalArgumentException(String.valueOf(errorMessage));
         }
     }
 
-    public static void checkArgument(boolean expression, @Nullable String errorMessageTemplate, @Nullable Object... errorMessageArgs) {
+    static void checkArgument(boolean expression, @Nullable String errorMessageTemplate, @Nullable Object... errorMessageArgs) {
         if (!expression) {
             throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -30,7 +31,7 @@ public final class Preconditions {
         }
     }
 
-    public static void checkState(boolean expression, @Nullable Object errorMessage) {
+    static void checkState(boolean expression, @Nullable Object errorMessage) {
         if (!expression) {
             throw new IllegalStateException(String.valueOf(errorMessage));
         }
@@ -42,7 +43,7 @@ public final class Preconditions {
         }
     }
 
-    public static <T> T checkNotNull(T reference) {
+    static <T> T checkNotNull(T reference) {
         if (reference == null) {
             throw new NullPointerException();
         } else {
@@ -70,7 +71,7 @@ public final class Preconditions {
         return checkElementIndex(index, size, "index");
     }
 
-    public static int checkElementIndex(int index, int size, @Nullable String desc) {
+    private static int checkElementIndex(int index, int size, @Nullable String desc) {
         if (index >= 0 && index < size) {
             return index;
         } else {
@@ -92,7 +93,7 @@ public final class Preconditions {
         return checkPositionIndex(index, size, "index");
     }
 
-    public static int checkPositionIndex(int index, int size, @Nullable String desc) {
+    private static int checkPositionIndex(int index, int size, @Nullable String desc) {
         if (index >= 0 && index <= size) {
             return index;
         } else {
@@ -104,7 +105,7 @@ public final class Preconditions {
         if (index < 0) {
             return format("%s (%s) must not be negative", desc, index);
         } else if (size < 0) {
-            throw new IllegalArgumentException((new StringBuilder(26)).append("negative size: ").append(size).toString());
+            throw new IllegalArgumentException("negative size: " + size);
         } else {
             return format("%s (%s) must not be greater than size (%s)", desc, index, size);
         }
@@ -150,10 +151,8 @@ public final class Preconditions {
                 builder.append(", ");
                 builder.append(args[i++]);
             }
-
             builder.append(']');
         }
-
         return builder.toString();
     }
 }

@@ -29,24 +29,27 @@ import java.util.Random;
 import static com.exrates.inout.service.autist.MemoDecryptor.decryptBTSmemo;
 
 @Service("aunitServiceImpl")
-@PropertySource("classpath:/merchants/aunit.properties")
 @Log4j2(topic = "aunit")
 public class AunitServiceImpl implements AunitService {
-
-    private @Value("${aunit.mainAddress}")String systemAddress;
-
-    private final MessageSource messageSource;
-    private final RefillService refillService;
-
 
     static final String AUNIT_CURRENCY = "AUNIT";
     static final String AUNIT_MERCHANT = "AUNIT";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
+
+    @Value("${aunit.node.main-address}")
+    private String systemAddress;
+
     private final Merchant merchant;
     private final Currency currency;
 
+    private final MessageSource messageSource;
+    private final RefillService refillService;
+
     @Autowired
-    public AunitServiceImpl(MerchantService merchantService, CurrencyService currencyService, MessageSource messageSource, RefillService refillService) {
+    public AunitServiceImpl(MerchantService merchantService,
+                            CurrencyService currencyService,
+                            MessageSource messageSource,
+                            RefillService refillService) {
         this.messageSource = messageSource;
         this.refillService = refillService;
         currency = currencyService.findByName(AUNIT_CURRENCY);
@@ -75,7 +78,6 @@ public class AunitServiceImpl implements AunitService {
         }};
     }
 
-
     private Integer generateUniqDestinationTag(int userId) {
         Optional<Integer> id;
         int destinationTag;
@@ -96,7 +98,6 @@ public class AunitServiceImpl implements AunitService {
         String randomIntInstring = String.valueOf(100000000 + new Random().nextInt(100000000));
         return Integer.valueOf(idInString.concat(randomIntInstring.substring(0, randomNumberLength)));
     }
-
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
@@ -179,17 +180,4 @@ public class AunitServiceImpl implements AunitService {
     public String getMainAddress() {
         return systemAddress;
     }
-
-//    private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
-//        return StringUtils.isEmpty(hash)
-//                || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchantId, currencyId, hash).isPresent();
-//    }
-
-    //Example for decrypting memo
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        String s = decryptBTSmemo("5Js88n7mstj3oetaWvmr2s6aYdd8Tfp6P55sCAidkDdaxFhzAAv","{\"from\":\"AUNIT7k3nL56J7hh2yGHgWTUk9bGdjG2LL1S7egQDJYZ71MQtU3CqB5\",\"to\":\"AUNIT83A7sYcCZvVMphurvQPbGtw6BFHFxPFDZfKCJDqzcAeSfPrSgR\",\"nonce\":\"394474453593373\",\"message\":\"a3a22532efe98f3ab7d31d50761079d6\"}");
-
-        System.out.println(s);
-    }
-
 }

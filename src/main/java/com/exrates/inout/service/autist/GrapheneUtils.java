@@ -66,7 +66,7 @@ public class GrapheneUtils {
 
     private static final int CHECKSUM_BYTES = 4;
 
-    public static byte[] calculateChecksum(byte[] publicKey) {
+    private static byte[] calculateChecksum(byte[] publicKey) {
         RIPEMD160Digest ripemd160Digest = new RIPEMD160Digest();
         ripemd160Digest.update(publicKey, 0, publicKey.length);
         byte[] actualChecksum = new byte[ripemd160Digest.getDigestSize()];
@@ -78,11 +78,12 @@ public class GrapheneUtils {
     // associated with a particular private key
     // prefix = STM, BTS, EOS, GLS, etc...
     // privKey is the ECKey object holding the associated private key
-    public static String getAddressFromPublicKey(String prefix, ECKey privKey) {
+    static String getAddressFromPublicKey(String prefix, ECKey privKey) {
         try {
             // Recreate the accountAddress from the public key.
-            byte [] pubBytes;
-            if (privKey.isCompressed()) pubBytes = privKey.getPubKey(); else
+            byte[] pubBytes;
+            if (privKey.isCompressed()) pubBytes = privKey.getPubKey();
+            else
                 pubBytes = org.bitcoinj.core.ECKey.fromPublicOnly(org.bitcoinj.core.ECKey.compressPoint(privKey.getPubKeyPoint())).getPubKey();
             return prefix + org.bitcoinj.core.Base58.encode(Bytes.concat(pubBytes,
                     Arrays.copyOfRange(calculateChecksum(pubBytes), 0, CHECKSUM_BYTES)));
@@ -97,11 +98,10 @@ public class GrapheneUtils {
     }
 
     // returns an ECKey object holding a byte representation of a private key from a graphene Wif
-    public static ECKey GrapheneWifToPrivateKey(String Wif) {
-        ECKey pKey = DumpedPrivateKey.fromBase58(null, Wif, new Sha256ChecksumProvider()).getKey();
+    static ECKey GrapheneWifToPrivateKey(String Wif) {
         //System.out.println(pKey.getPrivateKeyEncoded(128).toBase58());
         //System.out.println(getAddressFromPublicKey("STM", pKey));
-        return pKey;
+        return DumpedPrivateKey.fromBase58(null, Wif, new Sha256ChecksumProvider()).getKey();
     }
 
     public static String SignMessage(String message, ECKey privKey) {
@@ -110,7 +110,7 @@ public class GrapheneUtils {
 
         byte[] sigData = new byte[65];
         // first byte is header, defined as "int headerByte = recId + 27 + (isCompressed() ? 4 : 0);"
-        sigData[0] = (byte)27;
+        sigData[0] = (byte) 27;
         System.arraycopy(CryptoUtils.bigIntegerToBytes(sigObj.r, 32), 0, sigData, 1, 32);
         System.arraycopy(CryptoUtils.bigIntegerToBytes(sigObj.s, 32), 0, sigData, 33, 32);
         return new String(Base64.encode(sigData), Charset.forName("UTF-8"));
@@ -124,13 +124,15 @@ public class GrapheneUtils {
             byte header = encodedSig[0];
             BigInteger r = new BigInteger(1, Arrays.copyOfRange(encodedSig, 1, 33));
             BigInteger s = new BigInteger(1, Arrays.copyOfRange(encodedSig, 33, 65));
-            ECKey.ECDSASignature sigObj = new ECKey.ECDSASignature(r,s);
+            ECKey.ECDSASignature sigObj = new ECKey.ECDSASignature(r, s);
 
             Sha256Hash messageAsHash = Sha256Hash.of(message.getBytes());
 
             return ECKey.verify(messageAsHash.getBytes(), sigObj.encodeToDER(), pubKey.toByteArray());
 
-        } catch (Exception e) { return false; }
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static String SignEosMessage(String message, ECKey privKey) {
@@ -139,15 +141,15 @@ public class GrapheneUtils {
 
         byte[] sigData = new byte[69];
         // first byte is header, defined as "int headerByte = recId + 27 + (isCompressed() ? 4 : 0);"
-        sigData[0] = (byte)31;
+        sigData[0] = (byte) 31;
         System.arraycopy(CryptoUtils.bigIntegerToBytes(sigObj.r, 32), 0, sigData, 1, 32);
         System.arraycopy(CryptoUtils.bigIntegerToBytes(sigObj.s, 32), 0, sigData, 33, 32);
 
         //append ripemd160 checksum
-        byte[] checksum = calculateChecksum(Bytes.concat(Arrays.copyOfRange(sigData, 0, 65),"K1".getBytes()));
+        byte[] checksum = calculateChecksum(Bytes.concat(Arrays.copyOfRange(sigData, 0, 65), "K1".getBytes()));
         System.arraycopy(checksum, 0, sigData, 65, 4);
 
-        return new String("SIG_K1_"+Base58.encode(sigData));
+        return "SIG_K1_" + Base58.encode(sigData);
     }
 
     public static boolean VerifyEosMessage(String message, String sigBase58, PublicKey pubKey) {
@@ -163,8 +165,8 @@ public class GrapheneUtils {
             byte[] checksum = Arrays.copyOfRange(encodedSig, 65, 69);
 
             //ripemd160 checksum
-            byte[] new_checksum = calculateChecksum(Bytes.concat(Arrays.copyOfRange(encodedSig, 0, 65),"K1".getBytes()));
-            if (!Arrays.equals(Arrays.copyOfRange(new_checksum,0, 4),checksum)) return false;
+            byte[] new_checksum = calculateChecksum(Bytes.concat(Arrays.copyOfRange(encodedSig, 0, 65), "K1".getBytes()));
+            if (!Arrays.equals(Arrays.copyOfRange(new_checksum, 0, 4), checksum)) return false;
 
             ECKey.ECDSASignature sigObj = new ECKey.ECDSASignature(r, s);
 
@@ -172,7 +174,9 @@ public class GrapheneUtils {
 
             return ECKey.verify(messageAsHash.getBytes(), sigObj.encodeToDER(), pubKey.toByteArray());
 
-        } catch (Exception e) { return false; }
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // sample usage
@@ -188,5 +192,4 @@ public class GrapheneUtils {
         System.out.println("isValid = "+VerifyMessage("test", base64Sig, pubKeyObj));
     }
     */
-
 }

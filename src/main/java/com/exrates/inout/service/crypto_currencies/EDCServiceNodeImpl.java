@@ -23,7 +23,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,40 +44,14 @@ import java.util.regex.Pattern;
 
 @Log4j2(topic = "edc_log")
 @Service
-@PropertySource({"classpath:/merchants/edc_cli_wallet.properties", "classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceNodeImpl implements EDCServiceNode {
 
-    private @Value("${edcmerchant.token}")
-    String token;
-    private @Value("${edcmerchant.main_account}")
-    String main_account;
-    private @Value("${edcmerchant.hook}")
-    String hook;
-
-    private @Value("${edc.blockchain.host_delayed}")
-    String RPC_URL_DELAYED;
-    private @Value("${edc.blockchain.host_fast}")
-    String RPC_URL_FAST;
-    private @Value("${edc.account.registrar}")
-    String REGISTRAR_ACCOUNT;
-    private @Value("${edc.account.referrer}")
-    String REFERRER_ACCOUNT;
-    private @Value("${edc.account.main}")
-    String MAIN_ACCOUNT;
-    private @Value("${edc.account.main.private.key}")
-    String MAIN_ACCOUNT_PRIVATE_KEY;
     private final String PENDING_PAYMENT_HASH = "1fc3403096856798ab8992f73f241334a4fe98ce";
-
     private final BigDecimal BTS = new BigDecimal(1000L);
     private final int DEC_PLACES = 2;
 
     private final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     private final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
-
-    private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();
-    private final BlockingQueue<Pair<String, String>> incomingPayments = new LinkedBlockingQueue<>();
-    private final ExecutorService workers = Executors.newFixedThreadPool(2);
-    private volatile boolean isRunning = true;
 
     private final String ACCOUNT_PREFIX = "ex1f";
     private final String REGISTER_NEW_ACCOUNT_RPC = "{\"method\":\"register_account\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 0, \"true\"], \"id\":%s}";
@@ -87,11 +60,33 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private final String TRANSFER_EDC = "{\"method\":\"transfer\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"true\"], \"id\":%s}";
     private final Pattern pattern = Pattern.compile("\"brain_priv_key\":\"([\\w\\s]+)+\",\"wif_priv_key\":\"(\\S+)\",\"pub_key\":\"(\\S+)\"");
 
+    @Value("${edc.node.token}")
+    private String token;
+    @Value("${edc.node.main-account}")
+    private String main_account;
+    @Value("${edc.node.hook}")
+    private String hook;
+    @Value("${edc.node.blockchain.host-delayed}")
+    private String rpcUrlDelayed;
+    @Value("${edc.node.blockchain.host-fast}")
+    private String rpcUrlFast;
+    @Value("${edc.node.account.registrar}")
+    private String registrarAccount;
+    @Value("${edc.node.account.referrer}")
+    private String referrerAccount;
+    @Value("${edc.node.account.main}")
+    private String mainAccount;
+    @Value("${edc.node.account.private-key}")
+    private String accountPrivateKey;
+
+    private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Pair<String, String>> incomingPayments = new LinkedBlockingQueue<>();
+    private final ExecutorService workers = Executors.newFixedThreadPool(2);
+    private volatile boolean isRunning = true;
     private volatile boolean debugLog = true;
 
     @Autowired
     TransactionService transactionService;
-
     @Autowired
     EDCAccountDao edcAccountDao;
 
@@ -100,10 +95,8 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     }
 
     private void handleRawTransactions(final String tx) {
-
         try {
-
-            final String transactions = tx.substring(tx.indexOf("transactions"), tx.length());
+            final String transactions = tx.substring(tx.indexOf("transactions"));
             final String[] operationses = transactions.split("operations");
             for (String str : operationses) {
                 final int extensions = str.indexOf("extensions");
@@ -137,7 +130,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
                 if (responseImportKey.contains("true")) {
                     String accountBalance = extractBalance(account.getAccountId(), account.getTransactionId());
                     if (Double.valueOf(accountBalance) > 0) {
-                        final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, account.getAccountId(), MAIN_ACCOUNT, accountBalance, "EDC", "Inner transfer", String.valueOf(account.getTransactionId()));
+                        final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, account.getAccountId(), mainAccount, accountBalance, "EDC", "Inner transfer", String.valueOf(account.getTransactionId()));
                         if (responseTransfer.contains("error")) {
                             throw new InterruptedException("Could not transfer money to main account!\n" + responseTransfer);
                         }
@@ -238,7 +231,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         log.info("Start method createAccount");
         final String accountName = (ACCOUNT_PREFIX + id + UUID.randomUUID()).toLowerCase();
         final EnumMap<KEY_TYPE, String> keys = extractKeys(makeRpcCallFast(NEW_KEY_PAIR_RPC, id)); // retrieve public and private from server
-        final String response = makeRpcCallFast(REGISTER_NEW_ACCOUNT_RPC, accountName, keys.get(KEY_TYPE.PUBLIC), keys.get(KEY_TYPE.PUBLIC), REGISTRAR_ACCOUNT, REFERRER_ACCOUNT, String.valueOf(id));
+        final String response = makeRpcCallFast(REGISTER_NEW_ACCOUNT_RPC, accountName, keys.get(KEY_TYPE.PUBLIC), keys.get(KEY_TYPE.PUBLIC), registrarAccount, referrerAccount, String.valueOf(id));
         log.info("bit_response: " + response.toString());
         if (response.contains("error")) {
             throw new Exception("Could not create new account!\n" + response);
@@ -286,7 +279,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         final String responseImportKey = makeRpcCallFast(IMPORT_KEY, accountId, edcAccount.getWifPrivKey(), tx.getId());
         if (responseImportKey.contains("true")) {
             String accountBalance = extractBalance(accountId, tx.getId());
-            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, accountId, MAIN_ACCOUNT, accountBalance, "EDC", "Inner transfer", String.valueOf(tx.getId()));
+            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, accountId, mainAccount, accountBalance, "EDC", "Inner transfer", String.valueOf(tx.getId()));
             if (responseTransfer.contains("error")) {
                 throw new InterruptedException("Could not transfer money to main account!\n" + responseTransfer);
             }
@@ -295,9 +288,9 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
 
     @Override
     public void transferFromMainAccount(final String accountName, final String amount) throws IOException, InterruptedException {
-        final String responseImportKey = makeRpcCallFast(IMPORT_KEY, MAIN_ACCOUNT, MAIN_ACCOUNT_PRIVATE_KEY, 1);
+        final String responseImportKey = makeRpcCallFast(IMPORT_KEY, mainAccount, accountPrivateKey, 1);
         if (responseImportKey.contains("true")) {
-            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, MAIN_ACCOUNT, accountName, amount, "EDC", "Output transfer", 1);
+            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, mainAccount, accountName, amount, "EDC", "Output transfer", 1);
             if (responseTransfer.contains("error")) {
                 log.error(responseTransfer);
                 if (responseTransfer.contains("rec && rec->name == account_name_or_id")) {
@@ -314,7 +307,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private String makeRpcCallDelayed(String rpc, Object... args) throws IOException {
    /* final String rpcCall = String.format(rpc, args);
     final Request request = new Request.Builder()
-        .url(RPC_URL_DELAYED)
+        .url(rpcUrlDelayed)
         .post(RequestBody.create(MEDIA_TYPE, rpcCall))
         .build();
     return HTTP_CLIENT.newCall(request)
@@ -327,7 +320,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private String makeRpcCallFast(String rpc, Object... args) throws IOException {
         final String rpcCall = String.format(rpc, args);
         final Request request = new Request.Builder()
-                .url(RPC_URL_FAST)
+                .url(rpcUrlFast)
                 .post(RequestBody.create(MEDIA_TYPE, rpcCall))
                 .build();
         return HTTP_CLIENT.newCall(request)
@@ -371,13 +364,9 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         } catch (IOException e) {
             throw new MerchantInternalException(e);
         }
-
         JsonParser parser = new JsonParser();
         JsonObject object = parser.parse(returnResponse).getAsJsonObject();
 
         return object.get("address").getAsString();
-
     }
-
-
 }

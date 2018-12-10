@@ -16,7 +16,6 @@ import reactor.core.publisher.Flux;
 public class BtcHttpDaemonImpl implements BtcDaemon {
 
     private BtcdClient btcdClient;
-
     private BtcdDaemon daemon;
 
     public BtcHttpDaemonImpl(BtcdClient btcdClient) {

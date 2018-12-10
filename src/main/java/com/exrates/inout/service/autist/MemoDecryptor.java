@@ -12,11 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MemoDecryptor {
+
     public final static String TAG = "Memo";
-    public static final String KEY_FROM = "from";
-    public static final String KEY_TO = "to";
-    public static final String KEY_NONCE = "nonce";
-    public static final String KEY_MESSAGE = "message";
+    private static final String KEY_FROM = "from";
+    private static final String KEY_TO = "to";
+    private static final String KEY_NONCE = "nonce";
+    private static final String KEY_MESSAGE = "message";
 
     /**
      * Method used to decrypt memo data.
@@ -28,7 +29,7 @@ public class MemoDecryptor {
      * @throws Exception
      * @return: The plaintext version of the enrcrypted message.
      */
-    public static String decryptMessage(ECKey privateKey, PublicKey publicKey, BigInteger nonce, byte[] message) throws NoSuchAlgorithmException {
+    private static String decryptMessage(ECKey privateKey, PublicKey publicKey, BigInteger nonce, byte[] message) throws NoSuchAlgorithmException {
         String plaintext = "";
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -66,8 +67,7 @@ public class MemoDecryptor {
         return plaintext;
     }
 
-
-    public static String decryptBTSmemo(String privKey, String memo) throws NoSuchAlgorithmException {
+    static String decryptBTSmemo(String privKey, String memo) throws NoSuchAlgorithmException {
         if (!memo.startsWith("{") || !memo.endsWith("}")) memo = new String(Base64.decode(memo));
         Any json_memo = JsonIterator.deserialize(memo);
         if (json_memo.get(KEY_NONCE).valueType().equals(ValueType.INVALID))

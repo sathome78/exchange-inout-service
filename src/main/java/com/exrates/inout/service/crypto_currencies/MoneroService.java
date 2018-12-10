@@ -40,5 +40,4 @@ public interface MoneroService extends IMerchantService, IRefillable, IWithdrawa
     default Boolean additionalFieldForRefillIsUsed() {
         return false;
     }
-
 }

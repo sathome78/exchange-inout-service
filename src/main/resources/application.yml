@@ -1958,5 +1958,35 @@ apollo:
 aunit:
   node:
     main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
-    main-address-Num: 1.2.23845
+    main-address-num: 1.2.23845
     ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
+
+edc:
+  node:
+    token: 0190804484737779216097337067072357
+    main-account: ajet2103
+    #    hook: http://91.142.174.34:9000/merchants/edc/payment/received
+    #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
+    hook: http://193.93.79.99:9000/merchants/edc/payment/received
+    history: https://receive.edinarcoin.com/history/
+    blockchain:
+      #      host-fast: http://ajet21.exrates.tech:64091
+      host-fast: http://localhost:8091
+      host-delayed: http://localhost:8092
+    account:
+      registrar: exrates-currency-exchange
+      referrer: exrates-currency-exchange
+      #      main: output-exrates
+      main: ajet2103
+      #      private-key: 5K2wx88VrN6M2vkg4DGLhehJZ98fT7JfUcT5ECZbd3L3puhbPWF
+      private-key: 5J3BM7vgXuxzwJrLK6rhx9umzZQbezS17h7ApwAiPJ55Lz3LtYt
+
+iota:
+  node:
+    protocol: http
+    host: ec2-18-191-212-3.us-east-2.compute.amazonaws.com
+    port: 14265
+    seed: DQWNLPIJHNFNFTHNWNVCXZPIJJASBERYTTBNCMNNDLKSMNXBGWOURBCSSSDMHGBALUIOERHSXMNCHFBKS
+    message: CREATEADDRESS
+    tag: EXRATES99999999999999999999
+    mode: main

@@ -40,5 +40,4 @@ public interface IotaService extends IMerchantService, IRefillable, IWithdrawabl
     default Boolean additionalFieldForRefillIsUsed() {
         return false;
     }
-
 }

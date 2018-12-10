@@ -95,7 +95,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
 
     private final Object SENDING_LOCK = new Object();
 
-
     @Override
     public void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine) {
         final String rpcProtocol = node.getRpcProtocol();
@@ -152,7 +151,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
         }
-
     }
 
     @Override
@@ -171,13 +169,10 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         }
     }
 
-
     @Override
     public String getNewAddress(String walletPassword) {
         Integer keyPoolSize = getKeypoolSize();
-
         try {
-
             /*
              * If wallet is encrypted and locked, pool of private keys is not refilled
              * Keys are automatically refilled on unlocking
@@ -227,7 +222,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         btcDaemon.destroy();
     }
 
-
     private Optional<Transaction> handleConflicts(Transaction transaction) {
         if (transaction.getConfirmations() < 0 && !transaction.getWalletConflicts().isEmpty()) {
             log.warn("Wallet conflicts present");
@@ -276,11 +270,9 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         }
     }
 
-
     @Override
     public BtcWalletInfoDto getWalletInfo() {
         BtcWalletInfoDto dto = new BtcWalletInfoDto();
-
         try {
             BigDecimal spendableBalance = btcdClient.getBalance("", MIN_CONFIRMATIONS_FOR_SPENDING);
             dto.setBalance(BigDecimalProcessing.formatNonePoint(spendableBalance, true));
@@ -302,7 +294,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             }
         }
         return dto;
-
     }
 
     @Override
@@ -346,7 +337,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         }
     }
 
-
     @Override
     public List<BtcPaymentFlatDto> listSinceBlockEx(@Nullable String blockHash, Integer merchantId, Integer currencyId) {
         try {
@@ -371,7 +361,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                         .build()).collect(Collectors.toList());
     }
 
-
     @Override
     public List<BtcPaymentFlatDto> listSinceBlock(@Nullable String blockHash, Integer merchantId, Integer currencyId) {
         try {
@@ -381,7 +370,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             return Collections.emptyList();
         }
     }
-
 
     @Override
     public BigDecimal estimateFee(int blockCount) {
@@ -407,7 +395,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     public BigDecimal getActualFee() {
         try {
             return btcdClient.getInfo().getPayTxFee();
-
         } catch (BitcoindException | CommunicationException e) {
             log.error(e);
             try {
@@ -417,7 +404,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             }
             throw new BitcoinCoreException(e);
         }
-
     }
 
     @Override
@@ -440,14 +426,12 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         }
     }
 
-
     /*
      * Using sendMany instead of sendToAddress allows to send only UTXO with certain number of confirmations.
      * DO NOT use immutable map creation methods like Collections.singletonMap(...), it will cause an error within lib code
      * */
     @Override
     public String sendToAddressAuto(String address, BigDecimal amount, String walletPassword) {
-
         try {
             String result;
             synchronized (SENDING_LOCK) {
@@ -568,7 +552,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         }
     }
 
-
     @Override
     public BtcPreparedTransactionDto prepareRawTransaction(Map<String, BigDecimal> payments) {
         return prepareRawTransaction(payments, null);
@@ -586,9 +569,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                     // unlock previously locked UTXO
 
                     lockUnspentFromHex(oldTxHex, true);
-
                 }
-
                 String initialTxHex = btcdClient.createRawTransaction(new ArrayList<>(), payments);
                 fundingResult = btcdClient.fundRawTransaction(initialTxHex);
                 lockUnspentFromHex(fundingResult.getHex(), false);
@@ -601,14 +582,12 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                         unlockingTasks.remove(fundingResult.getHex());
                     },
                     2, TimeUnit.MINUTES));
-            ;
 
             return new BtcPreparedTransactionDto(payments, fundingResult.getFee(), fundingResult.getHex());
         } catch (BitcoindException | CommunicationException e) {
             throw new BitcoinCoreException(e);
         }
     }
-
 
     private void lockUnspentFromHex(String hex, boolean unlock) {
         try {
@@ -635,7 +614,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             return new BtcPaymentResultDto(e);
         }
     }
-
 
     private void checkLockStateForRawTx(String hex) {
         try {

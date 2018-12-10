@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 @Log4j2(topic = "monero.log")
 public class MoneroServiceImpl implements MoneroService {
 
-    private MoneroWallet wallet;
+    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
 
     @Autowired
     private MessageSource messageSource;
@@ -52,13 +52,15 @@ public class MoneroServiceImpl implements MoneroService {
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    private String HOST;
-    private String PORT;
-    private String LOGIN;
-    private String PASSWORD;
-    private String MODE;
+    private MoneroWallet wallet;
 
-    private List<String> ADDRESSES = new ArrayList<>();
+    private String host;
+    private String port;
+    private String login;
+    private String password;
+    private String mode;
+
+    private List<String> addresses = new ArrayList<>();
 
     private Merchant merchant;
     private Currency currency;
@@ -69,18 +71,16 @@ public class MoneroServiceImpl implements MoneroService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
-
     public MoneroServiceImpl(MoneroProperty property) {
         this.merchantName = property.getMerchantName();
         this.currencyName = property.getCurrencyName();
         this.minConfirmations = property.getMinConfirmations();
         this.decimals = property.getDecimals();
-        this.HOST = property.getNode().getHost();
-        this.PORT = property.getNode().getPort();
-        this.LOGIN = property.getNode().getLogin();
-        this.PASSWORD = property.getNode().getPassword();
-        this.MODE = property.getNode().getMode();
+        this.host = property.getNode().getHost();
+        this.port = property.getNode().getPort();
+        this.login = property.getNode().getLogin();
+        this.password = property.getNode().getPassword();
+        this.mode = property.getNode().getMode();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class MoneroServiceImpl implements MoneroService {
             }
             pubKey = dateString.toString();
             address = String.valueOf(wallet.getIntegratedAddress(dateString.toString()));
-            ADDRESSES.add(address);
+            addresses.add(address);
 
         } catch (Exception e) {
             log.error(e);
@@ -143,12 +143,12 @@ public class MoneroServiceImpl implements MoneroService {
         currency = currencyService.findByName(currencyName);
         merchant = merchantService.findByName(merchantName);
 
-        ADDRESSES = refillService.findAllAddresses(merchant.getId(), currency.getId());
+        addresses = refillService.findAllAddresses(merchant.getId(), currency.getId());
         System.out.println("init monero");
-        if (MODE.equals("main")) {
+        if (mode.equals("main")) {
             log.info(merchantName + " starting...");
             try {
-                wallet = new MoneroWalletRpc(HOST, Integer.parseInt(PORT), LOGIN, PASSWORD);
+                wallet = new MoneroWalletRpc(host, Integer.parseInt(port), login, password);
                 log.info(merchantName + " started");
                 scheduler.scheduleAtFixedRate(new Runnable() {
                     public void run() {
@@ -170,8 +170,8 @@ public class MoneroServiceImpl implements MoneroService {
             HashMap<String, String> mapAddresses = new HashMap<>();
             Set<String> payments = new HashSet<>();
 
-            log.info(ADDRESSES.toString());
-            for (String address : ADDRESSES) {
+            log.info(addresses.toString());
+            for (String address : addresses) {
                 log.info(address);
                 String paymentId = wallet.splitIntegratedAddress(address).getPaymentId();
                 mapAddresses.put(paymentId, address);
@@ -186,7 +186,7 @@ public class MoneroServiceImpl implements MoneroService {
                     log.info(refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(integratedAddress, merchant.getId(), currency.getId(), transaction.getHash()));
                     if ((transaction.getType().equals("INCOMING")) || !transaction.getUnlockTime().equals(0)
                             || refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(integratedAddress, merchant.getId(), currency.getId()
-                            , transaction.getHash()).isPresent() || (!ADDRESSES.contains(integratedAddress))) {
+                            , transaction.getHash()).isPresent() || (!addresses.contains(integratedAddress))) {
                         continue;
                     }
                     int confirmations = wallet.getHeight() - transaction.getHeight();

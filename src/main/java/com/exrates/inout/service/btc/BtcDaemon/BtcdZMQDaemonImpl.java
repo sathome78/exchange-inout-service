@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 @Log4j2(topic = "bitcoin_core")
 public class BtcdZMQDaemonImpl implements BtcDaemon {
 
-
     private volatile boolean isActive = false;
 
     private BtcdClient btcdClient;
@@ -92,8 +91,6 @@ public class BtcdZMQDaemonImpl implements BtcDaemon {
             onError.accept(e);
         }
     }
-
-
 
     private String extractMessage(Socket subscriber) {
         List<byte[]> multipartMessage = new ArrayList<>();
@@ -164,7 +161,4 @@ public class BtcdZMQDaemonImpl implements BtcDaemon {
             throw new BitcoinCoreException(e.getMessage());
         }
     }
-
-
-
 }

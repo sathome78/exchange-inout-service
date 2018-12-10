@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 
 public interface AunitService extends IRefillable, IWithdrawable {
 
-
     @Override
     default Boolean createdRefillRequestRecordNeeded() {
         return false;

@@ -6,7 +6,6 @@ import reactor.core.publisher.Flux;
 
 public interface BtcDaemon {
 
-
     void init();
 
     void destroy();

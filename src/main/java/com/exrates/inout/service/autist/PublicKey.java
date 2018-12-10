@@ -28,7 +28,7 @@ public class PublicKey implements ByteTransformable {
     private String prefix;
 
     @JsonCreator
-    public PublicKey(String address) {
+    PublicKey(String address) {
         if (address != null && !"".equals(address)) {
             if (address.length() != 55) {
                 LOGGER.error("The provided accountAddress '{}' has an invalid length and will not be set.", address);
@@ -45,14 +45,12 @@ public class PublicKey implements ByteTransformable {
                         throw new AddressFormatException("Checksum does not match.");
                     }
                 }
-
                 this.setPublicKey(ECKey.fromPublicOnly(potentialPublicKey));
             }
         } else {
             LOGGER.warn("An empty accountAddress has been provided. This can cause some problems if you plan to broadcast this key.");
             this.setPublicKey(null);
         }
-
     }
 
     private byte[] calculateChecksum(byte[] publicKey) {
@@ -98,7 +96,7 @@ public class PublicKey implements ByteTransformable {
     public boolean equals(Object otherPublicKey) {
         if (this == otherPublicKey) {
             return true;
-        } else if (otherPublicKey != null && otherPublicKey instanceof eu.bittrade.libs.steemj.base.models.PublicKey) {
+        } else if (otherPublicKey instanceof eu.bittrade.libs.steemj.base.models.PublicKey) {
             eu.bittrade.libs.steemj.base.models.PublicKey otherKey = (eu.bittrade.libs.steemj.base.models.PublicKey)otherPublicKey;
             return this.getPublicKey().equals(otherKey.getPublicKey());
         } else {
