@@ -1848,18 +1848,6 @@ qtum-merchants:
     contract: b27d7bf95b03e02b55d5eb63d3f1692762101bf9
     unit: GWEI
 
-qtum:
-  node:
-    #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
-    endpoint: http://127.0.0.1:38891
-    user: wayfarer88
-    password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-    min-confirmations: 2
-    min-transfer-amount: 1
-    main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
-    wallet-password: jet2103
-    backup-folder: /data/.qtum/qtum_backup/
-
 monero-merchants:
   xmr:
     merchant-name: Monero
@@ -1934,6 +1922,18 @@ stellar-merchants:
     currency-name: VNT
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
+
+qtum:
+  node:
+    #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
+    endpoint: http://127.0.0.1:38891
+    user: wayfarer88
+    password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+    min-confirmations: 2
+    min-transfer-amount: 1
+    main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
+    wallet-password: jet2103
+    backup-folder: /data/.qtum/qtum_backup/
 
 achain:
   node:
