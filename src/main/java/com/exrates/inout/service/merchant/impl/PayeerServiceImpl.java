@@ -9,6 +9,7 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestFakePaymentReceivedException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -16,7 +17,6 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.merchant.PayeerService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,15 +27,8 @@ import java.util.Properties;
 @Service
 public class PayeerServiceImpl implements PayeerService {
 
-    @Value("${payeer.url}")
-    private String url;
-    @Value("${payeer.m-shop}")
-    private String m_shop;
-    @Value("${payeer.m-desc}")
-    private String m_desc;
-    @Value("${payeer.m-key}")
-    private String m_key;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private AlgorithmService algorithmService;
     @Autowired
@@ -63,19 +56,19 @@ public class PayeerServiceImpl implements PayeerService {
         BigDecimal amountToPay = sum.setScale(2, BigDecimal.ROUND_HALF_UP);
         /**/
         Properties properties = new Properties() {{
-            put("m_shop", m_shop);
+            put("m_shop", ccp.getPaymentSystemMerchants().getPayeer().getMShop());
             put("m_orderid", requestId);
             put("m_amount", amountToPay);
             put("m_curr", currency);
-            String desc = algorithmService.base64Encode(m_desc);
+            String desc = algorithmService.base64Encode(ccp.getPaymentSystemMerchants().getPayeer().getMDesc());
             put("m_desc", desc);
-            String sign = algorithmService.sha256(m_shop + ":" + requestId
+            String sign = algorithmService.sha256(ccp.getPaymentSystemMerchants().getPayeer().getMShop() + ":" + requestId
                     + ":" + amountToPay + ":" + currency
-                    + ":" + desc + ":" + m_key).toUpperCase();
+                    + ":" + desc + ":" + ccp.getPaymentSystemMerchants().getPayeer().getMKey()).toUpperCase();
             put("m_sign", sign);
         }};
         /**/
-        return generateFullUrlMap(url, "POST", properties);
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getPayeer().getUrl(), "POST", properties);
     }
 
     @Override
@@ -102,7 +95,7 @@ public class PayeerServiceImpl implements PayeerService {
                 + ":" + params.get("m_operation_date") + ":" + params.get("m_operation_pay_date")
                 + ":" + params.get("m_shop") + ":" + params.get("m_orderid")
                 + ":" + params.get("m_amount") + ":" + params.get("m_curr") + ":" + params.get("m_desc")
-                + ":" + params.get("m_status") + ":" + m_key).toUpperCase();
+                + ":" + params.get("m_status") + ":" + ccp.getPaymentSystemMerchants().getPayeer().getMKey()).toUpperCase();
         if (params.get("m_sign") == null || !params.get("m_sign").equals(sign) || !"success".equals(params.get("m_status"))) {
             throw new RefillRequestFakePaymentReceivedException(params.toString());
         }

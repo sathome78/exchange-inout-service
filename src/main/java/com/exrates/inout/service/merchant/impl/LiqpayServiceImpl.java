@@ -6,6 +6,7 @@ import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.LiqpayService;
@@ -14,7 +15,6 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.view.RedirectView;
@@ -32,17 +32,8 @@ public class LiqpayServiceImpl implements LiqpayService {
 
     private static final Logger LOGGER = LogManager.getLogger(AdvcashServiceImpl.class);
 
-    @Value("${liqpay.url}")
-    private String url;
-    @Value("${liqpay.public-key}")
-    private String public_key;
-    @Value("${liqpay.private-key}")
-    private String private_key;
-    @Value("${liqpay.apiVersion}")
-    private String apiVersion;
-    @Value("${liqpay.action}")
-    private String action;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private TransactionService transactionService;
     @Autowired
@@ -125,14 +116,14 @@ public class LiqpayServiceImpl implements LiqpayService {
         BigDecimal amountToPay = sum.setScale(2, BigDecimal.ROUND_HALF_UP);
         /**/
         Map<String, Object> params = new HashMap<String, Object>() {{
-            put("version", Integer.parseInt(apiVersion));
-            put("public_key", public_key);
-            put("action", action);
+            put("version", ccp.getPaymentSystemMerchants().getLiqpay().getApiVersion());
+            put("public_key", ccp.getPaymentSystemMerchants().getLiqpay().getPublicKey());
+            put("action", ccp.getPaymentSystemMerchants().getLiqpay().getAction());
             put("amount", amountToPay);
             put("currency", currency);
             put("description", "Order: " + orderId);
             put("order_id", orderId);
-            byte[] hashSha1 = sha1(orderId + private_key);
+            byte[] hashSha1 = sha1(orderId + ccp.getPaymentSystemMerchants().getLiqpay().getPrivateKey());
             String hash = base64_encode(hashSha1);
             put("info", hash);
         }};
@@ -140,14 +131,14 @@ public class LiqpayServiceImpl implements LiqpayService {
         Gson gson = new Gson();
         String jsonData = gson.toJson(params);
         String data = algorithmService.base64Encode(jsonData);
-        byte[] signatureSha1 = sha1((private_key + data + private_key));
+        byte[] signatureSha1 = sha1((ccp.getPaymentSystemMerchants().getLiqpay().getPrivateKey() + data + ccp.getPaymentSystemMerchants().getLiqpay().getPrivateKey()));
         String signature = base64_encode(signatureSha1);
         /**/
         Properties properties = new Properties();
         properties.put("data", data);
         properties.put("signature", signature);
         /**/
-        String fullUrl = generateFullUrl(url, properties);
+        String fullUrl = generateFullUrl(ccp.getPaymentSystemMerchants().getLiqpay().getUrl(), properties);
         return new HashMap<String, String>() {{
             put("$__redirectionUrl", fullUrl);
         }};

@@ -5,11 +5,11 @@ import com.exrates.inout.domain.dto.RippleTransaction;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.RippleCheckConsensusException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,18 +28,15 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
     private static final String SEQUENCE_PARAM = "sequence";
     private static final String LEDGER = "ledger";
 
-    @Value("${ripple.account-address}")
-    private String address;
-    @Value("${ripple.account-secret}")
-    private String secret;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RippledNodeService rippledNodeService;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
-        RippleAccount account = RippleAccount.builder().name(address).secret(secret).build();
-        BigDecimal accountFromBalance = getAccountBalance(address);
+        RippleAccount account = RippleAccount.builder().name(ccp.getOtherCoins().getRipple().getAccountAddress()).secret(ccp.getOtherCoins().getRipple().getAccountSecret()).build();
+        BigDecimal accountFromBalance = getAccountBalance(ccp.getOtherCoins().getRipple().getAccountAddress());
         if (accountFromBalance.compareTo(XRP_MIN_BALANCE) < 0) {
             throw new InsufficientCostsInWalletException("XRP BALANCE LOW");
         }
@@ -66,7 +63,7 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
                 .getJSONObject("state")
                 .getJSONObject("validated_ledger")
                 .getInt("seq") + 4;
-        Integer sequence = rippledNodeService.getAccountInfo(address)
+        Integer sequence = rippledNodeService.getAccountInfo(ccp.getOtherCoins().getRipple().getAccountAddress())
                 .getJSONObject("account_data")
                 .getInt("Sequence");
         /*todo check if destination account exist? because we spent comisiion if trying transfer to such address*/

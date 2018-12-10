@@ -16,11 +16,7 @@ public class ExConvert {
         return number.divide(unit.getWeiFactor());
     }
 
-    public static BigDecimal toWei(int number, ExConvert.Unit unit) {
-        return toWei(new BigDecimal(number), unit);
-    }
-
-    private static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
+    public static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
         return number.multiply(unit.getWeiFactor());
     }
 

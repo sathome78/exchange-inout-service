@@ -8,25 +8,21 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-
-import static com.exrates.inout.service.autist.MemoDecryptor.decryptBTSmemo;
 
 @Service("aunitServiceImpl")
 @Log4j2(topic = "aunit")
@@ -36,20 +32,20 @@ public class AunitServiceImpl implements AunitService {
     static final String AUNIT_MERCHANT = "AUNIT";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
-    @Value("${aunit.main-address}")
-    private String systemAddress;
-
     private final Merchant merchant;
     private final Currency currency;
 
+    private final CryptoCurrencyProperties ccp;
     private final MessageSource messageSource;
     private final RefillService refillService;
 
     @Autowired
     public AunitServiceImpl(MerchantService merchantService,
                             CurrencyService currencyService,
+                            CryptoCurrencyProperties ccp,
                             MessageSource messageSource,
                             RefillService refillService) {
+        this.ccp = ccp;
         this.messageSource = messageSource;
         this.refillService = refillService;
         currency = currencyService.findByName(AUNIT_CURRENCY);
@@ -70,11 +66,11 @@ public class AunitServiceImpl implements AunitService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.xrp",
-                new String[]{systemAddress, destinationTag.toString()}, request.getLocale());
+                new String[]{ccp.getOtherCoins().getAunit().getMainAddress(), destinationTag.toString()}, request.getLocale());
         return new HashMap<String, String>() {{
             put("address", String.valueOf(destinationTag));
             put("message", message);
-            put("qr", systemAddress);
+            put("qr", ccp.getOtherCoins().getAunit().getMainAddress());
         }};
     }
 
@@ -120,11 +116,11 @@ public class AunitServiceImpl implements AunitService {
     }
 
     private void setIdAndAccept(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException {
-        try{
+        try {
             Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
             requestAcceptDto.setRequestId(requestId);
             refillService.autoAcceptRefillRequest(requestAcceptDto);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e);
             throw e;
         }
@@ -178,6 +174,6 @@ public class AunitServiceImpl implements AunitService {
 
     @Override
     public String getMainAddress() {
-        return systemAddress;
+        return ccp.getOtherCoins().getAunit().getMainAddress();
     }
 }

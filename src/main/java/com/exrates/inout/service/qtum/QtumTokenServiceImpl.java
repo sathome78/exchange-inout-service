@@ -8,6 +8,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.qtum.QtumTokenTransaction;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.QtumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -16,7 +17,6 @@ import com.exrates.inout.util.ExConvert;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.EventValues;
 import org.web3j.abi.FunctionReturnDecoder;
@@ -50,13 +50,8 @@ public class QtumTokenServiceImpl {
     private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
     private static final BigDecimal AMOUNT_FOR_COMMISSION = new BigDecimal("0.15");
 
-    @Value("${qtum.min-confirmations}")
-    private int minConfirmations;
-    @Value("${qtum.min-transfer-amount}")
-    private int minTransferAmount;
-    @Value("${qtum.main-address-for-transfer}")
-    private String mainAddressForTransfer;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private QtumNodeService qtumNodeService;
     @Autowired
@@ -123,7 +118,7 @@ public class QtumTokenServiceImpl {
                 .filter(t -> addresses.contains(extractLogs(t.getLog().get(0).getTopics(), t.getLog().get(0).getData()).to))
                 .filter(t -> !refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(extractLogs(t.getLog().get(0).getTopics(), t.getLog().get(0).getData()).to
                         , merchant.getId(), currency.getId(), t.getTransactionHash()).isPresent())
-                .filter(t -> qtumNodeService.getBlock(t.getBlockHash()).getConfirmations() >= minConfirmations)
+                .filter(t -> qtumNodeService.getBlock(t.getBlockHash()).getConfirmations() >= ccp.getOtherCoins().getQtum().getMinConfirmations())
                 .forEach(t -> {
                     log.info("before processPayment");
                     QtumTokenServiceImpl.TransferEventResponse transferEventResponse = extractLogs(t.getLog().get(0).getTopics(), t.getLog().get(0).getData());
@@ -180,13 +175,13 @@ public class QtumTokenServiceImpl {
                             }).getValue();
                             log.info("token balance: " + balance.toString());
 
-                            if (balance.compareTo(ExConvert.toWei(minTransferAmount, unit).toBigInteger()) > 0) {
+                            if (balance.compareTo(ExConvert.toWei(ccp.getOtherCoins().getQtum().getMinTransferAmount(), unit).toBigInteger()) > 0) {
                                 try {
                                     qtumNodeService.setWalletPassphrase();
                                     qtumNodeService.transfer(t.getAddress(), AMOUNT_FOR_COMMISSION);
 
                                     String transferPrefix = "a9059cbb";
-                                    String hexAddressTo = TypeEncoder.encode(new Address(qtumNodeService.getHexAddress(mainAddressForTransfer)));
+                                    String hexAddressTo = TypeEncoder.encode(new Address(qtumNodeService.getHexAddress(ccp.getOtherCoins().getQtum().getMainAddressForTransfer())));
                                     String hexAmountForTransfer = TypeEncoder.encode(new Uint256(balance));
                                     String transferData = transferPrefix + hexAddressTo + hexAmountForTransfer;
                                     qtumNodeService.setWalletPassphrase();

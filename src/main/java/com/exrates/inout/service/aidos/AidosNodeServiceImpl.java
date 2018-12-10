@@ -3,11 +3,12 @@ package com.exrates.inout.service.aidos;
 
 import com.exrates.inout.domain.dto.BtcTransactionDto;
 import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,8 @@ import java.util.stream.Collectors;
 @Service
 public class AidosNodeServiceImpl implements AidosNodeService {
 
-    @Value("${adk.rpc-host}")
-    private String nodeHost;
-    @Value("${adk.rpc-user}")
-    private String rpcUser;
-    @Value("${adk.rpc-password}")
-    private String rpcPassword;
+    @Autowired
+    private CryptoCurrencyProperties ccp;
 
     private URI nodeURI;
 
@@ -44,9 +41,9 @@ public class AidosNodeServiceImpl implements AidosNodeService {
     private void init() {
         objectMapper = new ObjectMapper();
         restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(rpcUser, rpcPassword));
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(ccp.getOtherCoins().getAdk().getRpcUser(), ccp.getOtherCoins().getAdk().getRpcPassword()));
         try {
-            nodeURI = new URI(nodeHost);
+            nodeURI = new URI(ccp.getOtherCoins().getAdk().getRpcHost());
         } catch (URISyntaxException e) {
             log.error("wrong ADK url");
         }

@@ -9,6 +9,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.AddressUnusedException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestGeneratingAdditionalAddressNotAvailableException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -20,7 +21,6 @@ import jota.utils.IotaUnitConverter;
 import jota.utils.IotaUnits;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,21 +43,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class IotaServiceImpl implements IotaService {
 
-    @Value("${iota.protocol}")
-    private String protocol;
-    @Value("${iota.host}")
-    private String host;
-    @Value("${iota.port}")
-    private String port;
-    @Value("${iota.seed}")
-    private String seed;
-    @Value("${iota.message}")
-    private String message;
-    @Value("${iota.tag}")
-    private String tag;
-    @Value("${iota.mode}")
-    private String mode;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -112,10 +99,10 @@ public class IotaServiceImpl implements IotaService {
         Map<String, String> mapAddress = new HashMap<>();
         String address = "";
         try {
-            address = iotaClient.getNewAddress(seed, 2, 0, true, 0, false).getAddresses().get(0);
+            address = iotaClient.getNewAddress(ccp.getOtherCoins().getIota().getSeed(), 2, 0, true, 0, false).getAddresses().get(0);
             List<Transfer> transfers = new ArrayList<>();
-            transfers.add(new Transfer(address, 0, message, tag));
-            iotaClient.sendTransfer(seed, 2, 9, 15, transfers, null, null, true);
+            transfers.add(new Transfer(address, 0, ccp.getOtherCoins().getIota().getMessage(), ccp.getOtherCoins().getIota().getTag()));
+            iotaClient.sendTransfer(ccp.getOtherCoins().getIota().getSeed(), 2, 9, 15, transfers, null, null, true);
             addresses.add(address);
         } catch (Exception e) {
             log.error(e);
@@ -142,13 +129,13 @@ public class IotaServiceImpl implements IotaService {
 
         addresses = refillService.findAllAddresses(merchant.getId(), currency.getId());
 
-        if (mode.equals("main")) {
+        if (ccp.getOtherCoins().getIota().getMode().equals("main")) {
             log.info("Iota starting...");
             try {
                 iotaClient = new IotaAPI.Builder()
-                        .protocol(protocol)
-                        .host(host)
-                        .port(port)
+                        .protocol(ccp.getOtherCoins().getIota().getProtocol())
+                        .host(ccp.getOtherCoins().getIota().getHost())
+                        .port(ccp.getOtherCoins().getIota().getPort())
                         .build();
                /*Do not delete!1
                GetNodeInfoResponse response = iotaClient.getNodeInfo();

@@ -14,6 +14,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -27,7 +28,6 @@ import org.nem.core.crypto.KeyPair;
 import org.nem.core.crypto.PublicKey;
 import org.nem.core.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +57,8 @@ public class NemServiceImpl implements NemService {
     private static final BigDecimal XEM_MAX_QUANTITY = new BigDecimal("8999999999");
     private static final List<MosaicIdDto> DENIED_MOSAICS_LIST = new ArrayList<>();
 
-    @Value("${nem.address}")
-    private String address;
-    @Value("${nem.private-key}")
-    private String privateKey;
-    @Value("${nem.public-key}")
-    private String publicKey;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private NemTransactionsService nemTransactionsService;
     @Autowired
@@ -92,7 +87,7 @@ public class NemServiceImpl implements NemService {
     public void init() {
         DENIED_MOSAICS_LIST.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
         /*DENIED_MOSAICS_LIST.add(new MosaicIdDto("dim", "coin"));*/
-        account = new Account(new KeyPair(PublicKey.fromHexString(publicKey)));
+        account = new Account(new KeyPair(PublicKey.fromHexString(ccp.getOtherCoins().getNem().getPublicKey())));
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName(NEM_MERCHANT);
     }
@@ -106,12 +101,12 @@ public class NemServiceImpl implements NemService {
 
     @Transactional
     @Override
-    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
+    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
         log.debug("withdraw_XEM");
         if (!"XEM".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
             throw new WithdrawRequestPostException("Currency not supported by merchant");
         }
-        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, privateKey);
+        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, ccp.getOtherCoins().getNem().getPrivateKey());
     }
 
     @Transactional
@@ -119,7 +114,7 @@ public class NemServiceImpl implements NemService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         String destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.XEM",
-                new Object[]{address, destinationTag}, request.getLocale());
+                new Object[]{ccp.getOtherCoins().getNem().getAddress(), destinationTag}, request.getLocale());
         return new HashMap<String, String>() {{
             put("address", destinationTag);
             put("message", message);
@@ -339,7 +334,7 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public String getMainAddress() {
-        return address;
+        return ccp.getOtherCoins().getNem().getAddress();
     }
 
     private BigDecimal getExrateForMosaic(int merchantId) {
@@ -354,6 +349,6 @@ public class NemServiceImpl implements NemService {
     @Override
     public boolean isValidDestinationAddress(String address) {
 
-        return withdrawUtils.isValidDestinationAddress(this.address, address);
+        return withdrawUtils.isValidDestinationAddress(this.ccp.getOtherCoins().getNem().getAddress(), address);
     }
 }

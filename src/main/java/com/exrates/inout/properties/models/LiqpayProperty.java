@@ -9,13 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder(builderClassName = "Builder", toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class OtherIotaProperty {
+public class LiqpayProperty {
 
-    private String protocol;
-    private String host;
-    private String port;
-    private String seed;
-    private String message;
-    private String tag;
-    private String mode;
+    private String url;
+    private String publicKey;
+    private String privateKey;
+    private int apiVersion;
+    private String action;
 }

@@ -1,9 +1,9 @@
 package com.exrates.inout.service.apollo;
 
 
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,15 +18,14 @@ import java.util.Collections;
 @Service
 public class ApolloNodeServiceImpl implements ApolloNodeService {
 
-    @Value("${apollo.url}")
-    private String url;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
     public String getTransactions(String address, long timestamp) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ccp.getOtherCoins().getApollo().getUrl())
                 .queryParam("requestType", "getBlockchainTransactions")
                 .queryParam("nonPhasedOnly", true)
                 .queryParam("type", 0)
@@ -47,7 +46,7 @@ public class ApolloNodeServiceImpl implements ApolloNodeService {
 
     @Override
     public String getTransaction(String txHash) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ccp.getOtherCoins().getApollo().getUrl())
                 .queryParam("requestType", "getTransaction")
                 .queryParam("fullHash", txHash)
                 .queryParam("includePhasingResult", true);

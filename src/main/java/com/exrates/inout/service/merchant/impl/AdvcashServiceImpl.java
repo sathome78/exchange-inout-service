@@ -12,6 +12,7 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -22,7 +23,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,25 +35,8 @@ public class AdvcashServiceImpl implements AdvcashService {
 
     private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    @Value("${advcash.url}")
-    private String url;
-    @Value("${advcash.accountId}")
-    private String accountId;
-    @Value("${advcash.payeeName}")
-    private String payeeName;
-    @Value("${advcash.paymentSuccess}")
-    private String paymentSuccess;
-    @Value("${advcash.paymentFailure}")
-    private String paymentFailure;
-    @Value("${advcash.paymentStatus}")
-    private String paymentStatus;
-    @Value("${advcash.USDAccount}")
-    private String usdCompanyAccount;
-    @Value("${advcash.EURAccount}")
-    private String eurCompanyAccount;
-    @Value("${advcash.payeePassword}")
-    private String payeePassword;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private AlgorithmService algorithmService;
     @Autowired
@@ -83,22 +66,22 @@ public class AdvcashServiceImpl implements AdvcashService {
         BigDecimal amountToPay = sum.setScale(2, BigDecimal.ROUND_HALF_UP);
         /**/
         Properties properties = new Properties() {{
-            put("ac_account_email", accountId);
-            put("ac_sci_name", payeeName);
+            put("ac_account_email", ccp.getPaymentSystemMerchants().getAdvcash().getAccountId());
+            put("ac_sci_name", ccp.getPaymentSystemMerchants().getAdvcash().getPayeeName());
             put("ac_amount", amountToPay);
             put("ac_currency", currency);
             put("ac_order_id", requestId);
-            String sign = accountId + ":" + payeeName + ":" + amountToPay
-                    + ":" + currency + ":" + payeePassword
+            String sign = ccp.getPaymentSystemMerchants().getAdvcash().getAccountId() + ":" + ccp.getPaymentSystemMerchants().getAdvcash().getPayeeName() + ":" + amountToPay
+                    + ":" + currency + ":" + ccp.getPaymentSystemMerchants().getAdvcash().getPayeePassword()
                     + ":" + requestId;
             String transactionHash = algorithmService.sha256(sign);
             put("ac_sign", transactionHash);
             put("transaction_hash", transactionHash);
-            put("ac_success_url", paymentSuccess);
+            put("ac_success_url", ccp.getPaymentSystemMerchants().getAdvcash().getPaymentSuccess());
             put("ac_success__method", "POST");
         }};
         /**/
-        return generateFullUrlMap(url, "POST", properties, properties.getProperty("ac_sign"));
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getAdvcash().getUrl(), "POST", properties, properties.getProperty("ac_sign"));
     }
 
     @Override

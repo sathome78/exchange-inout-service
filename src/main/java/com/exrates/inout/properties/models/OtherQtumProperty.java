@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder(builderClassName = "Builder", toBuilder = true)
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class OtherQtumProperty {
     private String user;
     private String password;
     private int minConfirmations;
-    private int minTransferAmount;
+    private BigDecimal minTransferAmount;
     private String mainAddressForTransfer;
     private String walletPassword;
     private String backupFolder;

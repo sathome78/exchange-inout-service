@@ -10,6 +10,7 @@ import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestFakePaymentReceivedException;
 import com.exrates.inout.exceptions.RefillRequestMerchantException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.EDCServiceNode;
 import com.exrates.inout.service.MerchantService;
@@ -26,7 +27,6 @@ import com.squareup.okhttp.Request;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +40,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class EDCServiceImpl implements EDCService {
 
-    @Value("${edc.token}")
-    private String token;
-    @Value("${edc.main-account}")
-    private String main_account;
-    @Value("${edc.hook}")
-    private String hook;
-    @Value("${edc.history}")
-    private String history;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     TransactionService transactionService;
     @Autowired
@@ -115,12 +108,12 @@ public class EDCServiceImpl implements EDCService {
     }
 
     private void checkTransactionByHistory(Map<String, String> params) {
-        if (StringUtils.isEmpty(history)) {
+        if (StringUtils.isEmpty(ccp.getOtherCoins().getEdc().getHistory())) {
             return;
         }
         final OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
-                .url(history + token + "/" + params.get("address"))
+                .url(ccp.getOtherCoins().getEdc().getHistory() + ccp.getOtherCoins().getEdc().getToken() + "/" + params.get("address"))
                 .build();
         final String returnResponse;
 
@@ -160,10 +153,10 @@ public class EDCServiceImpl implements EDCService {
         final OkHttpClient client = new OkHttpClient();
         client.setReadTimeout(60, TimeUnit.SECONDS);
         final FormEncodingBuilder formBuilder = new FormEncodingBuilder();
-        formBuilder.add("account", main_account);
-        formBuilder.add("hook", hook);
+        formBuilder.add("account", ccp.getOtherCoins().getEdc().getMainAccount());
+        formBuilder.add("hook", ccp.getOtherCoins().getEdc().getHook());
         final Request request = new Request.Builder()
-                .url("https://receive.edinarcoin.com/new-account/" + token)
+                .url("https://receive.edinarcoin.com/new-account/" + ccp.getOtherCoins().getEdc().getToken())
                 .post(formBuilder.build())
                 .build();
         final String returnResponse;

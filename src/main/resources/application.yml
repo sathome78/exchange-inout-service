@@ -2078,7 +2078,7 @@ payment-system-merchants:
   okpay:
     receiver: OK220857576
     receiver-email: merchant@exrates.me
-    item-1-name: Exrates
+    item-name: Exrates
     s-title: Exrates input
     url: https://checkout.okpay.com/
     urlReturn: https://checkout.okpay.com/ipn-verify
@@ -2108,7 +2108,7 @@ payment-system-merchants:
     return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
     server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
     password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
-  yandex-kassa:
+  yandexkassa:
     shopId: 51644
     scid: 49019
     shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success

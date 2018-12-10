@@ -9,6 +9,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.qtum.QtumTransaction;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -16,7 +17,6 @@ import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -38,15 +38,8 @@ public class QtumServiceImpl implements QtumService {
 
     private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
 
-    @Value("${qtum.min-confirmations}")
-    private Integer minConfirmations;
-    @Value("${qtum.min-transfer-amount}")
-    private BigDecimal minTransferAmount;
-    @Value("${qtum.main-address-for-transfer}")
-    private String mainAddressForTransfer;
-    @Value("${qtum.endpoint}")
-    private String endpoint;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private QtumNodeService qtumNodeService;
     @Autowired
@@ -148,7 +141,7 @@ public class QtumServiceImpl implements QtumService {
                 .filter(t -> !refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(t.getAddress(), merchant.getId(), currency.getId(), t.getTxid()).isPresent())
                 .filter(t -> transactions.stream().filter(tInner -> tInner.getTxid().equals(t.getTxid())).count() < 2)
                 .filter(t -> t.getCategory().equals("receive"))
-                .filter(t -> t.getConfirmations() >= minConfirmations)
+                .filter(t -> t.getConfirmations() >= ccp.getOtherCoins().getQtum().getMinConfirmations())
                 .filter(t -> t.getWalletconflicts().size() == 0)
                 .filter(QtumTransaction::isTrusted)
                 .filter(t -> t.getAmount() > 0)
@@ -179,8 +172,10 @@ public class QtumServiceImpl implements QtumService {
         qtumNodeService.setWalletPassphrase();
 
         BigDecimal balance = qtumNodeService.getBalance();
-        if (balance.compareTo(minTransferAmount) > 0) {
-            qtumNodeService.transfer(mainAddressForTransfer, balance.subtract(minTransferAmount));
+        if (balance.compareTo(ccp.getOtherCoins().getQtum().getMinTransferAmount()) > 0) {
+            qtumNodeService.transfer(
+                    ccp.getOtherCoins().getQtum().getMainAddressForTransfer(),
+                    balance.subtract(ccp.getOtherCoins().getQtum().getMinTransferAmount()));
         }
         profileData.setTime1();
         log.debug("Profile results: " + profileData);

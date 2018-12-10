@@ -5,13 +5,13 @@ import com.exrates.inout.domain.dto.MerchantSpecParamDto;
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.RefillService;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,12 +31,11 @@ public class ApolloReceiveServiceImpl {
     private static final String MERCHANT_NAME = "APL";
     private static final long GENESIS_TIME = 1515931200;
 
-    @Value("${apollo.main-address}")
-    private String mainAddress;
-
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
 
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
     @Autowired
@@ -56,7 +55,7 @@ public class ApolloReceiveServiceImpl {
         try {
             log.debug("start check apl transactions");
             long lastBLockTime = loadLastBlockTime();
-            JSONArray transactions = new JSONObject(apolloNodeService.getTransactions(mainAddress, lastBLockTime)).getJSONArray("transactions");
+            JSONArray transactions = new JSONObject(apolloNodeService.getTransactions(ccp.getOtherCoins().getApollo().getMainAddress(), lastBLockTime)).getJSONArray("transactions");
             log.debug("txs {}", transactions);
             if (transactions.length() > 0) {
                 long lastTxBlockTimestamp = transactions.getJSONObject(0).getLong("blockTimestamp");
@@ -71,8 +70,8 @@ public class ApolloReceiveServiceImpl {
                     if (!tx.getBoolean("phased")
                             && attachment.has("message")
                             && attachment.getBoolean("messageIsText")
-                            && !sender.equalsIgnoreCase(mainAddress)
-                            && recipient.equalsIgnoreCase(mainAddress)) {
+                            && !sender.equalsIgnoreCase(ccp.getOtherCoins().getApollo().getMainAddress())
+                            && recipient.equalsIgnoreCase(ccp.getOtherCoins().getApollo().getMainAddress())) {
                         String hash = tx.getString("fullHash");
                         BigDecimal amount = parseAmount(tx.getString("amountATM"));
                         String address = attachment.getString("message");
@@ -104,7 +103,7 @@ public class ApolloReceiveServiceImpl {
         log.debug("check unconfirmed apl ");
         try {
             List<RefillRequestFlatDto> dtos = refillService.getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(apolloService.getMerchant().getId(), apolloService.getCurrency().getId());
-            dtos.forEach(p->{
+            dtos.forEach(p -> {
                 log.debug("unconfirmed {}", p);
                 try {
                     JSONObject tx = getTransaction(p.getMerchantTransactionId());

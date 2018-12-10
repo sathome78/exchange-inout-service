@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder(builderClassName = "Builder", toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class OtherIotaProperty {
+public class YandexkassaProperty {
 
-    private String protocol;
-    private String host;
-    private String port;
-    private String seed;
-    private String message;
-    private String tag;
-    private String mode;
+    private String shopId;
+    private String scid;
+    private String shopSuccessURL;
+    private String paymentType;
+    private String key;
+    private String password;
 }

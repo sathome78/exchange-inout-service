@@ -5,6 +5,7 @@ import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.NisNotReadyException;
 import com.exrates.inout.exceptions.NisTransactionException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.util.RestUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nem.core.time.TimeInstant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,24 +32,19 @@ public class NemNodeService {
     private final static String PATH_GET_OWNED_MOSAICS = "/account/mosaic/owned?address=%s";
     private final static String PATH_GET_ADDRESS_BY_PK = "/account/get/from-public-key?publicKey=%s";
 
-    @Value("${nem.ncc-server-url}")
-    private String nccServer;
-    @Value("${nem.nis-server-url-receive}")
-    private String nisServerRecieve;
-    @Value("${nem.nis-server-url-send}")
-    private String nisServerSend;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RestTemplate restTemplate;
 
     private JSONObject getNodeExtendedInfo() {
-        String response = restTemplate.getForObject(nisServerRecieve.concat(PATH_EXTENDED_INFO), String.class);
+        String response = restTemplate.getForObject(ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(PATH_EXTENDED_INFO), String.class);
         return new org.json.JSONObject(response);
     }
 
     String getAddressByPk(String publicKey) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(String.format(PATH_GET_ADDRESS_BY_PK, publicKey)), String.class);
+                .getForEntity(ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(String.format(PATH_GET_ADDRESS_BY_PK, publicKey)), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -58,7 +53,7 @@ public class NemNodeService {
 
     JSONArray getOwnedMosaics(String address) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(String.format(PATH_GET_OWNED_MOSAICS, address)), String.class);
+                .getForEntity(ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(String.format(PATH_GET_OWNED_MOSAICS, address)), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -80,7 +75,7 @@ public class NemNodeService {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<String> entity = new HttpEntity<>(serializedTransaction, headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity(nisServerSend.concat(PATH_PREPARE_ANOUNCE), entity, String.class);
+                .postForEntity(ccp.getOtherCoins().getNem().getNisServerUrlSend().concat(PATH_PREPARE_ANOUNCE), entity, String.class);
         JSONObject result = new JSONObject(response.getBody());
         if (RestUtil.isError(response.getStatusCode())) {
             String error = result.getString("message");
@@ -96,7 +91,7 @@ public class NemNodeService {
 
     JSONObject getSingleTransactionByHash(String hash) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(PATH_GET_TRANSACTION).concat(hash), String.class);
+                .getForEntity(ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(PATH_GET_TRANSACTION).concat(hash), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -104,7 +99,7 @@ public class NemNodeService {
     }
 
     JSONArray getIncomeTransactions(String address, String hash) {
-        String url = nisServerRecieve.concat(String.format(PATH_GET_INCOME_TRANSACTIONS, address));
+        String url = ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(String.format(PATH_GET_INCOME_TRANSACTIONS, address));
         if (!StringUtils.isEmpty(hash)) {
             url = url.concat("&hash=").concat(hash);
         }
@@ -117,7 +112,7 @@ public class NemNodeService {
     }
 
     long getLastBlockHeight() {
-        String response = restTemplate.getForObject(nisServerRecieve.concat(PATH_GET_CURRENT_BLOCK_HEIGHT), String.class);
+        String response = restTemplate.getForObject(ccp.getOtherCoins().getNem().getNisServerUrlReceive().concat(PATH_GET_CURRENT_BLOCK_HEIGHT), String.class);
         return new org.json.JSONObject(response).getLong("height");
     }
 

@@ -1,13 +1,13 @@
 package com.exrates.inout.service.ripple;
 
 import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.WithdrawService;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,11 +30,6 @@ import java.util.Optional;
 @Service
 public class RippleWsServiceImpl {
 
-    @Value("${ripple.rippled-ws}")
-    private String wsUrl;
-    @Value("${ripple.account-address}")
-    private String address;
-
     private URI wsServerUrl;
 
     private Session session;
@@ -46,14 +41,17 @@ public class RippleWsServiceImpl {
     private Merchant merchant;
     private static final String XRP_MERCHANT = "Ripple";
 
+    private final CryptoCurrencyProperties ccp;
     private final RippleService rippleService;
     private final MerchantService merchantService;
     private final WithdrawService withdrawService;
 
     @Autowired
-    public RippleWsServiceImpl(RippleService rippleService,
+    public RippleWsServiceImpl(CryptoCurrencyProperties ccp,
+                               RippleService rippleService,
                                MerchantService merchantService,
                                WithdrawService withdrawService) {
+        this.ccp = ccp;
         this.rippleService = rippleService;
         this.merchantService = merchantService;
         this.withdrawService = withdrawService;
@@ -61,13 +59,13 @@ public class RippleWsServiceImpl {
 
     @PostConstruct
     public void init() {
-        wsServerUrl = URI.create(wsUrl);
+        wsServerUrl = URI.create(ccp.getOtherCoins().getRipple().getRippledWs());
         connectAndSubscribe();
         merchant = merchantService.findByName(XRP_MERCHANT);
     }
 
     public String getAddress() {
-        return address;
+        return ccp.getOtherCoins().getRipple().getAccountAddress();
     }
 
     @OnMessage

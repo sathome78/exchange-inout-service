@@ -12,7 +12,7 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
-import com.exrates.inout.service.AlgorithmService;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -24,7 +24,6 @@ import com.squareup.okhttp.Request;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,21 +36,8 @@ public class OkPayServiceImpl implements OkPayService {
 
     private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    @Value("${okpay.receiver}")
-    private String ok_receiver;
-    @Value("${okpay.receiver-email}")
-    private String ok_receiver_email;
-    @Value("${okpay.item-1-name}")
-    private String ok_item_1_name;
-    @Value("${okpay.s-title}")
-    private String ok_s_title;
-    @Value("${okpay.url}")
-    private String url;
-    @Value("${okpay.urlReturn}")
-    private String urlReturn;
-
     @Autowired
-    private AlgorithmService algorithmService;
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RefillRequestDao refillRequestDao;
     @Autowired
@@ -81,14 +67,14 @@ public class OkPayServiceImpl implements OkPayService {
 
         Properties properties = new Properties();
 
-        properties.put("ok_receiver", ok_receiver);
+        properties.put("ok_receiver", ccp.getPaymentSystemMerchants().getOkpay().getReceiver());
         properties.put("ok_currency", currency);
         properties.put("ok_invoice", String.valueOf(requestId));
-        properties.put("ok_item_1_name", ok_item_1_name);
+        properties.put("ok_item_1_name", ccp.getPaymentSystemMerchants().getOkpay().getItemName());
         properties.put("ok_item_1_price", amountToPay.toString());
-        properties.put("ok_s_title", ok_s_title);
+        properties.put("ok_s_title", ccp.getPaymentSystemMerchants().getOkpay().getSTitle());
 
-        return generateFullUrlMap(url, "POST", properties);
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getOkpay().getUrl(), "POST", properties);
     }
 
     @Override
@@ -111,7 +97,7 @@ public class OkPayServiceImpl implements OkPayService {
         if (refillRequest.getAmount().equals(amount)
                 && currency.equals(currencyService.getById(refillRequest.getCurrencyId()))
                 && params.get("ok_txn_status").equals("completed")
-                && params.get("ok_receiver_email").equals(ok_receiver_email)) {
+                && params.get("ok_receiver_email").equals(ccp.getPaymentSystemMerchants().getOkpay().getReceiverEmail())) {
             LOGGER.info("Okpay processPayment: before requestAcceptDto");
             RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                     .requestId(requestId)
@@ -137,7 +123,7 @@ public class OkPayServiceImpl implements OkPayService {
             formBuilder.add(entry.getKey(), entry.getValue());
         }
         final Request request = new Request.Builder()
-                .url(urlReturn)
+                .url(ccp.getPaymentSystemMerchants().getOkpay().getUrlReturn())
                 .post(formBuilder.build())
                 .build();
         final String returnResponse;

@@ -2,11 +2,11 @@ package com.exrates.inout.service.tron;
 
 import com.exrates.inout.domain.dto.TronNewAddressDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -27,21 +27,19 @@ public class TronNodeServiceImpl implements TronNodeService {
     private final static String GET_LAST_BLOCK = "/wallet/getnowblock";
     private final static String GET_ACCOUNT_INFO = "/api/grpc/full/getaccount/";
 
-    @Value("${tron.full-node-url}")
-    private String fullNodeUrl;
-    @Value("${tron.solidity-node-url}")
-    private String solidityNodeUrl;
-
+    private final CryptoCurrencyProperties ccp;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public TronNodeServiceImpl(RestTemplate restTemplate) {
+    public TronNodeServiceImpl(CryptoCurrencyProperties ccp,
+                               RestTemplate restTemplate) {
+        this.ccp = ccp;
         this.restTemplate = restTemplate;
     }
 
     @Override
     public TronNewAddressDto getNewAddress() {
-        String url = fullNodeUrl.concat(GET_ADDRESS);
+        String url = ccp.getOtherCoins().getTron().getFullNodeUrl().concat(GET_ADDRESS);
         log.debug("trx url " + url);
         return TronNewAddressDto.fromGetAddressMethod(restTemplate.postForObject(url, null, String.class));
     }
@@ -49,7 +47,7 @@ public class TronNodeServiceImpl implements TronNodeService {
     @SneakyThrows
     @Override
     public JSONObject transferFunds(TronTransferDto tronTransferDto) {
-        String url = fullNodeUrl.concat(EASY_TRANSFER);
+        String url = ccp.getOtherCoins().getTron().getFullNodeUrl().concat(EASY_TRANSFER);
         RequestEntity<TronTransferDto> requestEntity = new RequestEntity<>(tronTransferDto, HttpMethod.POST, new URI(url));
         return new JSONObject(performRequest(requestEntity));
     }
@@ -57,7 +55,7 @@ public class TronNodeServiceImpl implements TronNodeService {
     @SneakyThrows
     @Override
     public JSONObject getTransactions(long blockNum) {
-        String url = fullNodeUrl.concat(GET_BLOCK_TX);
+        String url = ccp.getOtherCoins().getTron().getFullNodeUrl().concat(GET_BLOCK_TX);
         JSONObject object = new JSONObject() {{
             put("num", blockNum);
         }};
@@ -68,7 +66,7 @@ public class TronNodeServiceImpl implements TronNodeService {
     @SneakyThrows
     @Override
     public JSONObject getTransaction(String hash) {
-        String url = String.join("", solidityNodeUrl, GET_TX, hash);
+        String url = String.join("", ccp.getOtherCoins().getTron().getSolidityNodeUrl(), GET_TX, hash);
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(url));
         return new JSONObject(performRequest(requestEntity));
     }
@@ -76,7 +74,7 @@ public class TronNodeServiceImpl implements TronNodeService {
     @SneakyThrows
     @Override
     public JSONObject getLastBlock() {
-        String url = fullNodeUrl.concat(GET_LAST_BLOCK);
+        String url = ccp.getOtherCoins().getTron().getFullNodeUrl().concat(GET_LAST_BLOCK);
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(url));
         return new JSONObject(performRequest(requestEntity));
     }
@@ -84,7 +82,7 @@ public class TronNodeServiceImpl implements TronNodeService {
     @SneakyThrows
     @Override
     public JSONObject getAccount(String addressBase58) {
-        String url = String.join("", solidityNodeUrl, GET_ACCOUNT_INFO, addressBase58);
+        String url = String.join("", ccp.getOtherCoins().getTron().getSolidityNodeUrl(), GET_ACCOUNT_INFO, addressBase58);
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(url));
         return new JSONObject(performRequest(requestEntity));
     }

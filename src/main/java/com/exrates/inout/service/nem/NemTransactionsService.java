@@ -4,6 +4,7 @@ import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +25,6 @@ import org.nem.core.model.primitive.Amount;
 import org.nem.core.serialization.JsonSerializer;
 import org.nem.core.time.TimeInstant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -42,9 +42,8 @@ public class NemTransactionsService {
 
     private static final int DECIMALS = 6;
 
-    @Value("${nem.transaction-version}")
-    private Integer version;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private NemService nemService;
     @Autowired
@@ -56,7 +55,7 @@ public class NemTransactionsService {
 
     @PostConstruct
     public void init() {
-        switch (version) {
+        switch (ccp.getOtherCoins().getNem().getTransactionVersion()) {
             case 1: {
                 NetworkInfos.setDefault(NetworkInfos.getMainNetworkInfo());
                 break;

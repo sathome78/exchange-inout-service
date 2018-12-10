@@ -5,9 +5,10 @@ import com.exrates.inout.domain.enums.StellarNetworkModeEnum;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;
@@ -35,10 +36,8 @@ public class StellarTransactionServiceImpl implements StellarTransactionService 
 
     private static final BigDecimal XLM_MIN_BALANCE = new BigDecimal(21);
 
-    @Value("${stellar.mode}")
-    private String mode;
-    @Value("${stellar.horizon-url}")
-    private String severUrl;
+    @Autowired
+    private CryptoCurrencyProperties ccp;
 
     @Override
     public TransactionResponse getTxByURI(String serverURI, URI txUri) throws IOException, URISyntaxException {
@@ -117,7 +116,7 @@ public class StellarTransactionServiceImpl implements StellarTransactionService 
                 .setScale(XLM_DECIMALS, RoundingMode.HALF_DOWN);
     }*/
     private void setNetworkMode(Network network) {
-        switch (StellarNetworkModeEnum.valueOf(mode)) {
+        switch (StellarNetworkModeEnum.valueOf(ccp.getOtherCoins().getStellar().getMode())) {
             case TEST: {
                 Network.useTestNetwork();
                 break;

@@ -3,11 +3,11 @@ package com.exrates.inout.service.ripple;
 import com.exrates.inout.domain.dto.RippleTransaction;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.util.RestUtil;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -75,9 +75,8 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     private static final String SERVER_STATE = "{\"method\": \"server_state\",\n" +
             "                                           \"id\": \"1\"}";
 
-    @Value("${ripple.rippled-rpc-url}")
-    private String rpcUrl;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -87,7 +86,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         String requestBody = String.format(SIGN_RPC, transaction.getIssuerSecret(), transaction.getIssuerAddress(),
                 transaction.getSequence(), transaction.getLastValidatedLedger(),
                 transaction.getSendAmount(), transaction.getDestinationAddress(), destinationTagParam);
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ccp.getOtherCoins().getRipple().getRippledRpcUrl(), requestBody, String.class);
         if (RestUtil.isError(response.getStatusCode())) {
             throw new RuntimeException("cant sign transaction");
         }
@@ -100,7 +99,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     @Override
     public void submitTransaction(RippleTransaction transaction) {
         String requestBody = String.format(SUBMIT_TRANSACTION_RPC, transaction.getBlob());
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ccp.getOtherCoins().getRipple().getRippledRpcUrl(), requestBody, String.class);
         if (RestUtil.isError(response.getStatusCode())) {
             throw new RuntimeException("can't submit transaction");
         }
@@ -120,7 +119,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     @Override
     public JSONObject getTransaction(String txHash) {
         String requestBody = String.format(GET_TRANSACTION_RPC, txHash);
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ccp.getOtherCoins().getRipple().getRippledRpcUrl(), requestBody, String.class);
         JSONObject jsonResponse = new JSONObject(response.getBody()).getJSONObject("result");
         if (RestUtil.isError(response.getStatusCode())) {
             log.error("error checking transaction {}", response.getBody());
@@ -132,7 +131,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     @Override
     public JSONObject getAccountInfo(String accountName) {
         String requestBody = String.format(GET_ACCOUNT_RPC, accountName);
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ccp.getOtherCoins().getRipple().getRippledRpcUrl(), requestBody, String.class);
         if (RestUtil.isError(response.getStatusCode())) {
             throw new RuntimeException("cant get account Info");
         }
@@ -142,7 +141,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
 
     @Override
     public JSONObject getServerState() {
-        ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, SERVER_STATE, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ccp.getOtherCoins().getRipple().getRippledRpcUrl(), SERVER_STATE, String.class);
         if (RestUtil.isError(response.getStatusCode())) {
             throw new RuntimeException("cant get server state xrp");
         }

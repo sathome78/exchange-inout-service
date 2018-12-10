@@ -11,6 +11,7 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -21,8 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,22 +33,12 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 @Service
-@PropertySource("classpath:/merchants/interkassa.properties")
 public class InterkassaServiceImpl implements InterkassaService {
 
     private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    @Value("${interkassa.url}")
-    private String url;
-    @Value("${interkassa.checkoutId}")
-    private String checkoutId;
-    @Value("${interkassa.statustUrl}")
-    private String statustUrl;
-    @Value("${interkassa.successtUrl}")
-    private String successtUrl;
-    @Value("${interkassa.secretKey}")
-    private String secretKey;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private AlgorithmService algorithmService;
     @Autowired
@@ -81,15 +70,15 @@ public class InterkassaServiceImpl implements InterkassaService {
         final Map<String, String> map = new TreeMap<>();
 
         map.put("ik_am", String.valueOf(amountToPay));
-        map.put("ik_co_id", checkoutId);
+        map.put("ik_co_id", ccp.getPaymentSystemMerchants().getInterkassa().getCheckoutId());
         map.put("ik_cur", currency);
         map.put("ik_desc", "Exrates input");
         map.put("ik_ia_m", "post");
-        map.put("ik_ia_u", statustUrl);
+        map.put("ik_ia_u", ccp.getPaymentSystemMerchants().getInterkassa().getStatustUrl());
         map.put("ik_pm_no", String.valueOf(requestId));
         map.put("ik_pnd_m", "post");
-        map.put("ik_pnd_u", statustUrl);
-        map.put("ik_suc_u", successtUrl);
+        map.put("ik_pnd_u", ccp.getPaymentSystemMerchants().getInterkassa().getStatustUrl());
+        map.put("ik_suc_u", ccp.getPaymentSystemMerchants().getInterkassa().getSuccesstUrl());
         map.put("ik_suc_m", "post");
 
         map.put("ik_sign", getSignature(map));
@@ -97,7 +86,7 @@ public class InterkassaServiceImpl implements InterkassaService {
         Properties properties = new Properties();
         properties.putAll(map);
         /**/
-        return generateFullUrlMap(url, "POST", properties);
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getInterkassa().getUrl(), "POST", properties);
     }
 
     @Override
@@ -114,7 +103,7 @@ public class InterkassaServiceImpl implements InterkassaService {
         RefillRequestFlatDto refillRequest = refillRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new RefillRequestNotFoundException(String.format("refill request id: %s", requestId)));
         if (checkSignature.equals(signature)
-                && params.get("ik_co_id").equals(checkoutId)
+                && params.get("ik_co_id").equals(ccp.getPaymentSystemMerchants().getInterkassa().getCheckoutId())
                 && params.get("ik_inv_st").equals("success")
                 && refillRequest.getAmount().equals(amount)) {
             RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -132,7 +121,7 @@ public class InterkassaServiceImpl implements InterkassaService {
     private String getSignature(final Map<String, String> params) {
         List<String> listValues = new ArrayList<String>(params.values());
 
-        listValues.add(secretKey);
+        listValues.add(ccp.getPaymentSystemMerchants().getInterkassa().getSecretKey());
         String stringValues = StringUtils.join(listValues, ":");
         byte[] signMD5 = algorithmService.computeMD5Byte(stringValues);
 

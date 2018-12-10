@@ -11,6 +11,7 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -20,7 +21,6 @@ import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,23 +32,8 @@ public class NixMoneyServiceImpl implements NixMoneyService {
 
     private static final Logger LOGGER = LogManager.getLogger(NixMoneyServiceImpl.class);
 
-    @Value("${nixmoney.url}")
-    private String url;
-    @Value("${nixmoney.payeeAccountUSD}")
-    private String payeeAccountUSD;
-    @Value("${nixmoney.payeeAccountEUR}")
-    private String payeeAccountEUR;
-    @Value("${nixmoney.payeeName}")
-    private String payeeName;
-    @Value("${nixmoney.payeePassword}")
-    private String payeePassword;
-    @Value("${nixmoney.paymentUrl}")
-    private String paymentUrl;
-    @Value("${nixmoney.noPaymentUrl}")
-    private String noPaymentUrl;
-    @Value("${nixmoney.statustUrl}")
-    private String statustUrl;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private AlgorithmService algorithmService;
     @Autowired
@@ -79,21 +64,21 @@ public class NixMoneyServiceImpl implements NixMoneyService {
         /**/
         Properties properties = new Properties() {{
             if (currency.equals("USD")) {
-                put("PAYEE_ACCOUNT", payeeAccountUSD);
+                put("PAYEE_ACCOUNT", ccp.getPaymentSystemMerchants().getNixmoney().getPayeeAccountUSD());
             }
             if (currency.equals("EUR")) {
-                put("PAYEE_ACCOUNT", payeeAccountEUR);
+                put("PAYEE_ACCOUNT", ccp.getPaymentSystemMerchants().getNixmoney().getPayeeAccountEUR());
             }
             put("PAYMENT_ID", requestId);
-            put("PAYEE_NAME", payeeName);
+            put("PAYEE_NAME", ccp.getPaymentSystemMerchants().getNixmoney().getPayeeName());
             put("PAYMENT_AMOUNT", amountToPay);
-            put("PAYMENT_URL", paymentUrl);
-            put("NOPAYMENT_URL", noPaymentUrl);
+            put("PAYMENT_URL", ccp.getPaymentSystemMerchants().getNixmoney().getPaymentUrl());
+            put("NOPAYMENT_URL", ccp.getPaymentSystemMerchants().getNixmoney().getNoPaymentUrl());
             put("BAGGAGE_FIELDS", "PAYEE_ACCOUNT PAYMENT_AMOUNT PAYMENT_ID");
-            put("STATUS_URL", statustUrl);
+            put("STATUS_URL", ccp.getPaymentSystemMerchants().getNixmoney().getStatustUrl());
         }};
         /**/
-        return generateFullUrlMap(url, "POST", properties);
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getNixmoney().getUrl(), "POST", properties);
     }
 
     @Override
@@ -107,7 +92,7 @@ public class NixMoneyServiceImpl implements NixMoneyService {
         RefillRequestFlatDto refillRequest = refillRequestDao.getFlatByIdAndBlock(requestId)
                 .orElseThrow(() -> new RefillRequestNotFoundException(String.format("refill request id: %s", requestId)));
 
-        String passwordMD5 = algorithmService.computeMD5Hash(payeePassword).toUpperCase();
+        String passwordMD5 = algorithmService.computeMD5Hash(ccp.getPaymentSystemMerchants().getNixmoney().getPayeePassword()).toUpperCase();
         ;
         String V2_HASH = algorithmService.computeMD5Hash(params.get("PAYMENT_ID") + ":" + params.get("PAYEE_ACCOUNT")
                 + ":" + params.get("PAYMENT_AMOUNT") + ":" + params.get("PAYMENT_UNITS") + ":" + params.get("PAYMENT_BATCH_NUM")

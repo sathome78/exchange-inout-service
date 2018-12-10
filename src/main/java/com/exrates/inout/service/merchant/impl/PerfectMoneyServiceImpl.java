@@ -30,7 +30,6 @@ import java.util.Properties;
 public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
     private static final Logger LOGGER = LogManager.getLogger(PerfectMoneyServiceImpl.class);
-
     @Value("${perfectmoney.url}")
     private String url;
     @Value("${perfectmoney.accountId}")

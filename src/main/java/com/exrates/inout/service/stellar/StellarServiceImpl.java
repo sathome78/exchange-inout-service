@@ -10,6 +10,7 @@ import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRe
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -17,7 +18,6 @@ import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,13 +45,8 @@ public class StellarServiceImpl implements StellarService {
     private static final String XLM_MERCHANT = "Stellar";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
-    @Value("${stellar.horizon-url}")
-    private String severUrl;
-    @Value("${stellar.account-name}")
-    private String accountName;
-    @Value("${stellar.account-seed}")
-    private String accountSecret;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private MerchantService merchantService;
     @Autowired
@@ -86,11 +81,11 @@ public class StellarServiceImpl implements StellarService {
 
     @Transactional
     @Override
-    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
+    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
         if (!"XLM".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
             throw new WithdrawRequestPostException("Currency not supported by merchant");
         }
-        return stellarTransactionService.withdraw(withdrawMerchantOperationDto, severUrl, accountSecret);
+        return stellarTransactionService.withdraw(withdrawMerchantOperationDto, ccp.getOtherCoins().getStellar().getHorizonUrl(), ccp.getOtherCoins().getStellar().getAccountSeed());
     }
 
     @Synchronized
@@ -139,12 +134,12 @@ public class StellarServiceImpl implements StellarService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.xlm",
-                new Object[]{accountName, destinationTag}, request.getLocale());
+                new Object[]{ccp.getOtherCoins().getStellar().getAccountName(), destinationTag}, request.getLocale());
         DecimalFormat myFormatter = new DecimalFormat("###.##");
         return new HashMap<String, String>() {{
             put("address", String.valueOf(destinationTag));
             put("message", message);
-            put("qr", accountName);
+            put("qr", ccp.getOtherCoins().getStellar().getAccountName());
         }};
     }
 
@@ -154,7 +149,7 @@ public class StellarServiceImpl implements StellarService {
     }
 
     private Integer generateUniqDestinationTag(int userId) {
-        Optional<Integer> id = null;
+        Optional<Integer> id;
         int destinationTag;
         do {
             destinationTag = generateDestinationTag(userId);
@@ -202,14 +197,14 @@ public class StellarServiceImpl implements StellarService {
 
     @Override
     public String getMainAddress() {
-        return accountName;
+        return ccp.getOtherCoins().getStellar().getAccountName();
     }
 
     //TODO remove after changes in mobile api
     @Override
     public String getPaymentMessage(String additionalTag, Locale locale) {
         return messageSource.getMessage("merchants.refill.xlm",
-                new Object[]{accountName, additionalTag}, locale);
+                new Object[]{ccp.getOtherCoins().getStellar().getAccountName(), additionalTag}, locale);
     }
 
     /*must bee only unsigned int = Memo.id - unsigned 64-bit number, MAX_SAFE_INTEGER  memo 0 - 9007199254740991*/
@@ -248,6 +243,6 @@ public class StellarServiceImpl implements StellarService {
     @Override
     public boolean isValidDestinationAddress(String address) {
 
-        return withdrawUtils.isValidDestinationAddress(accountName, address);
+        return withdrawUtils.isValidDestinationAddress(ccp.getOtherCoins().getStellar().getAccountName(), address);
     }
 }

@@ -7,6 +7,7 @@ import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.MerchantException;
 import com.exrates.inout.exceptions.MerchantInternalException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.EDCServiceNode;
 import com.exrates.inout.service.TransactionService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +23,6 @@ import com.squareup.okhttp.RequestBody;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,31 +60,14 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private final String TRANSFER_EDC = "{\"method\":\"transfer\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"true\"], \"id\":%s}";
     private final Pattern pattern = Pattern.compile("\"brain_priv_key\":\"([\\w\\s]+)+\",\"wif_priv_key\":\"(\\S+)\",\"pub_key\":\"(\\S+)\"");
 
-    @Value("${edc.token}")
-    private String token;
-    @Value("${edc.main-account}")
-    private String main_account;
-    @Value("${edc.hook}")
-    private String hook;
-    @Value("${edc.blockchain-host-delayed}")
-    private String rpcUrlDelayed;
-    @Value("${edc.blockchain-host-fast}")
-    private String rpcUrlFast;
-    @Value("${edc.account-registrar}")
-    private String registrarAccount;
-    @Value("${edc.account-referrer}")
-    private String referrerAccount;
-    @Value("${edc.account-main}")
-    private String mainAccount;
-    @Value("${edc.account-private-key}")
-    private String accountPrivateKey;
-
     private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();
     private final BlockingQueue<Pair<String, String>> incomingPayments = new LinkedBlockingQueue<>();
     private final ExecutorService workers = Executors.newFixedThreadPool(2);
     private volatile boolean isRunning = true;
     private volatile boolean debugLog = true;
 
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     TransactionService transactionService;
     @Autowired
@@ -130,7 +113,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
                 if (responseImportKey.contains("true")) {
                     String accountBalance = extractBalance(account.getAccountId(), account.getTransactionId());
                     if (Double.valueOf(accountBalance) > 0) {
-                        final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, account.getAccountId(), mainAccount, accountBalance, "EDC", "Inner transfer", String.valueOf(account.getTransactionId()));
+                        final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, account.getAccountId(), ccp.getOtherCoins().getEdc().getAccountMain(), accountBalance, "EDC", "Inner transfer", String.valueOf(account.getTransactionId()));
                         if (responseTransfer.contains("error")) {
                             throw new InterruptedException("Could not transfer money to main account!\n" + responseTransfer);
                         }
@@ -231,7 +214,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         log.info("Start method createAccount");
         final String accountName = (ACCOUNT_PREFIX + id + UUID.randomUUID()).toLowerCase();
         final EnumMap<KEY_TYPE, String> keys = extractKeys(makeRpcCallFast(NEW_KEY_PAIR_RPC, id)); // retrieve public and private from server
-        final String response = makeRpcCallFast(REGISTER_NEW_ACCOUNT_RPC, accountName, keys.get(KEY_TYPE.PUBLIC), keys.get(KEY_TYPE.PUBLIC), registrarAccount, referrerAccount, String.valueOf(id));
+        final String response = makeRpcCallFast(REGISTER_NEW_ACCOUNT_RPC, accountName, keys.get(KEY_TYPE.PUBLIC), keys.get(KEY_TYPE.PUBLIC), ccp.getOtherCoins().getEdc().getAccountRegistrar(), ccp.getOtherCoins().getEdc().getAccountReferrer(), String.valueOf(id));
         log.info("bit_response: " + response.toString());
         if (response.contains("error")) {
             throw new Exception("Could not create new account!\n" + response);
@@ -279,7 +262,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         final String responseImportKey = makeRpcCallFast(IMPORT_KEY, accountId, edcAccount.getWifPrivKey(), tx.getId());
         if (responseImportKey.contains("true")) {
             String accountBalance = extractBalance(accountId, tx.getId());
-            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, accountId, mainAccount, accountBalance, "EDC", "Inner transfer", String.valueOf(tx.getId()));
+            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, accountId, ccp.getOtherCoins().getEdc().getAccountMain(), accountBalance, "EDC", "Inner transfer", String.valueOf(tx.getId()));
             if (responseTransfer.contains("error")) {
                 throw new InterruptedException("Could not transfer money to main account!\n" + responseTransfer);
             }
@@ -287,10 +270,10 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     }
 
     @Override
-    public void transferFromMainAccount(final String accountName, final String amount) throws IOException, InterruptedException {
-        final String responseImportKey = makeRpcCallFast(IMPORT_KEY, mainAccount, accountPrivateKey, 1);
+    public void transferFromMainAccount(final String accountName, final String amount) throws IOException {
+        final String responseImportKey = makeRpcCallFast(IMPORT_KEY, ccp.getOtherCoins().getEdc().getAccountMain(), ccp.getOtherCoins().getEdc().getAccountPrivateKey(), 1);
         if (responseImportKey.contains("true")) {
-            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, mainAccount, accountName, amount, "EDC", "Output transfer", 1);
+            final String responseTransfer = makeRpcCallFast(TRANSFER_EDC, ccp.getOtherCoins().getEdc().getAccountMain(), accountName, amount, "EDC", "Output transfer", 1);
             if (responseTransfer.contains("error")) {
                 log.error(responseTransfer);
                 if (responseTransfer.contains("rec && rec->name == account_name_or_id")) {
@@ -320,7 +303,7 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private String makeRpcCallFast(String rpc, Object... args) throws IOException {
         final String rpcCall = String.format(rpc, args);
         final Request request = new Request.Builder()
-                .url(rpcUrlFast)
+                .url(ccp.getOtherCoins().getEdc().getBlockchainHostFast())
                 .post(RequestBody.create(MEDIA_TYPE, rpcCall))
                 .build();
         return HTTP_CLIENT.newCall(request)
@@ -346,11 +329,11 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
         client.setReadTimeout(60, TimeUnit.SECONDS);
 
         final FormEncodingBuilder formBuilder = new FormEncodingBuilder();
-        formBuilder.add("account", main_account);
-        formBuilder.add("hook", hook);
+        formBuilder.add("account", ccp.getOtherCoins().getEdc().getAccountMain());
+        formBuilder.add("hook", ccp.getOtherCoins().getEdc().getHook());
 
         final Request request = new Request.Builder()
-                .url("https://receive.edinarcoin.com/new-account/" + token)
+                .url("https://receive.edinarcoin.com/new-account/" + ccp.getOtherCoins().getEdc().getToken())
                 .post(formBuilder.build())
                 .build();
         final String returnResponse;

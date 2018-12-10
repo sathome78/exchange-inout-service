@@ -9,13 +9,13 @@ import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +35,8 @@ public class RippleServiceImpl implements RippleService {
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
     private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
 
-    @Value("${ripple.account-address}")
-    private String systemAddress;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private RippleTransactionService rippleTransactionService;
     @Autowired
@@ -91,7 +90,7 @@ public class RippleServiceImpl implements RippleService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer destinationTag = generateUniqDestinationTag(request.getUserId());
         String message = messageSource.getMessage("merchants.refill.xrp",
-                new String[]{systemAddress, destinationTag.toString()}, request.getLocale());
+                new String[]{ccp.getOtherCoins().getRipple().getAccountAddress(), destinationTag.toString()}, request.getLocale());
         DecimalFormat myFormatter = new DecimalFormat("###.##");
         return new HashMap<String, String>() {{
             put("address", myFormatter.format(destinationTag));
@@ -126,7 +125,7 @@ public class RippleServiceImpl implements RippleService {
 
     @Override
     public String getMainAddress() {
-        return systemAddress;
+        return ccp.getOtherCoins().getRipple().getAccountAddress();
     }
 
     private Integer generateUniqDestinationTag(int userId) {
@@ -156,7 +155,7 @@ public class RippleServiceImpl implements RippleService {
     @Override
     public String getPaymentMessage(String additionalTag, Locale locale) {
         return messageSource.getMessage("merchants.refill.xrp",
-                new String[]{systemAddress, additionalTag}, locale);
+                new String[]{ccp.getOtherCoins().getRipple().getAccountAddress(), additionalTag}, locale);
     }
 
     /*must bee only 32 bit number = 0 - 4294967295*/
@@ -170,6 +169,6 @@ public class RippleServiceImpl implements RippleService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-        return withdrawUtils.isValidDestinationAddress(systemAddress, address);
+        return withdrawUtils.isValidDestinationAddress(ccp.getOtherCoins().getRipple().getAccountAddress(), address);
     }
 }

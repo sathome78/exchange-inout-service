@@ -4,6 +4,7 @@ import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -14,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -47,13 +47,6 @@ import static com.exrates.inout.service.autist.MemoDecryptor.decryptBTSmemo;
 @Service
 public class AunitNodeServiceImpl {
 
-    @Value("${aunit.ws}")
-    private String wsUrl;
-    @Value("${aunit.main-address}")
-    private String systemAddress;
-    @Value("${aunit.main-address-num}")
-    private String accountAddress;
-
     private URI WS_SERVER_URL;
     private Session session;
     private volatile RemoteEndpoint.Basic endpoint = null;
@@ -61,6 +54,7 @@ public class AunitNodeServiceImpl {
     private Currency currency;
     private String privateKey;
 
+    private CryptoCurrencyProperties ccp;
     private MerchantSpecParamsDao merchantSpecParamsDao;
     private AunitService aunitService;
     private RefillService refillService;
@@ -69,12 +63,14 @@ public class AunitNodeServiceImpl {
     private final String lastIrreversebleBlock = "last_irreversible_block_num";
 
     @Autowired
-    public AunitNodeServiceImpl(MerchantService merchantService,
+    public AunitNodeServiceImpl(CryptoCurrencyProperties ccp,
+                                MerchantService merchantService,
                                 CurrencyService currencyService,
                                 MerchantSpecParamsDao merchantSpecParamsDao,
                                 AunitService aunitService,
-                                RefillService refillService) throws NoSuchAlgorithmException {
+                                RefillService refillService) {
         try {
+            this.ccp = ccp;
             this.merchant = merchantService.findByName(AUNIT_MERCHANT);
             this.currency = currencyService.findByName(AUNIT_CURRENCY);
             latIrreversableBlocknumber = Integer.valueOf(merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlock).getParamValue());
@@ -97,7 +93,7 @@ public class AunitNodeServiceImpl {
 
     @PostConstruct
     public void init() {
-        WS_SERVER_URL = URI.create(wsUrl);
+        WS_SERVER_URL = URI.create(ccp.getOtherCoins().getAunit().getWs());
         connectAndSubscribe();
     }
 
@@ -209,7 +205,7 @@ public class AunitNodeServiceImpl {
             for (int i = 0; i < transactions.length(); i++) {
                 JSONObject transaction = transactions.getJSONObject(i).getJSONArray("operations").getJSONArray(0).getJSONObject(1);
 
-                if (transaction.getString("to").equals(accountAddress)) {
+                if (transaction.getString("to").equals(ccp.getOtherCoins().getAunit().getMainAddress())) {
                     makeRefill(lisfOfMemo, transaction);
                 }
             }

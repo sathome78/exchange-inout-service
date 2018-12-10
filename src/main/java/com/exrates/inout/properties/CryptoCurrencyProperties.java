@@ -7,6 +7,7 @@ import com.exrates.inout.properties.models.LiskCoins;
 import com.exrates.inout.properties.models.MoneroCoins;
 import com.exrates.inout.properties.models.NeoCoins;
 import com.exrates.inout.properties.models.OtherCoins;
+import com.exrates.inout.properties.models.PaymentSystemMerchants;
 import com.exrates.inout.properties.models.QtumCoins;
 import com.exrates.inout.properties.models.StellarCoins;
 import com.exrates.inout.properties.models.WavesCoins;
@@ -43,6 +44,8 @@ public class CryptoCurrencyProperties {
     private final MoneroCoins moneroCoins;
     private final XemCoins xemCoins;
     private final StellarCoins stellarCoins;
+    private final OtherCoins otherCoins;
+    private final PaymentSystemMerchants paymentSystemMerchants;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -54,7 +57,9 @@ public class CryptoCurrencyProperties {
                                     QtumCoins qtumCoins,
                                     MoneroCoins moneroCoins,
                                     XemCoins xemCoins,
-                                    StellarCoins stellarCoins) {
+                                    StellarCoins stellarCoins,
+                                    OtherCoins otherCoins,
+                                    PaymentSystemMerchants paymentSystemMerchants) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -65,5 +70,7 @@ public class CryptoCurrencyProperties {
         this.moneroCoins = moneroCoins;
         this.xemCoins = xemCoins;
         this.stellarCoins = stellarCoins;
+        this.otherCoins = otherCoins;
+        this.paymentSystemMerchants = paymentSystemMerchants;
     }
 }
