@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "lisk-merchants")
-public class LiskMerchants {
+@ConfigurationProperties(prefix = "lisk-coins")
+public class LiskCoins {
 
     private LiskProperty lisk;
     private LiskProperty btw;

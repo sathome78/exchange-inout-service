@@ -27,9 +27,9 @@ public class TronNodeServiceImpl implements TronNodeService {
     private final static String GET_LAST_BLOCK = "/wallet/getnowblock";
     private final static String GET_ACCOUNT_INFO = "/api/grpc/full/getaccount/";
 
-    @Value("${tron.node.full-node-url}")
+    @Value("${tron.full-node-url}")
     private String fullNodeUrl;
-    @Value("${tron.node.solidity-node-url}")
+    @Value("${tron.solidity-node-url}")
     private String solidityNodeUrl;
 
     private final RestTemplate restTemplate;

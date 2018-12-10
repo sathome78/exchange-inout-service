@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TronTransactionsServiceImpl implements TronTransactionsService {
 
-    @Value("${tron.node.main-account-hex-address}")
+    @Value("${tron.main-account-hex-address}")
     private String mainAddressHex;
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

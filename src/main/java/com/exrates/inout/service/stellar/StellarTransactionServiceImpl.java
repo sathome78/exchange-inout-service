@@ -35,9 +35,9 @@ public class StellarTransactionServiceImpl implements StellarTransactionService 
 
     private static final BigDecimal XLM_MIN_BALANCE = new BigDecimal(21);
 
-    @Value("${stellar.node.mode}")
+    @Value("${stellar.mode}")
     private String mode;
-    @Value("${stellar.node.horizon-url}")
+    @Value("${stellar.horizon-url}")
     private String severUrl;
 
     @Override

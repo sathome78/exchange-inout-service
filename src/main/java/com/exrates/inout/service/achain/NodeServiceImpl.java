@@ -13,13 +13,13 @@ public class NodeServiceImpl implements NodeService {
 
     private final SDKHttpClient httpClient;
 
-    @Value("${achain.node.url}")
+    @Value("${achain.url}")
     private String nodeUrl;
-    @Value("${achain.node.rpc-user}")
+    @Value("${achain.rpc-user}")
     private String rpcUser;
-    @Value("${achain.node.main-address")
+    @Value("${achain.main-address")
     private String mainAccountAddress;
-    @Value("${achain.node.account-name}")
+    @Value("${achain.account-name}")
     private String accountName;
 
     @Autowired

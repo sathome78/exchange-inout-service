@@ -18,7 +18,7 @@ import java.util.Collections;
 @Service
 public class ApolloNodeServiceImpl implements ApolloNodeService {
 
-    @Value("${apollo.node.url}")
+    @Value("${apollo.url}")
     private String url;
 
     @Autowired

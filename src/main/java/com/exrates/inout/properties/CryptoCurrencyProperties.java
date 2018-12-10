@@ -1,15 +1,16 @@
 package com.exrates.inout.properties;
 
-import com.exrates.inout.properties.models.BitcoinMerchants;
-import com.exrates.inout.properties.models.EthereumMerchants;
-import com.exrates.inout.properties.models.EthereumTokenMerchants;
-import com.exrates.inout.properties.models.LiskMerchants;
-import com.exrates.inout.properties.models.MoneroMerchants;
-import com.exrates.inout.properties.models.NeoMerchants;
-import com.exrates.inout.properties.models.QtumMerchants;
-import com.exrates.inout.properties.models.StellarAssetMerchants;
-import com.exrates.inout.properties.models.WavesMerchants;
-import com.exrates.inout.properties.models.XemMerchants;
+import com.exrates.inout.properties.models.BitcoinCoins;
+import com.exrates.inout.properties.models.EthereumCoins;
+import com.exrates.inout.properties.models.EthereumTokenCoins;
+import com.exrates.inout.properties.models.LiskCoins;
+import com.exrates.inout.properties.models.MoneroCoins;
+import com.exrates.inout.properties.models.NeoCoins;
+import com.exrates.inout.properties.models.OtherCoins;
+import com.exrates.inout.properties.models.QtumCoins;
+import com.exrates.inout.properties.models.StellarCoins;
+import com.exrates.inout.properties.models.WavesCoins;
+import com.exrates.inout.properties.models.XemCoins;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,49 +19,51 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @EnableConfigurationProperties({
-        BitcoinMerchants.class,
-        EthereumMerchants.class,
-        EthereumTokenMerchants.class,
-        LiskMerchants.class,
-        WavesMerchants.class,
-        NeoMerchants.class,
-        QtumMerchants.class,
-        MoneroMerchants.class,
-        XemMerchants.class,
-        StellarAssetMerchants.class})
+        BitcoinCoins.class,
+        EthereumCoins.class,
+        EthereumTokenCoins.class,
+        LiskCoins.class,
+        WavesCoins.class,
+        NeoCoins.class,
+        QtumCoins.class,
+        MoneroCoins.class,
+        XemCoins.class,
+        StellarCoins.class,
+        OtherCoins.class,
+        PaymentSystemMerchants.class})
 public class CryptoCurrencyProperties {
 
-    private final BitcoinMerchants bitcoinMerchants;
-    private final EthereumMerchants ethereumMerchants;
-    private final EthereumTokenMerchants ethereumTokenMerchants;
-    private final LiskMerchants liskMerchants;
-    private final WavesMerchants wavesMerchants;
-    private final NeoMerchants neoMerchants;
-    private final QtumMerchants qtumMerchants;
-    private final MoneroMerchants moneroMerchants;
-    private final XemMerchants xemMerchants;
-    private final StellarAssetMerchants stellarAssetMerchants;
+    private final BitcoinCoins bitcoinCoins;
+    private final EthereumCoins ethereumCoins;
+    private final EthereumTokenCoins ethereumTokenCoins;
+    private final LiskCoins liskCoins;
+    private final WavesCoins wavesCoins;
+    private final NeoCoins neoCoins;
+    private final QtumCoins qtumCoins;
+    private final MoneroCoins moneroCoins;
+    private final XemCoins xemCoins;
+    private final StellarCoins stellarCoins;
 
     @Autowired
-    public CryptoCurrencyProperties(BitcoinMerchants bitcoinMerchants,
-                                    EthereumMerchants ethereumMerchants,
-                                    EthereumTokenMerchants ethereumTokenMerchants,
-                                    LiskMerchants liskMerchants,
-                                    WavesMerchants wavesMerchants,
-                                    NeoMerchants neoMerchants,
-                                    QtumMerchants qtumMerchants,
-                                    MoneroMerchants moneroMerchants,
-                                    XemMerchants xemMerchants,
-                                    StellarAssetMerchants stellarAssetMerchants) {
-        this.bitcoinMerchants = bitcoinMerchants;
-        this.ethereumMerchants = ethereumMerchants;
-        this.ethereumTokenMerchants = ethereumTokenMerchants;
-        this.liskMerchants = liskMerchants;
-        this.wavesMerchants = wavesMerchants;
-        this.neoMerchants = neoMerchants;
-        this.qtumMerchants = qtumMerchants;
-        this.moneroMerchants = moneroMerchants;
-        this.xemMerchants = xemMerchants;
-        this.stellarAssetMerchants = stellarAssetMerchants;
+    public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
+                                    EthereumCoins ethereumCoins,
+                                    EthereumTokenCoins ethereumTokenCoins,
+                                    LiskCoins liskCoins,
+                                    WavesCoins wavesCoins,
+                                    NeoCoins neoCoins,
+                                    QtumCoins qtumCoins,
+                                    MoneroCoins moneroCoins,
+                                    XemCoins xemCoins,
+                                    StellarCoins stellarCoins) {
+        this.bitcoinCoins = bitcoinCoins;
+        this.ethereumCoins = ethereumCoins;
+        this.ethereumTokenCoins = ethereumTokenCoins;
+        this.liskCoins = liskCoins;
+        this.wavesCoins = wavesCoins;
+        this.neoCoins = neoCoins;
+        this.qtumCoins = qtumCoins;
+        this.moneroCoins = moneroCoins;
+        this.xemCoins = xemCoins;
+        this.stellarCoins = stellarCoins;
     }
 }

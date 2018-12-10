@@ -32,11 +32,11 @@ public class NemNodeService {
     private final static String PATH_GET_OWNED_MOSAICS = "/account/mosaic/owned?address=%s";
     private final static String PATH_GET_ADDRESS_BY_PK = "/account/get/from-public-key?publicKey=%s";
 
-    @Value("${nem.node.ncc.server-url}")
+    @Value("${nem.ncc-server-url}")
     private String nccServer;
-    @Value("${nem.node.nis.server-url-receive}")
+    @Value("${nem.nis-server-url-receive}")
     private String nisServerRecieve;
-    @Value("${nem.node.nis.server-url-send}")
+    @Value("${nem.nis-server-url-send}")
     private String nisServerSend;
 
     @Autowired

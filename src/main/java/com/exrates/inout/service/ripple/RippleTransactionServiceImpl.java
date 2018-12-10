@@ -28,9 +28,9 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
     private static final String SEQUENCE_PARAM = "sequence";
     private static final String LEDGER = "ledger";
 
-    @Value("${ripple.node.account.address}")
+    @Value("${ripple.account-address}")
     private String address;
-    @Value("${ripple.node.account.secret}")
+    @Value("${ripple.account-secret}")
     private String secret;
 
     @Autowired

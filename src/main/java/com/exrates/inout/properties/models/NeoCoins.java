@@ -4,9 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "xem-merchants")
-public class XemMerchants {
+@ConfigurationProperties(prefix = "neo-coins")
+public class NeoCoins {
 
-    private XemProperty dim;
-    private XemProperty npxs;
+    private NeoProperty neo;
+    private NeoProperty kaze;
 }

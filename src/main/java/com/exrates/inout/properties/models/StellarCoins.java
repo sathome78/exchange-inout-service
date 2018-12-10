@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "stellar-merchants")
-public class StellarAssetMerchants {
+@ConfigurationProperties(prefix = "stellar-coins")
+public class StellarCoins {
 
     private StellarProperty slt;
     private StellarProperty tern;

@@ -40,13 +40,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class EDCServiceImpl implements EDCService {
 
-    @Value("${edc.node.token}")
+    @Value("${edc.token}")
     private String token;
-    @Value("${edc.node.main-account}")
+    @Value("${edc.main-account}")
     private String main_account;
-    @Value("${edc.node.hook}")
+    @Value("${edc.hook}")
     private String hook;
-    @Value("${edc.node.history}")
+    @Value("${edc.history}")
     private String history;
 
     @Autowired

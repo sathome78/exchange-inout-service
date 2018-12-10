@@ -29,7 +29,7 @@ import java.util.List;
 @Component
 public class TokenScheduler {
     private static final Logger LOGGER = LogManager.getLogger(TokenScheduler.class);
-    private static final String TRIGGER_GROUP = "token";
+    public static final String TRIGGER_GROUP = "token";
     private static final Integer TOKEN_LIFE_TIME_DAYS = 1;
 
     private Scheduler scheduler = null;

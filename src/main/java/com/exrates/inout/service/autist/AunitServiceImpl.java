@@ -36,7 +36,7 @@ public class AunitServiceImpl implements AunitService {
     static final String AUNIT_MERCHANT = "AUNIT";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
-    @Value("${aunit.node.main-address}")
+    @Value("${aunit.main-address}")
     private String systemAddress;
 
     private final Merchant merchant;

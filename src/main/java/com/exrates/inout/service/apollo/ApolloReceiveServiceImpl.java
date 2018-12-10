@@ -31,7 +31,7 @@ public class ApolloReceiveServiceImpl {
     private static final String MERCHANT_NAME = "APL";
     private static final long GENESIS_TIME = 1515931200;
 
-    @Value("${apollo.node.main-address}")
+    @Value("${apollo.main-address}")
     private String mainAddress;
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

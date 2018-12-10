@@ -37,7 +37,6 @@ import com.exrates.inout.service.nem.XemMosaicService;
 import com.exrates.inout.service.nem.XemMosaicServiceImpl;
 import com.exrates.inout.service.neo.NeoService;
 import com.exrates.inout.service.neo.NeoServiceImpl;
-import com.exrates.inout.service.qtum.QtumTokenService;
 import com.exrates.inout.service.qtum.QtumTokenServiceImpl;
 import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.waves.WavesService;
@@ -65,237 +64,237 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBtc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBtc());
     }
 
     @Bean(name = "litecoinServiceImpl")
     public BitcoinService litecoinService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getLtc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getLtc());
     }
 
     @Bean(name = "dashServiceImpl")
     public BitcoinService dashService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getDash());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getDash());
     }
 
     @Bean(name = "atbServiceImpl")
     public BitcoinService atbService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getAtb());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getAtb());
     }
 
     @Bean(name = "bitcoinCashServiceImpl")
     public BitcoinService bchService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBch());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBch());
     }
 
     @Bean(name = "dogecoinServiceImpl")
     public BitcoinService dogeService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getDoge());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getDoge());
     }
 
     @Bean(name = "btgServiceImpl")
     public BitcoinService btgService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBtg());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBtg());
     }
 
     @Bean(name = "zcashServiceImpl")
     public BitcoinService zecService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getZec());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getZec());
     }
 
     @Bean(name = "b2xServiceImpl")
     public BitcoinService b2xService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getB2x());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getB2x());
     }
 
     @Bean(name = "bcdServiceImpl")
     public BitcoinService bcdService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBcd());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBcd());
     }
 
     @Bean(name = "plcServiceImpl")
     public BitcoinService pbtcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getPlc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getPlc());
     }
 
     @Bean(name = "bcxServiceImpl")
     public BitcoinService bcxService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBcx());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBcx());
     }
 
     @Bean(name = "bciServiceImpl")
     public BitcoinService bciService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBci());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBci());
     }
 
     @Bean(name = "occServiceImpl")
     public BitcoinService occService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getOcc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getOcc());
     }
 
     @Bean(name = "btczServiceImpl")
     public BitcoinService btczService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBtcz());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBtcz());
     }
 
     @Bean(name = "lccServiceImpl")
     public BitcoinService lccService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getLcc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getLcc());
     }
 
     @Bean(name = "bitcoinAtomServiceImpl")
     public BitcoinService bitcoinAtomService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBca());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBca());
     }
 
     @Bean(name = "btcpServiceImpl")
     public BitcoinService btcpService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBtcp());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBtcp());
     }
 
     @Bean(name = "szcServiceImpl")
     public BitcoinService szcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getSzc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getSzc());
     }
 
     @Bean(name = "btxServiceImpl")
     public BitcoinService btxService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBtx());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBtx());
     }
 
     @Bean(name = "bitdollarServiceImpl")
     public BitcoinService bitdollarService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getXbd());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getXbd());
     }
 
     @Bean(name = "beetServiceImpl")
     public BitcoinService beetService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBeet());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBeet());
     }
 
     @Bean(name = "nycoinServiceImpl")
     public BitcoinService nycoinService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getNyc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getNyc());
     }
 
     @Bean(name = "ptcServiceImpl")
     public BitcoinService ptcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getPtc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getPtc());
     }
 
     @Bean(name = "fgcServiceImpl")
     public BitcoinService fgcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getFgc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getFgc());
     }
 
     @Bean(name = "bclServiceImpl")
     public BitcoinService bitcoinCleanService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBcl());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBcl());
     }
 
     @Bean(name = "brecoServiceImpl")
     public BitcoinService brecoService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBreco());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBreco());
     }
 
     @Bean(name = "ftoServiceImpl")
     public BitcoinService ftoService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getFto());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getFto());
     }
 
     @Bean(name = "sabrServiceImpl")
     public BitcoinService sabrService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getSabr());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getSabr());
     }
 
     @Bean(name = "eqlServiceImpl")
     public BitcoinService eqlService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getEql());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getEql());
     }
 
     @Bean(name = "lbtcServiceImpl")
     public BitcoinService lbtcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getLbtc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getLbtc());
     }
 
     @Bean(name = "brbServiceImpl")
     public BitcoinService brbService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBrb());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBrb());
     }
 
     @Bean(name = "rizServiceImpl")
     public BitcoinService rizService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getRiz());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getRiz());
     }
 
     @Bean(name = "sicServiceImpl")
     public BitcoinService sicService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getSic());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getSic());
     }
 
     @Bean(name = "clxServiceImpl")
     public BitcoinService clxService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getClx());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getClx());
     }
 
     @Bean(name = "qrkServiceImpl")
     public BitcoinService qrkService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getQrk());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getQrk());
     }
 
     @Bean(name = "cmkServiceImpl")
     public BitcoinService cmkService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getCmk());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getCmk());
     }
 
     @Bean(name = "mbcServiceImpl")
     public BitcoinService mbcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getMbc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getMbc());
     }
 
     @Bean(name = "ddxServiceImpl")
     public BitcoinService ddxService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getDdx());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getDdx());
     }
 
     @Bean(name = "lpcServiceImpl")
     public BitcoinService lpcService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getLpc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getLpc());
     }
 
     @Bean(name = "xfcServiceImpl")
     public BitcoinService xfcServiceImpl() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getXfc());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getXfc());
     }
 
     @Bean(name = "TOAServiceImpl")
     public BitcoinService taoServiceImpl() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getToa());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getToa());
     }
 
     @Bean(name = "crypServiceImpl")
     public BitcoinService crypService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getCryp());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getCryp());
     }
 
     @Bean(name = "nsrServiceImpl")
     public BitcoinService nsrService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getNsr());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getNsr());
     }
 
     @Bean(name = "amlServiceImpl")
     public BitcoinService amlService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getAml());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getAml());
     }
 
     @Bean(name = "bbccServiceImpl")
     public BitcoinService bbccService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getBbx());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getBbx());
     }
 
     @Bean(name = "hsrServiceImpl")
     public BitcoinService hcasheService() {
-        return createBitcoinService(cryptoCurrencyProperties.getBitcoinMerchants().getHsr());
+        return createBitcoinService(cryptoCurrencyProperties.getBitcoinCoins().getHsr());
     }
 
     private BitcoinService createBitcoinService(BitcoinProperty property) {
@@ -305,47 +304,47 @@ public class CryptocurrencyConfig {
     //ETH Services
     @Bean(name = "ethereumServiceImpl")
     public EthereumCommonService ethereumService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getEth());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getEth());
     }
 
     @Bean(name = "ethereumClassicServiceImpl")
     public EthereumCommonService ethereumClassicService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getEtc());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getEtc());
     }
 
     @Bean(name = "etzServiceImpl")
     public EthereumCommonService etzService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getEtz());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getEtz());
     }
 
     @Bean(name = "cloServiceImpl")
     public EthereumCommonService cloService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getClo());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getClo());
     }
 
     @Bean(name = "b2gServiceImpl")
     public EthereumCommonService b2gService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getB2g());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getB2g());
     }
 
     @Bean(name = "golServiceImpl")
     public EthereumCommonService golService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getGol());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getGol());
     }
 
     @Bean(name = "cnetServiceImpl")
     public EthereumCommonService cnetService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getCnet());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getCnet());
     }
 
     @Bean(name = "ntyServiceImpl")
     public EthereumCommonService ntyService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getNty());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getNty());
     }
 
     @Bean(name = "etherincServiceImpl")
     public EthereumCommonService etherincService() {
-        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumMerchants().getEti());
+        return createEthereumCommonService(cryptoCurrencyProperties.getEthereumCoins().getEti());
     }
 
     private EthereumCommonService createEthereumCommonService(EthereumProperty property) {
@@ -355,177 +354,177 @@ public class CryptocurrencyConfig {
     //Eth tokens
     @Bean(name = "repServiceImpl")
     public EthTokenService RepService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getRep());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getRep());
     }
 
     @Bean(name = "golemServiceImpl")
     public EthTokenService GolemService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getGolem());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getGolem());
     }
 
     @Bean(name = "omgServiceImpl")
     public EthTokenService OmgService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getOmg());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getOmg());
     }
 
     @Bean(name = "bnbServiceImpl")
     public EthTokenService BnbService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getBnb());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getBnb());
     }
 
     @Bean(name = "atlServiceImpl")
     public EthTokenService ATLANTService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getAtl());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getAtl());
     }
 
     @Bean(name = "bitRentServiceImpl")
     public EthTokenService BitRentService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getRntb());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getRntb());
     }
 
     @Bean(name = "nioServiceImpl")
     public EthTokenService NioService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getNio());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getNio());
     }
 
     @Bean(name = "gosServiceImpl")
     public EthTokenService GosService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getGos());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getGos());
     }
 
     @Bean(name = "bptnServiceImpl")
     public EthTokenService BptnRentService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getBptn());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getBptn());
     }
 
     @Bean(name = "nbcServiceImpl")
     public EthTokenService NbcService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getNbc());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getNbc());
     }
 
     @Bean(name = "taxiServiceImpl")
     public EthTokenService taxiRentService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getTaxi());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getTaxi());
     }
 
     @Bean(name = "nbtkServiceImpl")
     public EthTokenService nbtkRentService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getNbtk());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getNbtk());
     }
 
     @Bean(name = "ucashServiceImpl")
     public EthTokenService ucashService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getUcash());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getUcash());
     }
 
     @Bean(name = "nacServiceImpl")
     public EthTokenService nacService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getNac());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getNac());
     }
 
     @Bean(name = "echtServiceImpl")
     public EthTokenService echtService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getEcht());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getEcht());
     }
 
     @Bean(name = "idhServiceImpl")
     public EthTokenService idhService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getIdh());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getIdh());
     }
 
     @Bean(name = "cobcServiceImpl")
     public EthTokenService cobcService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getCobc());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getCobc());
     }
 
     @Bean(name = "bcsServiceImpl")
     public EthTokenService bcsService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getBcs());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getBcs());
     }
 
     @Bean(name = "uqcServiceImpl")
     public EthTokenService uqcService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getUqc());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getUqc());
     }
 
     @Bean(name = "inoServiceImpl")
     public EthTokenService inoService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getIno());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getIno());
     }
 
     @Bean(name = "profitServiceImpl")
     public EthTokenService profitService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getProfit());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getProfit());
     }
 
     @Bean(name = "ormeServiceImpl")
     public EthTokenService ormeService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getOrme());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getOrme());
     }
 
     @Bean(name = "bezServiceImpl")
     public EthTokenService bezService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getBez());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getBez());
     }
 
     @Bean(name = "simServiceImpl")
     public EthTokenService simService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getSim());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getSim());
     }
 
     @Bean(name = "amnServiceImpl")
     public EthTokenService amnService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getAmn());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getAmn());
     }
 
     @Bean(name = "getServiceImpl")
     public EthTokenService getService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getGet());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getGet());
     }
 
     @Bean(name = "flotServiceImpl")
     public EthTokenService flotService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getFlot());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getFlot());
     }
 
     @Bean(name = "vdgServiceImpl")
     public EthTokenService vdgService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getVdg());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getVdg());
     }
 
     @Bean(name = "dgtxServiceImpl")
     public EthTokenService dgtxService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getDgtx());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getDgtx());
     }
 
     @Bean(name = "droneServiceImpl")
     public EthTokenService droneService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getDrone());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getDrone());
     }
 
     @Bean(name = "wdscServiceImpl")
     public EthTokenService wdscService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getWdsc());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getWdsc());
     }
 
     @Bean(name = "fsbtServiceImpl")
     public EthTokenService fsbtService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getFsbt());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getFsbt());
     }
 
     @Bean(name = "iprServiceImpl")
     public EthTokenService iprService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getIpr());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getIpr());
     }
 
     @Bean(name = "casServiceImpl")
     public EthTokenService casService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getCas());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getCas());
     }
 
     @Bean(name = "tnrServiceImpl")
     public EthTokenService tnrService() {
-        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenMerchants().getTnr());
+        return createEthereumTokenService(cryptoCurrencyProperties.getEthereumTokenCoins().getTnr());
     }
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
@@ -535,22 +534,22 @@ public class CryptocurrencyConfig {
     // LISK-like cryptos
     @Bean(name = "liskServiceImpl")
     public LiskService liskService() {
-        return createLiskService(cryptoCurrencyProperties.getLiskMerchants().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+        return createLiskService(cryptoCurrencyProperties.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
     }
 
     @Bean(name = "btwServiceImpl")
     public LiskService btwService() {
-        return createLiskService(cryptoCurrencyProperties.getLiskMerchants().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+        return createLiskService(cryptoCurrencyProperties.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
     }
 
     @Bean(name = "riseServiceImpl")
     public LiskService riseService() {
-        return createLiskService(cryptoCurrencyProperties.getLiskMerchants().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+        return createLiskService(cryptoCurrencyProperties.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
     }
 
     @Bean(name = "arkServiceImpl")
     public LiskService arkService() {
-        return createLiskService(cryptoCurrencyProperties.getLiskMerchants().getArk(), new ArkSpecialMethodServiceImpl(cryptoCurrencyProperties.getLiskMerchants().getArk()));
+        return createLiskService(cryptoCurrencyProperties.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(cryptoCurrencyProperties.getLiskCoins().getArk()));
     }
 
     private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
@@ -570,12 +569,12 @@ public class CryptocurrencyConfig {
     // WAVES-like
     @Bean(name = "wavesServiceImpl")
     public WavesService wavesService() {
-        return createWavesService(cryptoCurrencyProperties.getWavesMerchants().getWaves());
+        return createWavesService(cryptoCurrencyProperties.getWavesCoins().getWaves());
     }
 
 //    @Bean(name = "lunesServiceImpl")
 //    public WavesService lunesService() {
-//        return createWavesService(cryptoCurrencyProperties.getWavesMerchants().getLunes());
+//        return createWavesService(cryptoCurrencyProperties.getWavesCoins().getLunes());
 //    }
 
     private WavesService createWavesService(WavesProperty property) {
@@ -592,7 +591,7 @@ public class CryptocurrencyConfig {
             put(NeoAsset.NEO.getId(), new AssetMerchantCurrencyDto(NeoAsset.NEO, mainMerchant, mainCurrency));
             put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService.findByName(NeoAsset.GAS.name()), currencyService.findByName(NeoAsset.GAS.name())));
         }};
-        NeoProperty property = cryptoCurrencyProperties.getNeoMerchants().getNeo().toBuilder()
+        NeoProperty property = cryptoCurrencyProperties.getNeoCoins().getNeo().toBuilder()
                 .merchant(mainMerchant)
                 .currency(mainCurrency)
                 .neoAssetMap(neoAssetMap)
@@ -609,7 +608,7 @@ public class CryptocurrencyConfig {
             put(NeoAsset.KAZE.getId(), new AssetMerchantCurrencyDto(NeoAsset.KAZE, mainMerchant, mainCurrency));
             put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService.findByName(NeoAsset.STREAM.name()), currencyService.findByName(NeoAsset.STREAM.name())));
         }};
-        NeoProperty property = cryptoCurrencyProperties.getNeoMerchants().getNeo().toBuilder()
+        NeoProperty property = cryptoCurrencyProperties.getNeoCoins().getNeo().toBuilder()
                 .merchant(mainMerchant)
                 .currency(mainCurrency)
                 .neoAssetMap(neoAssetMap)
@@ -619,33 +618,33 @@ public class CryptocurrencyConfig {
 
     //Qtum tokens:
     @Bean(name = "spcServiceImpl")
-    public QtumTokenService spcService() {
-        return createQtumService(cryptoCurrencyProperties.getQtumMerchants().getSpc());
+    public QtumTokenServiceImpl spcService() {
+        return createQtumService(cryptoCurrencyProperties.getQtumCoins().getSpc());
     }
 
     @Bean(name = "hlcServiceImpl")
-    public QtumTokenService hlcService() {
-        return createQtumService(cryptoCurrencyProperties.getQtumMerchants().getHlc());
+    public QtumTokenServiceImpl hlcService() {
+        return createQtumService(cryptoCurrencyProperties.getQtumCoins().getHlc());
     }
 
-    private QtumTokenService createQtumService(QtumProperty property) {
+    private QtumTokenServiceImpl createQtumService(QtumProperty property) {
         return new QtumTokenServiceImpl(property);
     }
 
     //**** Monero ****/
     @Bean(name = "moneroServiceImpl")
     public MoneroService moneroService() {
-        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getXmr());
+        return createMoneroService(cryptoCurrencyProperties.getMoneroCoins().getXmr());
     }
 
     @Bean(name = "ditcoinServiceImpl")
     public MoneroService ditcoinService() {
-        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getDit());
+        return createMoneroService(cryptoCurrencyProperties.getMoneroCoins().getDit());
     }
 
     @Bean(name = "sumoServiceImpl")
     public MoneroService sumoService() {
-        return createMoneroService(cryptoCurrencyProperties.getMoneroMerchants().getSumo());
+        return createMoneroService(cryptoCurrencyProperties.getMoneroCoins().getSumo());
     }
 
     private MoneroService createMoneroService(MoneroProperty property) {
@@ -655,12 +654,12 @@ public class CryptocurrencyConfig {
     /***tokens based on xem mosaic)****/
     @Bean(name = "dimCoinServiceImpl")
     public XemMosaicService dimCoinService() {
-        return createXemMosaicService(cryptoCurrencyProperties.getXemMerchants().getDim());
+        return createXemMosaicService(cryptoCurrencyProperties.getXemCoins().getDim());
     }
 
     @Bean(name = "npxsServiceImpl")
     public XemMosaicService npxsService() {
-        return createXemMosaicService(cryptoCurrencyProperties.getXemMerchants().getNpxs());
+        return createXemMosaicService(cryptoCurrencyProperties.getXemCoins().getNpxs());
     }
 
     private XemMosaicService createXemMosaicService(XemProperty property) {
@@ -669,17 +668,17 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "sltStellarService")
     public StellarAsset sltStellarService() {
-        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getSlt());
+        return createStellarService(cryptoCurrencyProperties.getStellarCoins().getSlt());
     }
 
     @Bean(name = "ternStellarService")
     public StellarAsset ternStellarService() {
-        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getTern());
+        return createStellarService(cryptoCurrencyProperties.getStellarCoins().getTern());
     }
 
     @Bean(name = "vntStellarService")
     public StellarAsset vntStellarService() {
-        return createStellarService(cryptoCurrencyProperties.getStellarAssetMerchants().getVnt());
+        return createStellarService(cryptoCurrencyProperties.getStellarCoins().getVnt());
     }
 
     private StellarAsset createStellarService(StellarProperty property) {

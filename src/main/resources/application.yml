@@ -127,7 +127,7 @@ withdraw:
   rejectErrorTimeout: 3
   walletNotifyEmails: golvazin@gmail.com,wayfarer2006@ukr.net
 
-bitcoin-merchants:
+bitcoin-coins:
   btc:
     merchant-name: Bitcoin
     currency-name: BTC
@@ -1304,7 +1304,7 @@ bitcoin-merchants:
       notification-wallet-port: 6790
 #      notification-instant-send-port:
 
-ethereum-merchants:
+ethereum-coins:
   eth:
     merchant-name: Ethereum
     currency-name: ETH
@@ -1482,7 +1482,7 @@ ethereum-merchants:
       min-balance-for-transfer: 0ю01
       log: etherinc_log
 
-ethereum-token-merchants:
+ethereum-token-coins:
   rep:
     merchant-name: REP
     currency-name: REP
@@ -1729,7 +1729,7 @@ ethereum-token-merchants:
     unit: ETHER
     min-wallet-balance: 0
 
-lisk-merchants:
+lisk-coins:
   lisk:
     merchant-name: Lisk
     currency-name: LSK
@@ -1799,7 +1799,7 @@ lisk-merchants:
       port-get-account: 4000
       port-send-tx: 4000
 
-waves-merchants:
+waves-coins:
   waves:
     merchant-name: Waves
     currency-name: WAVES
@@ -1829,7 +1829,7 @@ waves-merchants:
       token-ids:
         GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
 
-neo-merchants:
+neo-coins:
   neo:
     merchant-name: NEO
     currency-name: NEO
@@ -1843,7 +1843,7 @@ neo-merchants:
     endpoint: http://172.10.13.14:22886
     address: KLw65ptKp4GLk39sZsoKUkYzzaGZnDFtRa
 
-qtum-merchants:
+qtum-coins:
   spc:
     merchant-name: SPC
     currency-name: SPC
@@ -1855,7 +1855,7 @@ qtum-merchants:
     contract: b27d7bf95b03e02b55d5eb63d3f1692762101bf9
     unit: GWEI
 
-monero-merchants:
+monero-coins:
   xmr:
     merchant-name: Monero
     currency-name: XMR
@@ -1893,7 +1893,7 @@ monero-merchants:
       mode: test
       log: sumokoin_log
 
-xem-merchants:
+xem-coins:
   dim:
     merchant-mame: DimCoin
     currency-name: DIM
@@ -1913,7 +1913,7 @@ xem-merchants:
     levy-fee: 0
     supply: 9000000000
 
-stellar-merchants:
+stellar-coins:
   slt:
     merchant-name: SLT
     currency-name: SLT
@@ -1930,8 +1930,8 @@ stellar-merchants:
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
 
-qtum:
-  node:
+other-coins:
+  qtum:
     #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
     endpoint: http://127.0.0.1:38891
     user: wayfarer88
@@ -1941,55 +1941,40 @@ qtum:
     main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
     wallet-password: jet2103
     backup-folder: /data/.qtum/qtum_backup/
-
-achain:
-  node:
+  achain:
     url: http://127.0.0.1:8078/rpc
     rpc-user: admin:123456
     main-address: ACT54nD2uNstDg3AYfGJJ9g8ZxiC4RPs7EAG
     account-name: newone
-
-adk:
-  node:
+  adk:
     rpc-host: http://172.10.13.150:16322
     rpc-user: wayfarer88
     rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
     enabled: true
     wallet-password: 12345678
-
-apollo:
-  node:
+  apollo:
     url: http://172.10.13.74:7876/apl
     main-address: APL-PERW-X5U2-9YLF-7YRAC
-
-aunit:
-  node:
+  aunit:
     main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
     main-address-num: 1.2.23845
     ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
-
-edc:
-  node:
+  edc:
     token: 0190804484737779216097337067072357
     main-account: ajet2103
     #    hook: http://91.142.174.34:9000/merchants/edc/payment/received
     #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
     hook: http://193.93.79.99:9000/merchants/edc/payment/received
     history: https://receive.edinarcoin.com/history/
-    blockchain:
-      #      host-fast: http://ajet21.exrates.tech:64091
-      host-fast: http://localhost:8091
-      host-delayed: http://localhost:8092
-    account:
-      registrar: exrates-currency-exchange
-      referrer: exrates-currency-exchange
-      #      main: output-exrates
-      main: ajet2103
-      #      private-key: 5K2wx88VrN6M2vkg4DGLhehJZ98fT7JfUcT5ECZbd3L3puhbPWF
-      private-key: 5J3BM7vgXuxzwJrLK6rhx9umzZQbezS17h7ApwAiPJ55Lz3LtYt
-
-iota:
-  node:
+    blockchain-host-fast: http://localhost:8091
+    blockchain-host-delayed: http://localhost:8092
+    account-registrar: exrates-currency-exchange
+    account-referrer: exrates-currency-exchange
+    #      account-main: output-exrates
+    account-main: ajet2103
+    #      account-private-key: 5K2wx88VrN6M2vkg4DGLhehJZ98fT7JfUcT5ECZbd3L3puhbPWF
+    account-private-key: 5J3BM7vgXuxzwJrLK6rhx9umzZQbezS17h7ApwAiPJ55Lz3LtYt
+  iota:
     protocol: http
     host: ec2-18-191-212-3.us-east-2.compute.amazonaws.com
     port: 14265
@@ -1997,70 +1982,53 @@ iota:
     message: CREATEADDRESS
     tag: EXRATES99999999999999999999
     mode: main
-
-decred:
-  node:
+  decred:
     rpc-user: Maks1
     rps-password: HL4/aPb39FjIDDDULO+pTXa7WfyrndSy1
     server-ws-url: ws://localhost:9109/ws
     host: localhost
     port: 9111
     cert-path: D:/work/ca.crt
-
-nem:
-  node:
-    ncc:
-      server-url: http://127.0.0.1:8989
-    nis:
-      server-url-receive-test: http://104.128.226.60:7890
-      server-url-receive: http://37.235.49.90:7890
-      server-url-send: http://127.0.0.1:7890
-    transaction:
-      version-test: 2
-      version: 1
-    private-key-test: 765b9ef2829ee9c5810b3e59148a15779b059175dd920ab91f859b855afb0eee
-    public-key-test: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
-    address-test: TBXU7F3WQJQQRPWJ53UJUYI6IJL2A34YESG7FVA5
+  nem:
+    ncc-server-url: http://127.0.0.1:8989
+    #    nis-server-url-receive-test: http://104.128.226.60:7890
+    nis-server-url-receive: http://37.235.49.90:7890
+    nis-server-url-send: http://127.0.0.1:7890
+    #    transaction-version-test: 2
+    transaction-version: 1
+    #    private-key-test: 765b9ef2829ee9c5810b3e59148a15779b059175dd920ab91f859b855afb0eee
+    #    public-key-test: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    #    address-test: TBXU7F3WQJQQRPWJ53UJUYI6IJL2A34YESG7FVA5
     private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
     public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
-
-ripple:
-  node:
-    rippled:
-      rpc-url: https://api.altnet.rippletest.net:51234
-      ws: wss://s.altnet.rippletest.net:51233
-    account:
-      address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
-      secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
-
-stellar:
-  node:
-    horizon-url-1: https://horizon-testnet.stellar.org/
-    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
-    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
-    mode-1: TEST
+  ripple:
+    rippled-rpc-url: https://api.altnet.rippletest.net:51234
+    rippled-ws: wss://s.altnet.rippletest.net:51233
+    account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
+    account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
+  stellar:
+    #    horizon-url-1: https://horizon-testnet.stellar.org/
+    #    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
+    #    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
+    #    mode-1: TEST
     horizon-url: https://horizon.stellar.org:443
     account-name: GBPIO53XH7LUFCLWVQEAPF6XRL5R3LJE77LQX77HRZIDFCR5LQMFVEER
     account-seed: SCEEBOQXMZHYBQSOEK3YZAKVZA6O5UCJRKYCZW2FK6VGN42KV76RZH3I
     mode: PUBLIC
-
-tron:
-  node:
+  tron:
     full-node-url: http://18.220.99.189:8090
     solidity-node-url: https://api.tronscan.org
     main-account-address: TNSofexxLZoyCLUQ2x2VSPifQyHZFXKL76
     main-account-hex-address: 4188d9ad79b07ca7dd940d9ef096982b7420ebe4b1
-
-edr:
-  node:
+  edr:
     id: 14
     account: EDC13707253
     key: cfc6ac5b15d16ad4dce2b00ccf6593db
 
 btc:
   wallets-password-folder: /opt/properties/
-    PropertySource
+
 blockchain:
   xPub: xpub6BiZwKPCxYqEiX3JVUdqCiLnuaNtxh81No5ELPEBh5cUHAv9wUTCcFmgQ7BUr7rUacQawdWAUkTYW2JyxQixGBQJfeoheTAXudBNk9UhS3b
   apiCode: ca8cc7b8-9fe7-478d-8b5e-73c06bffb2e5
@@ -2071,95 +2039,87 @@ blockchain:
   serviceUrl: https://blockchain.info/merchant/
   identifier: 83f0914a-4659-4e36-8c04-24643b9b8596
 
-advcash:
-  url: https://wallet.advcash.com/sci/
-  accountId: exratesnew@gmail.com
-  payeeName: Exrates
-  paymentSuccess: http://127.0.0.1:8080/merchants/advcash/payment/success
-  paymentFailure: http://127.0.0.1:8080/merchants/advcash/payment/failure
-  paymentStatus: http://127.0.0.1:8080/merchants/advcash/payment/status
-  USDAccount: U143527856819
-  EURAccount: E971693091461
-  payeePassword: s3Jb8$P69o
-  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60; 193.93.79.99;
-
-interkassa:
-  url: https://sci.interkassa.com/
-  checkoutId: 57163a9b3d1eafe27b8b456a
-  statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
-  successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
-  secretKey: 7pKC765ZsUGGHQIN
-
-liqpay:
-  url: https://www.liqpay.com/api/3/checkout/
-  public-key: i2376892658
-  private-key: nlLYBhaRNVrOY19fJsi1ft6CVs4uhED2PsJVsyF7
-  #public-key: i83629365623
-  #private-key: YC54FZIoeWmpBK8Te0ezQErBmMtYwWQbn2qaddUH
-  apiVersion: 3
-  action: pay
-
-nixmoney:
-  #url: https://www.dev.nixmoney.com/merchant.jsp
-  url: https://www.nixmoney.com/merchant.jsp
-  payeeAccountUSD: U61028316566147
-  payeeAccountEUR: E77102839294634
-  payeePassword: yT$8SNU99$Wr
-  payeeName: Exrates
-  paymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/success
-  noPaymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/failure
-  statustUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/status
-
-okpay:
-  receiver: OK220857576
-  receiver-email: merchant@exrates.me
-  item-1-name: Exrates
-  s-title: Exrates input
-  url: https://checkout.okpay.com/
-  urlReturn: https://checkout.okpay.com/ipn-verify
-
-payeer:
-  url: https://payeer.com/merchant/
-  m-shop: 510814850
-  m-desc: Exrates input
-  m-key: F7VQX1BFAobRESMw
-
-perfectmoney:
-  url: https://perfectmoney.is/api/step1.asp
-  accountId: S404847
-  accountPass: 66RwHvFG
-  payeeName: Exrates
-  paymentSuccess: http://193.93.79.99:9000/merchants/perfectmoney/payment/success
-  paymentFailure: http://193.93.79.99:9000/merchants/perfectmoney/payment/failure
-  paymentStatus: http://193.93.79.99:9000/merchants/perfectmoney/payment/status
-  USDAccount: U16666480
-  EURAccount: E15714655
-  alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
-  ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;78.41.203.75;
-
-privat24:
-  url: https://api.privatbank.ua/p24api/ishop
-  merchant: 118219
-  details: Exrates input
-  ext_details: Exrates input transaction
-  pay-way: privat24
-  return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
-  server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
-  password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
-
-yandex-kassa:
-  shopId: 51644
-  scid: 49019
-  shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success
-  paymentType: PC
-  key: 4aL0IrvNCKmX3RMU6m1AzVbTxpKHxb1lTW5cObkxdv3pCkuWOyoBlYS
-  password: 777Sifama07
-
-yandexmoney:
-  clientId: B9F1C9CADAB7FA6E12033551F482BD188A98081E60A733D6654C3B2EE8684CF7
-  token: 410013968070382.E3A5AFAD10AD08A5F4667FA711E5CDFCF88D09AA47BA8A8D0E497D3CCF9C21032F3C0957C06EB4EE354A7447B64F13DF98280D7AA4EFF4CB0A0E9885DC1167178DB706D4BABF45468C59F7919813B8C115B1AA9E0E3D0AD0F10A97334C63B0D76E065A2C7D134720344B4D19339CA098E9A73FC47F9FD894E6F661C1F0E4FA8F
-  redirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access
-  apiRedirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access?mobile=true
-  responseType: code
-  mediaType: application/x-www-form-urlencoded
-  companyWalletId: 410013968070382
+payment-system-merchants:
+  advcash:
+    url: https://wallet.advcash.com/sci/
+    accountId: exratesnew@gmail.com
+    payeeName: Exrates
+    paymentSuccess: http://127.0.0.1:8080/merchants/advcash/payment/success
+    paymentFailure: http://127.0.0.1:8080/merchants/advcash/payment/failure
+    paymentStatus: http://127.0.0.1:8080/merchants/advcash/payment/status
+    USDAccount: U143527856819
+    EURAccount: E971693091461
+    payeePassword: s3Jb8$P69o
+    ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60; 193.93.79.99;
+  interkassa:
+    url: https://sci.interkassa.com/
+    checkoutId: 57163a9b3d1eafe27b8b456a
+    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
+    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
+    secretKey: 7pKC765ZsUGGHQIN
+  liqpay:
+    url: https://www.liqpay.com/api/3/checkout/
+    public-key: i2376892658
+    private-key: nlLYBhaRNVrOY19fJsi1ft6CVs4uhED2PsJVsyF7
+    #public-key: i83629365623
+    #private-key: YC54FZIoeWmpBK8Te0ezQErBmMtYwWQbn2qaddUH
+    apiVersion: 3
+    action: pay
+  nixmoney:
+    #url: https://www.dev.nixmoney.com/merchant.jsp
+    url: https://www.nixmoney.com/merchant.jsp
+    payeeAccountUSD: U61028316566147
+    payeeAccountEUR: E77102839294634
+    payeePassword: yT$8SNU99$Wr
+    payeeName: Exrates
+    paymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/success
+    noPaymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/failure
+    statustUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/status
+  okpay:
+    receiver: OK220857576
+    receiver-email: merchant@exrates.me
+    item-1-name: Exrates
+    s-title: Exrates input
+    url: https://checkout.okpay.com/
+    urlReturn: https://checkout.okpay.com/ipn-verify
+  payeer:
+    url: https://payeer.com/merchant/
+    m-shop: 510814850
+    m-desc: Exrates input
+    m-key: F7VQX1BFAobRESMw
+  perfectmoney:
+    url: https://perfectmoney.is/api/step1.asp
+    accountId: S404847
+    accountPass: 66RwHvFG
+    payeeName: Exrates
+    paymentSuccess: http://193.93.79.99:9000/merchants/perfectmoney/payment/success
+    paymentFailure: http://193.93.79.99:9000/merchants/perfectmoney/payment/failure
+    paymentStatus: http://193.93.79.99:9000/merchants/perfectmoney/payment/status
+    USDAccount: U16666480
+    EURAccount: E15714655
+    alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
+    ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;78.41.203.75;
+  privat24:
+    url: https://api.privatbank.ua/p24api/ishop
+    merchant: 118219
+    details: Exrates input
+    ext_details: Exrates input transaction
+    pay-way: privat24
+    return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
+    server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
+    password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
+  yandex-kassa:
+    shopId: 51644
+    scid: 49019
+    shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success
+    paymentType: PC
+    key: 4aL0IrvNCKmX3RMU6m1AzVbTxpKHxb1lTW5cObkxdv3pCkuWOyoBlYS
+    password: 777Sifama07
+  yandexmoney:
+    clientId: B9F1C9CADAB7FA6E12033551F482BD188A98081E60A733D6654C3B2EE8684CF7
+    token: 410013968070382.E3A5AFAD10AD08A5F4667FA711E5CDFCF88D09AA47BA8A8D0E497D3CCF9C21032F3C0957C06EB4EE354A7447B64F13DF98280D7AA4EFF4CB0A0E9885DC1167178DB706D4BABF45468C59F7919813B8C115B1AA9E0E3D0AD0F10A97334C63B0D76E065A2C7D134720344B4D19339CA098E9A73FC47F9FD894E6F661C1F0E4FA8F
+    redirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access
+    apiRedirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access?mobile=true
+    responseType: code
+    mediaType: application/x-www-form-urlencoded
+    companyWalletId: 410013968070382

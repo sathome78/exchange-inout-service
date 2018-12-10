@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "ethereum-token-merchants")
-public class EthereumTokenMerchants {
+@ConfigurationProperties(prefix = "ethereum-token-coins")
+public class EthereumTokenCoins {
 
     private EthereumTokenProperty rep;
     private EthereumTokenProperty golem;

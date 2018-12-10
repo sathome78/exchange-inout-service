@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "monero-merchants")
-public class MoneroMerchants {
+@ConfigurationProperties(prefix = "monero-coins")
+public class MoneroCoins {
 
     private MoneroProperty xmr;
     private MoneroProperty dit;

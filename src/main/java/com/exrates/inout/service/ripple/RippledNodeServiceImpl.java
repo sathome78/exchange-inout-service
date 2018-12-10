@@ -75,7 +75,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     private static final String SERVER_STATE = "{\"method\": \"server_state\",\n" +
             "                                           \"id\": \"1\"}";
 
-    @Value("${ripple.node.rippled.rpc-url}")
+    @Value("${ripple.rippled-rpc-url}")
     private String rpcUrl;
 
     @Autowired

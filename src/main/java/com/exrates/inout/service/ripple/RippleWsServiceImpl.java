@@ -30,9 +30,9 @@ import java.util.Optional;
 @Service
 public class RippleWsServiceImpl {
 
-    @Value("${ripple.node.rippled.ws}")
+    @Value("${ripple.rippled-ws}")
     private String wsUrl;
-    @Value("${ripple.node.account.address}")
+    @Value("${ripple.account-address}")
     private String address;
 
     private URI wsServerUrl;

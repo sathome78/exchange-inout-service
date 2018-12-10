@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 @Service
 public class AidosNodeServiceImpl implements AidosNodeService {
 
-    @Value("${adk.node.rpc-host}")
+    @Value("${adk.rpc-host}")
     private String nodeHost;
-    @Value("${adk.node.rpc-user}")
+    @Value("${adk.rpc-user}")
     private String rpcUser;
-    @Value("${adk.node.rpc-password}")
+    @Value("${adk.rpc-password}")
     private String rpcPassword;
 
     private URI nodeURI;

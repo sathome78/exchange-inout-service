@@ -32,6 +32,11 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     }
 
     @Override
+    public MosaicIdDto getMosaicId() {
+        return mosaicIdDto;
+    }
+
+    @Override
     public MosaicId mosaicId() {
         return mosaicId;
     }

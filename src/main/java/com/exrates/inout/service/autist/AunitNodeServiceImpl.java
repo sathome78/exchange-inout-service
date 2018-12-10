@@ -47,11 +47,11 @@ import static com.exrates.inout.service.autist.MemoDecryptor.decryptBTSmemo;
 @Service
 public class AunitNodeServiceImpl {
 
-    @Value("${aunit.node.ws}")
+    @Value("${aunit.ws}")
     private String wsUrl;
-    @Value("${aunit.node.main-address}")
+    @Value("${aunit.main-address}")
     private String systemAddress;
-    @Value("${aunit.node.main-address-num}")
+    @Value("${aunit.main-address-num}")
     private String accountAddress;
 
     private URI WS_SERVER_URL;

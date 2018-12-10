@@ -4,9 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "neo-merchants")
-public class NeoMerchants {
+@ConfigurationProperties(prefix = "qtum-coins")
+public class QtumCoins {
 
-    private NeoProperty neo;
-    private NeoProperty kaze;
+    QtumProperty spc;
+    QtumProperty hlc;
 }

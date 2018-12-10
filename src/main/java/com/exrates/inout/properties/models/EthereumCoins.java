@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "ethereum-merchants")
-public class EthereumMerchants {
+@ConfigurationProperties(prefix = "ethereum-coins")
+public class EthereumCoins {
 
     private EthereumProperty eth;
     private EthereumProperty etc;

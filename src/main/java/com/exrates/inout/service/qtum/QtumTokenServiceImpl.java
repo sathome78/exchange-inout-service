@@ -50,11 +50,11 @@ public class QtumTokenServiceImpl {
     private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
     private static final BigDecimal AMOUNT_FOR_COMMISSION = new BigDecimal("0.15");
 
-    @Value("${qtum.node.min-confirmations}")
+    @Value("${qtum.min-confirmations}")
     private int minConfirmations;
-    @Value("${qtum.node.min-transfer-amount}")
+    @Value("${qtum.min-transfer-amount}")
     private int minTransferAmount;
-    @Value("${qtum.node.main-address-for-transfer}")
+    @Value("${qtum.main-address-for-transfer}")
     private String mainAddressForTransfer;
 
     @Autowired

@@ -60,23 +60,23 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
     private final String TRANSFER_EDC = "{\"method\":\"transfer\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"true\"], \"id\":%s}";
     private final Pattern pattern = Pattern.compile("\"brain_priv_key\":\"([\\w\\s]+)+\",\"wif_priv_key\":\"(\\S+)\",\"pub_key\":\"(\\S+)\"");
 
-    @Value("${edc.node.token}")
+    @Value("${edc.token}")
     private String token;
-    @Value("${edc.node.main-account}")
+    @Value("${edc.main-account}")
     private String main_account;
-    @Value("${edc.node.hook}")
+    @Value("${edc.hook}")
     private String hook;
-    @Value("${edc.node.blockchain.host-delayed}")
+    @Value("${edc.blockchain-host-delayed}")
     private String rpcUrlDelayed;
-    @Value("${edc.node.blockchain.host-fast}")
+    @Value("${edc.blockchain-host-fast}")
     private String rpcUrlFast;
-    @Value("${edc.node.account.registrar}")
+    @Value("${edc.account-registrar}")
     private String registrarAccount;
-    @Value("${edc.node.account.referrer}")
+    @Value("${edc.account-referrer}")
     private String referrerAccount;
-    @Value("${edc.node.account.main}")
+    @Value("${edc.account-main}")
     private String mainAccount;
-    @Value("${edc.node.account.private-key}")
+    @Value("${edc.account-private-key}")
     private String accountPrivateKey;
 
     private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();

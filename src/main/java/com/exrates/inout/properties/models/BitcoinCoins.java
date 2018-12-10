@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "bitcoin-merchants")
-public class BitcoinMerchants {
+@ConfigurationProperties(prefix = "bitcoin-coins")
+public class BitcoinCoins {
 
     private BitcoinProperty btc;
     private BitcoinProperty ltc;

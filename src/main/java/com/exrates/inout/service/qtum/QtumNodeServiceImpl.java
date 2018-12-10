@@ -28,15 +28,15 @@ public class QtumNodeServiceImpl implements QtumNodeService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value("${qtum.node.endpoint}")
+    @Value("${qtum.endpoint}")
     private String endpoint;
-    @Value("${qtum.node.user}")
+    @Value("${qtum.user}")
     private String user;
-    @Value("${qtum.node.password}")
+    @Value("${qtum.password}")
     private String password;
-    @Value("${qtum.node.wallet-password}")
+    @Value("${qtum.wallet-password}")
     private String walletPassphrase;
-    @Value("${qtum.node.backup-folder}")
+    @Value("${qtum.backup-folder}")
     private String backupDestination;
 
     @PostConstruct

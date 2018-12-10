@@ -38,13 +38,13 @@ public class QtumServiceImpl implements QtumService {
 
     private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
 
-    @Value("${qtum.node.min-confirmations}")
+    @Value("${qtum.min-confirmations}")
     private Integer minConfirmations;
-    @Value("${qtum.node.min-transfer-amount}")
+    @Value("${qtum.min-transfer-amount}")
     private BigDecimal minTransferAmount;
-    @Value("${qtum.node.main-address-for-transfer}")
+    @Value("${qtum.main-address-for-transfer}")
     private String mainAddressForTransfer;
-    @Value("${qtum.node.endpoint}")
+    @Value("${qtum.endpoint}")
     private String endpoint;
 
     @Autowired

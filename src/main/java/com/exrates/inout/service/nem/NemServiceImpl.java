@@ -57,11 +57,11 @@ public class NemServiceImpl implements NemService {
     private static final BigDecimal XEM_MAX_QUANTITY = new BigDecimal("8999999999");
     private static final List<MosaicIdDto> DENIED_MOSAICS_LIST = new ArrayList<>();
 
-    @Value("${nem.node.address}")
+    @Value("${nem.address}")
     private String address;
-    @Value("${nem.node.private-key}")
+    @Value("${nem.private-key}")
     private String privateKey;
-    @Value("${nem.node.public-key}")
+    @Value("${nem.public-key}")
     private String publicKey;
 
     @Autowired

@@ -45,11 +45,11 @@ public class StellarServiceImpl implements StellarService {
     private static final String XLM_MERCHANT = "Stellar";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
-    @Value("${stellar.node.horizon-url}")
+    @Value("${stellar.horizon-url}")
     private String severUrl;
-    @Value("${stellar.node.account-name}")
+    @Value("${stellar.account-name}")
     private String accountName;
-    @Value("${stellar.node.account-seed}")
+    @Value("${stellar.account-seed}")
     private String accountSecret;
 
     @Autowired

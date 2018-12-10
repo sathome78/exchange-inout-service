@@ -35,13 +35,11 @@ public class RippleServiceImpl implements RippleService {
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
     private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
 
-    @Value("${ripple.node.account.address}")
+    @Value("${ripple.account-address}")
     private String systemAddress;
 
     @Autowired
     private RippleTransactionService rippleTransactionService;
-    @Autowired
-    private RippledNodeService rippledNodeService;
     @Autowired
     private MerchantService merchantService;
     @Autowired

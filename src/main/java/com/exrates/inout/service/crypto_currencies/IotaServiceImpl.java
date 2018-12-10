@@ -43,19 +43,19 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class IotaServiceImpl implements IotaService {
 
-    @Value("${iota.node.protocol}")
+    @Value("${iota.protocol}")
     private String protocol;
-    @Value("${iota.node.host}")
+    @Value("${iota.host}")
     private String host;
-    @Value("${iota.node.port}")
+    @Value("${iota.port}")
     private String port;
-    @Value("${iota.node.seed}")
+    @Value("${iota.seed}")
     private String seed;
-    @Value("${iota.node.message}")
+    @Value("${iota.message}")
     private String message;
-    @Value("${iota.node.tag}")
+    @Value("${iota.tag}")
     private String tag;
-    @Value("${iota.node.mode}")
+    @Value("${iota.mode}")
     private String mode;
 
     @Autowired

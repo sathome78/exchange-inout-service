@@ -42,7 +42,7 @@ public class NemTransactionsService {
 
     private static final int DECIMALS = 6;
 
-    @Value("${nem.node.transaction.version}")
+    @Value("${nem.transaction-version}")
     private Integer version;
 
     @Autowired

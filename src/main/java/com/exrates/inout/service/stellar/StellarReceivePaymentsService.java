@@ -27,11 +27,11 @@ public class StellarReceivePaymentsService {
     private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
     private static final String MERCHANT_NAME = "Stellar";
 
-    @Value("${stellar.node.horizon-url}")
+    @Value("${stellar.horizon-url}")
     private String severUrl;
-    @Value("${stellar.node.account-name}")
+    @Value("${stellar.account-name}")
     private String accountName;
-    @Value("${stellar.node.account-seed}")
+    @Value("${stellar.account-seed}")
     private String accountSecret;
 
     @Autowired

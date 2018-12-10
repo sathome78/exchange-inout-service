@@ -35,7 +35,7 @@ public class ApolloServiceImpl implements ApolloService {
 
     @Value("${apollo.url}")
     private String url;
-    @Value("${apollo.main_address}")
+    @Value("${apollo.main-address}")
     private String mainAddress;
 
     private Merchant merchant;
