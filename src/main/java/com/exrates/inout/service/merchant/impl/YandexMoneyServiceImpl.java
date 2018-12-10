@@ -10,6 +10,7 @@ import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.merchant.YandexMoneyService;
@@ -33,7 +34,6 @@ import com.yandex.money.api.utils.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -54,17 +54,8 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     private static final Logger LOGGER = LogManager.getLogger(YandexMoneyServiceImpl.class);
 
-    @Value("${yandexmoney.clientId}")
-    private String clientId;
-    @Value("${yandexmoney.token}")
-    private String token;
-    @Value("${yandexmoney.redirectURI}")
-    private String redirectURI;
-    @Value("${yandexmoney.companyWalletId}")
-    private String companyWalletId;
-    @Value("${yandexmoney.responseType}")
-    private String responseType;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private YandexMoneyMerchantDao yandexMoneyMerchantDao;
     @Autowired
@@ -102,7 +93,7 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     @Override
     public String getTemporaryAuthCode(String redirectURI) {
-        final DefaultApiClient apiClient = new DefaultApiClient(clientId, true);
+        final DefaultApiClient apiClient = new DefaultApiClient(ccp.getPaymentSystemMerchants().getYandexmoney().getClientId(), true);
         final OAuth2Session session = new OAuth2Session(apiClient);
         final OAuth2Authorization oAuth2Authorization = session.createOAuth2Authorization();
         final com.squareup.okhttp.OkHttpClient httpClient = apiClient.getHttpClient();
@@ -110,7 +101,7 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
                 .addScope(Scope.ACCOUNT_INFO)
                 .addScope(Scope.PAYMENT_P2P)
                 .setRedirectUri(redirectURI)
-                .setResponseType(responseType)
+                .setResponseType(ccp.getPaymentSystemMerchants().getYandexmoney().getResponseType())
                 .build();
         final Request request = new Request.Builder()
                 .url(oAuth2Authorization.getAuthorizeUrl())
@@ -128,13 +119,13 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     @Override
     public String getTemporaryAuthCode() {
-        return getTemporaryAuthCode(redirectURI);
+        return getTemporaryAuthCode(ccp.getPaymentSystemMerchants().getYandexmoney().getRedirectURI());
     }
 
     @Override
     public Optional<String> getAccessToken(String code) {
-        final Token.Request request = new Token.Request(code, clientId, redirectURI);
-        final OAuth2Session session = new OAuth2Session(new DefaultApiClient(clientId));
+        final Token.Request request = new Token.Request(code, ccp.getPaymentSystemMerchants().getYandexmoney().getClientId(), ccp.getPaymentSystemMerchants().getYandexmoney().getRedirectURI());
+        final OAuth2Session session = new OAuth2Session(new DefaultApiClient(ccp.getPaymentSystemMerchants().getYandexmoney().getClientId()));
         final Token token;
         try {
             token = session.execute(request);
@@ -152,14 +143,14 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
     @Transactional
     public Optional<RequestPayment> requestPayment(String token, CreditsOperation creditsOperation) {
         if (Strings.isNullOrEmpty(token)) {
-            token = this.token;
+            token = ccp.getPaymentSystemMerchants().getYandexmoney().getToken();
         }
-        final DefaultApiClient apiClient = new DefaultApiClient(clientId, true);
+        final DefaultApiClient apiClient = new DefaultApiClient(ccp.getPaymentSystemMerchants().getYandexmoney().getClientId(), true);
         final OAuth2Session oAuth2Session = new OAuth2Session(apiClient);
         oAuth2Session.setAccessToken(token);
         final String destination = creditsOperation
                 .getDestination()
-                .orElse(companyWalletId);
+                .orElse(ccp.getPaymentSystemMerchants().getYandexmoney().getCompanyWalletId());
         final BigDecimal amount = creditsOperation.getOperationType() == INPUT ?
                 creditsOperation.getAmount().add(creditsOperation.getCommissionAmount()) :
                 creditsOperation.getAmount().subtract(creditsOperation.getCommissionAmount());
@@ -175,7 +166,7 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
             executePayment(execute.requestId, oAuth2Session, creditsOperation);
         } catch (IOException e) {
             LOGGER.fatal(e);
-            final String message = "YandexMoneyService".concat(destination.equals(companyWalletId) ? "Input" : "Output");
+            final String message = "YandexMoneyService".concat(destination.equals(ccp.getPaymentSystemMerchants().getYandexmoney().getCompanyWalletId()) ? "Input" : "Output");
             throw new MerchantInternalException(message);
         } catch (InvalidRequestException | InsufficientScopeException | InvalidTokenException e) {
             LOGGER.error(e.getMessage());

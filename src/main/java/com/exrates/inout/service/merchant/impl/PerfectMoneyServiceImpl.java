@@ -10,6 +10,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -19,7 +20,6 @@ import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,27 +30,9 @@ import java.util.Properties;
 public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
     private static final Logger LOGGER = LogManager.getLogger(PerfectMoneyServiceImpl.class);
-    @Value("${perfectmoney.url}")
-    private String url;
-    @Value("${perfectmoney.accountId}")
-    private String accountId;
-    @Value("${perfectmoney.accountPass}")
-    private String accountPass;
-    @Value("${perfectmoney.payeeName}")
-    private String payeeName;
-    @Value("${perfectmoney.paymentSuccess}")
-    private String paymentSuccess;
-    @Value("${perfectmoney.paymentFailure}")
-    private String paymentFailure;
-    @Value("${perfectmoney.paymentStatus}")
-    private String paymentStatus;
-    @Value("${perfectmoney.USDAccount}")
-    private String usdCompanyAccount;
-    @Value("${perfectmoney.EURAccount}")
-    private String eurCompanyAccount;
-    @Value("${perfectmoney.alternatePassphrase}")
-    private String alternatePassphrase;
 
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private AlgorithmService algorithmService;
     @Autowired
@@ -78,19 +60,19 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
         /**/
         Properties properties = new Properties() {
             {
-                put("PAYEE_ACCOUNT", currency.equals("USD") ? usdCompanyAccount : eurCompanyAccount);
-                put("PAYEE_NAME", payeeName);
+                put("PAYEE_ACCOUNT", currency.equals("USD") ? ccp.getPaymentSystemMerchants().getPerfectmoney().getUSDAccount() : ccp.getPaymentSystemMerchants().getPerfectmoney().getEURAccount());
+                put("PAYEE_NAME", ccp.getPaymentSystemMerchants().getPerfectmoney().getPayeeName());
                 put("PAYMENT_AMOUNT", amountToPay);
                 put("PAYMENT_UNITS", currency);
                 put("PAYMENT_ID", orderId);
-                put("PAYMENT_URL", paymentSuccess);
-                put("NOPAYMENT_URL", paymentFailure);
-                put("STATUS_URL", paymentStatus);
+                put("PAYMENT_URL", ccp.getPaymentSystemMerchants().getPerfectmoney().getPaymentSuccess());
+                put("NOPAYMENT_URL", ccp.getPaymentSystemMerchants().getPerfectmoney().getPaymentFailure());
+                put("STATUS_URL", ccp.getPaymentSystemMerchants().getPerfectmoney().getPaymentStatus());
                 put("FORCED_PAYMENT_METHOD", "account");
             }
         };
         /**/
-        return generateFullUrlMap(url, "POST", properties);
+        return generateFullUrlMap(ccp.getPaymentSystemMerchants().getPerfectmoney().getUrl(), "POST", properties);
     }
 
     @Override
@@ -98,7 +80,7 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
         Integer requestId = Integer.valueOf(params.get("PAYMENT_ID"));
         String merchantTransactionId = params.get("PAYMENT_BATCH_NUM");
-        Currency currency = params.get("PAYEE_ACCOUNT").equals(usdCompanyAccount) ? currencyService.findByName("USD") : currencyService.findByName("EUR");
+        Currency currency = params.get("PAYEE_ACCOUNT").equals(ccp.getPaymentSystemMerchants().getPerfectmoney().getUSDAccount()) ? currencyService.findByName("USD") : currencyService.findByName("EUR");
         Merchant merchant = merchantService.findByName("Perfect Money");
         BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(params.get("PAYMENT_AMOUNT"))).setScale(9);
 
@@ -120,7 +102,7 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
     }
 
     private String computePaymentHash(Map<String, String> params) {
-        final String passpphraseHash = algorithmService.computeMD5Hash(alternatePassphrase).toUpperCase();
+        final String passpphraseHash = algorithmService.computeMD5Hash(ccp.getPaymentSystemMerchants().getPerfectmoney().getAlternatePassphrase()).toUpperCase();
         final String hashParams = params.get("PAYMENT_ID") +
                 ":" + params.get("PAYEE_ACCOUNT") +
                 ":" + params.get("PAYMENT_AMOUNT") +
@@ -134,7 +116,6 @@ public class PerfectMoneyServiceImpl implements PerfectMoneyService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(address);
     }
 }

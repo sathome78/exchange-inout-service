@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Transaction;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.YandexKassaService;
@@ -13,7 +14,6 @@ import com.exrates.inout.service.utils.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,19 +27,8 @@ public class YandexKassaServiceImpl implements YandexKassaService {
 
     private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    @Value("${yandex-kassa.shopId}")
-    private String shopId;
-    @Value("${yandex-kassa.scid}")
-    private String scid;
-    @Value("${yandex-kassa.shopSuccessURL}")
-    private String shopSuccessURL;
-    @Value("${yandex-kassa.paymentType}")
-    private String paymentType;
-    @Value("${yandex-kassa.key}")
-    private String key;
-    @Value("${yandex-kassa.password}")
-    private String password;
-
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private TransactionService transactionService;
     @Autowired
@@ -56,14 +45,14 @@ public class YandexKassaServiceImpl implements YandexKassaService {
 
         final Map<String, String> properties = new TreeMap<>();
 
-        properties.put("shopId", shopId);
-        properties.put("scid", scid);
+        properties.put("shopId", ccp.getPaymentSystemMerchants().getYandexkassa().getShopId());
+        properties.put("scid", ccp.getPaymentSystemMerchants().getYandexkassa().getScid());
         properties.put("sum", String.valueOf(amountToPay));
         properties.put("customerNumber", email);
         properties.put("orderNumber", String.valueOf(transaction.getId()));
-        properties.put("shopSuccessURL", shopSuccessURL);
-        properties.put("paymentType", paymentType);
-        properties.put("key", key);
+        properties.put("shopSuccessURL", ccp.getPaymentSystemMerchants().getYandexkassa().getShopSuccessURL());
+        properties.put("paymentType", ccp.getPaymentSystemMerchants().getYandexkassa().getPaymentType());
+        properties.put("key", ccp.getPaymentSystemMerchants().getYandexkassa().getKey());
 
         return properties;
     }
@@ -83,7 +72,7 @@ public class YandexKassaServiceImpl implements YandexKassaService {
         }
         String checkSignature = algorithmService.computeMD5Hash(params.get("action") + ";" + params.get("orderSumAmount") + ";" + params.get("orderSumCurrencyPaycash") + ";"
                 + params.get("orderSumBankPaycash") + ";" + params.get("shopId") + ";" + params.get("invoiceId") + ";"
-                + params.get("customerNumber") + ";" + password).toUpperCase();
+                + params.get("customerNumber") + ";" + ccp.getPaymentSystemMerchants().getYandexkassa().getPassword()).toUpperCase();
 
         if (checkSignature.equals(params.get("md5"))) {
             transactionService.provideTransaction(transaction);

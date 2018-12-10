@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Transaction;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.merchant.Privat24Service;
@@ -14,7 +15,6 @@ import com.squareup.okhttp.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,25 +28,10 @@ public class Privat24ServiceImpl implements Privat24Service {
 
     private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    @Value("${privat24.url}")
-    private String url;
-    @Value("${privat24.merchant}")
-    private String merchant;
-    @Value("${privat24.details}")
-    private String details;
-    @Value("${privat24.ext_details}")
-    private String extDetails;
-    @Value("${privat24.pay-way}")
-    private String pay_way;
-    @Value("${privat24.return-url}")
-    private String returnUrl;
-    @Value("${privat24.server-url}")
-    private String serverUrl;
-    @Value("${privat24.password}")
-    private String password;
-
     private final OkHttpClient client = new OkHttpClient();
 
+    @Autowired
+    private CryptoCurrencyProperties ccp;
     @Autowired
     private TransactionService transactionService;
     @Autowired
@@ -65,13 +50,13 @@ public class Privat24ServiceImpl implements Privat24Service {
 
         properties.put("amt", String.valueOf(amountToPay));
         properties.put("ccy", creditsOperation.getCurrency().getName());
-        properties.put("merchant", merchant);
+        properties.put("merchant", ccp.getPaymentSystemMerchants().getPrivat24().getMerchant());
         properties.put("order", String.valueOf(transaction.getId()));
-        properties.put("details", details);
-        properties.put("ext_details", extDetails + transaction.getId());
-        properties.put("pay_way", pay_way);
-        properties.put("return_url", returnUrl);
-        properties.put("server_url", serverUrl);
+        properties.put("details", ccp.getPaymentSystemMerchants().getPrivat24().getDetails());
+        properties.put("ext_details", ccp.getPaymentSystemMerchants().getPrivat24().getExtDetails() + transaction.getId());
+        properties.put("pay_way", ccp.getPaymentSystemMerchants().getPrivat24().getPayWay());
+        properties.put("return_url", ccp.getPaymentSystemMerchants().getPrivat24().getReturnUrl());
+        properties.put("server_url", ccp.getPaymentSystemMerchants().getPrivat24().getServerUrl());
 
         return properties;
     }
@@ -91,7 +76,7 @@ public class Privat24ServiceImpl implements Privat24Service {
         }
         Double transactionSum = transaction.getAmount().add(transaction.getCommissionAmount()).doubleValue();
 
-        String checkSignature = algorithmService.sha1(algorithmService.computeMD5Hash(payment + password));
+        String checkSignature = algorithmService.sha1(algorithmService.computeMD5Hash(payment + ccp.getPaymentSystemMerchants().getPrivat24().getPassword()));
         if (checkSignature.equals(signature)
                 && Double.parseDouble(params.get("amt")) == transactionSum) {
             transactionService.provideTransaction(transaction);
