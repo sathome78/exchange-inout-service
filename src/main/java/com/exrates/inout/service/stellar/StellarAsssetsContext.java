@@ -28,5 +28,4 @@ public class StellarAsssetsContext {
     StellarAsset getStellarAssetByAssetObject(Asset asset) {
         return byAssetObjectMap.get(asset);
     }
-
 }

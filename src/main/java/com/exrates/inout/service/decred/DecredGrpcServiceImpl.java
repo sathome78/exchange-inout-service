@@ -8,9 +8,7 @@ import io.grpc.netty.NettyChannelBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -19,14 +17,16 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
-@PropertySource("classpath:/merchants/decred.properties")
 @Service
 @Log4j2(topic = "decred")
 public class DecredGrpcServiceImpl implements DecredGrpcService {
 
-    private @Value("${decred.host}")String host;
-    private @Value("${decred.port}")String port;
-    private @Value("${decred.cert.path}")String path;
+    @Value("${decred.node.host}")
+    private String host;
+    @Value("${decred.node.port}")
+    private String port;
+    @Value("${decred.node.cert-path}")
+    private String path;
 
     private ManagedChannel channel = null;
 
@@ -56,9 +56,9 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
             log.debug("stream size {}", stream.available());
             channel = NettyChannelBuilder.forAddress(host, Integer.valueOf(port))
                     .sslContext(GrpcSslContexts
-                        .forClient()
-                        .trustManager(stream)
-                        .build())
+                            .forClient()
+                            .trustManager(stream)
+                            .build())
                     .build();
         } catch (Exception e) {
             log.error(e);
@@ -99,8 +99,6 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
         WalletServiceGrpc.WalletServiceBlockingStub stub = WalletServiceGrpc.newBlockingStub(getChannel());
         return stub.bestBlock(DecredApi.BestBlockRequest.getDefaultInstance());
     }
-
-
 
     @PreDestroy
     private void destroy() {

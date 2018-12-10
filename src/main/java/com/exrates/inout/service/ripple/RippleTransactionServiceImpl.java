@@ -22,21 +22,19 @@ import java.util.Map;
 @Service
 public class RippleTransactionServiceImpl implements RippleTransactionService {
 
-    @Autowired
-    private RippledNodeService rippledNodeService;
-
-
-    private @Value("${ripple.account.address}")
-    String address;
-    private @Value("${ripple.account.secret}")
-    String secret;
-
     private static final Integer XRP_AMOUNT_MULTIPLIER = 1000000;
     private static final Integer XRP_DECIMALS = 6;
     private static final BigDecimal XRP_MIN_BALANCE = new BigDecimal(21);
     private static final String SEQUENCE_PARAM = "sequence";
     private static final String LEDGER = "ledger";
 
+    @Value("${ripple.node.account.address}")
+    private String address;
+    @Value("${ripple.node.account.secret}")
+    private String secret;
+
+    @Autowired
+    private RippledNodeService rippledNodeService;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -50,7 +48,7 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         RippleTransaction transaction = this.sendMoney(account, new BigDecimal(withdrawMerchantOperationDto.getAmount()),
                 withdrawMerchantOperationDto.getAccountTo(), destinationTag);
         log.debug("xrp transaction sended {}", transaction);
-        return  rippleTransactionToMap(transaction);
+        return rippleTransactionToMap(transaction);
     }
 
     /*send xrp*/
@@ -61,8 +59,6 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         rippledNodeService.submitTransaction(transaction);
         return transaction;
     }
-
-
 
     /*https://ripple.com/build/reliable-transaction-submission/*/
     private RippleTransaction prepareTransaction(BigDecimal amount, RippleAccount account, String destinationAccount, Integer destinationTag) {
@@ -100,7 +96,6 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
                 .divide(new BigDecimal(XRP_AMOUNT_MULTIPLIER))
                 .setScale(XRP_DECIMALS, RoundingMode.HALF_DOWN);
     }
-
 
     @Override
     public BigDecimal getAccountBalance(String accountName) {
@@ -142,10 +137,4 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         map.put("params", jsonObject.toString());
         return map;
     }
-
-
-
-
-
-
 }

@@ -1,6 +1,5 @@
 package com.exrates.inout.service.ripple;
 
-import com.exrates.inout.domain.dto.RippleAccount;
 import com.exrates.inout.domain.dto.RippleTransaction;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.MerchantException;
@@ -17,11 +16,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class RippledNodeServiceImpl implements RippledNodeService {
 
-    @Autowired
-    private RestTemplate restTemplate;
-    private @Value("${ripple.rippled.rpcUrl}")
-    String rpcUrl;
-
     private static final String SIGN_RPC = "{\n" +
             "                     \"method\": \"sign\",\n" +
             "                     \"params\": [\n" +
@@ -35,7 +29,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
             "                                 \"Amount\":  \"%s\",\n" +
             "                                 \"Destination\": \"%s\",\n" +
             "                                 \"TransactionType\": \"Payment\"" +
-                                             "%s" +
+            "%s" +
             "                             },\n" +
             "                             \"fee_mult_max\": 1000\n" +
             "                         }\n" +
@@ -81,13 +75,18 @@ public class RippledNodeServiceImpl implements RippledNodeService {
     private static final String SERVER_STATE = "{\"method\": \"server_state\",\n" +
             "                                           \"id\": \"1\"}";
 
+    @Value("${ripple.node.rippled.rpc-url}")
+    private String rpcUrl;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public void signTransaction(RippleTransaction transaction) {
         String destinationTagParam = transaction.getDestinationTag() == null ? "" : String.format(DESTINATION_TAG_FIELD, transaction.getDestinationTag());
         String requestBody = String.format(SIGN_RPC, transaction.getIssuerSecret(), transaction.getIssuerAddress(),
                 transaction.getSequence(), transaction.getLastValidatedLedger(),
-                transaction.getSendAmount(), transaction.getDestinationAddress(),  destinationTagParam);
+                transaction.getSendAmount(), transaction.getDestinationAddress(), destinationTagParam);
         ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
         if (RestUtil.isError(response.getStatusCode())) {
             throw new RuntimeException("cant sign transaction");
@@ -116,7 +115,6 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         } else {
             throw new MerchantException(result.toString());
         }
-
     }
 
     @Override
@@ -150,5 +148,4 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         }
         return new JSONObject(response.getBody()).getJSONObject("result");
     }
-
 }

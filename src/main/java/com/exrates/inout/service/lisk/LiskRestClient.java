@@ -8,6 +8,7 @@ import com.exrates.inout.properties.models.LiskProperty;
 import java.util.List;
 
 public interface LiskRestClient {
+
     void initClient(LiskProperty property);
 
     LiskTransaction getTransactionById(String txId);

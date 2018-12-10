@@ -120,6 +120,10 @@ btcInvoice:
   invoiceTimeOutIntervalMinutes: 500
   blockNotifyUsers: true
 
+withdraw:
+  rejectErrorTimeout: 3
+  walletNotifyEmails: golvazin@gmail.com,wayfarer2006@ukr.net
+
 bitcoin-merchants:
   btc:
     merchant-name: Bitcoin
@@ -1990,3 +1994,41 @@ iota:
     message: CREATEADDRESS
     tag: EXRATES99999999999999999999
     mode: main
+
+decred:
+  node:
+    rpc-user: Maks1
+    rps-password: HL4/aPb39FjIDDDULO+pTXa7WfyrndSy1
+    server-ws-url: ws://localhost:9109/ws
+    host: localhost
+    port: 9111
+    cert-path: D:/work/ca.crt
+
+nem:
+  node:
+    ncc:
+      server-url: http://127.0.0.1:8989
+    nis:
+      server-url-receive-test: http://104.128.226.60:7890
+      server-url-receive: http://37.235.49.90:7890
+      server-url-send: http://127.0.0.1:7890
+    transaction:
+      version-test: 2
+      version: 1
+    private-key-test: 765b9ef2829ee9c5810b3e59148a15779b059175dd920ab91f859b855afb0eee
+    public-key-test: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    address-test: TBXU7F3WQJQQRPWJ53UJUYI6IJL2A34YESG7FVA5
+    private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
+    public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
+    address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
+
+ripple:
+  node:
+    rippled:
+      rpc-url: https://api.altnet.rippletest.net:51234
+      ws: wss://s.altnet.rippletest.net:51233
+    account:
+      address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
+      secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
+
+stellar:

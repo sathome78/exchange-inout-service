@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface RippleTransactionService {
+
     Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto);
 
     BigDecimal normalizeAmountToDecimal(String amount);

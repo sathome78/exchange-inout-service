@@ -22,13 +22,13 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
     comments = "Source: decred_api.proto")
 public final class AgendaServiceGrpc {
 
-  private AgendaServiceGrpc() {}
+    public static final String SERVICE_NAME = "com.exrates.inout.service.decred.grpc.AgendaService";
 
-  public static final String SERVICE_NAME = "com.exrates.inout.service.decred.grpc.AgendaService";
+  private AgendaServiceGrpc() {}
 
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  @java.lang.Deprecated // Use {@link #getAgendasMethod()} instead. 
+  @java.lang.Deprecated // Use {@link #getAgendasMethod()} instead.
   public static final io.grpc.MethodDescriptor<com.exrates.inout.service.decred.grpc.DecredApi.AgendasRequest,
       com.exrates.inout.service.decred.grpc.DecredApi.AgendasResponse> METHOD_AGENDAS = getAgendasMethodHelper();
 
@@ -47,7 +47,7 @@ public final class AgendaServiceGrpc {
     if ((getAgendasMethod = AgendaServiceGrpc.getAgendasMethod) == null) {
       synchronized (AgendaServiceGrpc.class) {
         if ((getAgendasMethod = AgendaServiceGrpc.getAgendasMethod) == null) {
-          AgendaServiceGrpc.getAgendasMethod = getAgendasMethod = 
+          AgendaServiceGrpc.getAgendasMethod = getAgendasMethod =
               io.grpc.MethodDescriptor.<com.exrates.inout.service.decred.grpc.DecredApi.AgendasRequest, com.exrates.inout.service.decred.grpc.DecredApi.AgendasResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(

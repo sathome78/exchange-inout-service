@@ -22,9 +22,9 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
     comments = "Source: decred_api.proto")
 public final class TicketBuyerV2ServiceGrpc {
 
-  private TicketBuyerV2ServiceGrpc() {}
-
   public static final String SERVICE_NAME = "com.exrates.inout.service.decred.grpc.TicketBuyerV2Service";
+
+  private TicketBuyerV2ServiceGrpc() {}
 
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")

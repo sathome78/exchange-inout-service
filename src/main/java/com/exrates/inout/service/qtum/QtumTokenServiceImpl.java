@@ -45,10 +45,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2(topic = "qtum_log")
-public class QtumTokenServiceImpl implements QtumTokenService {
+public class QtumTokenServiceImpl {
 
     private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
     private static final BigDecimal AMOUNT_FOR_COMMISSION = new BigDecimal("0.15");
+
+    @Value("${qtum.node.min-confirmations}")
+    private int minConfirmations;
+    @Value("${qtum.node.min-transfer-amount}")
+    private int minTransferAmount;
+    @Value("${qtum.node.main-address-for-transfer}")
+    private String mainAddressForTransfer;
 
     @Autowired
     private QtumNodeService qtumNodeService;
@@ -60,13 +67,6 @@ public class QtumTokenServiceImpl implements QtumTokenService {
     private MerchantSpecParamsDao specParamsDao;
     @Autowired
     private RefillService refillService;
-
-    @Value("${qtum.node.min-confirmations}")
-    private int minConfirmations;
-    @Value("${qtum.node.min-transfer-amount}")
-    private int minTransferAmount;
-    @Value("${qtum.node.main-address-for-transfer}")
-    private String mainAddressForTransfer;
 
     private List<String> contractAddress;
     private String merchantName;

@@ -10,7 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.nem.core.crypto.PrivateKey;
 import org.nem.core.messages.PlainMessage;
-import org.nem.core.model.*;
+import org.nem.core.model.Account;
+import org.nem.core.model.Address;
+import org.nem.core.model.NetworkInfos;
+import org.nem.core.model.Transaction;
+import org.nem.core.model.TransactionFeeCalculatorAfterFork;
+import org.nem.core.model.TransferTransaction;
+import org.nem.core.model.TransferTransactionAttachment;
 import org.nem.core.model.mosaic.Mosaic;
 import org.nem.core.model.mosaic.MosaicFeeInformationLookup;
 import org.nem.core.model.ncc.RequestPrepareAnnounce;
@@ -19,7 +25,6 @@ import org.nem.core.serialization.JsonSerializer;
 import org.nem.core.time.TimeInstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -33,14 +38,12 @@ import java.util.HashMap;
  */
 @Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemTransactionsService {
 
-    private @Value("${nem.transaction.version}")
-    Integer version;
+    private static final int DECIMALS = 6;
 
-
-    private static final int decimals = 6;
+    @Value("${nem.node.transaction.version}")
+    private Integer version;
 
     @Autowired
     private NemService nemService;
@@ -54,7 +57,7 @@ public class NemTransactionsService {
     @PostConstruct
     public void init() {
         switch (version) {
-            case 1 :{
+            case 1: {
                 NetworkInfos.setDefault(NetworkInfos.getMainNetworkInfo());
                 break;
             }
@@ -94,20 +97,20 @@ public class NemTransactionsService {
         } catch (UnsupportedEncodingException e) {
             log.error("unsupported encoding {}", e);
         }
-        TransferTransaction transaction = new  TransferTransaction(currentTimeStamp,
-                nemService.getAccount(), reipient, transformToNemAmount(withdrawMerchantOperationDto.getAmount()),  attachment);
+        TransferTransaction transaction = new TransferTransaction(currentTimeStamp,
+                nemService.getAccount(), reipient, transformToNemAmount(withdrawMerchantOperationDto.getAmount()), attachment);
         transaction.setDeadline(currentTimeStamp.addHours(2));
         transaction.setFee(calculatorAfterFork.calculateMinimumFee(transaction));
         return transaction;
     }
 
     private Amount transformToNemAmount(String amount) {
-        BigDecimal a = new BigDecimal(amount).setScale(decimals, RoundingMode.HALF_DOWN).multiply(new BigDecimal(1000000));
+        BigDecimal a = new BigDecimal(amount).setScale(DECIMALS, RoundingMode.HALF_DOWN).multiply(new BigDecimal(1000000));
         return new Amount(a.longValue());
     }
 
-    String transformToString(long nemAmount) {
-        BigDecimal a = new BigDecimal(nemAmount).setScale(decimals, RoundingMode.HALF_DOWN).divide(new BigDecimal(1000000));
+    private String transformToString(long nemAmount) {
+        BigDecimal a = new BigDecimal(nemAmount).setScale(DECIMALS, RoundingMode.HALF_DOWN).divide(new BigDecimal(1000000));
         return a.toPlainString();
     }
 
@@ -123,7 +126,6 @@ public class NemTransactionsService {
         return false;
     }
 
-
     void checkForOutdate(JSONObject transaction) {
         TimeInstant current = nodeService.getCurrentTimeStamp();
         TimeInstant deadline = new TimeInstant(transaction.getJSONObject("transaction").getInt("deadline"));
@@ -134,7 +136,7 @@ public class NemTransactionsService {
 
     BigDecimal countTxFee(BigDecimal amount, String destinationTag) {
         Transaction transaction = prepareTransaction(WithdrawMerchantOperationDto.builder()
-                        .accountTo("")
+                .accountTo("")
                 .amount(amount.toPlainString())
                 .destinationTag(destinationTag)
                 .build(), null);

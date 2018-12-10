@@ -1,7 +1,13 @@
 package com.exrates.inout.service.nem;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.domain.dto.NemMosaicTransferDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
@@ -31,14 +37,32 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-/**
- * Created by maks on 18.07.2017.
- */
 @Log4j2(topic = "nem_log")
 @Service
 public class NemServiceImpl implements NemService {
+
+    private static final String DESTINATION_TAG_ERR_MSG = "message.nem.tagError";
+
+    private static final String NEM_MERCHANT = "NEM";
+    private static final int CONFIRMATIONS_COUNT_WITHDRAW = 2; /*must be 20, but in this case its safe for us to check only 2 confirmations*/
+    private static final int CONFIRMATIONS_COUNT_REFILL = 20;
+
+    private static final BigDecimal MAX_MOSIAC_QUANTITY = new BigDecimal("9000000000000000");
+    private static final BigDecimal XEM_MAX_QUANTITY = new BigDecimal("8999999999");
+    private static final List<MosaicIdDto> DENIED_MOSAICS_LIST = new ArrayList<>();
+
+    @Value("${nem.node.address}")
+    private String address;
+    @Value("${nem.node.private-key}")
+    private String privateKey;
+    @Value("${nem.node.public-key}")
+    private String publicKey;
 
     @Autowired
     private NemTransactionsService nemTransactionsService;
@@ -61,37 +85,17 @@ public class NemServiceImpl implements NemService {
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-
-    private static final String NEM_MERCHANT = "NEM";
-    private static final int CONFIRMATIONS_COUNT_WITHDRAW = 2; /*must be 20, but in this case its safe for us to check only 2 confirmations*/
-    private static final int CONFIRMATIONS_COUNT_REFILL = 20;
-
-    private static final BigDecimal maxMosiacQuantity = new BigDecimal("9000000000000000");
-    private static final BigDecimal xemMaxQuantity = new BigDecimal("8999999999");
-    private static final List<MosaicIdDto> deniedMosaicsList = new ArrayList<>();
-
     private Merchant merchant;
     private Currency currency;
 
-
     @PostConstruct
     public void init() {
-        deniedMosaicsList.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
-        /*deniedMosaicsList.add(new MosaicIdDto("dim", "coin"));*/
+        DENIED_MOSAICS_LIST.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
+        /*DENIED_MOSAICS_LIST.add(new MosaicIdDto("dim", "coin"));*/
         account = new Account(new KeyPair(PublicKey.fromHexString(publicKey)));
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName(NEM_MERCHANT);
     }
-
-
-    private @Value("${nem.address}")
-    String address;
-    private @Value("${nem.private.key}")
-    String privateKey;
-    private @Value("${nem.public.key}")
-    String publicKey;
-
-    private static final String DESTINATION_TAG_ERR_MSG = "message.nem.tagError";
 
     protected Account account;
 
@@ -117,7 +121,7 @@ public class NemServiceImpl implements NemService {
         String message = messageSource.getMessage("merchants.refill.XEM",
                 new Object[]{address, destinationTag}, request.getLocale());
         return new HashMap<String, String>() {{
-            put("address",  destinationTag);
+            put("address", destinationTag);
             put("message", message);
         }};
     }
@@ -139,9 +143,8 @@ public class NemServiceImpl implements NemService {
     }
 
     private String generateDestinationTag(String id) {
-       return algorithmService.sha256(String.valueOf(id)).substring(0, 8);
+        return algorithmService.sha256(String.valueOf(id)).substring(0, 8);
     }
-
 
     @Synchronized
     @Override
@@ -167,13 +170,13 @@ public class NemServiceImpl implements NemService {
             try {
                 refillService.putOnBchExamRefillRequest(
                         RefillRequestPutOnBchExamDto.builder()
-                        .requestId(requestId)
-                        .merchantId(requestAcceptDto.getMerchantId())
-                        .currencyId(requestAcceptDto.getCurrencyId())
-                        .address(requestAcceptDto.getAddress())
-                        .amount(requestAcceptDto.getAmount())
-                        .hash(requestAcceptDto.getMerchantTransactionId())
-                        .build());
+                                .requestId(requestId)
+                                .merchantId(requestAcceptDto.getMerchantId())
+                                .currencyId(requestAcceptDto.getCurrencyId())
+                                .address(requestAcceptDto.getAddress())
+                                .amount(requestAcceptDto.getAmount())
+                                .hash(requestAcceptDto.getMerchantTransactionId())
+                                .build());
             } catch (RefillRequestAppropriateNotFoundException e) {
                 log.error(e);
             }
@@ -192,7 +195,7 @@ public class NemServiceImpl implements NemService {
             Currency currency = currencyService.findByName(mosaicService.getCurrencyName());
             Merchant merchant = merchantService.findByName(mosaicService.getMerchantName());
             if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-                log.warn("{} tx duplicated {}", p.getMosaicIdDto().getNamespaceId(),hash);
+                log.warn("{} tx duplicated {}", p.getMosaicIdDto().getNamespaceId(), hash);
                 return;
             }
             BigDecimal amount = p.getQuantity().divide(BigDecimal.valueOf(mosaicService.getDecimals()));
@@ -228,16 +231,12 @@ public class NemServiceImpl implements NemService {
                 }
             }
         });
-
-
     }
 
     private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
         return StringUtils.isEmpty(hash)
                 || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchantId, currencyId, hash).isPresent();
     }
-
-
 
     @Override
     public void checkRecievedTransaction(RefillRequestFlatDto dto) throws RefillRequestAppropriateNotFoundException {
@@ -256,7 +255,6 @@ public class NemServiceImpl implements NemService {
             log.debug("transaction {} not confirmed yet", dto.getId());
         }
     }
-
 
     @Override
     public boolean checkSendedTransaction(String hash, String additionalParams) {
@@ -290,7 +288,7 @@ public class NemServiceImpl implements NemService {
         BigDecimal feeForAmountInXem = countFeeForAmountInXem(amount, service);
 
         BigDecimal baseFeesInToken = BigDecimalProcessing.doAction(BigDecimalProcessing.doAction(feeForTagInXem, feeForAmountInXem, ActionType.ADD),
-                                                                    exrate, ActionType.DEVIDE);
+                exrate, ActionType.DEVIDE);
         log.debug("fees - levy {}, forTag in nem {}, for quantity in nem {} exrate {}, basefees in token {}",
                 tokenLevy, feeForTagInXem, feeForAmountInXem, exrate, baseFeesInToken);
         return BigDecimalProcessing.doAction(tokenLevy, baseFeesInToken, ActionType.ADD).setScale(service.getDivisibility(), RoundingMode.HALF_UP);
@@ -300,7 +298,7 @@ public class NemServiceImpl implements NemService {
         if (service.getLevyFee().getRaw() == 0) {
             return BigDecimal.ZERO;
         }
-        double feeFromMosaicInMosaicToken = (quantity * service.getLevyFee().getRaw() / 10000D)/service.getDecimals();
+        double feeFromMosaicInMosaicToken = (quantity * service.getLevyFee().getRaw() / 10000D) / service.getDecimals();
         return BigDecimal.valueOf(feeFromMosaicInMosaicToken);
     }
 
@@ -316,17 +314,16 @@ public class NemServiceImpl implements NemService {
         BigDecimal totalMosiacQuantity = BigDecimalProcessing.doAction(BigDecimal.valueOf(service.getSupply().getRaw()),
                 BigDecimal.valueOf(service.getDecimals()), ActionType.MULTIPLY);
         BigDecimal supplyRelatedAdjustment = new BigDecimal(0.8 * Math.log(BigDecimalProcessing
-                .doAction(maxMosiacQuantity, totalMosiacQuantity, ActionType.DEVIDE)
+                .doAction(MAX_MOSIAC_QUANTITY, totalMosiacQuantity, ActionType.DEVIDE)
                 .doubleValue())).setScale(0, RoundingMode.HALF_EVEN);
-        BigDecimal xemEqu = BigDecimalProcessing.doAction(BigDecimalProcessing.doAction(xemMaxQuantity,
-                    BigDecimalProcessing.doAction(amount, new BigDecimal(service.getDecimals()), ActionType.MULTIPLY),
+        BigDecimal xemEqu = BigDecimalProcessing.doAction(BigDecimalProcessing.doAction(XEM_MAX_QUANTITY,
+                BigDecimalProcessing.doAction(amount, new BigDecimal(service.getDecimals()), ActionType.MULTIPLY),
                 ActionType.MULTIPLY), totalMosiacQuantity, ActionType.DEVIDE).setScale(0, RoundingMode.DOWN);
         BigDecimal xemFee = BigDecimalProcessing.doAction(xemEqu,
                 BigDecimal.valueOf(10000), ActionType.DEVIDE).setScale(0, RoundingMode.DOWN);
         BigDecimal unewightedFee = BigDecimalProcessing.doAction(xemFee, supplyRelatedAdjustment, ActionType.SUBTRACT).max(new BigDecimal(1));
         return BigDecimalProcessing.doAction(unewightedFee, BigDecimal.valueOf(0.05), ActionType.MULTIPLY).min(BigDecimal.valueOf(1.25));
     }
-
 
     /*message must be not more than 512 bytes*/
     @Override
@@ -351,7 +348,7 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public List<MosaicIdDto> getDeniedMosaicList() {
-        return deniedMosaicsList;
+        return DENIED_MOSAICS_LIST;
     }
 
     @Override

@@ -9,8 +9,6 @@ import java.util.Set;
 
 public interface DecredService extends IWithdrawable, IRefillable {
 
-
-
     @Override
     default Boolean createdRefillRequestRecordNeeded() {
         return false;

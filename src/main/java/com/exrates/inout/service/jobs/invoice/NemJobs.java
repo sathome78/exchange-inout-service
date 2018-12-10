@@ -45,15 +45,14 @@ public class NemJobs {
     private Currency currency;
     private Merchant merchant;
 
-
-    private final static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final static ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @PostConstruct
     public void init() {
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName("NEM");
-       /* scheduler.scheduleAtFixedRate(this::checkWithdrawals, 1, 5, TimeUnit.MINUTES);*/
+        /* scheduler.scheduleAtFixedRate(this::checkWithdrawals, 1, 5, TimeUnit.MINUTES);*/
         scheduler.scheduleAtFixedRate(this::checkReffils, 3, 5, TimeUnit.MINUTES);
     }
 
@@ -61,7 +60,7 @@ public class NemJobs {
         List<WithdrawRequestFlatDto> dtos = withdrawService.getRequestsByMerchantIdAndStatus(merchant.getId(),
                 Collections.singletonList(WithdrawStatusEnum.ON_BCH_EXAM.getCode()));
         if (dtos != null && !dtos.isEmpty()) {
-            dtos.forEach(p-> executor.execute(() -> checkWithdraw(p.getId(), p.getTransactionHash(), p.getAdditionalParams())));
+            dtos.forEach(p -> EXECUTOR.execute(() -> checkWithdraw(p.getId(), p.getTransactionHash(), p.getAdditionalParams())));
         }
     }
 
@@ -79,13 +78,12 @@ public class NemJobs {
         }
     }
 
-
     private void checkReffils() {
         log.debug("check reffils");
         List<RefillRequestFlatDto> dtos = refillService.getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
         if (dtos != null && !dtos.isEmpty()) {
             dtos.forEach((RefillRequestFlatDto p) -> {
-                executor.execute(() -> {
+                EXECUTOR.execute(() -> {
                     checkRefill(p);
                 });
             });
@@ -103,7 +101,6 @@ public class NemJobs {
 
     @PreDestroy
     public void shutdown() {
-        executor.shutdown();
+        EXECUTOR.shutdown();
     }
-
 }

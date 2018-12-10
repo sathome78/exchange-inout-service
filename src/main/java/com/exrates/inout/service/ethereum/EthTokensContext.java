@@ -15,8 +15,8 @@ public class EthTokensContext {
     @Autowired
     Map<String, EthTokenService> merchantServiceMap;
 
-    Map<Integer, EthTokenService> merchantMapByCurrencies = new HashMap<>();
-    Map<String, Integer> contractAddressByCurrencies = new HashMap<>();
+    private Map<Integer, EthTokenService> merchantMapByCurrencies = new HashMap<>();
+    private Map<String, Integer> contractAddressByCurrencies = new HashMap<>();
 
     @PostConstruct
     private void init() {
@@ -28,20 +28,15 @@ public class EthTokensContext {
         });
     }
 
-    public EthTokenService getByCurrencyId(int currencyId) {
+    EthTokenService getByCurrencyId(int currencyId) {
         return merchantMapByCurrencies.get(currencyId);
     }
 
-    public boolean isContract(String contract){
-        if (contractAddressByCurrencies.get(contract) == null){
-            return false;
-        }else {
-            return true;
-        }
+    boolean isContract(String contract){
+        return contractAddressByCurrencies.get(contract) != null;
     }
 
-    public EthTokenService getByContract(String contract){
+    EthTokenService getByContract(String contract){
         return getByCurrencyId(contractAddressByCurrencies.get(contract));
     }
-
 }

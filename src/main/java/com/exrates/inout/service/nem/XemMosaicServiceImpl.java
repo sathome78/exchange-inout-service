@@ -20,7 +20,6 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     private MosaicId mosaicId;
     private Quantity levyFee;
 
-
     public XemMosaicServiceImpl(XemProperty property) {
         this.merchantName = property.getMerchantName();
         this.currencyName = property.getCurrencyName();

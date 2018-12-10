@@ -26,6 +26,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TxServiceImpl implements TxService {
 
+    private static final String LAST_HASH_PARAM = "LastBlock";
+    private static final String MERCHANT_NAME = "DCR";
+    private static final Integer BLOCKS_OFFSET_TO_SCAN = 4;
+
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
     @Autowired
@@ -33,17 +37,12 @@ public class TxServiceImpl implements TxService {
     @Autowired
     private DecredGrpcService decredGrpcService;
 
-    private static final String LAST_HASH_PARAM = "LastBlock";
-    private static final String MERCHANT_NAME = "DCR";
-    private static final Integer BLOCKS_OFFSET_TO_SCAN = 4;
-
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @PostConstruct
     private void init() {
         scheduler.scheduleAtFixedRate(this::checkTransactions, 180, 300, TimeUnit.SECONDS);
     }
-
 
     @Override
     public void checkTransactions() {
@@ -56,28 +55,27 @@ public class TxServiceImpl implements TxService {
                 return;
             }
             Iterator<DecredApi.GetTransactionsResponse> response = decredGrpcService.getTransactions(firstBlockToScan, lastBlockToScan);
-            log.debug("response has next {}",response.hasNext());
-            while (response.hasNext())
-            {
+            log.debug("response has next {}", response.hasNext());
+            while (response.hasNext()) {
                 DecredApi.GetTransactionsResponse txResp = response.next();
                 log.debug("tx response {}", txResp.hasMinedTransactions());
                 List<DecredApi.TransactionDetails> transactionDetails = txResp.getMinedTransactions().getTransactionsList();
                 DecredApi.BlockDetails blockDetails = txResp.getMinedTransactions();
                 Integer block = blockDetails.getHeight();
                 saveLastHash(block.toString());
-                transactionDetails.forEach(tr-> {
+                transactionDetails.forEach(tr -> {
                     log.debug("income tx {}", tr);
                     DecredApi.TransactionDetails.TransactionType transactionType = tr.getTransactionType();
-                   if (transactionType.equals(DecredApi.TransactionDetails.TransactionType.REGULAR)) {
-                       ByteString hash = tr.getHash();
-                       tr.getCreditsList().forEach(dl -> {
-                           String address = dl.getAddress();
-                           long amount = dl.getAmount();
-                           if (decredService.getAddresses().contains(address)) {
-                               tryToRefill(address, hash.toByteArray(), amount);
-                           }
-                       });
-                   }
+                    if (transactionType.equals(DecredApi.TransactionDetails.TransactionType.REGULAR)) {
+                        ByteString hash = tr.getHash();
+                        tr.getCreditsList().forEach(dl -> {
+                            String address = dl.getAddress();
+                            long amount = dl.getAmount();
+                            if (decredService.getAddresses().contains(address)) {
+                                tryToRefill(address, hash.toByteArray(), amount);
+                            }
+                        });
+                    }
                 });
             }
         } catch (NumberFormatException e) {
@@ -99,7 +97,7 @@ public class TxServiceImpl implements TxService {
 
     private String decodeHash(byte[] bytes) {
         if (bytes.length % 2 != 0) {
-            bytes =  org.apache.commons.lang3.ArrayUtils.insert(0, bytes, (byte) 0);
+            bytes = org.apache.commons.lang3.ArrayUtils.insert(0, bytes, (byte) 0);
         }
         ArrayUtils.reverse(bytes);
         return String.copyValueOf(Hex.encode(bytes));
@@ -113,7 +111,6 @@ public class TxServiceImpl implements TxService {
     private void saveLastHash(String blockId) {
         specParamsDao.updateParam(MERCHANT_NAME, LAST_HASH_PARAM, blockId);
     }
-
 
     private String loadLastBlock() {
         MerchantSpecParamDto specParamsDto = specParamsDao.getByMerchantNameAndParamName(MERCHANT_NAME, LAST_HASH_PARAM);

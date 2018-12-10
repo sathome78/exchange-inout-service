@@ -17,13 +17,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by maks on 16.05.2017.
- */
-
 @Service
 @Log4j2
 public class RippleJobs {
+
+    private static final String XRP_MERCHANT = "Ripple";
 
     @Autowired
     private WithdrawService withdrawService;
@@ -31,7 +29,6 @@ public class RippleJobs {
     private MerchantService merchantService;
     @Autowired
     private RippleService rippleService;
-    private static final String XRP_MERCHANT = "Ripple";
 
     private final static ExecutorService ordersExecutors = Executors.newSingleThreadExecutor();
 
@@ -41,7 +38,7 @@ public class RippleJobs {
         List<WithdrawRequestFlatDto> dtos = withdrawService.getRequestsByMerchantIdAndStatus(merchant.getId(),
                 Collections.singletonList(WithdrawStatusEnum.ON_BCH_EXAM.getCode()));
         if (dtos != null && !dtos.isEmpty()) {
-            dtos.forEach(p-> ordersExecutors.execute(new Runnable() {
+            dtos.forEach(p -> ordersExecutors.execute(new Runnable() {
                 @Override
                 public void run() {
                     checkWithdraw(p.getId(), p.getTransactionHash(), p.getAdditionalParams());
@@ -54,7 +51,7 @@ public class RippleJobs {
         try {
             boolean checked = rippleService.checkSendedTransaction(hash, additionalParams);
             if (checked) {
-               withdrawService.finalizePostWithdrawalRequest(id);
+                withdrawService.finalizePostWithdrawalRequest(id);
             }
         } catch (RippleCheckConsensusException e) {
             log.error("xrp transaction validation error " + e);

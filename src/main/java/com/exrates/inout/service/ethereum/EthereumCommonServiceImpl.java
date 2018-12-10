@@ -64,22 +64,16 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
-
     @Autowired
     private EthTokensContext ethTokensContext;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
@@ -252,7 +246,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         }
     }
 
-    public void createSubscribe(String lastBlock) {
+    private void createSubscribe(String lastBlock) {
         try {
             log.debug(merchantName + " Connecting ethereum...");
 
@@ -282,7 +276,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                         return;
                     }
                 }
-
 //                log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
 
                 /*-------------Tokens--------------*/
@@ -311,7 +304,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                                 .merchantId(merchant.getId())
                                 .currencyId(currency.getId())
                                 .merchantTransactionId(ethBlock.getHash()).build());
-
                         try {
                             refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()
                                     .requestId(requestId)
@@ -324,9 +316,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                         } catch (RefillRequestAppropriateNotFoundException e) {
                             log.error(e);
                         }
-
                         pendingTransactions.add(refillService.getFlatById(requestId));
-
                     }
                 }
 
@@ -339,9 +329,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                             log.info(merchantName + " Block number for review: " + currentBlockNumber.add(new BigInteger("1")));
                             log.info(merchantName + " Txs counter: " + counter[0]);
                             log.info(merchantName + " Txs block: " + web3j.ethGetBlockTransactionCountByHash(currentHash[0]).send().getTransactionCount());
-
                         }
-
                     } catch (Exception e) {
                         log.error(e);
                     }
@@ -368,14 +356,11 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                                 }
 
                             }
-
                     );
                     providedTransactions.forEach(pendingTransactions::remove);
                 }
-
                 currentBlockNumber = ethBlock.getBlockNumber();
                 currentHash[0] = ethBlock.getBlockHash();
-
             });
 
             log.info("dubscr {}", subscription.isUnsubscribed());
@@ -386,8 +371,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         }
     }
 
-    public void checkSession() {
-
+    private void checkSession() {
         try {
             web3j.netVersion().send();
             if (subscription == null || !subscribeCreated || subscription.isUnsubscribed()) {
@@ -404,10 +388,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     @Override
     @Transactional
     public Map<String, String> refill(RefillRequestCreateDto request) {
-
         Map<String, String> mapAddress = new HashMap<>();
         try {
-
             File destination = new File(destinationDir);
             log.debug(merchantName + " " + destinationDir);
 
@@ -422,13 +404,10 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             mapAddress.put("address", address);
             mapAddress.put("privKey", String.valueOf(credentials.getEcKeyPair().getPrivateKey()));
             mapAddress.put("pubKey", String.valueOf(credentials.getEcKeyPair().getPublicKey()));
-
         } catch (EthereumException | IOException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | NoSuchProviderException | CipherException e) {
             log.error(merchantName + " " + e);
         }
-
-
         String message = messageSource.getMessage("merchants.refill.btc",
                 new Object[]{mapAddress.get("address")}, request.getLocale());
 
@@ -454,11 +433,9 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             log.debug(merchantName + " Ethereum transaction " + requestAcceptDto.toString() + " --- PROVIDED!!!");
 
             refillService.updateAddressNeedTransfer(requestAcceptDto.getAddress(), merchantService.findByName(merchantName).getId(), currencyService.findByName(currencyName).getId(), true);
-
         } catch (Exception e) {
             log.error(e);
         }
-
     }
 
     private void transferFundsToMainAccount() {
@@ -473,7 +450,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                             currencyService.findByName(currencyName).getId(), false);
                     continue;
                 }
-
                 Credentials credentials = Credentials.create(new ECKeyPair(new BigInteger(refillRequestAddressDto.getPrivKey()),
                         new BigInteger(refillRequestAddressDto.getPubKey())));
                 log.info("Credentials pubKey: " + credentials.getEcKeyPair().getPublicKey());
@@ -506,7 +482,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         return specParamsDto == null ? null : specParamsDto.getParamValue();
     }
 
-
     private void checkUnconfirmedTokensTransactions(BigInteger blockNumber) {
         List<Integer> currencyNames = refillService.getUnconfirmedTxsCurrencyIdsForTokens(merchantId);
         currencyNames.forEach(p -> {
@@ -524,5 +499,4 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
         return withdrawUtils.isValidDestinationAddress(address);
     }
-
 }

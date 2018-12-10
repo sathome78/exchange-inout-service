@@ -5,6 +5,7 @@ import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.properties.models.LiskProperty;
 
 public interface ArkRpcClient {
+
     void initClient(LiskProperty property);
 
     LiskAccount createAccount(String secret);

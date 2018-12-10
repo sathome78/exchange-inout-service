@@ -24,6 +24,7 @@ import static com.exrates.inout.service.lisk.LiskRestUtils.extractTargetNodeFrom
 @Service
 @Scope("prototype")
 public class ArkRpcClientImpl implements ArkRpcClient {
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -32,7 +33,6 @@ public class ArkRpcClientImpl implements ArkRpcClient {
     private String openAccountUrl;
     private String createTxUrl;
     private String broadcastTxUrl;
-
 
     @Override
     public void initClient(LiskProperty property) {
@@ -47,7 +47,6 @@ public class ArkRpcClientImpl implements ArkRpcClient {
         this.createTxUrl = String.join("", host, ":", sendTxPort, createTxEndpoint);
         this.broadcastTxUrl = String.join("", host, ":", sendTxPort, broadcastTxEndpoint);
     }
-
 
     @Override
     public LiskAccount createAccount(String secret) {

@@ -36,6 +36,17 @@ import java.util.stream.Collectors;
 @Service("qtumServiceImpl")
 public class QtumServiceImpl implements QtumService {
 
+    private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
+
+    @Value("${qtum.node.min-confirmations}")
+    private Integer minConfirmations;
+    @Value("${qtum.node.min-transfer-amount}")
+    private BigDecimal minTransferAmount;
+    @Value("${qtum.node.main-address-for-transfer}")
+    private String mainAddressForTransfer;
+    @Value("${qtum.node.endpoint}")
+    private String endpoint;
+
     @Autowired
     private QtumNodeService qtumNodeService;
     @Autowired
@@ -51,19 +62,8 @@ public class QtumServiceImpl implements QtumService {
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    @Value("${qtum.node.min-confirmations}")
-    private Integer minConfirmations;
-    @Value("${qtum.node.min-transfer-amount}")
-    private BigDecimal minTransferAmount;
-    @Value("${qtum.node.main-address-for-transfer}")
-    private String mainAddressForTransfer;
-    @Value("${qtum.node.endpoint}")
-    private String endpoint;
-
     private Merchant merchant;
     private Currency currency;
-
-    private static final String QTUM_SPEC_PARAM_NAME = "LastRecievedBlock";
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 

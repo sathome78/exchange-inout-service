@@ -20,12 +20,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by maks on 06.06.2017.
- */
 @Log4j2(topic = "stellar_log")
 @Component
 public class StellarReceivePaymentsService {
+
+    @Value("${stellar.horizon.url}")
+    private String severUrl;
+    @Value("${stellar.account.name}")
+    private String accountName;
+    @Value("${stellar.account.seed}")
+    private String accountSecret;
 
     @Autowired
     private StellarService stellarService;
@@ -36,13 +40,6 @@ public class StellarReceivePaymentsService {
     @Autowired
     private StellarAsssetsContext asssetsContext;
 
-
-    private @Value("${stellar.horizon.url}")
-    String SEVER_URL;
-    private @Value("${stellar.account.name}")
-    String ACCOUNT_NAME;
-    private @Value("${stellar.account.seed}")
-    String ACCOUNT_SECRET;
     private Server server;
     private KeyPair account;
     private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
@@ -54,8 +51,8 @@ public class StellarReceivePaymentsService {
 
     @PostConstruct
     public void init() {
-        server = new Server(SEVER_URL);
-        account = KeyPair.fromAccountId(ACCOUNT_NAME);
+        server = new Server(severUrl);
+        account = KeyPair.fromAccountId(accountName);
         scheduler.scheduleAtFixedRate(this::checkEventSource, 20, 120, TimeUnit.SECONDS);
     }
 
@@ -71,7 +68,7 @@ public class StellarReceivePaymentsService {
             // The payments stream includes both sent and received payments. We only
             // want to process received payments here.
             if (payment instanceof PaymentOperationResponse) {
-                if (((PaymentOperationResponse) payment).getTo().getAccountId().equals(ACCOUNT_NAME)) {
+                if (((PaymentOperationResponse) payment).getTo().getAccountId().equals(accountName)) {
                     PaymentOperationResponse response = ((PaymentOperationResponse) payment);
                     log.debug(response.getAsset().getType());
                     if (response.getAsset().equals(new AssetTypeNative())) {
@@ -91,7 +88,7 @@ public class StellarReceivePaymentsService {
     private void processPayment(PaymentOperationResponse response, String currencyName, String merchant) {
         TransactionResponse transactionResponse = null;
         try {
-            transactionResponse = stellarTransactionService.getTxByURI(SEVER_URL, response.getLinks().getTransaction().getUri());
+            transactionResponse = stellarTransactionService.getTxByURI(severUrl, response.getLinks().getTransaction().getUri());
         } catch (Exception e) {
             log.error("error getting transaction {}", e);
         }

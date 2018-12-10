@@ -32,6 +32,8 @@ import java.util.Set;
 @Service
 public class DecredServiceImpl implements DecredService {
 
+    private static final String MERCHANT_name = "DCR";
+
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -47,8 +49,6 @@ public class DecredServiceImpl implements DecredService {
 
     private Merchant merchant;
     private Currency currency;
-
-    private static final String MERCHANT_name = "DCR";
 
     private Set<String> addresses = Collections.synchronizedSet(new HashSet<>());
 
@@ -137,5 +137,4 @@ public class DecredServiceImpl implements DecredService {
         return StringUtils.isEmpty(hash) || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchant.getId(), currency.getId(),
                 hash).isPresent();
     }
-
 }

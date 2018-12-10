@@ -23,7 +23,6 @@ public class ArkSpecialMethodServiceImpl implements LiskSpecialMethodService {
     @PostConstruct
     private void init() {
         arkRpcClient.initClient(property);
-
     }
 
     @Override
