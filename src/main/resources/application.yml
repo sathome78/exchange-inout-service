@@ -115,6 +115,9 @@ ban:
 invoice:
   invoiceTimeOutIntervalMinutes: 5
   blockNotifyUsers: true
+  accountCNY: 110923954410401
+  accountIDR: 3600851194
+  accountTHB: 015-1-65751-6
 # 5760 = 96 hours * 60 minutes
 btcInvoice:
   invoiceTimeOutIntervalMinutes: 500
@@ -2049,6 +2052,25 @@ tron:
     main-account-address: TNSofexxLZoyCLUQ2x2VSPifQyHZFXKL76
     main-account-hex-address: 4188d9ad79b07ca7dd940d9ef096982b7420ebe4b1
 
+edr:
+  node:
+    id: 14
+    account: EDC13707253
+    key: cfc6ac5b15d16ad4dce2b00ccf6593db
+
+btc:
+  wallets-password-folder: /opt/properties/
+    PropertySource
+blockchain:
+  xPub: xpub6BiZwKPCxYqEiX3JVUdqCiLnuaNtxh81No5ELPEBh5cUHAv9wUTCcFmgQ7BUr7rUacQawdWAUkTYW2JyxQixGBQJfeoheTAXudBNk9UhS3b
+  apiCode: ca8cc7b8-9fe7-478d-8b5e-73c06bffb2e5
+  callbackUrl: http://prod.exrates.me/merchants/blockchain/payment/received
+  secret: 3a3d67947e4e1cb15596a1f2a4ce2b26d447959f5e3678f72870b3172caa675e
+  password: 777Sifama07#
+  guid: 83f0914a-4659-4e36-8c04-24643b9b8596
+  serviceUrl: https://blockchain.info/merchant/
+  identifier: 83f0914a-4659-4e36-8c04-24643b9b8596
+
 advcash:
   url: https://wallet.advcash.com/sci/
   accountId: exratesnew@gmail.com
@@ -2124,3 +2146,20 @@ privat24:
   return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
   server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
   password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
+
+yandex-kassa:
+  shopId: 51644
+  scid: 49019
+  shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success
+  paymentType: PC
+  key: 4aL0IrvNCKmX3RMU6m1AzVbTxpKHxb1lTW5cObkxdv3pCkuWOyoBlYS
+  password: 777Sifama07
+
+yandexmoney:
+  clientId: B9F1C9CADAB7FA6E12033551F482BD188A98081E60A733D6654C3B2EE8684CF7
+  token: 410013968070382.E3A5AFAD10AD08A5F4667FA711E5CDFCF88D09AA47BA8A8D0E497D3CCF9C21032F3C0957C06EB4EE354A7447B64F13DF98280D7AA4EFF4CB0A0E9885DC1167178DB706D4BABF45468C59F7919813B8C115B1AA9E0E3D0AD0F10A97334C63B0D76E065A2C7D134720344B4D19339CA098E9A73FC47F9FD894E6F661C1F0E4FA8F
+  redirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access
+  apiRedirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access?mobile=true
+  responseType: code
+  mediaType: application/x-www-form-urlencoded
+  companyWalletId: 410013968070382

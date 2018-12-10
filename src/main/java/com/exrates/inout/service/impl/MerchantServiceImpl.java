@@ -45,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,13 +68,14 @@ import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
 @Service
-@PropertySource("classpath:/merchants.properties")
 public class MerchantServiceImpl implements MerchantService {
 
-    private static final Logger LOG = LogManager.getLogger("merchant");
+    private static final Logger LOGGER = LogManager.getLogger("merchant");
 
-    private @Value("${btc.walletspass.folder}")
-    String walletPropsFolder;
+    private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
+
+    @Value("${btc.wallets-password-folder}")
+    private String walletPropsFolder;
 
     @Autowired
     private MerchantDao merchantDao;
@@ -91,9 +91,6 @@ public class MerchantServiceImpl implements MerchantService {
     private CommissionService commissionService;
     @Autowired
     private CurrencyService currencyService;
-
-    private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
-
     @Autowired
     @Qualifier("bitcoinServiceImpl")
     private BitcoinService bitcoinService;
@@ -155,7 +152,7 @@ public class MerchantServiceImpl implements MerchantService {
           new Object[]{sumWithCurrency, toWallet});*/
             sendMailService.sendInfoMail(mail);
         } catch (MailException e) {
-            LOG.error(e);
+            LOGGER.error(e);
         }
         return notification;
     }
@@ -210,7 +207,6 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
-
     private List<MerchantCurrencyApiDto> findMerchantCurrenciesByCurrencyAndProcessTypes(Integer currencyId, List<String> processTypes) {
         List<MerchantCurrencyApiDto> result = merchantDao.findAllMerchantCurrencies(currencyId, userService.getUserRoleFromSecurityContext(), processTypes);
         result.forEach(item -> {
@@ -228,7 +224,7 @@ public class MerchantServiceImpl implements MerchantService {
                     }
                 }
             } catch (MerchantServiceNotFoundException | MerchantServiceBeanNameNotDefinedException e) {
-                LOG.warn(e);
+                LOGGER.warn(e);
             }
         });
         return result;
@@ -280,7 +276,6 @@ public class MerchantServiceImpl implements MerchantService {
                         .getCurrency()
                         .getName();
                 break;
-
         }
         final Map<String, String> result = new HashMap<>();
         result.put("commissionPercent", commissionPercent);
@@ -299,7 +294,6 @@ public class MerchantServiceImpl implements MerchantService {
                 .currency(transaction.getCurrency())
                 .build();
         return formatResponseMessage(creditsOperation);
-
     }
 
     @Override
@@ -316,7 +310,6 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     @Transactional
     public void setBlockForAll(OperationType operationType, boolean blockStatus) {
-
         if (blockStatus) {
             if (merchantDao.isBlockStateValid(operationType)) {
                 merchantDao.backupBlockState(operationType);
@@ -401,12 +394,10 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
-
         List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
         result.forEach(dto -> dto.localizeTitle(messageSource, locale));
         return result;
     }
-
 
     @Override
     public Optional<String> getCoreWalletPassword(String merchantName, String currencyName) {
@@ -447,7 +438,7 @@ public class MerchantServiceImpl implements MerchantService {
                 commissionString = "";
             }
         }
-        LOG.debug("commission: " + commissionString);
+        LOGGER.debug("commission: " + commissionString);
         final BigDecimal resultAmount = type != OUTPUT ? amount.add(commissionAmount).setScale(currencyService.resolvePrecisionByOperationType(currency, type), ROUND_HALF_UP) :
                 amount.subtract(commissionAmount).setScale(currencyService.resolvePrecisionByOperationType(currency, type), ROUND_DOWN);
         if (resultAmount.signum() <= 0) {
@@ -469,7 +460,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public boolean isValidDestinationAddress(Integer merchantId, String address) {
-
         IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
         if (merchantService instanceof IWithdrawable) {
             return ((IWithdrawable) merchantService).isValidDestinationAddress(address);
@@ -492,10 +482,10 @@ public class MerchantServiceImpl implements MerchantService {
                 throw new IllegalArgumentException(String.format("Illegal operation type %s", operationType.name()));
         }
         List<String> result = currencyService.getWarningForMerchant(merchantId, commentTopic);
-        LOG.info("Warning result: " + result);
+        LOGGER.info("Warning result: " + result);
         List<String> resultLocalized = currencyService.getWarningForMerchant(merchantId, commentTopic).stream()
                 .map(code -> messageSource.getMessage(code, null, locale)).collect(Collectors.toList());
-        LOG.info("Localized result: " + resultLocalized);
+        LOGGER.info("Localized result: " + resultLocalized);
         return resultLocalized;
     }
 
@@ -518,5 +508,4 @@ public class MerchantServiceImpl implements MerchantService {
     public List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId) {
         return merchantDao.findTokenMerchantsByParentId(parentId);
     }
-
 }

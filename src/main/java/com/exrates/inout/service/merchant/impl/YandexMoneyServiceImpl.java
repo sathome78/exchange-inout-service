@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,31 +50,27 @@ import static com.squareup.okhttp.MediaType.parse;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 @Service("yandexMoneyService")
-@PropertySource("classpath:/merchants/yandexmoney.properties")
 public class YandexMoneyServiceImpl implements YandexMoneyService {
 
-    private @Value("${yandexmoney.clientId}")
-    String clientId;
-    private @Value("${yandexmoney.token}")
-    String token;
-    private @Value("${yandexmoney.redirectURI}")
-    String redirectURI;
-    private @Value("${yandexmoney.companyWalletId}")
-    String companyWalletId;
-    private @Value("${yandexmoney.responseType}")
-    String responseType;
+    private static final Logger LOGGER = LogManager.getLogger(YandexMoneyServiceImpl.class);
 
-    private static final Logger logger = LogManager.getLogger(YandexMoneyServiceImpl.class);
+    @Value("${yandexmoney.clientId}")
+    private String clientId;
+    @Value("${yandexmoney.token}")
+    private String token;
+    @Value("${yandexmoney.redirectURI}")
+    private String redirectURI;
+    @Value("${yandexmoney.companyWalletId}")
+    private String companyWalletId;
+    @Value("${yandexmoney.responseType}")
+    private String responseType;
 
     @Autowired
     private YandexMoneyMerchantDao yandexMoneyMerchantDao;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private TransactionService transactionService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
@@ -125,7 +120,7 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
         try {
             response = httpClient.newCall(request).execute();
         } catch (IOException e) {
-            logger.fatal(e);
+            LOGGER.fatal(e);
             throw new MerchantInternalException("YandexMoneyServiceInput");
         }
         return response.header(HttpHeaders.LOCATION);
@@ -144,10 +139,10 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
         try {
             token = session.execute(request);
         } catch (IOException e) {
-            logger.fatal(e);
+            LOGGER.fatal(e);
             throw new MerchantInternalException("YandexMoneyServiceInput");
         } catch (InvalidRequestException | InvalidTokenException | InsufficientScopeException e) {
-            logger.error(e);
+            LOGGER.error(e);
             return Optional.empty();
         }
         return Optional.of(token.accessToken);
@@ -177,13 +172,13 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
             if (execute.status.equals(BaseRequestPayment.Status.REFUSED)) {
                 return Optional.of(execute);
             }
-            executePayment(execute.requestId,oAuth2Session,creditsOperation);
+            executePayment(execute.requestId, oAuth2Session, creditsOperation);
         } catch (IOException e) {
-            logger.fatal(e);
+            LOGGER.fatal(e);
             final String message = "YandexMoneyService".concat(destination.equals(companyWalletId) ? "Input" : "Output");
             throw new MerchantInternalException(message);
         } catch (InvalidRequestException | InsufficientScopeException | InvalidTokenException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
         return Optional.empty();
@@ -199,11 +194,11 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
             transactionService.provideTransaction(transaction);
             processPayment = oAuth2Session.execute(new ProcessPayment.Request(requestId));
         } catch (IOException | InvalidRequestException | InsufficientScopeException | InvalidTokenException e) {
-            logger.fatal(e.getMessage());
+            LOGGER.fatal(e.getMessage());
             throw new MerchantInternalException(creditsOperation.getOperationType().name());
         }
         if (processPayment.status.equals(ProcessPayment.Status.SUCCESS)) {
-            logger.info(transaction.toString());
+            LOGGER.info(transaction.toString());
             return;
         }
         if (processPayment.status.equals(ProcessPayment.Status.REFUSED)) {
@@ -220,10 +215,12 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
     public int saveInputPayment(Payment payment) {
         return yandexMoneyMerchantDao.savePayment(payment.getCurrency(), BigDecimal.valueOf(payment.getSum()));
     }
+
     @Override
     public Optional<Payment> getPaymentById(Integer id) {
         return yandexMoneyMerchantDao.getPaymentById(id);
     }
+
     @Override
     public void deletePayment(Integer id) {
         yandexMoneyMerchantDao.deletePayment(id);
@@ -231,22 +228,21 @@ public class YandexMoneyServiceImpl implements YandexMoneyService {
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
-        throw new NotImplimentedMethod("for "+withdrawMerchantOperationDto);
+        throw new NotImplimentedMethod("for " + withdrawMerchantOperationDto);
     }
 
     @Override
-    public Map<String, String> refill(RefillRequestCreateDto request){
-        throw new NotImplimentedMethod("for "+request);
+    public Map<String, String> refill(RefillRequestCreateDto request) {
+        throw new NotImplimentedMethod("for " + request);
     }
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        throw new NotImplimentedMethod("for "+params);
+        throw new NotImplimentedMethod("for " + params);
     }
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(address);
     }
 }
