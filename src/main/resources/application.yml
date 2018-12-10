@@ -1479,7 +1479,7 @@ ethereum-coins:
       #      transfer-acc-privat-key:
       #      transfer-acc-public-key:
       min-sum-on-account: 0
-      min-balance-for-transfer: 0ю01
+      min-balance-for-transfer: 0.01
       log: etherinc_log
 
 ethereum-token-coins:
@@ -1767,7 +1767,7 @@ lisk-coins:
   rise:
     merchant-name: RiseVision
     currency-name: RISE
-    min-confirmations:
+    min-confirmations: 30
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:

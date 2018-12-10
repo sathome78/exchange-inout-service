@@ -120,7 +120,6 @@ import static com.exrates.inout.domain.enums.invoice.RefillStatusEnum.EXPIRED;
 import static com.exrates.inout.domain.other.WalletOperationData.BalanceType.ACTIVE;
 
 @Service
-@PropertySource(value = {"classpath:/job.properties"})
 public class RefillServiceImpl implements RefillService {
 
     @Value("${invoice.blockNotifyUsers}")
