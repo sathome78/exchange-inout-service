@@ -26,6 +26,8 @@ import com.exrates.inout.service.ethereum.EthTokenService;
 import com.exrates.inout.service.ethereum.EthTokenServiceImpl;
 import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
+import com.exrates.inout.service.impl.CurrencyServiceImpl;
+import com.exrates.inout.service.impl.MerchantServiceImpl;
 import com.exrates.inout.service.lisk.ArkSpecialMethodServiceImpl;
 import com.exrates.inout.service.lisk.LiskRestClient;
 import com.exrates.inout.service.lisk.LiskRestClientImpl;
@@ -57,10 +59,16 @@ public class CryptocurrencyConfig {
 
     @Autowired
     private CryptoCurrencyProperties ccp;
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private CurrencyService currencyService;
+
+    @Bean
+    public MerchantService merchantService() {
+        return new MerchantServiceImpl();
+    }
+
+    @Bean
+    public CurrencyService currencyService() {
+        return new CurrencyServiceImpl();
+    }
 
     @Bean(name = "bitcoinServiceImpl")
     public BitcoinService bitcoinService() {
@@ -584,12 +592,12 @@ public class CryptocurrencyConfig {
     //NEO and Forks
     @Bean(name = "neoServiceImpl")
     public NeoService neoService() {
-        Merchant mainMerchant = merchantService.findByName(NeoAsset.NEO.name());
-        Currency mainCurrency = currencyService.findByName(NeoAsset.NEO.name());
+        Merchant mainMerchant = merchantService().findByName(NeoAsset.NEO.name());
+        Currency mainCurrency = currencyService().findByName(NeoAsset.NEO.name());
 
         Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
             put(NeoAsset.NEO.getId(), new AssetMerchantCurrencyDto(NeoAsset.NEO, mainMerchant, mainCurrency));
-            put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService.findByName(NeoAsset.GAS.name()), currencyService.findByName(NeoAsset.GAS.name())));
+            put(NeoAsset.GAS.getId(), new AssetMerchantCurrencyDto(NeoAsset.GAS, merchantService().findByName(NeoAsset.GAS.name()), currencyService().findByName(NeoAsset.GAS.name())));
         }};
         NeoProperty property = ccp.getNeoCoins().getNeo().toBuilder()
                 .merchant(mainMerchant)
@@ -601,12 +609,12 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "kazeServiceImpl")
     public NeoService kazeService() {
-        Merchant mainMerchant = merchantService.findByName(NeoAsset.KAZE.name());
-        Currency mainCurrency = currencyService.findByName(NeoAsset.KAZE.name());
+        Merchant mainMerchant = merchantService().findByName(NeoAsset.KAZE.name());
+        Currency mainCurrency = currencyService().findByName(NeoAsset.KAZE.name());
 
         Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
             put(NeoAsset.KAZE.getId(), new AssetMerchantCurrencyDto(NeoAsset.KAZE, mainMerchant, mainCurrency));
-            put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService.findByName(NeoAsset.STREAM.name()), currencyService.findByName(NeoAsset.STREAM.name())));
+            put(NeoAsset.STREAM.getId(), new AssetMerchantCurrencyDto(NeoAsset.STREAM, merchantService().findByName(NeoAsset.STREAM.name()), currencyService().findByName(NeoAsset.STREAM.name())));
         }};
         NeoProperty property = ccp.getNeoCoins().getNeo().toBuilder()
                 .merchant(mainMerchant)

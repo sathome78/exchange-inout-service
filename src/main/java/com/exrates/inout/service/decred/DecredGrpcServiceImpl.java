@@ -1,5 +1,6 @@
 package com.exrates.inout.service.decred;
 
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.decred.grpc.DecredApi;
 import com.exrates.inout.service.decred.grpc.WalletServiceGrpc;
 import io.grpc.ManagedChannel;
@@ -7,7 +8,7 @@ import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,12 +22,8 @@ import java.util.Iterator;
 @Log4j2(topic = "decred")
 public class DecredGrpcServiceImpl implements DecredGrpcService {
 
-    @Value("${decred.node.host}")
-    private String host;
-    @Value("${decred.node.port}")
-    private String port;
-    @Value("${decred.node.cert-path}")
-    private String path;
+    @Autowired
+    private CryptoCurrencyProperties ccp;
 
     private ManagedChannel channel = null;
 
@@ -47,14 +44,14 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
     private void connect() {
         log.debug("connect");
         try {
-            File initialFile = new File(path);
+            File initialFile = new File(ccp.getOtherCoins().getDecred().getCertPath());
             InputStream streamFirst = new FileInputStream(initialFile);
             log.debug("stream size {}", streamFirst.available());
             String cert = IOUtils.toString(streamFirst, "UTF-8");
             log.debug(cert);
             InputStream stream = new FileInputStream(initialFile);
             log.debug("stream size {}", stream.available());
-            channel = NettyChannelBuilder.forAddress(host, Integer.valueOf(port))
+            channel = NettyChannelBuilder.forAddress(ccp.getOtherCoins().getDecred().getHost(), ccp.getOtherCoins().getDecred().getPort())
                     .sslContext(GrpcSslContexts
                             .forClient()
                             .trustManager(stream)

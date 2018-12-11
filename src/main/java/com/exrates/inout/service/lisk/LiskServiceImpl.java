@@ -67,17 +67,17 @@ public class LiskServiceImpl implements LiskService {
 
     private LiskProperty property;
 
-    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 
     @PostConstruct
     private void init() {
         liskRestClient.initClient(property);
-        scheduler.scheduleAtFixedRate(this::processTransactionsForKnownAddresses, 3L, 30L, TimeUnit.MINUTES);
+        SCHEDULER.scheduleAtFixedRate(this::processTransactionsForKnownAddresses, 3L, 30L, TimeUnit.MINUTES);
     }
 
     @PreDestroy
     private void shutdown() {
-        scheduler.shutdown();
+        SCHEDULER.shutdown();
     }
 
     @Override
