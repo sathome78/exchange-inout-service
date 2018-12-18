@@ -1,28 +1,19 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.MerchantDao;
-import com.exrates.inout.domain.CoreWalletDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyOptionsDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
 import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserCommentTopicEnum;
-import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
-import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.Email;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
-import com.exrates.inout.domain.main.Transaction;
 import com.exrates.inout.exceptions.InvalidAmountException;
 import com.exrates.inout.exceptions.MerchantCurrencyBlockedException;
-import com.exrates.inout.exceptions.MerchantNotFoundException;
 import com.exrates.inout.exceptions.MerchantServiceBeanNameNotDefinedException;
 import com.exrates.inout.exceptions.MerchantServiceNotFoundException;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
@@ -33,10 +24,8 @@ import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.ITransferable;
 import com.exrates.inout.service.IWithdrawable;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.SendMailService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.btc.BitcoinService;
-import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,8 +70,6 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private UserService userService;
     @Autowired
-    private SendMailService sendMailService;
-    @Autowired
     private MessageSource messageSource;
     @Autowired
     private MerchantServiceContext merchantServiceContext;
@@ -96,65 +82,8 @@ public class MerchantServiceImpl implements MerchantService {
     private BitcoinService bitcoinService;
 
     @Override
-    public List<Merchant> findAllByCurrency(Currency currency) {
-        return merchantDao.findAllByCurrency(currency.getId());
-    }
-
-    @Override
     public List<Merchant> findAll() {
         return merchantDao.findAll();
-    }
-
-    @Override
-    public String resolveTransactionStatus(final Transaction transaction, final Locale locale) {
-        if (transaction.getSourceType() == TransactionSourceType.WITHDRAW) {
-            WithdrawStatusEnum status = transaction.getWithdrawRequest().getStatus();
-            return messageSource.getMessage("merchants.withdraw.".concat(status.name()), null, locale);
-        }
-        if (transaction.getSourceType() == TransactionSourceType.REFILL) {
-            RefillStatusEnum status = transaction.getRefillRequest().getStatus();
-            Integer confirmations = transaction.getRefillRequest().getConfirmations();
-            return messageSource.getMessage("merchants.refill.".concat(status.name()), new Object[]{confirmations}, locale);
-        }
-        if (transaction.isProvided()) {
-            return messageSource.getMessage("transaction.provided", null, locale);
-        } else {
-            return messageSource.getMessage("transaction.notProvided", null, locale);
-        }
-    }
-
-    @Override
-    public String sendDepositNotification(final String toWallet,
-                                          final String email,
-                                          final Locale locale,
-                                          final CreditsOperation creditsOperation,
-                                          final String depositNotification) {
-        final BigDecimal amount = creditsOperation
-                .getAmount()
-                .add(creditsOperation.getCommissionAmount());
-        final String sumWithCurrency = BigDecimalProcessing.formatSpacePoint(amount, false) + " " +
-                creditsOperation
-                        .getCurrency()
-                        .getName();
-        final String notification = messageSource.getMessage(depositNotification,
-                new Object[]{sumWithCurrency, toWallet},
-                locale);
-        final Email mail = new Email();
-        mail.setTo(email);
-        mail.setSubject(messageSource
-                .getMessage("merchants.depositNotification.header", null, locale));
-        mail.setMessage(notification);
-
-        try {
-      /* TODO temporary disable
-      notificationService.createLocalizedNotification(email, NotificationEvent.IN_OUT,
-          "merchants.depositNotification.header", depositNotification,
-          new Object[]{sumWithCurrency, toWallet});*/
-            sendMailService.sendInfoMail(mail);
-        } catch (MailException e) {
-            LOGGER.error(e);
-        }
-        return notification;
     }
 
     private Map<Integer, List<Merchant>> mapMerchantsToCurrency(List<Currency> currencies) {
@@ -231,105 +160,6 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
-        return merchantDao.findMerchantCurrencyOptions(processTypes);
-    }
-
-    @Override
-    public Map<String, String> formatResponseMessage(CreditsOperation creditsOperation) {
-        final OperationType operationType = creditsOperation.getOperationType();
-        final String commissionPercent = creditsOperation
-                .getCommission()
-                .getValue()
-                .setScale(2, ROUND_HALF_UP)
-                .toString();
-        String finalAmount = null;
-        String sumCurrency = null;
-        switch (operationType) {
-            case INPUT:
-                finalAmount = creditsOperation
-                        .getAmount()
-                        .setScale(2, ROUND_HALF_UP) + " "
-                        + creditsOperation
-                        .getCurrency()
-                        .getName();
-                sumCurrency = creditsOperation
-                        .getAmount()
-                        .add(creditsOperation.getCommissionAmount())
-                        .setScale(2, ROUND_HALF_UP) + " "
-                        + creditsOperation
-                        .getCurrency()
-                        .getName();
-                break;
-            case OUTPUT:
-                finalAmount = creditsOperation
-                        .getAmount()
-                        .subtract(creditsOperation.getCommissionAmount())
-                        .setScale(2, ROUND_HALF_UP) + " "
-                        + creditsOperation
-                        .getCurrency()
-                        .getName();
-                sumCurrency = creditsOperation
-                        .getAmount()
-                        .setScale(2, ROUND_HALF_UP) + " "
-                        + creditsOperation
-                        .getCurrency()
-                        .getName();
-                break;
-        }
-        final Map<String, String> result = new HashMap<>();
-        result.put("commissionPercent", commissionPercent);
-        result.put("sumCurrency", sumCurrency);
-        result.put("finalAmount", finalAmount);
-        return result;
-    }
-
-    @Override
-    public Map<String, String> formatResponseMessage(Transaction transaction) {
-        final CreditsOperation creditsOperation = new CreditsOperation.Builder()
-                .operationType(transaction.getOperationType())
-                .amount(transaction.getAmount())
-                .commissionAmount(transaction.getCommissionAmount())
-                .commission(transaction.getCommission())
-                .currency(transaction.getCurrency())
-                .build();
-        return formatResponseMessage(creditsOperation);
-    }
-
-    @Override
-    public void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw) {
-        merchantDao.toggleSubtractMerchantCommissionForWithdraw(merchantId, currencyId, subtractMerchantCommissionForWithdraw);
-    }
-
-    @Override
-    @Transactional
-    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
-        merchantDao.toggleMerchantBlock(merchantId, currencyId, operationType);
-    }
-
-    @Override
-    @Transactional
-    public void setBlockForAll(OperationType operationType, boolean blockStatus) {
-        if (blockStatus) {
-            if (merchantDao.isBlockStateValid(operationType)) {
-                merchantDao.backupBlockState(operationType);
-            }
-            merchantDao.setBlockForAllNonTransfer(operationType);
-        } else {
-            //check for do not restore all 1 or all 0
-            if (merchantDao.isBlockStateBackupValid(operationType)) {
-                merchantDao.restoreBlockState(operationType);
-            }
-        }
-    }
-
-    @Override
-    @Transactional
-    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
-        merchantDao.setBlockForMerchant(merchantId, currencyId, operationType, blockStatus);
-    }
-
-    @Override
     @Transactional
     public BigDecimal getMinSum(Integer merchantId, Integer currencyId) {
         return merchantDao.getMinSum(merchantId, currencyId);
@@ -378,25 +208,6 @@ public class MerchantServiceImpl implements MerchantService {
         if (isBlocked) {
             throw new MerchantCurrencyBlockedException("Operation " + operationType + " is blocked for this currency! ");
         }
-    }
-
-    @Override
-    public List<String> retrieveBtcCoreBasedMerchantNames() {
-        return merchantDao.retrieveBtcCoreBasedMerchantNames();
-    }
-
-    @Override
-    public CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale) {
-        CoreWalletDto result = merchantDao.retrieveCoreWalletByMerchantName(merchantName).orElseThrow(() -> new MerchantNotFoundException(merchantName));
-        result.localizeTitle(messageSource, locale);
-        return result;
-    }
-
-    @Override
-    public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
-        List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
-        result.forEach(dto -> dto.localizeTitle(messageSource, locale));
-        return result;
     }
 
     @Override

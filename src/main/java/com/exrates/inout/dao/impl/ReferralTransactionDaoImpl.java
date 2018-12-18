@@ -1,13 +1,12 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
-import com.exrates.inout.dao.impl.TransactionDaoImpl;
 import com.exrates.inout.domain.ReferralLevel;
 import com.exrates.inout.domain.ReferralTransaction;
 import com.exrates.inout.domain.dto.MyReferralDetailedDto;
 import com.exrates.inout.domain.enums.ReferralTransactionStatusEnum;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.main.Transaction;
-import com.exrates.inout.service.ReferralTransactionDao;
+import com.exrates.inout.dao.ReferralTransactionDao;
 import com.exrates.inout.util.BigDecimalProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -72,7 +71,7 @@ public class ReferralTransactionDaoImpl implements ReferralTransactionDao {
             " LEFT JOIN EXORDERS ON TRANSACTION.order_id = EXORDERS.id ";
 
     @Autowired
-    public ReferralTransactionDaoImpl(@Qualifier(value = "masterTemplate")final NamedParameterJdbcTemplate jdbcTemplate) {
+    public ReferralTransactionDaoImpl(@Qualifier(value = "masterTemplate") final NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

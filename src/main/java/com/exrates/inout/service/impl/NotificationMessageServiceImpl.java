@@ -60,6 +60,4 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         String message = notificationMessagesDao.gerResourceString(event, typeEnum);
         return new NotificationResultDto(message, new String[]{contactToNotify});
     }
-
-
 }

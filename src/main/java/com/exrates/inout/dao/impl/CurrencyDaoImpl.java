@@ -1,7 +1,6 @@
 package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.CurrencyDao;
-import com.exrates.inout.domain.dto.CurrencyPairLimitDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
 import com.exrates.inout.domain.dto.UserCurrencyOperationPermissionDto;
 import com.exrates.inout.domain.enums.CurrencyPairType;
@@ -13,14 +12,16 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.CurrencyPair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CurrencyDaoImpl implements CurrencyDao {
@@ -128,18 +129,6 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return jdbcTemplate.queryForObject(sql, params, BigDecimal.class);
     }
 
-
-    @Override
-    public CurrencyPair findCurrencyPairById(int currencyPairId) {
-        String sql = "SELECT id, currency1_id, currency2_id, name, market, type," +
-                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
-                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
-                " FROM CURRENCY_PAIR WHERE id = :currencyPairId";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("currencyPairId", String.valueOf(currencyPairId));
-        return jdbcTemplate.queryForObject(sql, namedParameters, currencyPairRowMapper);
-    }
-
     @Override
     public List<UserCurrencyOperationPermissionDto> findCurrencyOperationPermittedByUserAndDirection(Integer userId, String operationDirection) {
         String sql = "SELECT CUR.id, CUR.name, IOP.invoice_operation_permission_id" +
@@ -202,20 +191,6 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public CurrencyPair findCurrencyPairByOrderId(int orderId) {
-        String sql = "SELECT CURRENCY_PAIR.id, CURRENCY_PAIR.currency1_id, CURRENCY_PAIR.currency2_id, name, type," +
-                "CURRENCY_PAIR.market, " +
-                "(select name from CURRENCY where id = currency1_id) as currency1_name, " +
-                "(select name from CURRENCY where id = currency2_id) as currency2_name " +
-                " FROM EXORDERS " +
-                " JOIN CURRENCY_PAIR ON (CURRENCY_PAIR.id = EXORDERS.currency_pair_id) " +
-                " WHERE EXORDERS.id = :order_id";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("order_id", String.valueOf(orderId));
-        return jdbcTemplate.queryForObject(sql, namedParameters, currencyPairRowMapper);
-    }
-
-    @Override
     public MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId) {
         String sql = "SELECT id, " +
                 "  max_scale_for_refill, max_scale_for_withdraw " +
@@ -241,6 +216,4 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 "         WHERE hidden IS NOT TRUE AND type = 'ICO' AND currency1_id =:currency_id ";
         return !jdbcTemplate.queryForList(sql, Collections.singletonMap("currency_id", currencyId), Integer.class).isEmpty();
     }
-
-
 }

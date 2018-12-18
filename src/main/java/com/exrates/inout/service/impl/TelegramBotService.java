@@ -100,5 +100,4 @@ public class TelegramBotService extends TelegramLongPollingBot {
     public String getBotToken() {
         return key;
     }
-
 }

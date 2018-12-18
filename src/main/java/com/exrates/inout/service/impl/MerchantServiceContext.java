@@ -15,12 +15,11 @@ import java.util.Optional;
 
 @Component
 public class MerchantServiceContext {
-    @Autowired
-    private  Map<String, IMerchantService> merchantServiceMap;
-    @Autowired
-    private  MerchantService merchantService;
 
-
+    @Autowired
+    private Map<String, IMerchantService> merchantServiceMap;
+    @Autowired
+    private MerchantService merchantService;
 
     public IMerchantService getMerchantService(String serviceBeanName) {
         if (StringUtils.isEmpty(serviceBeanName)) {

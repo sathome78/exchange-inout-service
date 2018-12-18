@@ -15,8 +15,5 @@ public interface CompanyWalletService {
 
     void deposit(CompanyWallet companyWallet, BigDecimal amount, BigDecimal commissionAmount);
 
-    boolean substractCommissionBalanceById(Integer id, BigDecimal amount);
-
-
     void withdrawReservedBalance(CompanyWallet cWallet, BigDecimal amount);
 }

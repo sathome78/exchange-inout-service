@@ -53,7 +53,6 @@ public class SecureServiceImpl implements SecureService {
         this.settingsService = settingsService;
     }
 
-
     public void checkLoginAuth(HttpServletRequest request, Authentication authentication,
                                CapchaAuthorizationFilter filter) {
         request.getSession().setAttribute("2fa_".concat(NotificationMessageEventEnum.LOGIN.name()), new PinAttempsDto());
@@ -85,7 +84,7 @@ public class SecureServiceImpl implements SecureService {
             log.debug("noty_setting {}", setting.toString());
             PinAttempsDto attempsDto = (PinAttempsDto) request.getSession().getAttribute("2fa_".concat(event.name()));
             Locale locale = localeResolver.resolveLocale(request);
-            boolean needToSendPin = forceSend ? true : attempsDto.needToSendPin();
+            boolean needToSendPin = forceSend || attempsDto.needToSendPin();
             String message;
             if (needToSendPin) {
                 String newPin = messageSource.getMessage("notification.message.newPinCode", null, locale);
@@ -98,7 +97,6 @@ public class SecureServiceImpl implements SecureService {
         }
         return null;
     }
-
 
     public void checkEventAdditionalPin(HttpServletRequest request, String email,
                                         NotificationMessageEventEnum event, String amountCurrency) {
@@ -145,7 +143,6 @@ public class SecureServiceImpl implements SecureService {
         }
     }
 
-
     private String sendPinMessage(String email, NotificationsUserSetting setting, HttpServletRequest request, String[] args) {
         Locale locale = localeResolver.resolveLocale(request);
         String subject = messageSource.getMessage(setting.getNotificationMessageEventEnum().getSbjCode(), null, locale);
@@ -156,5 +153,4 @@ public class SecureServiceImpl implements SecureService {
         request.getSession().setAttribute("2fa_message".concat(setting.getNotificationMessageEventEnum().name()), notificationResultDto);
         return messageSource.getMessage(notificationResultDto.getMessageSource(), notificationResultDto.getArguments(), locale);
     }
-
 }

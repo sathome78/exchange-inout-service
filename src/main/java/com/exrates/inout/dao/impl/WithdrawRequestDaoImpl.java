@@ -1,7 +1,12 @@
 package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.WithdrawRequestDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.WithdrawFilterData;
+import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
+import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -21,11 +26,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.exrates.inout.domain.enums.TransactionSourceType.WITHDRAW;
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
 
@@ -74,64 +81,6 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 "WHERE WITHDRAW_REQUEST.id = :id " +
                 "FOR UPDATE ";
         return of(jdbcTemplate.queryForObject(sql, singletonMap("id", id), Integer.class));
-    }
-
-    @Override
-    public List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
-            String startDate,
-            String endDate,
-            List<Integer> roleIdList,
-            List<Integer> currencyList) {
-        String sql = "SELECT WR.*, " +
-                "         USER.email AS user_email, USER.nickname AS nickname, " +
-                "         ADM.email AS admin_email, " +
-                "         MERCHANT.name AS merchant_name, " +
-                "         CURRENCY.name AS currency_name" +
-                " FROM WITHDRAW_REQUEST WR " +
-                " JOIN CURRENCY ON CURRENCY.id = WR.currency_id " +
-                " JOIN MERCHANT ON MERCHANT.id = WR.merchant_id " +
-                " JOIN USER AS USER ON USER.id = WR.user_id " +
-                " LEFT JOIN USER AS ADM ON ADM.id = WR.admin_holder_id " +
-                " WHERE " +
-                "    WR.date_creation BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(:end_date, '%Y-%m-%d %H:%i:%s') " +
-                "    AND (WR.currency_id IN (:currency_list)) " +
-                (roleIdList.isEmpty() ? "" : " AND USER.roleid IN (:role_id_list)");
-        Map<String, Object> params = new HashMap<String, Object>() {{
-            put("start_date", startDate);
-            put("end_date", endDate);
-            if (!roleIdList.isEmpty()) {
-                put("role_id_list", roleIdList);
-            }
-            put("currency_list", currencyList);
-        }};
-        return jdbcTemplate.query(sql, params, new RowMapper<WithdrawRequestFlatForReportDto>() {
-            @Override
-            public WithdrawRequestFlatForReportDto mapRow(ResultSet rs, int i) throws SQLException {
-                WithdrawRequestFlatForReportDto withdrawRequestFlatForReportDto = new WithdrawRequestFlatForReportDto();
-                withdrawRequestFlatForReportDto.setInvoiceId(rs.getInt("WR.id"));
-                withdrawRequestFlatForReportDto.setWallet(rs.getString("wallet"));
-                withdrawRequestFlatForReportDto.setRecipientBank(rs.getString("recipient_bank_name"));
-                withdrawRequestFlatForReportDto.setAdminEmail(rs.getString("admin_email"));
-                withdrawRequestFlatForReportDto.setAcceptanceTime(rs.getTimestamp("status_modification_date") == null ? null : rs.getTimestamp("status_modification_date").toLocalDateTime());
-                withdrawRequestFlatForReportDto.setStatus(WithdrawStatusEnum.convert(rs.getInt("status_id")));
-                withdrawRequestFlatForReportDto.setUserFullName(rs.getString("user_full_name"));
-                withdrawRequestFlatForReportDto.setUserNickname(rs.getString("nickname"));
-                withdrawRequestFlatForReportDto.setUserEmail(rs.getString("user_email"));
-                withdrawRequestFlatForReportDto.setAmount(rs.getBigDecimal("amount"));
-                withdrawRequestFlatForReportDto.setCommissionAmount(rs.getBigDecimal("commission"));
-                withdrawRequestFlatForReportDto.setDatetime(rs.getTimestamp("date_creation") == null ? null : rs.getTimestamp("date_creation").toLocalDateTime());
-                withdrawRequestFlatForReportDto.setCurrency(rs.getString("currency_name"));
-                withdrawRequestFlatForReportDto.setSourceType(WITHDRAW);
-                withdrawRequestFlatForReportDto.setMerchant(rs.getString("merchant_name"));
-                return withdrawRequestFlatForReportDto;
-            }
-        });
-    }
-
-    @Override
-    public Integer findStatusIdByRequestId(Integer withdrawRequestId) {
-        String sql = "SELECT status FROM WITHDRAW_REQUEST WHERE transaction_id = :request_id";
-        return jdbcTemplate.queryForObject(sql, Collections.singletonMap("request_id", withdrawRequestId), Integer.class);
     }
 
     @Override
@@ -486,7 +435,6 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
 
             return list;
         });
-
     }
 
     @Override
@@ -519,7 +467,6 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
     }
 
 
-
     private String getPermissionClause(Integer requesterUserId) {
         if (requesterUserId == null) {
             return " LEFT JOIN USER_CURRENCY_INVOICE_OPERATION_PERMISSION IOP ON (IOP.user_id = -1) ";
@@ -529,6 +476,5 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 "	  			AND (IOP.user_id=:requester_user_id) " +
                 "	  			AND (IOP.operation_direction=:operation_direction) ";
     }
-
 }
 

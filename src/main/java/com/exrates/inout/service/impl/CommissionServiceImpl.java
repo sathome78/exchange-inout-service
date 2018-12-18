@@ -9,7 +9,11 @@ import com.exrates.inout.domain.main.Commission;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.IllegalOperationTypeException;
 import com.exrates.inout.exceptions.InvalidAmountException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.CommissionService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.IWithdrawable;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.UserService;
 import com.exrates.inout.util.BigDecimalProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,13 +22,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.exrates.inout.domain.enums.ActionType.*;
-import static com.exrates.inout.domain.enums.OperationType.*;
-import static java.math.BigDecimal.*;
+import static com.exrates.inout.domain.enums.ActionType.ADD;
+import static com.exrates.inout.domain.enums.ActionType.MULTIPLY_PERCENT;
+import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
+import static com.exrates.inout.domain.enums.OperationType.INPUT;
+import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
+import static com.exrates.inout.domain.enums.OperationType.USER_TRANSFER;
+import static java.math.BigDecimal.ROUND_DOWN;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.math.BigDecimal.ROUND_UP;
+import static java.math.BigDecimal.ZERO;
 
 @Service
 public class CommissionServiceImpl implements CommissionService {
@@ -34,9 +44,6 @@ public class CommissionServiceImpl implements CommissionService {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    UserRoleService userRoleService;
 
     @Autowired
     MerchantService merchantService;
@@ -73,7 +80,7 @@ public class CommissionServiceImpl implements CommissionService {
     @Transactional
     public BigDecimal getCommissionMerchant(Integer merchantId, Integer currencyId, OperationType operationType) {
         if (!(operationType == OperationType.INPUT || operationType == OperationType.OUTPUT || operationType == OperationType.USER_TRANSFER)) {
-            throw new IllegalArgumentException("Invalid operation type: "+operationType);
+            throw new IllegalArgumentException("Invalid operation type: " + operationType);
         }
         return commissionDao.getCommissionMerchant(merchantId, currencyId, operationType);
     }
@@ -139,7 +146,7 @@ public class CommissionServiceImpl implements CommissionService {
         Merchant merchant = merchantService.findById(merchantId);
         if (!(merchant.getProcessType() == MerchantProcessType.CRYPTO) || amount.compareTo(BigDecimal.ZERO) != 0) {
             BigDecimal merchantCommissionRate = getCommissionMerchant(merchantId, currencyId, type);
-            BigDecimal merchantMinFixedCommission  = getMinFixedCommission(currencyId, merchantId);
+            BigDecimal merchantMinFixedCommission = getMinFixedCommission(currencyId, merchantId);
             BigDecimal merchantCommissionAmount;
             BigDecimal companyCommissionAmount;
             String merchantCommissionUnit = "%";
@@ -149,7 +156,7 @@ public class CommissionServiceImpl implements CommissionService {
                 merchantCommissionAmount = BigDecimalProcessing.doAction(amount, merchantCommissionRate, MULTIPLY_PERCENT);
                 companyCommissionAmount = BigDecimalProcessing.doAction(amount.subtract(merchantCommissionAmount), companyCommissionRate, MULTIPLY_PERCENT);
             } else if (type == OUTPUT) {
-                IWithdrawable wMerchant = (IWithdrawable)merchantServiceContext.getMerchantService(merchantId);
+                IWithdrawable wMerchant = (IWithdrawable) merchantServiceContext.getMerchantService(merchantId);
                 int currencyScale = merchantService.getMerchantCurrencyScaleByMerchantIdAndCurrencyId(merchantId, currencyId).getScaleForWithdraw();
                 amount = amount.setScale(currencyScale, ROUND_DOWN);
                 companyCommissionAmount = BigDecimalProcessing.doAction(amount, companyCommissionRate, MULTIPLY_PERCENT).setScale(currencyScale, ROUND_UP);
@@ -214,13 +221,10 @@ public class CommissionServiceImpl implements CommissionService {
         }
     }
 
-
-
     @Override
     @Transactional
     public BigDecimal calculateCommissionForRefillAmount(BigDecimal amount, Integer commissionId) {
         BigDecimal companyCommissionRate = commissionDao.getCommissionById(commissionId).getValue();
         return BigDecimalProcessing.doAction(amount, companyCommissionRate, MULTIPLY_PERCENT);
     }
-
 }

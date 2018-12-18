@@ -16,7 +16,6 @@ import java.util.HashMap;
 @Repository
 public class CommissionDaoImpl implements CommissionDao {
 
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     private static final RowMapper<Commission> commissionRowMapper = (resultSet, i) -> {
@@ -32,7 +31,6 @@ public class CommissionDaoImpl implements CommissionDao {
     public CommissionDaoImpl(@Qualifier(value = "masterTemplate") NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
 
     public Commission getCommission(OperationType operationType, UserRole userRole) {
         final String sql = "SELECT COMMISSION.id, COMMISSION.operation_type, COMMISSION.date, COMMISSION.value " +
@@ -127,5 +125,4 @@ public class CommissionDaoImpl implements CommissionDao {
         params.put("operation_type",operationType.type);
         return jdbcTemplate.queryForObject(sql,params,commissionRowMapper);
     }
-
 }

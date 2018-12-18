@@ -3,11 +3,19 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.UserDao;
 import com.exrates.inout.domain.dto.UpdateUserDto;
-import com.exrates.inout.domain.enums.*;
+import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
+import com.exrates.inout.domain.enums.NotificationTypeEnum;
+import com.exrates.inout.domain.enums.TokenType;
+import com.exrates.inout.domain.enums.UserCommentTopicEnum;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
-import com.exrates.inout.domain.main.*;
-import com.exrates.inout.exceptions.AuthenticationNotAvailableException;
+import com.exrates.inout.domain.main.Comment;
+import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.domain.main.NotificationEvent;
+import com.exrates.inout.domain.main.NotificationsUserSetting;
+import com.exrates.inout.domain.main.TemporalToken;
+import com.exrates.inout.domain.main.User;
 import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.NotificationsSettingsService;
 import com.exrates.inout.service.SendMailService;
@@ -28,7 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,7 +54,6 @@ public class UserServiceImpl implements UserService {
 
     private final MessageSource messageSource;
 
-
     private final HttpServletRequest request;
     @Autowired
     private TokenScheduler tokenScheduler;
@@ -55,7 +66,7 @@ public class UserServiceImpl implements UserService {
     NotificationService notificationService;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, SendMailService sendMailService, MessageSource messageSource,  HttpServletRequest request, NotificationsSettingsService settingsService) {
+    public UserServiceImpl(UserDao userDao, SendMailService sendMailService, MessageSource messageSource, HttpServletRequest request, NotificationsSettingsService settingsService) {
         this.userDao = userDao;
         this.sendMailService = sendMailService;
         this.messageSource = messageSource;
@@ -114,10 +125,6 @@ public class UserServiceImpl implements UserService {
 
     public User findByNickname(String nickname) {
         return userDao.findByNickname(nickname);
-    }
-
-    public List<UserFile> findUserDoc(final int userId) {
-        return userDao.findUserDoc(userId);
     }
 
     public boolean ifNicknameIsUnique(String nickname) {
@@ -231,7 +238,6 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-
     public String getPreferedLang(int userId) {
         return userDao.getPreferredLang(userId);
     }
@@ -309,11 +315,6 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserRoleById(userId);
     }
 
-    @Override
-    public UserRole getUserRoleFromDB(String email) {
-        return userDao.getUserRoleByEmail(email);
-    }
-
     @Transactional
     public String updatePinForUserForEvent(String userEmail, NotificationMessageEventEnum event) {
         String pin = String.valueOf(10000000 + new Random().nextInt(90000000));
@@ -331,17 +332,7 @@ public class UserServiceImpl implements UserService {
                     .notificationMessageEventEnum(event)
                     .build();
         }
-
         return passwordEncoder.matches(pin, getPinForEvent(email, event));
-    }
-
-    @Override
-    public String getUserEmailFromSecurityContext() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            throw new AuthenticationNotAvailableException();
-        }
-        return auth.getName();
     }
 
     @Override
@@ -351,11 +342,9 @@ public class UserServiceImpl implements UserService {
         } catch (final EmptyResultDataAccessException e) {
             return null;
         }
-
     }
 
     private String getPinForEvent(String email, NotificationMessageEventEnum event) {
         return userDao.getPinByEmailAndEvent(email, event);
     }
-
 }

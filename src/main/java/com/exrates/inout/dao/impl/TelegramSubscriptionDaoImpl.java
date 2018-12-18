@@ -1,4 +1,4 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.TelegramSubscriptionDao;
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
@@ -34,7 +34,6 @@ public class TelegramSubscriptionDaoImpl implements TelegramSubscriptionDao {
         subscription.setSubscriptionState(NotificatorSubscriptionStateEnum.valueOf(rs.getString("subscription_state")));
         return subscription;
     };
-
 
     @Override
     public Optional<TelegramSubscription> getSubscribtionByCodeAndEmail(String code, String email) {

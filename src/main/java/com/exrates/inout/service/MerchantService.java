@@ -1,10 +1,15 @@
 package com.exrates.inout.service;
 
 
-import com.exrates.inout.domain.CoreWalletDto;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
+import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.main.*;
+import com.exrates.inout.domain.main.CreditsOperation;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.MerchantCurrency;
 import lombok.SneakyThrows;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +21,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 public interface MerchantService {
-    List<Merchant> findAllByCurrency(Currency currency);
 
     List<Merchant> findAll();
-
-    String resolveTransactionStatus(Transaction transaction, Locale locale);
-
-    String sendDepositNotification(String toWallet,
-                                   String email,
-                                   Locale locale,
-                                   CreditsOperation creditsOperation,
-                                   String depositNotification);
 
     Merchant findById(int id);
 
@@ -40,23 +36,6 @@ public interface MerchantService {
 
     List<TransferMerchantApiDto> findTransferMerchants();
 
-    List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes);
-
-    Map<String, String> formatResponseMessage(CreditsOperation creditsOperation);
-
-    Map<String, String> formatResponseMessage(Transaction transaction);
-
-    void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw);
-
-    @Transactional
-    void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType);
-
-    @Transactional
-    void setBlockForAll(OperationType operationType, boolean blockStatus);
-
-    @Transactional
-    void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus);
-
     BigDecimal getMinSum(Integer merchantId, Integer currencyId);
 
     void checkAmountForMinSum(Integer merchantId, Integer currencyId, BigDecimal amount);
@@ -66,12 +45,6 @@ public interface MerchantService {
     MerchantCurrencyScaleDto getMerchantCurrencyScaleByMerchantIdAndCurrencyId(Integer merchantId, Integer currencyId);
 
     void checkMerchantIsBlocked(Integer merchantId, Integer currencyId, OperationType operationType);
-
-    List<String> retrieveBtcCoreBasedMerchantNames();
-
-    CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale);
-
-    List<CoreWalletDto> retrieveCoreWallets(Locale locale);
 
     Optional<String> getCoreWalletPassword(String merchantName, String currencyName);
 

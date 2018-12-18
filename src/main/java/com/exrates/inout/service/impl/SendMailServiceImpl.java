@@ -110,7 +110,6 @@ public class SendMailServiceImpl implements SendMailService {
                 sendMail(email, SUPPORT_EMAIL, supportMailSender);
             }
         });
-
     }
 
     private void sendMail(Email email, String fromAddress, JavaMailSender mailSender) {
@@ -131,7 +130,6 @@ public class SendMailServiceImpl implements SendMailService {
         } catch (Exception e) {
             logger.error("Could not send email {}. Reason: {}", email, e.getMessage());
         }
-
     }
 
     @PreDestroy
@@ -139,6 +137,4 @@ public class SendMailServiceImpl implements SendMailService {
         executors.shutdown();
         supportMailExecutors.shutdown();
     }
-
-
 }

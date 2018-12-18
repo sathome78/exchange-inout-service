@@ -77,9 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
         return 0L;
     }
 
-
     private String[] normalizeArgs(Object... args) {
         return Arrays.toString(args).replaceAll("[\\[\\]]", "").split("\\s*,\\s*");
     }
-
 }

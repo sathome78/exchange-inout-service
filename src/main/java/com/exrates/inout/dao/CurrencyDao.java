@@ -6,7 +6,6 @@ import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.UserCommentTopicEnum;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.CurrencyPair;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,11 +35,4 @@ public interface CurrencyDao {
     MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId);
 
     boolean isCurrencyIco(Integer currencyId);
-
-
-    CurrencyPair findCurrencyPairById(int currencyPair);
-
-
-    CurrencyPair findCurrencyPairByOrderId(int orderId);
-
 }

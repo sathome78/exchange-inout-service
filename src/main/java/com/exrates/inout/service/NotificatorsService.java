@@ -14,5 +14,4 @@ public interface NotificatorsService {
     Notificator getById(int id);
 
     BigDecimal getMessagePrice(int notificatorId, int roleId);
-
 }

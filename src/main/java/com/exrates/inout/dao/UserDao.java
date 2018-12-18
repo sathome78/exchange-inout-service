@@ -8,7 +8,6 @@ import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.main.Comment;
 import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.UserFile;
 
 import java.util.List;
 
@@ -17,8 +16,6 @@ public interface UserDao {
     int getIdByNickname(String nickname);
 
     boolean create(User user);
-
-    List<UserFile> findUserDoc(int userId);
 
     UserRole getUserRoleById(Integer id);
 
@@ -61,6 +58,4 @@ public interface UserDao {
     void updatePinByUserEmail(String userEmail, String pin, NotificationMessageEventEnum event);
 
     User getCommonReferralRoot();
-
-    UserRole getUserRoleByEmail(String email);
 }

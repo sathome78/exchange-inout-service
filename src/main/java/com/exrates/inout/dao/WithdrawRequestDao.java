@@ -1,6 +1,11 @@
 package com.exrates.inout.dao;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.WithdrawFilterData;
+import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
+import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
@@ -11,14 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface WithdrawRequestDao {
-
-    List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
-            String startDate,
-            String endDate,
-            List<Integer> roleIdList,
-            List<Integer> currencyList);
-
-    Integer findStatusIdByRequestId(Integer withdrawRequestId);
 
     int create(WithdrawRequestCreateDto withdrawRequest);
 

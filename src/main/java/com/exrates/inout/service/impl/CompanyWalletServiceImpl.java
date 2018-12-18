@@ -15,10 +15,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
 import static com.exrates.inout.util.BigDecimalProcessing.doAction;
@@ -35,7 +31,6 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
     public CompanyWallet create(Currency currency) {
         return companyWalletDao.create(currency);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -70,7 +65,6 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
         }
     }
 
-
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public void withdrawReservedBalance(CompanyWallet companyWallet, BigDecimal amount) {
@@ -82,12 +76,5 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
         if (!companyWalletDao.update(companyWallet)) {
             throw new WalletPersistException("Failed withdraw on company wallet " + companyWallet.toString());
         }
-    }
-
-
-    @Override
-    @Transactional
-    public boolean substractCommissionBalanceById(Integer id, BigDecimal amount){
-        return companyWalletDao.substarctCommissionBalanceById(id, amount);
     }
 }

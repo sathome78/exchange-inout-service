@@ -14,5 +14,4 @@ public interface ITransferable extends IMerchantService {
     Boolean recipientUserIsNeeded();
 
     TransferProcessTypeEnum processType();
-
 }

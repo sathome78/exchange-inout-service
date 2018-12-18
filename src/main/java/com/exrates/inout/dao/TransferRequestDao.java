@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface TransferRequestDao {
+
     int create(TransferRequestCreateDto transferRequest);
 
     Optional<TransferRequestFlatDto> getFlatByIdAndBlock(int id);
@@ -24,8 +25,6 @@ public interface TransferRequestDao {
 
     void setRecipientById(Integer id, Integer recipientId);
 
-    List<TransferRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId);
-
     void setHashById(Integer id, Map<String, String> params);
 
     String getCreatorEmailById(int id);
@@ -36,5 +35,4 @@ public interface TransferRequestDao {
             VoucherFilterData voucherFilterData);
 
     String getHashById(Integer id);
-
 }

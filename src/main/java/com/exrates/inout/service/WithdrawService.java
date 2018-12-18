@@ -1,6 +1,12 @@
 package com.exrates.inout.service;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyAutoParamDto;
+import com.exrates.inout.domain.dto.WithdrawFilterData;
+import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
+import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
+import com.exrates.inout.domain.dto.WithdrawRequestsAdminTableDto;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -16,72 +22,63 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface WithdrawService {
-  Map<String, String> createWithdrawalRequest(WithdrawRequestCreateDto requestCreateDto, Locale locale);
 
-  void rejectError(int requestId, long timeoutInMinutes, String reasonCode);
+    Map<String, String> createWithdrawalRequest(WithdrawRequestCreateDto requestCreateDto, Locale locale);
 
-  @Transactional
-  void finalizePostWithdrawalRequest(Integer requestId);
-
-  void postWithdrawalRequest(int requestId, Integer requesterAdminId, String txHash);
-
-  List<ClientBank> findClientBanksForCurrency(Integer currencyId);
+    void rejectError(int requestId, long timeoutInMinutes, String reasonCode);
 
     @Transactional
-    void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto);
+    void finalizePostWithdrawalRequest(Integer requestId);
 
-  @Transactional
-  List<WithdrawRequestFlatForReportDto> findAllByDateIntervalAndRoleAndCurrency(
-          String startDate,
-          String endDate,
-          List<Integer> roleIdList,
-          List<Integer> currencyList);
+    void postWithdrawalRequest(int requestId, Integer requesterAdminId, String txHash);
 
-  MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
+    List<ClientBank> findClientBanksForCurrency(Integer currencyId);
 
-  List<MerchantCurrency> retrieveAddressAndAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies);
+    MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
-  DataTable<List<WithdrawRequestsAdminTableDto>> getWithdrawRequestByStatusList(List<Integer> requestStatus, DataTableParams dataTableParams, WithdrawFilterData withdrawFilterData, String authorizedUserEmail, Locale locale);
+    List<MerchantCurrency> retrieveAddressAndAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies);
 
-  WithdrawRequestsAdminTableDto getWithdrawRequestById(Integer id, String authorizedUserEmail);
+    DataTable<List<WithdrawRequestsAdminTableDto>> getWithdrawRequestByStatusList(List<Integer> requestStatus, DataTableParams dataTableParams, WithdrawFilterData withdrawFilterData, String authorizedUserEmail, Locale locale);
 
-  void revokeWithdrawalRequest(int requestId);
+    WithdrawRequestsAdminTableDto getWithdrawRequestById(Integer id, String authorizedUserEmail);
 
-  void takeInWorkWithdrawalRequest(int requestId, Integer requesterAdminId);
+    void revokeWithdrawalRequest(int requestId);
 
-  void returnFromWorkWithdrawalRequest(int requestId, Integer requesterAdminId);
+    void takeInWorkWithdrawalRequest(int requestId, Integer requesterAdminId);
 
-  void declineWithdrawalRequest(int requestId, Integer requesterAdminId, String comment);
+    void returnFromWorkWithdrawalRequest(int requestId, Integer requesterAdminId);
 
-  void confirmWithdrawalRequest(int requestId, Integer requesterAdminId);
+    void declineWithdrawalRequest(int requestId, Integer requesterAdminId, String comment);
 
-  Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
+    void confirmWithdrawalRequest(int requestId, Integer requesterAdminId);
 
-  boolean checkOutputRequestsLimit(int merchantId, String email);
+    Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
 
-  List<Integer> getWithdrawalStatistic(String startDate, String endDate);
+    boolean checkOutputRequestsLimit(int merchantId, String email);
 
-  @Transactional(readOnly = true)
-  Optional<Integer> getRequestIdByHashAndMerchantId(String hash, int merchantId);
+    List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
-  @Transactional(readOnly = true)
-  WithdrawRequestInfoDto getWithdrawalInfo(Integer id, Locale locale);
+    @Transactional(readOnly = true)
+    Optional<Integer> getRequestIdByHashAndMerchantId(String hash, int merchantId);
+
+    @Transactional(readOnly = true)
+    WithdrawRequestInfoDto getWithdrawalInfo(Integer id, Locale locale);
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     List<WithdrawRequestPostDto> dirtyReadForPostByStatusList(InvoiceStatus status);
 
-  @Transactional
-  void autoPostWithdrawalRequest(WithdrawRequestPostDto withdrawRequest);
+    @Transactional
+    void autoPostWithdrawalRequest(WithdrawRequestPostDto withdrawRequest);
 
-  @Transactional
-  void rejectToReview(int requestId);
+    @Transactional
+    void rejectToReview(int requestId);
 
-  @Transactional
-  void rejectError(int requestId, String reasonCode);
+    @Transactional
+    void rejectError(int requestId, String reasonCode);
 
-  @Transactional
-  void setAllAvailableInPostingStatus();
+    @Transactional
+    void setAllAvailableInPostingStatus();
 
-  @Transactional(readOnly = true)
-  List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
+    @Transactional(readOnly = true)
+    List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 }

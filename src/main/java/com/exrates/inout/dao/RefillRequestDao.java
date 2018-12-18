@@ -1,12 +1,17 @@
 package com.exrates.inout.dao;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.InvoiceConfirmData;
+import com.exrates.inout.domain.dto.OperationUserDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
 
 import java.math.BigDecimal;
@@ -32,8 +37,6 @@ public interface RefillRequestDao {
             String address, Integer merchantId,
             Integer currencyId,
             String hash);
-
-    List<RefillRequestFlatDto> findAllWithoutConfirmationsByMerchantIdAndCurrencyIdAndStatusId(Integer merchantId, Integer currencyId, List<Integer> statusList);
 
     List<RefillRequestFlatDto> findAllWithConfirmationsByMerchantIdAndCurrencyIdAndStatusId(Integer merchantId, Integer currencyId, List<Integer> statusIdList);
 
@@ -83,12 +86,9 @@ public interface RefillRequestDao {
 
     boolean checkInputRequests(int currencyId, String email);
 
-    Integer findConfirmationsNumberByRequestId(Integer requestId);
-
     void setConfirmationsNumberByRequestId(Integer requestId, BigDecimal amount, Integer confirmations, String blockhash);
 
     Optional<Integer> findUserIdById(Integer requestId);
-
 
     Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantTransactionId(String address,
                                                                                          String merchantTransactionId,
@@ -97,10 +97,7 @@ public interface RefillRequestDao {
 
     Optional<String> getLastBlockHashForMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
-
     List<String> findAllAddresses(Integer merchantId, Integer currencyId, List<Boolean> isValidStatuses);
-
-    List<RefillRequestFlatDto> findAllNotAcceptedByAddressAndMerchantAndCurrency(String address, Integer merchantId, Integer currencyId);
 
     int getTxOffsetForAddress(String address);
 
@@ -108,7 +105,7 @@ public interface RefillRequestDao {
 
     boolean isToken(Integer merchantId);
 
-    List<Map<String,Integer>> getTokenMerchants(Integer merchantId);
+    List<Map<String, Integer>> getTokenMerchants(Integer merchantId);
 
     Integer findMerchantIdByAddressAndCurrencyAndUser(String address, Integer currencyId, Integer userId);
 
@@ -122,10 +119,7 @@ public interface RefillRequestDao {
 
     List<RefillRequestAddressDto> findAddressDtosByMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
-    PagingData<List<RefillRequestAddressShortDto>> getAddresses(DataTableParams dataTableParams, RefillAddressFilterData data);
-
     List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId);
 
     List<RefillRequestFlatDto> findAllWithChildTokensWithConfirmationsByMerchantIdAndCurrencyIdAndStatusId(int merchantId, int currencyId, List<Integer> collect);
-
 }

@@ -20,8 +20,26 @@ import com.exrates.inout.domain.main.NotificationEvent;
 import com.exrates.inout.domain.main.PagingData;
 import com.exrates.inout.domain.main.TransferRequest;
 import com.exrates.inout.domain.other.ProfileData;
-import com.exrates.inout.exceptions.*;
-import com.exrates.inout.service.*;
+import com.exrates.inout.exceptions.InvalidNicknameException;
+import com.exrates.inout.exceptions.InvoiceNotFoundException;
+import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
+import com.exrates.inout.exceptions.TransferRequestAcceptExeption;
+import com.exrates.inout.exceptions.TransferRequestCreationException;
+import com.exrates.inout.exceptions.TransferRequestNotFoundException;
+import com.exrates.inout.exceptions.TransferRequestRevokeException;
+import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.service.CommissionService;
+import com.exrates.inout.service.CompanyWalletService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.IMerchantService;
+import com.exrates.inout.service.ITransferable;
+import com.exrates.inout.service.InputOutputService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NotificationService;
+import com.exrates.inout.service.TransferService;
+import com.exrates.inout.service.UserService;
+import com.exrates.inout.service.WalletService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +50,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.OperationType.USER_TRANSFER;
 import static com.exrates.inout.domain.enums.WalletTransferStatus.SUCCESS;
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.InvoiceActionParamsValue;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.PRESENT_VOUCHER;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.REVOKE;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.REVOKE_ADMIN;
 import static com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection.TRANSFER_VOUCHER;
 
 @Service
 public class TransferServiceImpl implements TransferService {
 
-
     private static final Logger log = LogManager.getLogger("transfer");
-
 
     @Autowired
     private CurrencyService currencyService;
@@ -234,12 +257,6 @@ public class TransferServiceImpl implements TransferService {
         if (result != SUCCESS) {
             throw new TransferRequestRevokeException(result.toString());
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TransferRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses) {
-        return transferRequestDao.findRequestsByStatusAndMerchant(merchantId, statuses);
     }
 
     @Override

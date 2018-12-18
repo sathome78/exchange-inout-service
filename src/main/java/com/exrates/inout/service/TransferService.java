@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface TransferService {
+
     Map<String, Object> createTransferRequest(TransferRequestCreateDto request);
 
     List<MerchantCurrency> retrieveAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies);
@@ -26,9 +27,6 @@ public interface TransferService {
     void revokeByUser(int requestId, Principal principal);
 
     void revokeByAdmin(int requestId, Principal principal);
-
-    @Transactional(readOnly = true)
-    List<TransferRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 
     TransferRequestFlatDto getFlatById(Integer id);
 

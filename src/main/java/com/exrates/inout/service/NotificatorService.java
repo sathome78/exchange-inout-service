@@ -8,5 +8,4 @@ public interface NotificatorService {
     String sendMessageToUser(String userEmail, String message, String subject) throws MessageUndeliweredException;
 
     NotificationTypeEnum getNotificationType();
-
 }

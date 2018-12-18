@@ -9,7 +9,6 @@ import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.UserFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -66,14 +65,10 @@ public interface UserService {
 
     UserRole getUserRoleFromDB(Integer userId);
 
-    UserRole getUserRoleFromDB(String email);
-
     @Transactional
     String updatePinForUserForEvent(String userEmail, NotificationMessageEventEnum event);
 
     boolean checkPin(String email, String pin, NotificationMessageEventEnum event);
-
-    String getUserEmailFromSecurityContext();
 
     User getCommonReferralRoot();
 }

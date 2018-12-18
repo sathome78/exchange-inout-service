@@ -22,27 +22,15 @@ public class EDCAccountDaoImpl implements EDCAccountDao {
 
     private final Logger LOG = LogManager.getLogger("merchant");
 
-    public EDCAccountDaoImpl(@Qualifier(value = "masterTemplate")final NamedParameterJdbcTemplate jdbcTemplate) {
+    public EDCAccountDaoImpl(@Qualifier(value = "masterTemplate") final NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
 
     @Override
     public EDCAccount findByTransactionId(int id) {
         final String sql = "SELECT * FROM EDC_TEMP_ACCOUNT WHERE transaction_id = :transactionId";
         final Map<String, Integer> params = singletonMap("transactionId", id);
         return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<>(EDCAccount.class));
-    }
-
-    @Override
-    public void deleteByTransactionId(int id) {
-        final String sql = "DELETE FROM EDC_TEMP_ACCOUNT WHERE transaction_id = :transactionId";
-        final Map<String, Integer> params = singletonMap("transactionId", id);
-        try {
-            jdbcTemplate.update(sql, params);
-        } catch (Exception e) {
-            LOG.error(e);
-        }
     }
 
     @Override
@@ -56,27 +44,6 @@ public class EDCAccountDaoImpl implements EDCAccountDao {
         params.put("brainPrivKey", edcAccount.getBrainPrivKey());
         params.put("accountName", edcAccount.getAccountName());
         jdbcTemplate.update(sql, params);
-    }
-
-    @Override
-    public void setAccountIdByTransactionId(int transactionId, String accountId) {
-        final String sql = "UPDATE EDC_TEMP_ACCOUNT set account_id = :accountId WHERE transaction_id = :transactionId";
-        final Map<String, Object> params = new HashMap<>();
-        params.put("transactionId", transactionId);
-        params.put("perfectmoney.accountId", accountId);
-
-        try {
-            jdbcTemplate.update(sql, params);
-        } catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public List<EDCAccount> getAccountsWithoutId() {
-        final String sql = "SELECT * FROM EDC_TEMP_ACCOUNT WHERE account_name <> '' AND account_id is null";
-
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper(EDCAccount.class));
     }
 
     @Override
@@ -94,7 +61,7 @@ public class EDCAccountDaoImpl implements EDCAccountDao {
 
         final Map<String, Object> params = new HashMap<>();
         params.put("transactionId", transactionId);
-         try {
+        try {
             jdbcTemplate.update(sql, params);
         } catch (Exception e) {
             LOG.error(e);

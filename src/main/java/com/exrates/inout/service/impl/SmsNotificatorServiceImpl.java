@@ -2,13 +2,25 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.SmsSubscriptionDao;
 import com.exrates.inout.domain.dto.SmsSubscriptionDto;
-import com.exrates.inout.domain.enums.*;
+import com.exrates.inout.domain.enums.ActionType;
+import com.exrates.inout.domain.enums.NotificationPayEventEnum;
+import com.exrates.inout.domain.enums.NotificationTypeEnum;
+import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
+import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.enums.TransactionSourceType;
+import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.CompanyWallet;
 import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.IncorrectSmsPinException;
 import com.exrates.inout.exceptions.MessageUndeliweredException;
 import com.exrates.inout.exceptions.PaymentException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.CompanyWalletService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.NotificatorService;
+import com.exrates.inout.service.NotificatorsService;
+import com.exrates.inout.service.Subscribable;
+import com.exrates.inout.service.UserService;
+import com.exrates.inout.service.WalletService;
 import com.exrates.inout.service.impl.epochta.EpochtaApi;
 import com.exrates.inout.service.impl.epochta.Phones;
 import com.google.common.base.Preconditions;
@@ -76,7 +88,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
     }
 
     @Transactional
-    private String send(String contact, String message) {
+    public String send(String contact, String message) {
         log.debug("send sms to {}, message {}", contact, message);
         String xml = smsService.sendSms(SENDER, message,
                 new ArrayList<Phones>() {{
@@ -117,7 +129,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
     }
 
     @Transactional
-    private BigDecimal pay(BigDecimal feePercent, BigDecimal deliveryAmount, int userId, String description) {
+    public BigDecimal pay(BigDecimal feePercent, BigDecimal deliveryAmount, int userId, String description) {
         BigDecimal feeAmount = doAction(deliveryAmount, feePercent, ActionType.MULTIPLY_PERCENT);
         BigDecimal totalAmount = doAction(feeAmount, deliveryAmount, ActionType.ADD);
         if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {

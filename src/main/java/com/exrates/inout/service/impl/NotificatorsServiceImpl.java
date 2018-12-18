@@ -17,7 +17,6 @@ import java.util.Optional;
 @Service
 public class NotificatorsServiceImpl implements NotificatorsService {
 
-
     @Autowired
     private NotificatorsDao notificatorsDao;
     @Autowired
@@ -43,5 +42,4 @@ public class NotificatorsServiceImpl implements NotificatorsService {
     public BigDecimal getMessagePrice(int notificatorId, int roleId) {
         return notificatorPriceDao.getFeeMessagePrice(notificatorId, roleId);
     }
-
 }

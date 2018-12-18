@@ -1,36 +1,28 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.CurrencyDao;
-import com.exrates.inout.domain.dto.CurrencyPairLimitDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
 import com.exrates.inout.domain.dto.UserCurrencyOperationPermissionDto;
-import com.exrates.inout.domain.enums.*;
+import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.enums.UserCommentTopicEnum;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.CurrencyPair;
-import com.exrates.inout.exceptions.CurrencyPairNotFoundException;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
 import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.UserRoleService;
 import com.exrates.inout.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
-import static java.util.Objects.isNull;
 
 
 @Slf4j
@@ -41,8 +33,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     private CurrencyDao currencyDao;
     @Autowired
     private UserService userService;
-    @Autowired
-    UserRoleService userRoleService;
 
     private static final Set<String> CRYPTO = new HashSet<String>() {
         {
@@ -91,7 +81,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public String amountToString(final BigDecimal amount, final String currency) {
         return amount.setScale(resolvePrecision(currency), ROUND_HALF_UP)
-//                .stripTrailingZeros()
                 .toPlainString();
     }
 
@@ -154,8 +143,6 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyDao.findById(id);
     }
 
-
-
     @Override
     public BigDecimal computeRandomizedAddition(Integer currencyId, OperationType operationType) {
         Optional<OperationType.AdditionalRandomAmountParam> randomAmountParam = operationType.getRandomAmountParam(currencyId);
@@ -180,5 +167,4 @@ public class CurrencyServiceImpl implements CurrencyService {
         Optional.ofNullable(result.getScaleForWithdraw()).orElseThrow(() -> new ScaleForAmountNotSetException("currency: " + currencyId));
         return result;
     }
-
 }

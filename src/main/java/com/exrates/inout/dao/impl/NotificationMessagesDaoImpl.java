@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NotificationMessagesDaoImpl implements NotificationMessagesDao {
 
-
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired

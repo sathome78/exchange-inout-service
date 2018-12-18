@@ -34,8 +34,6 @@ public interface RefillService {
 
     void confirmRefillRequest(InvoiceConfirmData invoiceConfirmData, Locale locale);
 
-    List<RefillRequestFlatDto> getInPendingByMerchantIdAndCurrencyIdList(Integer merchantId, Integer currencyId);
-
     Optional<Integer> getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(
             String address,
             Integer merchantId,
@@ -69,11 +67,7 @@ public interface RefillService {
 
     void autoAcceptRefillRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
 
-    void autoAcceptRefillEmptyRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
-
     void acceptRefillRequest(RefillRequestAcceptDto requestAcceptDto);
-
-    void finalizeAcceptRefillRequest(Integer requestId);
 
     RefillRequestFlatDto getFlatById(Integer id);
 
@@ -117,8 +111,6 @@ public interface RefillService {
 
     String getPaymentMessageForTag(String serviceBeanName, String tag, Locale locale);
 
-    List<RefillRequestFlatDto> findAllNotAcceptedByAddressAndMerchantAndCurrency(String address, Integer merchantId, Integer currencyId);
-
     int getTxOffsetForAddress(String address);
 
     void updateTxOffsetForAddress(String address, Integer offset);
@@ -128,8 +120,6 @@ public interface RefillService {
     List<RefillRequestAddressDto> findAllAddressesNeededToTransfer(Integer merchantId, Integer currencyId);
 
     List<RefillRequestAddressDto> findByAddressMerchantAndCurrency(String address, Integer merchantId, Integer currencyId);
-
-    DataTable<List<RefillRequestAddressShortDto>> getAdressesShortDto(DataTableParams dataTableParams, RefillAddressFilterData filterData);
 
     List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId);
 

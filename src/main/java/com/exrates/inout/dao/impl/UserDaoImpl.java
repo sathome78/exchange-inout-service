@@ -11,7 +11,6 @@ import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.main.Comment;
 import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.UserFile;
 import com.exrates.inout.exceptions.UserNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,14 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.singletonMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -124,37 +122,6 @@ public class UserDaoImpl implements UserDao {
 
         return namedParameterJdbcTemplate.update(sqlWallet, userIdParamMap) > 0
                 && namedParameterJdbcTemplate.update(sqlNotificationOptions, userIdParamMap) > 0;
-    }
-
-    public void createUserDoc(final int userId, final List<Path> paths) {
-        final String sql = "INSERT INTO USER_DOC (user_id, path) VALUES (:userId, :path)";
-        List<HashMap<String, Object>> collect = paths.stream()
-                .map(path -> new HashMap<String, Object>() {
-                    {
-                        put("userId", userId);
-                        put("path", path.toString());
-                    }
-                }).collect(Collectors.toList());
-        namedParameterJdbcTemplate.batchUpdate(sql, collect.toArray(new HashMap[paths.size()]));
-    }
-
-    public void setUserAvatar(int userId, String path) {
-        final String sql = "UPDATE USER SET avatar_path = :path WHERE id = :id";
-        Map<String, Object> params = new HashMap<>();
-        params.put("path", path);
-        params.put("id", userId);
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-    public List<UserFile> findUserDoc(final int userId) {
-        final String sql = "SELECT * FROM USER_DOC where user_id = :userId";
-        return namedParameterJdbcTemplate.query(sql, singletonMap("userId", userId), (resultSet, i) -> {
-            final UserFile userFile = new UserFile();
-            userFile.setId(resultSet.getInt("id"));
-            userFile.setUserId(resultSet.getInt("user_id"));
-            userFile.setPath(Paths.get(resultSet.getString("path")));
-            return userFile;
-        });
     }
 
     public UserRole getUserRoleById(Integer id) {
@@ -370,7 +337,7 @@ public class UserDaoImpl implements UserDao {
         String sql = "SELECT invoice_operation_permission_id " +
                 " FROM USER_CURRENCY_INVOICE_OPERATION_PERMISSION " +
                 " WHERE user_id = :user_id AND currency_id = :currency_id AND operation_direction = :operation_direction";
-        Map<String, Object> params = new HashMap<String,Object>() {{
+        Map<String, Object> params = new HashMap<String, Object>() {{
             put("user_id", userId);
             put("currency_id", currencyId);
             put("operation_direction", invoiceOperationDirection.name());
@@ -393,7 +360,7 @@ public class UserDaoImpl implements UserDao {
     public void updatePinByUserEmail(String userEmail, String pin, NotificationMessageEventEnum event) {
         String sql = String.format("UPDATE USER SET %s_pin = :pin " +
                 "WHERE USER.email = :email", event.name().toLowerCase());
-        Map<String, Object> namedParameters = new HashMap<String,Object>() {{
+        Map<String, Object> namedParameters = new HashMap<String, Object>() {{
             put("email", userEmail);
             put("pin", pin);
         }};
@@ -408,14 +375,5 @@ public class UserDaoImpl implements UserDao {
             return null;
         }
         return result.get(0);
-    }
-
-    @Override
-    public UserRole getUserRoleByEmail(String email) {
-        String sql = "select USER_ROLE.name as role_name from USER " +
-                "inner join USER_ROLE on USER.roleid = USER_ROLE.id where USER.email = :email ";
-        Map<String, String> namedParameters = Collections.singletonMap("email", email);
-        return namedParameterJdbcTemplate.queryForObject(sql, namedParameters, (rs, row) ->
-                UserRole.valueOf(rs.getString("role_name")));
     }
 }

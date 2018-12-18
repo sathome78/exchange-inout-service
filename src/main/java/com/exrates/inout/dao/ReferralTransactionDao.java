@@ -1,4 +1,4 @@
-package com.exrates.inout.service;
+package com.exrates.inout.dao;
 
 import com.exrates.inout.domain.ReferralTransaction;
 import com.exrates.inout.domain.dto.MyReferralDetailedDto;

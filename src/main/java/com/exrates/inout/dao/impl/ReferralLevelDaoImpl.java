@@ -1,7 +1,7 @@
-package com.exrates.inout.service.impl;
+package com.exrates.inout.dao.impl;
 
+import com.exrates.inout.dao.ReferralLevelDao;
 import com.exrates.inout.domain.ReferralLevel;
-import com.exrates.inout.service.ReferralLevelDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,7 +25,7 @@ public class ReferralLevelDaoImpl implements ReferralLevelDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    protected static RowMapper<ReferralLevel> referralLevelRowMapper = (resultSet, i) -> {
+    public static RowMapper<ReferralLevel> referralLevelRowMapper = (resultSet, i) -> {
         final ReferralLevel result = new ReferralLevel();
         result.setPercent(resultSet.getBigDecimal("REFERRAL_LEVEL.percent"));
         result.setLevel(resultSet.getInt("REFERRAL_LEVEL.level"));
@@ -34,7 +34,7 @@ public class ReferralLevelDaoImpl implements ReferralLevelDao {
     };
 
     @Autowired
-    public ReferralLevelDaoImpl(@Qualifier(value = "masterTemplate")final NamedParameterJdbcTemplate jdbcTemplate) {
+    public ReferralLevelDaoImpl(@Qualifier(value = "masterTemplate") final NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -58,7 +58,7 @@ public class ReferralLevelDaoImpl implements ReferralLevelDao {
     @Override
     public BigDecimal getTotalLevelsPercent() {
         final String sql = "SELECT SUM(o.percent) as amount FROM REFERRAL_LEVEL o LEFT JOIN REFERRAL_LEVEL b ON o.level = b.level AND o.datetime < b.datetime WHERE b.datetime is NULL";
-        return jdbcTemplate.query(sql, resultSet ->  {
+        return jdbcTemplate.query(sql, resultSet -> {
             if (resultSet.next()) {
                 return resultSet.getBigDecimal("amount");
             }

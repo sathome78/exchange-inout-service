@@ -1,8 +1,12 @@
 package com.exrates.inout.dao;
 
 
-import com.exrates.inout.domain.CoreWalletDto;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyAutoParamDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
+import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.main.Merchant;
@@ -13,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MerchantDao {
-
 
     Merchant create(Merchant merchant);
 
@@ -37,35 +40,9 @@ public interface MerchantDao {
 
     List<Integer> findCurrenciesIdsByType(List<String> processTypes);
 
-    List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes);
-
-    void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw);
-
-    void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType);
-
-    void setBlockForAllNonTransfer(OperationType operationType);
-
-    boolean isBlockStateBackupValid(OperationType operationType);
-
-    boolean isBlockStateValid(OperationType operationType);
-
-    void backupBlockState(OperationType operationType);
-
-    void restoreBlockState(OperationType operationType);
-
-    void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus);
-
     boolean checkMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType);
 
-    void setAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId, Boolean withdrawAutoEnabled, Integer withdrawAutoDelaySeconds, BigDecimal withdrawAutoThresholdAmount);
-
     MerchantCurrencyAutoParamDto findAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
-
-    List<String> retrieveBtcCoreBasedMerchantNames();
-
-    Optional<CoreWalletDto> retrieveCoreWalletByMerchantName(String merchantName);
-
-    List<CoreWalletDto> retrieveCoreWallets();
 
     List<MerchantCurrencyLifetimeDto> findMerchantCurrencyWithRefillLifetime();
 
@@ -76,8 +53,6 @@ public interface MerchantDao {
     boolean getSubtractFeeFromAmount(Integer merchantId, Integer currencyId);
 
     void setSubtractFeeFromAmount(Integer merchantId, Integer currencyId, boolean subtractFeeFromAmount);
-
-    Optional<String> getCoreWalletPassword(String merchantName, String currencyName);
 
     List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId);
 }

@@ -2,7 +2,13 @@ package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.MerchantDao;
 import com.exrates.inout.domain.CoreWalletDto;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyAutoParamDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
+import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
+import com.exrates.inout.domain.dto.MerchantImageShortenedDto;
+import com.exrates.inout.domain.dto.TransferMerchantApiDto;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.UserRole;
@@ -24,7 +30,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @Repository
@@ -264,7 +274,6 @@ public class MerchantDaoImpl implements MerchantDao {
         }
     }
 
-
     @Override
     public List<TransferMerchantApiDto> findTransferMerchants() {
         String sql = "SELECT id, name, service_bean_name FROM MERCHANT WHERE process_type = 'TRANSFER'";
@@ -291,130 +300,6 @@ public class MerchantDaoImpl implements MerchantDao {
     }
 
     @Override
-    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
-        final String sql = "SELECT MERCHANT.id as merchant_id, MERCHANT.name AS merchant_name, " +
-                " CURRENCY.id AS currency_id, CURRENCY.name AS currency_name, " +
-                " MERCHANT_CURRENCY.merchant_input_commission, MERCHANT_CURRENCY.merchant_output_commission, MERCHANT_CURRENCY.merchant_transfer_commission, " +
-                " MERCHANT_CURRENCY.withdraw_block, MERCHANT_CURRENCY.refill_block, MERCHANT_CURRENCY.transfer_block, " +
-                " MERCHANT_CURRENCY.merchant_fixed_commission, " +
-                " MERCHANT_CURRENCY.withdraw_auto_enabled, MERCHANT_CURRENCY.withdraw_auto_delay_seconds, MERCHANT_CURRENCY.withdraw_auto_threshold_amount," +
-                " MERCHANT_CURRENCY.subtract_merchant_commission_for_withdraw " +
-                " FROM MERCHANT " +
-                "JOIN MERCHANT_CURRENCY ON MERCHANT.id = MERCHANT_CURRENCY.merchant_id " +
-                "JOIN CURRENCY ON MERCHANT_CURRENCY.currency_id = CURRENCY.id AND CURRENCY.hidden != 1 " +
-                (processTypes.isEmpty() ? "" : "WHERE MERCHANT.process_type IN (:process_types) ") +
-                "ORDER BY merchant_id, currency_id";
-        Map<String, List<String>> params = new HashMap<String, List<String>>();
-        params.put("process_types", processTypes);
-
-
-        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            MerchantCurrencyOptionsDto dto = new MerchantCurrencyOptionsDto();
-            dto.setMerchantId(rs.getInt("merchant_id"));
-            dto.setCurrencyId(rs.getInt("currency_id"));
-            dto.setMerchantName(rs.getString("merchant_name"));
-            dto.setCurrencyName(rs.getString("currency_name"));
-            dto.setInputCommission(rs.getBigDecimal("merchant_input_commission"));
-            dto.setOutputCommission(rs.getBigDecimal("merchant_output_commission"));
-            dto.setTransferCommission(rs.getBigDecimal("merchant_transfer_commission"));
-            dto.setIsRefillBlocked(rs.getBoolean("refill_block"));
-            dto.setIsWithdrawBlocked(rs.getBoolean("withdraw_block"));
-            dto.setIsTransferBlocked(rs.getBoolean("transfer_block"));
-            dto.setMinFixedCommission(rs.getBigDecimal("merchant_fixed_commission"));
-            dto.setWithdrawAutoEnabled(rs.getBoolean("withdraw_auto_enabled"));
-            dto.setWithdrawAutoDelaySeconds(rs.getInt("withdraw_auto_delay_seconds"));
-            dto.setWithdrawAutoThresholdAmount(rs.getBigDecimal("withdraw_auto_threshold_amount"));
-            dto.setIsMerchantCommissionSubtractedForWithdraw(rs.getBoolean("subtract_merchant_commission_for_withdraw"));
-            return dto;
-        });
-    }
-
-    @Override
-    public void toggleSubtractMerchantCommissionForWithdraw(Integer merchantId, Integer currencyId, boolean subtractMerchantCommissionForWithdraw) {
-        String sql = "UPDATE MERCHANT_CURRENCY SET subtract_merchant_commission_for_withdraw = :subtract_merchant_commission " +
-                " WHERE merchant_id = :merchant_id AND currency_id = :currency_id ";
-        Map<String, Object> params = new HashMap<>();
-        params.put("subtract_merchant_commission", subtractMerchantCommissionForWithdraw);
-        params.put("merchant_id", merchantId);
-        params.put("currency_id", currencyId);
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-    @Override
-    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
-        String fieldToToggle = resolveBlockFieldByOperationType(operationType);
-        String sql = "UPDATE MERCHANT_CURRENCY SET " + fieldToToggle + " = !" + fieldToToggle +
-                " WHERE merchant_id = :merchant_id AND currency_id = :currency_id ";
-        Map<String, Integer> params = new HashMap<>();
-        params.put("merchant_id", merchantId);
-        params.put("currency_id", currencyId);
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-    @Override
-    public void setBlockForAllNonTransfer(OperationType operationType) {
-
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "UPDATE MERCHANT_CURRENCY MC " +
-                "JOIN MERCHANT M ON MC.merchant_id = M.id " +
-                "SET MC." + blockField + " = 1 WHERE M.process_type != 'TRANSFER'";
-        jdbcTemplate.update(sql);
-    }
-
-    @Override
-    public void backupBlockState(OperationType operationType) {
-
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "UPDATE MERCHANT_CURRENCY MC " +
-                "JOIN MERCHANT M ON MC.merchant_id = M.id " +
-                "SET MC." + blockField +"_backup"+ " = MC." + blockField +" WHERE M.process_type != 'TRANSFER'";
-        jdbcTemplate.update(sql);
-    }
-
-    @Override
-    public void restoreBlockState(OperationType operationType) {
-
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "UPDATE MERCHANT_CURRENCY MC " +
-                "JOIN MERCHANT M ON MC.merchant_id = M.id " +
-                "SET MC." + blockField + " = MC." + blockField + "_backup" + " WHERE M.process_type != 'TRANSFER'";
-        jdbcTemplate.update(sql);
-    }
-
-    @Override
-    public boolean isBlockStateBackupValid(OperationType operationType) {
-
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "select distinct MC." + blockField + "_backup from MERCHANT_CURRENCY MC " +
-                "JOIN MERCHANT M ON MC.merchant_id = M.id " +
-                "WHERE M.process_type != 'TRANSFER'";
-        return jdbcTemplate.queryForList(sql).size() > 1;
-    }
-
-    @Override
-    public boolean isBlockStateValid(OperationType operationType) {
-
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "select distinct MC." + blockField + " from MERCHANT_CURRENCY MC " +
-                "JOIN MERCHANT M ON MC.merchant_id = M.id " +
-                "WHERE M.process_type != 'TRANSFER'";
-        return jdbcTemplate.queryForList(sql).size() > 1;
-    }
-
-
-    @Override
-    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
-        String blockField = resolveBlockFieldByOperationType(operationType);
-        String sql = "UPDATE MERCHANT_CURRENCY SET " + blockField + " = :block" +
-                " WHERE merchant_id = :merchant_id AND currency_id = :currency_id ";
-        Map<String, Integer> params = new HashMap<>();
-        params.put("block", blockStatus ? 1 : 0);
-        params.put("merchant_id", merchantId);
-        params.put("currency_id", currencyId);
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-    @Override
     public boolean checkMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
         String blockField = resolveBlockFieldByOperationType(operationType);
         String sql = "SELECT " + blockField + " FROM MERCHANT_CURRENCY " +
@@ -438,32 +323,9 @@ public class MerchantDaoImpl implements MerchantDao {
                 blockField = "transfer_block";
                 break;
             default:
-                throw new IllegalArgumentException("Incorrect operation type: "+operationType);
+                throw new IllegalArgumentException("Incorrect operation type: " + operationType);
         }
         return blockField;
-    }
-
-    @Override
-    public void setAutoWithdrawParamsByMerchantAndCurrency(
-            Integer merchantId,
-            Integer currencyId,
-            Boolean withdrawAutoEnabled,
-            Integer withdrawAutoDelaySeconds,
-            BigDecimal withdrawAutoThresholdAmount
-    ) {
-        String sql = "UPDATE MERCHANT_CURRENCY SET " +
-                " withdraw_auto_enabled = :withdraw_auto_enabled, " +
-                " withdraw_auto_delay_seconds = :withdraw_auto_delay_seconds, " +
-                " withdraw_auto_threshold_amount = :withdraw_auto_threshold_amount " +
-                " WHERE merchant_id = :merchant_id AND currency_id = :currency_id ";
-        Map<String, Object> params = new HashMap<String, Object>() {{
-            put("withdraw_auto_enabled", withdrawAutoEnabled);
-            put("withdraw_auto_delay_seconds", withdrawAutoDelaySeconds);
-            put("withdraw_auto_threshold_amount", withdrawAutoThresholdAmount);
-            put("merchant_id", merchantId);
-            put("currency_id", currencyId);
-        }};
-        namedParameterJdbcTemplate.update(sql, params);
     }
 
     @Override
@@ -488,46 +350,12 @@ public class MerchantDaoImpl implements MerchantDao {
     }
 
     @Override
-    public List<String> retrieveBtcCoreBasedMerchantNames() {
-        String sql = "SELECT name FROM MERCHANT JOIN CRYPTO_CORE_WALLET core ON MERCHANT.id = core.merchant_id";
-        return jdbcTemplate.queryForList(sql, String.class);
-    }
-
-    @Override
-    public Optional<CoreWalletDto> retrieveCoreWalletByMerchantName(String merchantName) {
-        String sql = "SELECT ccw.id, ccw.merchant_id, ccw.currency_id, m.name AS merchant_name, " +
-                "c.name AS currency_name, c.description AS currency_description, ccw.title_code AS title " +
-                "FROM CRYPTO_CORE_WALLET ccw " +
-                "  JOIN MERCHANT m ON ccw.merchant_id = m.id " +
-                "  JOIN CURRENCY c ON ccw.currency_id = c.id " +
-                "WHERE m.name = :merchant_name";
-        try {
-            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, Collections.singletonMap("merchant_name", merchantName), coreWalletRowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public List<CoreWalletDto> retrieveCoreWallets() {
-        String sql = "SELECT ccw.id, ccw.merchant_id, ccw.currency_id, m.name AS merchant_name, " +
-                " c.name AS currency_name, c.description AS currency_description, ccw.title_code AS title " +
-                "FROM CRYPTO_CORE_WALLET ccw " +
-                "  JOIN MERCHANT m ON ccw.merchant_id = m.id " +
-                "  JOIN CURRENCY c ON ccw.currency_id = c.id " +
-                "ORDER BY currency_name ASC;";
-
-        return jdbcTemplate.query(sql, coreWalletRowMapper);
-
-    }
-
-    @Override
     public List<MerchantCurrencyLifetimeDto> findMerchantCurrencyWithRefillLifetime() {
         String sql = "SELECT currency_id, merchant_id, refill_lifetime_hours " +
                 " FROM MERCHANT_CURRENCY " +
                 " WHERE refill_lifetime_hours > 0 ";
         return jdbcTemplate.query(sql, (rs, i) -> {
-            MerchantCurrencyLifetimeDto result =  new MerchantCurrencyLifetimeDto();
+            MerchantCurrencyLifetimeDto result = new MerchantCurrencyLifetimeDto();
             result.setCurrencyId(rs.getInt("currency_id"));
             result.setMerchantId(rs.getInt("merchant_id"));
             result.setRefillLifetimeHours(rs.getInt("refill_lifetime_hours"));
@@ -547,7 +375,7 @@ public class MerchantDaoImpl implements MerchantDao {
             put("currency_id", currencyId);
         }};
         return namedParameterJdbcTemplate.queryForObject(sql, params, (rs, i) -> {
-            MerchantCurrencyLifetimeDto result =  new MerchantCurrencyLifetimeDto();
+            MerchantCurrencyLifetimeDto result = new MerchantCurrencyLifetimeDto();
             result.setCurrencyId(rs.getInt("currency_id"));
             result.setMerchantId(rs.getInt("merchant_id"));
             result.setRefillLifetimeHours(rs.getInt("refill_lifetime_hours"));
@@ -570,7 +398,7 @@ public class MerchantDaoImpl implements MerchantDao {
             put("currency_id", currencyId);
         }};
         return namedParameterJdbcTemplate.queryForObject(sql, params, (rs, i) -> {
-            MerchantCurrencyScaleDto result =  new MerchantCurrencyScaleDto();
+            MerchantCurrencyScaleDto result = new MerchantCurrencyScaleDto();
             result.setCurrencyId(rs.getInt("currency_id"));
             result.setMerchantId(rs.getInt("merchant_id"));
             result.setScaleForRefill((Integer) rs.getObject("max_scale_for_refill"));
@@ -602,20 +430,6 @@ public class MerchantDaoImpl implements MerchantDao {
     }
 
     @Override
-    public Optional<String> getCoreWalletPassword(String merchantName, String currencyName) {
-        String sql = "SELECT passphrase FROM CRYPTO_CORE_WALLET WHERE merchant_id = (SELECT id FROM MERCHANT WHERE name = :merchant_name) " +
-                "AND currency_id = (SELECT id FROM CURRENCY WHERE name = :currency_name)";
-        Map<String, String> params = new HashMap<>();
-        params.put("merchant_name", merchantName);
-        params.put("currency_name", currencyName);
-        try {
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, params, String.class));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
     public List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId) {
         final String sql = "SELECT M.name AS merchant_name, M.id AS merchant_id, CUR.name AS currency_name, CUR.id AS currency_id," +
                 "CUR.max_scale_for_refill, CUR.max_scale_for_withdraw, CUR.max_scale_for_transfer " +
@@ -636,6 +450,5 @@ public class MerchantDaoImpl implements MerchantDao {
             return dto;
         });
     }
-
 }
 

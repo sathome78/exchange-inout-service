@@ -22,7 +22,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
@@ -93,7 +97,6 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         return (int) keyHolder.getKey().longValue();
     }
 
-
     @Override
     public Optional<TransferRequestFlatDto> getFlatByIdAndBlock(int id) {
         blockById(id);
@@ -158,20 +161,6 @@ public class TransferRequestDaoImpl implements TransferRequestDao {
         params.put("recipient_id", recipientId);
         params.put("id", id);
         jdbcTemplate.update(sql, params);
-    }
-
-    @Override
-    public List<TransferRequestFlatDto> findRequestsByStatusAndMerchant(Integer merchantId, List<Integer> statusId) {
-        String sql = "SELECT TRANSFER_REQUEST.* " +
-                " FROM TRANSFER_REQUEST " +
-                " WHERE TRANSFER_REQUEST.merchant_id = :merchant_id  AND TRANSFER_REQUEST.status_id IN (:statuses)";
-        Map<String, Object> params = new HashMap<String, Object>() {{
-            put("merchant_id", merchantId);
-            put("statuses", statusId);
-        }};
-        return jdbcTemplate.query(sql, params, (rs, i) -> {
-            return transferRequestFlatDtoRowMapper.mapRow(rs, i);
-        });
     }
 
     @Override
