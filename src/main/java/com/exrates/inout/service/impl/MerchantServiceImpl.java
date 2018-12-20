@@ -77,20 +77,10 @@ public class MerchantServiceImpl implements MerchantService {
     private CommissionService commissionService;
     @Autowired
     private CurrencyService currencyService;
-    @Autowired
-    @Qualifier("bitcoinServiceImpl")
-    private BitcoinService bitcoinService;
 
     @Override
     public List<Merchant> findAll() {
         return merchantDao.findAll();
-    }
-
-    private Map<Integer, List<Merchant>> mapMerchantsToCurrency(List<Currency> currencies) {
-        return currencies.stream()
-                .map(Currency::getId)
-                .map(currencyId -> Pair.of(currencyId, merchantDao.findAllByCurrency(currencyId)))
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
     @Override

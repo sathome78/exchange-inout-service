@@ -14,4 +14,5 @@ public class OtherAunitProperty {
     private String mainAddress;
     private String mainAddressNum;
     private String ws;
+    private String pkPath;
 }

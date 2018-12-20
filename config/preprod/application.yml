@@ -136,17 +136,17 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\btc_backup\\
+    backup-folder: /data/.bitcoin/btc_backup/
     #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 18332
-      #      rpc-user:
-      #      rpc-password:
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 5158
       notification-block-port: 5159
@@ -161,12 +161,12 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\ltc_backup\\
+    backup-folder: /data/.litecoin-data/ltc_backup/
     wallet-password: pass123
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 19332
@@ -186,14 +186,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\dash_backup\\
+    backup-folder: /data/.bitcoin/dash_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: true
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 19998
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -211,14 +211,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\atb_backup\\
+    backup-folder: /opt/atbcoin/.atbcoin/backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 163.172.53.240
+      rpc-host: 127.0.0.1
       rpc-port: 28332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -226,7 +226,7 @@ bitcoin-coins:
       notification-alert-port: 5458
       notification-block-port: 5459
       notification-wallet-port: 5460
-  #      notification-instant-send-port:
+      notification-instant-send-port: 5461
   bch:
     merchant-name: Bitcoin Cash
     currency-name: BCH
@@ -236,12 +236,12 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bch_backup\\
+    backup-folder: /data/.bitcoin_cash/bch_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 38332
@@ -261,12 +261,12 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\doge_backup\\
+    backup-folder: /data/.dogecoin/doge_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 44555
@@ -291,7 +291,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 18444
@@ -316,9 +316,9 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 163.172.53.240
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 28234
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -336,14 +336,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\b2x_backup\\
+    backup-folder: /data/.bitcoin_cash/b2x_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 18552
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -366,7 +366,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 7116
@@ -386,14 +386,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\plc_backup\\
+    backup-folder: /data/.platincoin/plc_backup/
     wallet-password: a9qW7VEsE89XGGR4KV4ynsKuQ8hF5AZj
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: ec2-18-216-0-44.us-east-2.compute.amazonaws.com
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 11982
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -411,15 +411,15 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\b2x_backup\\
+    backup-folder: /data/.bitcoin_x/bcx_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 19004
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-port: 19005
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
@@ -437,20 +437,20 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.bitcoin_i/bci_backup/
-    wallet-password: UhcX4rh9uHjGhmPNnH4s5QMBZdYgp34G
+    wallet-password: dZP?c7-{67zGSAKD=7fQ
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 38980
+      rpc-port: 8331
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 8330
-      notification-block-port: 8332
-      notification-wallet-port: 8333
+      notification-alert-port: 6858
+      notification-block-port: 6859
+      notification-wallet-port: 6860
   #      notification-instant-send-port:
   occ:
     merchant-name: OCC
@@ -461,14 +461,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\occ_backup\\
+    backup-folder: /data/.octoin/occ_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 38562
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -486,15 +486,15 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\btcz_backup\\
+    backup-folder: /data/.bitcoinz/btcz_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 192.168.0.109
-      rpc-port: 1979
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-port: 11979
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
@@ -511,14 +511,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\lcc_backup\\
+    backup-folder: /data/.litecoincash/lcc_backup/
     wallet-password: pass123
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 11980
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -536,15 +536,15 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.bitcoin_atom/bca_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 17443
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-port: 17332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
@@ -561,14 +561,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.bitcoin_private/btcp_backup/
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 17932
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -586,21 +586,21 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.shopzcoin/szc_backup/
     wallet-password: pass123
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 14525
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 4525
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 6958
-      notification-block-port: 6959
-      notification-wallet-port: 6960
+      notification-alert-port: 6968
+      notification-block-port: 6969
+      notification-wallet-port: 6970
   #      notification-instant-send-port:
   btx:
     merchant-name: BTX
@@ -616,16 +616,16 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 11981
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 6768
-      notification-block-port: 6769
-      notification-wallet-port: 6770
+      notification-alert-port: 6758
+      notification-block-port: 6759
+      notification-wallet-port: 6760
   #      notification-instant-send-port:
   xbd:
     merchant-name: BitDollar
@@ -636,14 +636,14 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\xbd_backup\\
+    backup-folder: /data/.bitdollar/xbd_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 18227
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -661,12 +661,12 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.beetlecoin/beet_backup/
     wallet-password: pass123
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 47620
@@ -686,17 +686,17 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.nycoin/nyc_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 18823
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 7768
       notification-block-port: 7769
@@ -716,7 +716,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 16001
@@ -736,14 +736,14 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\fgc_backup\\
+    backup-folder: /data/.fantasygold/fgc_backup/
     wallet-password: pass123
     node:
-      zmq-enabled: true
-      support-instant-send: true
-      enabled: false
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 57814
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -766,7 +766,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19105
@@ -786,17 +786,17 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: true
-    backup-folder: ${user.home}\\bca_backup\\
+    backup-folder: /data/.bitcoinreco/breco_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 6522
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 8981
       notification-block-port: 8982
@@ -811,17 +811,17 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\fto_backup\\
-    #    wallet-password:
+    backup-folder: /data/.futurocoin/fto_backup/
+    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: true
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 9008
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 25658
       notification-block-port: 25659
@@ -841,7 +841,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19001
@@ -866,9 +866,9 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-14-115.us-east-2.compute.internal
       rpc-port: 10306
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -891,12 +891,12 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-3-255.us-east-2.compute.internal
       rpc-port: 9332
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 7168
       notification-block-port: 7169
@@ -911,17 +911,17 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.breakbits/brb_backup/
+    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 6522
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-host: ip-172-10-13-59.us-east-2.compute.internal
+      rpc-port: 39186
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 25858
       notification-block-port: 25859
@@ -939,11 +939,11 @@ bitcoin-coins:
     backup-folder: /data/.rizwave/riz_backup/
     #    wallet-password:
     node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
+      zmq-enabled: true
+      support-instant-send: true
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-10-13-39.us-east-2.compute.internal
       rpc-port: 27198
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -966,7 +966,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.31.0.50
       rpc-port: 16715
@@ -991,7 +991,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.10.13.196
       rpc-port: 25572
@@ -1016,9 +1016,9 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.3.116
+      rpc-host: 172.10.13.231
       rpc-port: 10007
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1041,7 +1041,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.31.11.23
       rpc-port: 1777
@@ -1116,7 +1116,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.10.13.78
       rpc-port: 11004
@@ -1141,7 +1141,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.10.13.163
       rpc-port: 7268
@@ -1198,9 +1198,9 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 10901
-      notification-wallet-port: 10902
+      #      notification-alert-port: 10900
+      notification-block-port: 10900
+      notification-wallet-port: 10901
   #      notification-instant-send-port:
   nsr:
     merchant-name: NuShares
@@ -1211,12 +1211,12 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\nsr_backup\\
+    backup-folder: /data/.nubits/nsr_backup/
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 14001
@@ -1241,7 +1241,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 8999
@@ -1268,10 +1268,10 @@ bitcoin-coins:
       support-instant-send: false
       enabled: false
       rpc-protocol: http
-      rpc-host: 172.31.14.169
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
       rpc-port: 12083
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 6778
       notification-block-port: 6779
@@ -1286,17 +1286,17 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\hcash_backup\\
-    wallet-password: a9qW7VEsE89XGGR4KV4ynsKuQ8hF5AZj
+    backup-folder: /data/.hcash/hcash_backup
+    wallet-password: tMVPjT6DaumNaMYAc9sehc2p2jt6VrFzsaN2
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.14.169
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 12183
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
       notification-alert-port: 6788
       notification-block-port: 6789
@@ -1311,12 +1311,11 @@ ethereum-coins:
     node:
       currency: Ethereum
       #      url-our-node:
-      url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
-      #      url: http://18.216.0.44:8545
+      url: http://18.216.0.44:8545
       #      url: http://18.216.0.44:8549
       #      url: http://13.59.242.131:8545
       #      url: http://13.59.242.131:8549
-      destination-dir: D:\\Ethereum1\\Original\\keystore\\
+      destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
       #      main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
@@ -1334,8 +1333,8 @@ ethereum-coins:
   #    node:
   #      currency: Ethereum
   #      url-our-node:
-  #      url: http://52.208.46.161:8546
-  #      destination-dir: D:\\Ethereum1\\Original\\testnet\\keystore\\
+  #      url: http://localhost:8545/
+  #      destination-dir: //data//ethereum//testnet//keystore//
   #      password: 061372f91f949effb934abadff5f0636de09113d
   #      main-address: 0xa8522390c0Ae551028fbfb5ef97A1aF13F5492a8
   #      transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
@@ -1352,7 +1351,7 @@ ethereum-coins:
       currency: Ethereum Classic
       #      url-our-node:
       url: http://localhost:8101
-      destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
+      destination-dir: //data//ethereum_classic//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
       #      transfer-acc-address:
@@ -1369,7 +1368,7 @@ ethereum-coins:
       currency: EtherZero
       #      url-our-node:
       url: http://18.216.0.44:8102
-      destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
+      destination-dir: //data//etherzero//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
       #      transfer-acc-address:
@@ -1385,8 +1384,8 @@ ethereum-coins:
     node:
       currency: CLO
       #      url-our-node:
-      url: http://13.59.242.131:8104
-      destination-dir: D:\\Ethereum1\\callisto\\keystore\\
+      url: http://localhost:8104
+      destination-dir: //data//callisto//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
       #      transfer-acc-address:
@@ -1402,8 +1401,8 @@ ethereum-coins:
     node:
       currency: B2G
       #      url-our-node:
-      url: http://13.59.242.131:8105
-      destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
+      url: http://localhost:8105
+      destination-dir: //data//bitcoiin2g//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
       #      transfer-acc-address:
@@ -1420,7 +1419,7 @@ ethereum-coins:
       currency: GOL
       #      url-our-node:
       url: http://172.31.7.222:8106
-      destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
+      destination-dir: //data//goldiam//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
       #      transfer-acc-address:
@@ -1437,7 +1436,7 @@ ethereum-coins:
       currency: CNET
       #      url-our-node:
       url: http://172.31.4.189:8107
-      destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
+      destination-dir: //data//contractnet//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
       #      transfer-acc-address:
@@ -1454,7 +1453,7 @@ ethereum-coins:
       currency: NTY
       #      url-our-node:
       url: http://172.31.1.74:8108
-      destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
+      destination-dir: //data//nexty//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
       #      transfer-acc-address:
@@ -1756,8 +1755,8 @@ lisk-coins:
     node:
       host: http://51.254.246.147
       port: 8198
-      address: 9638796769033749229
-      secret: actress december enable fetch carry benefit nice also culture pilot subway slow
+      address: 2153431705828817770
+      secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
@@ -1766,7 +1765,7 @@ lisk-coins:
   rise:
     merchant-name: RiseVision
     currency-name: RISE
-    min-confirmations: 30
+    min-confirmations: 300
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
@@ -1776,7 +1775,7 @@ lisk-coins:
       address: 13036025167539692296R
       secret:
       tx-sort-prefix:
-      tx-query-limit: 10000
+      tx-query-limit: 1000
       tx-count-node-type: STRING
       port-get-account: 18111
       port-send-tx: 6990
@@ -1788,7 +1787,7 @@ lisk-coins:
     create-tx-endpoint: /devnet/transaction
     broadcast-tx-endpoint: /devnet/broadcast
     node:
-      host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
+      host: http://ip-172-31-30-170.us-east-2.compute.internal
       port: 4002
       address: DPYyyrKsaiWEgjmHxxTJBMi7zahaAsmxa8
       secret: local repair certain naive antique orient infant dry wealth city remove verb
@@ -1804,13 +1803,13 @@ waves-coins:
     currency-name: WAVES
     min-confirmations: 5
     node:
-      host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
+      host: http://ip-172-31-30-170.us-east-2.compute.internal
       port: 6869
       api-key: ridethewaves!
       main-account: 3N8DRLQKAc9arr6q5G9AagYUExXLhDJeGH3
       process-delay: 1
       fee-account: 3MxE9izMhKiD3ANksRpvKfzPkjQ6F7ER1R7
-      notify-email: golvazin@gmail.com
+      notify-email: mdovgodko@gmail.com
       token-ids:
         GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
   lunes:
@@ -1818,10 +1817,10 @@ waves-coins:
     currency-name: LUNES
     min-confirmations: 5
     node:
-      host: http://127.0.0.1
+      host: http://ip-172-31-30-170.us-east-2.compute.internal
       port: 6869
       api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
-      main-account: 37pE94tYCosrDkkQaHRxL32RkMLGnL427d4
+      main-account: 385Gg9Bp7JAwtDRpi5aHTwup6cbYoYwNP1v
       process-delay: 1
       fee-account: 37tDKNXJ2u9Jt5d3AYSeSYv35Ay7qa6xXxk
       notify-email: mdovgodko@gmail.com
@@ -1834,7 +1833,7 @@ neo-coins:
     currency-name: NEO
     min-confirmations: 10
     endpoint: http://172.31.30.170:20332
-    address: AMF4Yqv1PMry2BDc9ELttPsMsohaw2D3fT
+    address: AUToaKW3EiE818oHXEi8XaNq2qtb8VhTbx
   kaze:
     merchant-name: KAZE
     currency-name: KAZE
@@ -1865,7 +1864,7 @@ monero-coins:
       port: 18082
       login: monero_rpc
       password: asdfretrgh2423534wrf
-      mode: test
+      mode: main
       log: monero_log
   dit:
     merchant-name: DIT
@@ -1877,7 +1876,7 @@ monero-coins:
       port: 18085
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: test
+      mode: main
       log: ditcoin_log
   sumo:
     merchant-name: SUMO
@@ -1885,11 +1884,11 @@ monero-coins:
     min-confirmations: 10
     decimals: 9
     node:
-      host: 127.0.0.1
+      host: 172.31.6.102
       port: 18087
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: test
+      mode: main
       log: sumokoin_log
 
 xem-coins:
@@ -1935,15 +1934,15 @@ other-coins:
     endpoint: http://127.0.0.1:38891
     user: wayfarer88
     password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-    min-confirmations: 2
+    min-confirmations: 20
     min-transfer-amount: 1
     main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
     wallet-password: jet2103
     backup-folder: /data/.qtum/qtum_backup/
   achain:
-    url: http://127.0.0.1:8078/rpc
+    url: http://172.31.14.101:8078/rpc
     rpc-user: admin:123456
-    main-address: ACT54nD2uNstDg3AYfGJJ9g8ZxiC4RPs7EAG
+    main-address: ACT2Jqvi9mJUfbJNvtmxpK8jmaZZNBtK9Spj
     account-name: newone
   adk:
     rpc-host: http://172.10.13.150:16322
@@ -1958,12 +1957,13 @@ other-coins:
     main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
     main-address-num: 1.2.23845
     ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
+    pk-path: /opt/aunit/pk.properies
   edc:
     token: 0190804484737779216097337067072357
-    main-account: ajet2103
+    main-account: exrates-in
     #    hook: http://91.142.174.34:9000/merchants/edc/payment/received
     #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
-    hook: http://193.93.79.99:9000/merchants/edc/payment/received
+    hook: http://exrates.tech/merchants/edc/payment/received
     history: https://receive.edinarcoin.com/history/
     blockchain-host-fast: http://localhost:8091
     blockchain-host-delayed: http://localhost:8092
@@ -1975,19 +1975,19 @@ other-coins:
     account-private-key: 5J3BM7vgXuxzwJrLK6rhx9umzZQbezS17h7ApwAiPJ55Lz3LtYt
   iota:
     protocol: http
-    host: ec2-18-191-212-3.us-east-2.compute.amazonaws.com
+    host: 163.172.77.155
     port: 14265
     seed: DQWNLPIJHNFNFTHNWNVCXZPIJJASBERYTTBNCMNNDLKSMNXBGWOURBCSSSDMHGBALUIOERHSXMNCHFBKS
     message: CREATEADDRESS
     tag: EXRATES99999999999999999999
-    mode: main
+    mode: test
   decred:
-    rpc-user: Maks1
-    rps-password: HL4/aPb39FjIDDDULO+pTXa7WfyrndSy1
-    server-ws-url: ws://localhost:9109/ws
-    host: localhost
+    rpc-user: JtI32IbdL9k6KFD95t0l/deQvZg=
+    rps-password: YxMwHd2rAKpyELiu9B4iRF2L6rs=
+    server-ws-url: ws://172.31.0.148:9109/ws
+    host: 172.10.13.82
     port: 9111
-    cert-path: D:/work/ca.crt
+    cert-path: /opt/ca.crt
   nem:
     ncc-server-url: http://127.0.0.1:8989
     #    nis-server-url-receive-test: http://104.128.226.60:7890
@@ -1999,7 +1999,7 @@ other-coins:
     #    public-key-test: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
     #    address-test: TBXU7F3WQJQQRPWJ53UJUYI6IJL2A34YESG7FVA5
     private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
-    public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
+    public-key: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
   ripple:
     rippled-rpc-url: https://api.altnet.rippletest.net:51234
@@ -2007,10 +2007,10 @@ other-coins:
     account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
     account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
   stellar:
-    #    horizon-url-1: https://horizon-testnet.stellar.org/
-    #    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
-    #    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
-    #    mode-1: TEST
+    horizon-url-1: https://horizon-testnet.stellar.org/
+    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
+    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
+    mode-1: TEST
     horizon-url: https://horizon.stellar.org:443
     account-name: GBPIO53XH7LUFCLWVQEAPF6XRL5R3LJE77LQX77HRZIDFCR5LQMFVEER
     account-seed: SCEEBOQXMZHYBQSOEK3YZAKVZA6O5UCJRKYCZW2FK6VGN42KV76RZH3I
@@ -2043,9 +2043,9 @@ payment-system-merchants:
     url: https://wallet.advcash.com/sci/
     accountId: exratesnew@gmail.com
     payeeName: Exrates
-    paymentSuccess: http://127.0.0.1:8080/merchants/advcash/payment/success
-    paymentFailure: http://127.0.0.1:8080/merchants/advcash/payment/failure
-    paymentStatus: http://127.0.0.1:8080/merchants/advcash/payment/status
+    paymentSuccess: http://dev.exrates.tech/merchants/advcash/payment/success
+    paymentFailure: http://dev.exrates.tech/merchants/advcash/payment/failure
+    paymentStatus: http://dev.exrates.tech/merchants/advcash/payment/status
     USDAccount: U143527856819
     EURAccount: E971693091461
     payeePassword: s3Jb8$P69o
@@ -2053,8 +2053,8 @@ payment-system-merchants:
   interkassa:
     url: https://sci.interkassa.com/
     checkoutId: 57163a9b3d1eafe27b8b456a
-    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
-    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
+    statustUrl: http://dev.exrates.tech/merchants/interkassa/payment/status
+    successtUrl: http://dev.exrates.tech/merchants/interkassa/payment/success
     secretKey: 7pKC765ZsUGGHQIN
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
@@ -2071,9 +2071,9 @@ payment-system-merchants:
     payeeAccountEUR: E77102839294634
     payeePassword: yT$8SNU99$Wr
     payeeName: Exrates
-    paymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/success
-    noPaymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/failure
-    statustUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/status
+    paymentUrl: http://dev.exrates.tech/merchants/nixmoney/payment/success
+    noPaymentUrl: http://dev.exrates.tech/merchants/nixmoney/payment/failure
+    statustUrl: http://dev.exrates.tech/merchants/nixmoney/payment/status
   okpay:
     receiver: OK220857576
     receiver-email: merchant@exrates.me
@@ -2091,9 +2091,9 @@ payment-system-merchants:
     accountId: S404847
     accountPass: 66RwHvFG
     payeeName: Exrates
-    paymentSuccess: http://193.93.79.99:9000/merchants/perfectmoney/payment/success
-    paymentFailure: http://193.93.79.99:9000/merchants/perfectmoney/payment/failure
-    paymentStatus: http://193.93.79.99:9000/merchants/perfectmoney/payment/status
+    paymentSuccess: http://dev.exrates.tech/merchants/perfectmoney/payment/success
+    paymentFailure: http://dev.exrates.tech/merchants/perfectmoney/payment/failure
+    paymentStatus: http://dev.exrates.tech/merchants/perfectmoney/payment/status
     USDAccount: U16666480
     EURAccount: E15714655
     alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
@@ -2104,25 +2104,21 @@ payment-system-merchants:
     details: Exrates input
     ext_details: Exrates input transaction
     pay-way: privat24
-    return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
-    server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
+    return-url: http://dev.exrates.tech/merchants/privat24/payment/success
+    server-url: http://dev.exrates.tech/merchants/privat24/payment/status
     password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
   yandexkassa:
     shopId: 51644
     scid: 49019
-    shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success
+    shopSuccessURL: https://dev.exrates.tech/merchants/yandex_kassa/payment/success
     paymentType: PC
     key: 4aL0IrvNCKmX3RMU6m1AzVbTxpKHxb1lTW5cObkxdv3pCkuWOyoBlYS
     password: 777Sifama07
   yandexmoney:
     clientId: B9F1C9CADAB7FA6E12033551F482BD188A98081E60A733D6654C3B2EE8684CF7
     token: 410013968070382.E3A5AFAD10AD08A5F4667FA711E5CDFCF88D09AA47BA8A8D0E497D3CCF9C21032F3C0957C06EB4EE354A7447B64F13DF98280D7AA4EFF4CB0A0E9885DC1167178DB706D4BABF45468C59F7919813B8C115B1AA9E0E3D0AD0F10A97334C63B0D76E065A2C7D134720344B4D19339CA098E9A73FC47F9FD894E6F661C1F0E4FA8F
-    redirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access
-    apiRedirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access?mobile=true
+    redirectURI: http://dev.exrates.tech/merchants/yandexmoney/token/access
+    apiRedirectURI: http://dev.exrates.tech/merchants/yandexmoney/token/access?mobile=true
     responseType: code
     mediaType: application/x-www-form-urlencoded
     companyWalletId: 410013968070382
-
-stellar:
-  slt:
-    emitter: GC7Q4726KHPFK3LNMCSYJZ3YT7A2BFMGKEQYRLLTA2TSODUK3HBK2MOB
