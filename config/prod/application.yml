@@ -273,7 +273,6 @@ bitcoin-coins:
       notification-alert-port: 5668
       notification-block-port: 5669
       notification-wallet-port: 5670
-  #      notification-instant-send-port:
   btg:
     merchant-name: BTG
     currency-name: BTG
@@ -596,7 +595,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.bitcore/btx_backup/
-    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -789,7 +787,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.futurocoin/fto_backup/
-#    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: true
@@ -862,7 +859,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.lbtc/lbtc_backup/
-#    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -910,7 +906,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.rizwave/riz_backup/
-    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: true
@@ -935,7 +930,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.sic/bca_backup/
-    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -1007,7 +1001,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.cmk/cmk_backup/
-    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1031,7 +1024,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.mbc/mbc_backup/
-    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1055,7 +1047,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.ddx/ddx_backup/
-    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1079,7 +1070,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.lpc/backups/
-    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1103,7 +1093,6 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/backup/
-    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -1268,15 +1257,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      #      url-our-node:
       url: http://172.31.43.173:8549/
-      #      url: http://172.31.14.168:8549/
-      #      url: http://172.31.14.168:8545/
-      #      url: http://13.59.242.131:8549
       destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x645830ee2c984bb6EC14dA7EEca8eE30b399Fb11
-      #      main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
       transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
       transfer-acc-privat-key: 78180378588292946369072654859668816086445717220539896029516054714478935781278
       transfer-acc-public-key: 1425913302398861939078339181395283390436141003096815016453538908192640696056254429740883940954808439783149865751992200750059751882787467546927733789459983
@@ -1289,14 +1273,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum Classic
-      #      url-our-node:
       url: http://ip-172-31-14-168.us-east-2.compute.internal:8101
       destination-dir: //data//ethereum_classic//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x6cF080280A37efF8f163F004B9da6962764368a0
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_classic_log
@@ -1306,14 +1286,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: EtherZero
-      #      url-our-node:
       url: http://172.31.22.163:8102
       destination-dir: //data//etherzero//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x67d982400c4655448ee0cdfe9974c4d60a1e9a3a
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0.01
       min-balance-for-transfer: 0.02
       log: etherzero_log
@@ -1323,14 +1299,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: CLO
-      #      url-our-node:
       url: http://172.31.14.168:8104
       destination-dir: //data//callisto//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x3362d2b0d8b85Ea88e377bBbF97A7ff37C297449
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1340,14 +1312,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      #      url-our-node:
       url: http://172.31.14.169:8105
       destination-dir: //data//bitcoiin2g//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x419dba705b62ca9e6b3916b94afd526d9cd1dfd9
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
@@ -1357,14 +1325,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: GOL
-      #      url-our-node:
       url: http://172.31.7.222:8106
       destination-dir: //data//goldiam//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xba6212d87da71305f63307e4f2ad6296e2424495
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
@@ -1374,14 +1338,10 @@ ethereum-coins:
     min-confirmations: 0
     node:
       currency: CNET
-      #      url-our-node:
       url: http://172.31.4.189:8107
       destination-dir: //data//contractnet//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xef15032e7dc8f4e337732e3086504ed9124f82aa
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: contractnet_log
@@ -1391,14 +1351,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: NTY
-      #      url-our-node:
       url: http://172.31.1.74:8108
       destination-dir: //data//nexty//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xe6ef3c94a2fbdec42a07d5ff5d72e8549c4c880a
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: nexty_log
@@ -1408,14 +1364,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Etherinc
-      #      url-our-node: http://13.59.242.131:9545
       url: https://api.einc.io/jsonrpc/mainnet
       destination-dir: //data//etherinc//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x2901d94cbd4aea467880e220E28168B15179526f
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.01
       log: etherinc_log
@@ -1889,7 +1841,6 @@ other-coins:
     rpc-user: wayfarer88
     rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
     enabled: true
-#    wallet-password: 12345678
   apollo:
     url: http://172.31.10.179:7876/apl
     main-address: APL-LFZZ-ECDW-LXRG-4V4D9
@@ -1904,11 +1855,9 @@ other-coins:
     hook: https://exrates.me/merchants/edc/payment/received
     history: https://receive.edinarcoin.com/history/
     blockchain-host-fast: http://ip-172-31-14-168.us-east-2.compute.internal:8091
-#    blockchain-host-fast: http://ajet21.exrates.tech:64091
     blockchain-host-delayed: http://ip-172-31-14-168.us-east-2.compute.internal:8092
     account-registrar: exrates-currency-exchange
     account-referrer: exrates-currency-exchange
-    #      account-main: output-exrates
     account-main: exrates-out
     account-private-key: 5KVtcMvFdwaurpGeHQkpd5wnNqctqUMAjQkRUd9eJwkt5tZtinc
   iota:
@@ -1993,8 +1942,6 @@ payment-system-merchants:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
     private-key: nlLYBhaRNVrOY19fJsi1ft6CVs4uhED2PsJVsyF7
-    #public-key: i83629365623
-    #private-key: YC54FZIoeWmpBK8Te0ezQErBmMtYwWQbn2qaddUH
     apiVersion: 3
     action: pay
   nixmoney:
