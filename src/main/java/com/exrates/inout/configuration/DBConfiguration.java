@@ -1,8 +1,10 @@
 package com.exrates.inout.configuration;
 
 
+import com.exrates.inout.util.SSMGetter;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -22,30 +24,24 @@ import javax.sql.DataSource;
 public class DBConfiguration {
 
     @Value("${spring.datasource.hikari.driver-class-name}")
-    private String dbMasterClassname;
+    private String driverClassName;
     @Value("${spring.datasource.hikari.jdbc-url}")
-    private String dbMasterUrl;
+    private String jdbcUrl;
     @Value("${spring.datasource.hikari.username}")
-    private String dbMasterUser;
-    @Value("${spring.datasource.hikari.password}")
-    private String dbMasterPassword;
+    private String user;
+    @Value("${spring.datasource.hikari.ssm-path}")
+    private String ssmPath;
 
-    @Value("${slave.datasource.hikari.driver-class-name}")
-    private String dbSlaveClassname;
-    @Value("${slave.datasource.hikari.jdbc-url}")
-    private String dbSlaveUrl;
-    @Value("${slave.datasource.hikari.username}")
-    private String dbSlaveUser;
-    @Value("${slave.datasource.hikari.password}")
-    private String dbSlavePassword;
+    @Autowired
+    SSMGetter ssmGetter;
 
     @Bean(name = "masterHikariDataSource")
     public DataSource masterHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(dbMasterClassname);
-        hikariConfig.setJdbcUrl(dbMasterUrl);
-        hikariConfig.setUsername(dbMasterUser);
-        hikariConfig.setPassword(dbMasterPassword);
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setJdbcUrl(jdbcUrl);
+        hikariConfig.setUsername(user);
+        hikariConfig.setPassword(getPassword(ssmPath));
         hikariConfig.setMaximumPoolSize(50);
         return new HikariDataSource(hikariConfig);
     }
@@ -53,13 +49,17 @@ public class DBConfiguration {
     @Bean(name = "slaveHikariDataSource")
     public DataSource slaveHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(dbSlaveClassname);
-        hikariConfig.setJdbcUrl(dbSlaveUrl);
-        hikariConfig.setUsername(dbSlaveUser);
-        hikariConfig.setPassword(dbSlavePassword);
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setJdbcUrl(jdbcUrl);
+        hikariConfig.setUsername(user);
+        hikariConfig.setPassword(getPassword(ssmPath));
         hikariConfig.setMaximumPoolSize(50);
         hikariConfig.setReadOnly(true);
         return new HikariDataSource(hikariConfig);
+    }
+
+    private String getPassword(String ssmPath) {
+        return ssmGetter.lookup(ssmPath);
     }
 
     @Primary
@@ -77,7 +77,7 @@ public class DBConfiguration {
 
     @Primary
     @DependsOn("masterHikariDataSource")
-    @Bean
+    @Bean(name = "jMasterTemplate")
     public JdbcTemplate jdbcTemplate(@Qualifier("masterHikariDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }

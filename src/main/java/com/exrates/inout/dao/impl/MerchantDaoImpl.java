@@ -45,6 +45,7 @@ public class MerchantDaoImpl implements MerchantDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
+    @Qualifier(value = "jMasterTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

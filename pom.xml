@@ -29,6 +29,7 @@
         <bitcoinj.version>0.14.3</bitcoinj.version>
         <log4j2.version>2.1</log4j2.version>
         <docker.image.prefix>input-output</docker.image.prefix>
+        <aws-java-sdk.version>1.11.433</aws-java-sdk.version>
     </properties>
 
     <dependencies>
@@ -297,15 +298,37 @@
             <version>2.0.12.Final</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-api</artifactId>-->
+            <!--<version>${log4j2.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-1.2-api</artifactId>-->
+            <!--<version>${log4j2.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
-            <version>${log4j2.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-ssm</artifactId>
+            <version>${aws-java-sdk.version}</version>
         </dependency>
     </dependencies>
 

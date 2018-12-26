@@ -7,9 +7,10 @@ spring:
     name: input-output-service
   datasource:
     hikari:
-      password: root
-      username: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      #      change bd username and ssm path
+      ssm-path: /exrates/core-service/test/mysql.token
+      username: coreapiuser
+      jdbc-url: jdbc:mysql://exdbqa.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/dbqa1?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
@@ -18,15 +19,6 @@ spring:
   redis:
     host: 172.10.10.236
     port: 6379
-
-slave:
-  datasource:
-    hikari:
-      password: root
-      username: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-      connection-test-query: SELECT 1 FROM DUAL
-      driver-class-name: com.mysql.jdbc.Driver
 
 eureka:
   client:
