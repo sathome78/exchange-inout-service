@@ -338,37 +338,43 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>input-output</finalName>
+                    <finalName>input-output-service</finalName>
                     <executable>true</executable>
                     <mainClass>com.exrates.inout.InoutApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.2.3</version>
-                <configuration>
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <dockerDirectory>deploy</dockerDirectory>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/config</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>config</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>${project.basedir}</directory><!-- from -->
-                <targetPath>${project.build.directory}</targetPath><!-- to -->
-                <includes><!-- what -->
-                    <include>config/**</include>
-                </includes>
-            </resource>
-        </resources>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>${project.basedir}</directory>&lt;!&ndash; from &ndash;&gt;-->
+                <!--<targetPath>${project.build.directory}</targetPath>&lt;!&ndash; to &ndash;&gt;-->
+                <!--<includes>&lt;!&ndash; what &ndash;&gt;-->
+                    <!--<include>config/**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
     </build>
 
     <repositories>

@@ -2,11 +2,11 @@ pipeline {
   
   agent any
     stages {
-    stage('Docker Build') {
+    stage('Maven install & Docker Build') {
       agent any
       steps {
-        sh 'mvn -P bintray,$ENVIRONMENT clean install -DskipTests=true'
-        sh 'docker build -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
+        sh 'mvn clean install'
+        sh 'docker build --build-arg ENVIRONMENT -t roadtomoon/exrates-inout-service:$ENVIRONMENT .'
       }
     } 
     stage('Docker pull') {
