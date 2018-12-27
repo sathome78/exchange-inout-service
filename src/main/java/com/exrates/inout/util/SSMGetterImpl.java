@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SSMGetterImpl implements SSMGetter {
 
-
     @Autowired
     AWSSimpleSystemsManagement awsSimpleSystemsManagement;
 
