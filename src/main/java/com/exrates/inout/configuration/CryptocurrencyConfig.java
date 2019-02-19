@@ -1,5 +1,6 @@
 package com.exrates.inout.configuration;
 
+import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
@@ -41,13 +42,17 @@ import com.exrates.inout.service.neo.NeoService;
 import com.exrates.inout.service.neo.NeoServiceImpl;
 import com.exrates.inout.service.qtum.QtumTokenServiceImpl;
 import com.exrates.inout.service.stellar.StellarAsset;
+import com.exrates.inout.service.tron.TronTrc10Token;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
 import lombok.extern.log4j.Log4j2;
+import org.nem.core.model.primitive.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1031,10 +1036,10 @@ public class CryptocurrencyConfig {
         return createWavesService(ccp.getWavesCoins().getWaves());
     }
 
-//    @Bean(name = "lunesServiceImpl")
-//    public WavesService lunesService() {
-//        return createWavesService(ccp.getWavesCoins().getLunes());
-//    }
+    @Bean(name = "lunesServiceImpl")
+    public WavesService lunesService() {
+        return createWavesService(ccp.getWavesCoins().getLunes());
+    }
 
     private WavesService createWavesService(WavesProperty property) {
         return new WavesServiceImpl(property);
@@ -1075,6 +1080,23 @@ public class CryptocurrencyConfig {
         return new NeoServiceImpl(property);
     }
 
+
+    @Bean(name = "bitTorrentServiceImpl")
+    public TronTrc10Token bitTorrentService() {
+        return new TronTrc10Token("BTT", "BTT", 6, "1002000", "31303032303030", "1002000");
+    }
+
+    //Bitshares
+    @Bean(name = "ppyServiceImpl")
+    public BitsharesService bitsharesService(){
+        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6); // TODO
+    }
+
+    @Bean(name = "aunitServiceImpl")
+    public BitsharesService aunitServiceImpl(){
+        return new BitsharesServiceImpl("AUNIT", "AUNIT", "merchants/aunit.properties", 5){};
+    }
+
     //Qtum tokens:
     @Bean(name = "spcServiceImpl")
     public QtumTokenServiceImpl spcService() {
@@ -1106,6 +1128,12 @@ public class CryptocurrencyConfig {
         return createMoneroService(ccp.getMoneroCoins().getSumo());
     }
 
+    @Bean(name = "hcxpServiceImpl")
+    public MoneroService hcxpService() {
+        return new HCXPServiceImpl("merchants/hcxp.properties",
+                "HCXP", "HCXP", 20, 6);
+    }
+
     private MoneroService createMoneroService(MoneroProperty property) {
         return new MoneroServiceImpl(property);
     }
@@ -1119,6 +1147,22 @@ public class CryptocurrencyConfig {
     @Bean(name = "npxsServiceImpl")
     public XemMosaicService npxsServiceImpl() {
         return createXemMosaicService(ccp.getXemCoins().getNpxs());
+    }
+
+    @Bean(name = "dimEurServiceImpl")
+    public XemMosaicService dimEurService() {
+        return createXemMosaicService(ccp.getXemCoins().getDIM_EUR());
+    }
+
+    @Bean(name = "dimUsdServiceImpl")
+    public XemMosaicService dimUsdService() {
+        return createXemMosaicService(ccp.getXemCoins().getDIM_USD());
+    }
+
+    @Bean(name = "digicServiceImpl")
+    public XemMosaicService digicService() {
+        return createXemMosaicService(ccp.getXemCoins().getDIGIC());
+
     }
 
     private XemMosaicService createXemMosaicService(XemProperty property) {

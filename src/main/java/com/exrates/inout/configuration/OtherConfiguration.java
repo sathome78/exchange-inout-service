@@ -3,9 +3,11 @@ package com.exrates.inout.configuration;
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
@@ -16,6 +18,11 @@ import java.util.Locale;
 
 @Configuration
 public class OtherConfiguration {
+
+    @Value("${qiwi.client.id}") //TODO
+    private String qiwiClientId;
+    @Value("${qiwi.client.secret}")
+    private String qiwiClientSecret;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -30,6 +37,14 @@ public class OtherConfiguration {
         requestFactory.setReadTimeout(25000);
         restTemplate.setRequestFactory(requestFactory);
         return new RestTemplate();
+    }
+
+
+    @Bean("qiwiRestTemplate")
+    public RestTemplate qiwiRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(qiwiClientId, qiwiClientSecret));
+        return restTemplate;
     }
 
     @Bean

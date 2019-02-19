@@ -2552,29 +2552,29 @@ waves-coins:
     currency-name: WAVES
     min-confirmations: 5
     node:
-      host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
+      host: http://ip-172-31-14-168.us-east-2.compute.internal
       port: 6869
-      api-key: ridethewaves!
-      main-account: 3N8DRLQKAc9arr6q5G9AagYUExXLhDJeGH3
-      process-delay: 1
-      fee-account: 3MxE9izMhKiD3ANksRpvKfzPkjQ6F7ER1R7
-      notify-email: golvazin@gmail.com
+      api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
+      main-account: 3PNu2t61vQFw9fDT8B9h881H4AtBejnN7mV
+      process-delay: 30
+      fee-account: 3PGYEbabkisSxzaZBzQHromYimsnpgQoy8k
+      notify-email: mikita.malykov@gmail.com
       token-ids:
-        GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
+        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
   lunes:
     merchant-name: LUNES
     currency-name: LUNES
     min-confirmations: 5
     node:
-      host: http://127.0.0.1
+      host: http://ip-172-31-14-169.us-east-2.compute.internal
       port: 6869
       api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
-      main-account: 37pE94tYCosrDkkQaHRxL32RkMLGnL427d4
-      process-delay: 1
-      fee-account: 37tDKNXJ2u9Jt5d3AYSeSYv35Ay7qa6xXxk
-      notify-email: mdovgodko@gmail.com
+      main-account: 381jSB8nr9J41hsNMtvgSv7TgaYuf5ZtKJ2
+      process-delay: 30
+      fee-account: 37ysJEA9BYh64tke3szshnvAEUk5sMHFKgV
+      notify-email: mikita.malykov@gmail.com
       token-ids:
-        GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
+        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
 
 neo-coins:
   neo:
@@ -2642,7 +2642,7 @@ monero-coins:
 
 xem-coins:
   dim:
-    merchant-mame: DimCoin
+    merchant-name: DimCoin
     currency-name: DIM
     name-space-id: dim
     name: coin
@@ -2651,7 +2651,7 @@ xem-coins:
     levy-fee: 10
     supply: 9000000000
   npxs:
-    merchant-mame: NPXSXEM
+    merchant-name: NPXSXEM
     currency-name: NPXSXEM
     name-space-id: pundix
     name: npxs
@@ -2659,6 +2659,35 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 9000000000
+  DIM_EUR:
+    merchant-name: DIM.EUR
+    currency-name: DIM.EUR
+    name-space-id: dim
+    name: eur
+    decimals: 100
+    divisibility: 2
+    levy-fee: 10
+    supply: 81000000000
+  DIM_USD:
+    merchant-name: DIM.USD
+    currency-name: DIM.USD
+    name-space-id: dim
+    name: usd
+    decimals: 100
+    divisibility: 2
+    levy-fee: 10
+    supply: 81000000000
+  DIGIC:
+    merchant-name: DIGIT
+    currency-name: DIGIT
+    name-space-id: digit
+    name: coin
+    decimals: 1000000
+    divisibility: 6
+    levy-fee: 10
+    supply: 8999999999
+
+    
 
 stellar-coins:
   slt:

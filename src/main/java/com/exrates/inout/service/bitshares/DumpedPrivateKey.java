@@ -1,4 +1,4 @@
-package com.exrates.inout.service.autist;
+package com.exrates.inout.service.bitshares;
 
 
 import com.google.common.base.Objects;
@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class DumpedPrivateKey extends VersionedChecksummedBytes {
-
     public static DumpedPrivateKey fromBase58(@Nullable Integer privateKeyHeader, String base58, Base58ChecksumProvider checksumProvider) {
         return new DumpedPrivateKey(privateKeyHeader, base58, checksumProvider);
     }

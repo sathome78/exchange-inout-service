@@ -1,4 +1,4 @@
-package com.exrates.inout.service.autist;
+package com.exrates.inout.service.bitshares;
 
 import com.google.common.primitives.Bytes;
 import com.jsoniter.JsonIterator;
@@ -12,12 +12,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MemoDecryptor {
-
     public final static String TAG = "Memo";
-    private static final String KEY_FROM = "from";
-    private static final String KEY_TO = "to";
-    private static final String KEY_NONCE = "nonce";
-    private static final String KEY_MESSAGE = "message";
+    public static final String KEY_FROM = "from";
+    public static final String KEY_TO = "to";
+    public static final String KEY_NONCE = "nonce";
+    public static final String KEY_MESSAGE = "message";
 
     /**
      * Method used to decrypt memo data.
@@ -29,7 +28,7 @@ public class MemoDecryptor {
      * @throws Exception
      * @return: The plaintext version of the enrcrypted message.
      */
-    private static String decryptMessage(ECKey privateKey, PublicKey publicKey, BigInteger nonce, byte[] message) throws NoSuchAlgorithmException {
+    public static String decryptMessage(ECKey privateKey, PublicKey publicKey, BigInteger nonce, byte[] message) throws NoSuchAlgorithmException {
         String plaintext = "";
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -67,7 +66,8 @@ public class MemoDecryptor {
         return plaintext;
     }
 
-    static String decryptBTSmemo(String privKey, String memo) throws NoSuchAlgorithmException {
+
+    public static String decryptBTSmemo(String privKey, String memo, String merchantName) throws NoSuchAlgorithmException {
         if (!memo.startsWith("{") || !memo.endsWith("}")) memo = new String(Base64.decode(memo));
         Any json_memo = JsonIterator.deserialize(memo);
         if (json_memo.get(KEY_NONCE).valueType().equals(ValueType.INVALID))
@@ -78,9 +78,9 @@ public class MemoDecryptor {
         ECKey privateKey = GrapheneUtils.GrapheneWifToPrivateKey(privKey);
         String publicKey = GrapheneUtils.getAddressFromPublicKey(fromKey.substring(0, 3), privateKey);
         PublicKey pubKey = null;
-        if (publicKey.equals(fromKey)) pubKey = new PublicKey(toKey);
+        if (publicKey.equals(fromKey)) pubKey = new PublicKey(toKey, merchantName);
         else
-            pubKey = new PublicKey(fromKey);
+            pubKey = new PublicKey(fromKey, merchantName);
         String message = json_memo.get(KEY_MESSAGE).toString();
         return decryptMessage(privateKey, pubKey, nonce, Util.hexToBytes(message));
     }

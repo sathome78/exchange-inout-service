@@ -1,4 +1,4 @@
-package com.exrates.inout.service.autist;
+package com.exrates.inout.service.bitshares;
 
 import org.spongycastle.crypto.DataLengthException;
 import org.spongycastle.crypto.InvalidCipherTextException;
@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 public class Util {
     public static final String TAG = "Util";
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
-    private static final int LZMA = 0;
-    private static final int XZ = 1;
+    public static final int LZMA = 0;
+    public static final int XZ = 1;
 
     /**
      * AES encryption key length in bytes
@@ -44,29 +44,27 @@ public class Util {
 
     /**
      * Converts an hexadecimal string to its corresponding byte[] value.
-     *
      * @param s: String with hexadecimal numbers representing a byte array.
      * @return: The actual byte array.
      */
-    static byte[] hexToBytes(String s) {
+    public static byte[] hexToBytes(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
             data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
+                    + Character.digit(s.charAt(i+1), 16));
         }
         return data;
     }
 
     /**
      * Converts a byte array, into a user-friendly hexadecimal string.
-     *
      * @param bytes: A byte array.
      * @return: A string with the representation of the byte array.
      */
-    static String bytesToHex(byte[] bytes) {
+    public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
+        for ( int j = 0; j < bytes.length; j++ ) {
             int v = bytes[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
@@ -76,13 +74,12 @@ public class Util {
 
     /**
      * Decodes an ascii string to a byte array.
-     *
      * @param data: Arbitrary ascii-encoded string.
      * @return: Array of bytes.
      */
-    static byte[] hexlify(String data) {
+    public static byte[] hexlify(String data){
         ByteBuffer buffer = ByteBuffer.allocate(data.length());
-        for (char letter : data.toCharArray()) {
+        for(char letter : data.toCharArray()){
             buffer.put((byte) letter);
         }
         return buffer.array();
@@ -90,9 +87,8 @@ public class Util {
 
     /**
      * Utility function that compresses data using the LZMA algorithm.
-     *
      * @param inputBytes Input bytes of the data to be compressed.
-     * @param which      Which subclass of the FinishableOutputStream to use.
+     * @param which Which subclass of the FinishableOutputStream to use.
      * @return Compressed data
      * @author Henry Varona
      */
@@ -102,9 +98,9 @@ public class Util {
             ByteArrayInputStream input = new ByteArrayInputStream(inputBytes);
             ByteArrayOutputStream output = new ByteArrayOutputStream(2048);
             LZMA2Options options = new LZMA2Options();
-            if (which == Util.LZMA) {
+            if(which == Util.LZMA) {
                 out = new LZMAOutputStream(output, options, -1);
-            } else if (which == Util.XZ) {
+            }else if(which == Util.XZ){
                 out = new XZOutputStream(output, options);
             }
             byte[] inputBuffer = new byte[inputBytes.length];
@@ -126,9 +122,11 @@ public class Util {
         return null;
     }
 
-    public static byte[] revertBytes(byte[] array) {
+
+
+    public static byte[] revertBytes(byte[] array){
         byte[] reverted = new byte[array.length];
-        for (int i = 0; i < reverted.length; i++) {
+        for(int i = 0; i < reverted.length; i++){
             reverted[i] = array[array.length - i - 1];
         }
         return reverted;
@@ -136,9 +134,8 @@ public class Util {
 
     /**
      * Function to decrypt a message with AES encryption
-     *
      * @param input data to decrypt
-     * @param key   key for decryption
+     * @param key key for decryption
      * @return input decrypted with AES. Null if the decrypt failed (Bad Key)
      */
     public static byte[] decryptAES(byte[] input, byte[] key) {
@@ -155,16 +152,17 @@ public class Util {
             byte[] pre_out = new byte[cipher.getOutputSize(input.length)];
             int proc = cipher.processBytes(input, 0, input.length, pre_out, 0);
             int proc2 = cipher.doFinal(pre_out, proc);
-            byte[] out = new byte[proc + proc2];
-            System.arraycopy(pre_out, 0, out, 0, proc + proc2);
-
+            byte[] out = new byte[proc+proc2]; 
+            System.arraycopy(pre_out, 0, out, 0, proc+proc2);
+            
             //Unpadding
-            byte countByte = (byte) ((byte) out[out.length - 1] % 16);
+            byte countByte = (byte)((byte)out[out.length-1] % 16);
             int count = countByte & 0xFF;
-
-            if ((count > 15) || (count <= 0)) {
+                       
+            if ((count > 15) || (count <= 0)){
                 return out;
             }
+            
             byte[] temp = new byte[count];
             System.arraycopy(out, out.length - count, temp, 0, temp.length);
             byte[] temp2 = new byte[count];
@@ -175,10 +173,12 @@ public class Util {
                 return temp;
             } else {
                 return out;
-            }
+            }            
         } catch (NoSuchAlgorithmException | DataLengthException | IllegalStateException | InvalidCipherTextException ex) {
             ex.printStackTrace();
         }
         return null;
     }
+
+
 }

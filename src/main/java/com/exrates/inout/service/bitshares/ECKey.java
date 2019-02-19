@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.exrates.inout.service.autist;
+package com.exrates.inout.service.bitshares;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
@@ -18,27 +18,14 @@ import eu.bittrade.crypto.core.Sha256Hash;
 import eu.bittrade.crypto.core.crypto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.asn1.ASN1InputStream;
-import org.spongycastle.asn1.ASN1Integer;
-import org.spongycastle.asn1.ASN1OctetString;
-import org.spongycastle.asn1.ASN1Primitive;
-import org.spongycastle.asn1.ASN1TaggedObject;
-import org.spongycastle.asn1.DERBitString;
-import org.spongycastle.asn1.DEROctetString;
-import org.spongycastle.asn1.DERSequenceGenerator;
-import org.spongycastle.asn1.DERTaggedObject;
-import org.spongycastle.asn1.DLSequence;
+import org.spongycastle.asn1.*;
 import org.spongycastle.asn1.x9.X9ECParameters;
 import org.spongycastle.asn1.x9.X9IntegerConverter;
 import org.spongycastle.crypto.AsymmetricCipherKeyPair;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.ec.CustomNamedCurves;
 import org.spongycastle.crypto.generators.ECKeyPairGenerator;
-import org.spongycastle.crypto.params.ECDomainParameters;
-import org.spongycastle.crypto.params.ECKeyGenerationParameters;
-import org.spongycastle.crypto.params.ECPrivateKeyParameters;
-import org.spongycastle.crypto.params.ECPublicKeyParameters;
-import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.params.*;
 import org.spongycastle.crypto.signers.ECDSASigner;
 import org.spongycastle.crypto.signers.HMacDSAKCalculator;
 import org.spongycastle.math.ec.ECAlgorithms;
@@ -59,17 +46,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class ECKey {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ECKey.class);
-
-    public static final Comparator<ECKey> AGE_COMPARATOR = (k1, k2) -> {
-        if (k1.creationTimeSeconds == k2.creationTimeSeconds) {
-            return 0;
-        } else {
-            return k1.creationTimeSeconds > k2.creationTimeSeconds ? 1 : -1;
+    private static final Logger log = LoggerFactory.getLogger(ECKey.class);
+    public static final Comparator<ECKey> AGE_COMPARATOR = new Comparator<ECKey>() {
+        public int compare(ECKey k1, ECKey k2) {
+            if (k1.creationTimeSeconds == k2.creationTimeSeconds) {
+                return 0;
+            } else {
+                return k1.creationTimeSeconds > k2.creationTimeSeconds ? 1 : -1;
+            }
         }
     };
-
     public static final Comparator<ECKey> PUBKEY_COMPARATOR = new Comparator<ECKey>() {
         private Comparator<byte[]> comparator = UnsignedBytes.lexicographicalComparator();
 
@@ -77,25 +63,24 @@ public class ECKey {
             return this.comparator.compare(k1.getPubKey(), k2.getPubKey());
         }
     };
-
     private static final X9ECParameters CURVE_PARAMS = CustomNamedCurves.getByName("secp256k1");
-    private static final ECDomainParameters CURVE;
-    private static final BigInteger HALF_CURVE_ORDER;
+    public static final ECDomainParameters CURVE;
+    public static final BigInteger HALF_CURVE_ORDER;
     private static final SecureRandom secureRandom;
-    private final BigInteger priv;
-    private final LazyECPoint pub;
-    private long creationTimeSeconds;
-    private KeyCrypter keyCrypter;
-    private EncryptedData encryptedPrivateKey;
+    protected final BigInteger priv;
+    protected final LazyECPoint pub;
+    protected long creationTimeSeconds;
+    protected KeyCrypter keyCrypter;
+    protected EncryptedData encryptedPrivateKey;
     private byte[] pubKeyHash;
     @VisibleForTesting
-    private static boolean FAKE_SIGNATURES;
+    public static boolean FAKE_SIGNATURES;
 
     public ECKey() {
         this(secureRandom);
     }
 
-    private ECKey(SecureRandom secureRandom) {
+    public ECKey(SecureRandom secureRandom) {
         ECKeyPairGenerator generator = new ECKeyPairGenerator();
         ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(CURVE, secureRandom);
         generator.init(keygenParams);
@@ -107,11 +92,11 @@ public class ECKey {
         this.creationTimeSeconds = CryptoUtils.currentTimeSeconds();
     }
 
-    private ECKey(@Nullable BigInteger priv, ECPoint pub) {
-        this(priv, new LazyECPoint((ECPoint)Preconditions.checkNotNull(pub)));
+    protected ECKey(@Nullable BigInteger priv, ECPoint pub) {
+        this(priv, new LazyECPoint((ECPoint) Preconditions.checkNotNull(pub)));
     }
 
-    private ECKey(@Nullable BigInteger priv, LazyECPoint pub) {
+    protected ECKey(@Nullable BigInteger priv, LazyECPoint pub) {
         if (priv != null) {
             Preconditions.checkArgument(priv.bitLength() <= 256, "private key exceeds 32 bytes: %s bits", priv.bitLength());
             Preconditions.checkArgument(!priv.equals(BigInteger.ZERO));
@@ -119,10 +104,10 @@ public class ECKey {
         }
 
         this.priv = priv;
-        this.pub = Preconditions.checkNotNull(pub);
+        this.pub = (LazyECPoint) Preconditions.checkNotNull(pub);
     }
 
-    private static ECPoint compressPoint(ECPoint point) {
+    public static ECPoint compressPoint(ECPoint point) {
         return getPointWithCompression(point, true);
     }
 
@@ -130,7 +115,7 @@ public class ECKey {
         return point.isCompressed() ? point : new LazyECPoint(compressPoint(point.get()));
     }
 
-    private static ECPoint decompressPoint(ECPoint point) {
+    public static ECPoint decompressPoint(ECPoint point) {
         return getPointWithCompression(point, false);
     }
 
@@ -153,20 +138,20 @@ public class ECKey {
         return extractKeyFromASN1(asn1privkey);
     }
 
-    private static ECKey fromPrivate(BigInteger privKey) {
+    public static ECKey fromPrivate(BigInteger privKey) {
         return fromPrivate(privKey, true);
     }
 
-    private static ECKey fromPrivate(BigInteger privKey, boolean compressed) {
+    public static ECKey fromPrivate(BigInteger privKey, boolean compressed) {
         ECPoint point = publicPointFromPrivate(privKey);
         return new ECKey(privKey, getPointWithCompression(point, compressed));
     }
 
-    private static ECKey fromPrivate(byte[] privKeyBytes) {
+    public static ECKey fromPrivate(byte[] privKeyBytes) {
         return fromPrivate(new BigInteger(1, privKeyBytes));
     }
 
-    static ECKey fromPrivate(byte[] privKeyBytes, boolean compressed) {
+    public static ECKey fromPrivate(byte[] privKeyBytes, boolean compressed) {
         return fromPrivate(new BigInteger(1, privKeyBytes), compressed);
     }
 
@@ -184,11 +169,11 @@ public class ECKey {
         return new ECKey((BigInteger)null, pub);
     }
 
-    private static ECKey fromPublicOnly(byte[] pub) {
+    public static ECKey fromPublicOnly(byte[] pub) {
         return new ECKey((BigInteger)null, CURVE.getCurve().decodePoint(pub));
     }
 
-    private ECKey decompress() {
+    public ECKey decompress() {
         return !this.pub.isCompressed() ? this : new ECKey(this.priv, decompressPoint(this.pub.get()));
     }
 
@@ -202,14 +187,14 @@ public class ECKey {
     @Deprecated
     public ECKey(EncryptedData encryptedPrivateKey, byte[] pubKey, KeyCrypter keyCrypter) {
         this((byte[])null, pubKey);
-        this.keyCrypter = (KeyCrypter)Preconditions.checkNotNull(keyCrypter);
+        this.keyCrypter = (KeyCrypter) Preconditions.checkNotNull(keyCrypter);
         this.encryptedPrivateKey = encryptedPrivateKey;
     }
 
-    private static ECKey fromEncrypted(EncryptedData encryptedPrivateKey, KeyCrypter crypter, byte[] pubKey) {
+    public static ECKey fromEncrypted(EncryptedData encryptedPrivateKey, KeyCrypter crypter, byte[] pubKey) {
         ECKey key = fromPublicOnly(pubKey);
-        key.encryptedPrivateKey = (EncryptedData)Preconditions.checkNotNull(encryptedPrivateKey);
-        key.keyCrypter = (KeyCrypter)Preconditions.checkNotNull(crypter);
+        key.encryptedPrivateKey = (EncryptedData) Preconditions.checkNotNull(encryptedPrivateKey);
+        key.keyCrypter = (KeyCrypter) Preconditions.checkNotNull(crypter);
         return key;
     }
 
@@ -227,6 +212,7 @@ public class ECKey {
             } else {
                 this.pub = new LazyECPoint(CURVE.getCurve(), pubKey);
             }
+
         }
     }
 
@@ -236,11 +222,11 @@ public class ECKey {
         this(privKey, pubKey, false);
     }
 
-    private boolean isPubKeyOnly() {
+    public boolean isPubKeyOnly() {
         return this.priv == null;
     }
 
-    private boolean hasPrivKey() {
+    public boolean hasPrivKey() {
         return this.priv != null;
     }
 
@@ -269,10 +255,11 @@ public class ECKey {
         return point.getEncoded(compressed);
     }
 
-    private static ECPoint publicPointFromPrivate(BigInteger privKey) {
+    public static ECPoint publicPointFromPrivate(BigInteger privKey) {
         if (privKey.bitLength() > CURVE.getN().bitLength()) {
             privKey = privKey.mod(CURVE.getN());
         }
+
         return (new FixedPointCombMultiplier()).multiply(CURVE.getG(), privKey);
     }
 
@@ -288,7 +275,7 @@ public class ECKey {
         return this.pub.getEncoded();
     }
 
-    ECPoint getPubKeyPoint() {
+    public ECPoint getPubKeyPoint() {
         return this.pub.get();
     }
 
@@ -300,7 +287,7 @@ public class ECKey {
         }
     }
 
-    boolean isCompressed() {
+    public boolean isCompressed() {
         return this.pub.isCompressed();
     }
 
@@ -323,13 +310,13 @@ public class ECKey {
         }
     }
 
-    private ECKey.ECDSASignature doSign(Sha256Hash input, BigInteger privateKeyForSigning) {
+    protected ECKey.ECDSASignature doSign(Sha256Hash input, BigInteger privateKeyForSigning) {
         if (Secp256k1Context.isEnabled()) {
             try {
                 byte[] signature = NativeSecp256k1.sign(input.getBytes(), CryptoUtils.bigIntegerToBytes(privateKeyForSigning, 32));
                 return ECKey.ECDSASignature.decodeFromDER(signature);
             } catch (AssertFailException var6) {
-                LOGGER.error("Caught AssertFailException inside secp256k1", var6);
+                log.error("Caught AssertFailException inside secp256k1", var6);
                 throw new RuntimeException(var6);
             }
         } else {
@@ -352,7 +339,7 @@ public class ECKey {
             try {
                 return NativeSecp256k1.verify(data, signature.encodeToDER(), pub);
             } catch (AssertFailException var6) {
-                LOGGER.error("Caught AssertFailException inside secp256k1", var6);
+                log.error("Caught AssertFailException inside secp256k1", var6);
                 return false;
             }
         } else {
@@ -363,7 +350,7 @@ public class ECKey {
             try {
                 return signer.verifySignature(data, signature.r, signature.s);
             } catch (NullPointerException var7) {
-                LOGGER.error("Caught NPE inside bouncy castle", var7);
+                log.error("Caught NPE inside bouncy castle", var7);
                 return false;
             }
         }
@@ -374,7 +361,7 @@ public class ECKey {
             try {
                 return NativeSecp256k1.verify(data, signature, pub);
             } catch (AssertFailException var4) {
-                LOGGER.error("Caught AssertFailException inside secp256k1", var4);
+                log.error("Caught AssertFailException inside secp256k1", var4);
                 return false;
             }
         } else {
@@ -407,14 +394,20 @@ public class ECKey {
             return false;
         } else {
             if (pubkey[0] == 4) {
-                return pubkey.length == 65;
+                if (pubkey.length != 65) {
+                    return false;
+                }
             } else {
                 if (pubkey[0] != 2 && pubkey[0] != 3) {
                     return false;
                 }
-                return pubkey.length == 33;
+
+                if (pubkey.length != 33) {
+                    return false;
+                }
             }
 
+            return true;
         }
     }
 
@@ -450,7 +443,7 @@ public class ECKey {
         return this.signMessage(message, charset, (KeyParameter)null, headerBytes);
     }
 
-    private String signMessage(String message, Charset charset, @Nullable KeyParameter aesKey, @Nullable byte[] headerBytes) {
+    public String signMessage(String message, Charset charset, @Nullable KeyParameter aesKey, @Nullable byte[] headerBytes) {
         byte[] data = CryptoUtils.formatMessageForSigning(message, charset, headerBytes);
         Sha256Hash hash = Sha256Hash.twiceOf(data);
         ECKey.ECDSASignature sig = this.sign(hash, aesKey);
@@ -481,7 +474,7 @@ public class ECKey {
         return this.signMessage(messageHash, (KeyParameter)null);
     }
 
-    private String signMessage(Sha256Hash messageHash, @Nullable KeyParameter aesKey) {
+    public String signMessage(Sha256Hash messageHash, @Nullable KeyParameter aesKey) {
         ECKey.ECDSASignature sig = this.sign(messageHash, aesKey);
         int recId = -1;
 
@@ -493,6 +486,7 @@ public class ECKey {
                 break;
             }
         }
+
         if (recId == -1) {
             throw new RuntimeException("Could not construct a recoverable key. This should never happen.");
         } else {
@@ -505,7 +499,7 @@ public class ECKey {
         }
     }
 
-    private static ECKey signedMessageToKey(String message, String signatureBase64) throws SignatureException {
+    public static ECKey signedMessageToKey(String message, String signatureBase64) throws SignatureException {
         byte[] signatureEncoded;
         try {
             signatureEncoded = Base64.decode(signatureBase64);
@@ -526,6 +520,7 @@ public class ECKey {
                     compressed = true;
                     header -= 4;
                 }
+
                 int recId = header - 27;
                 return null;
             } else {
@@ -536,14 +531,13 @@ public class ECKey {
 
     public void verifyMessage(String message, String signatureBase64) throws SignatureException {
         ECKey key = signedMessageToKey(message, signatureBase64);
-        assert key != null;
         if (!key.pub.equals(this.pub)) {
             throw new SignatureException("Signature did not match for message");
         }
     }
 
     @Nullable
-    private static ECKey recoverFromSignature(int recId, ECKey.ECDSASignature sig, Sha256Hash message, boolean compressed) {
+    public static ECKey recoverFromSignature(int recId, ECKey.ECDSASignature sig, Sha256Hash message, boolean compressed) {
         Preconditions.checkArgument(recId >= 0, "recId must be positive");
         Preconditions.checkArgument(sig.r.signum() >= 0, "r must be positive");
         Preconditions.checkArgument(sig.s.signum() >= 0, "s must be positive");
@@ -577,11 +571,11 @@ public class ECKey {
         return CURVE.getCurve().decodePoint(compEnc);
     }
 
-    private byte[] getPrivKeyBytes() {
+    public byte[] getPrivKeyBytes() {
         return CryptoUtils.bigIntegerToBytes(this.getPrivKey(), 32);
     }
 
-    DumpedPrivateKey getPrivateKeyEncoded(Integer privateKeyHeader) {
+    public DumpedPrivateKey getPrivateKeyEncoded(Integer privateKeyHeader) {
         return new DumpedPrivateKey(privateKeyHeader, this.getPrivKeyBytes(), this.isCompressed());
     }
 
@@ -589,7 +583,7 @@ public class ECKey {
         return this.creationTimeSeconds;
     }
 
-    private void setCreationTimeSeconds(long newCreationTimeSeconds) {
+    public void setCreationTimeSeconds(long newCreationTimeSeconds) {
         if (newCreationTimeSeconds < 0L) {
             throw new IllegalArgumentException("Cannot set creation time to negative value: " + newCreationTimeSeconds);
         } else {
@@ -606,7 +600,7 @@ public class ECKey {
         return result;
     }
 
-    private ECKey decrypt(KeyCrypter keyCrypter, KeyParameter aesKey) throws KeyCrypterException {
+    public ECKey decrypt(KeyCrypter keyCrypter, KeyParameter aesKey) throws KeyCrypterException {
         Preconditions.checkNotNull(keyCrypter);
         if (this.keyCrypter != null && !this.keyCrypter.equals(keyCrypter)) {
             throw new KeyCrypterException("The keyCrypter being used to decrypt the key is different to the one that was used to encrypt it");
@@ -617,6 +611,7 @@ public class ECKey {
             if (!this.isCompressed()) {
                 key = key.decompress();
             }
+
             if (!Arrays.equals(key.getPubKey(), this.getPubKey())) {
                 throw new KeyCrypterException("Provided AES key is wrong");
             } else {
@@ -626,7 +621,7 @@ public class ECKey {
         }
     }
 
-    private ECKey decrypt(KeyParameter aesKey) throws KeyCrypterException {
+    public ECKey decrypt(KeyParameter aesKey) throws KeyCrypterException {
         KeyCrypter crypter = this.getKeyCrypter();
         if (crypter == null) {
             throw new KeyCrypterException("No key crypter available");
@@ -645,18 +640,18 @@ public class ECKey {
             byte[] originalPrivateKeyBytes = originalKey.getPrivKeyBytes();
             byte[] rebornKeyBytes = rebornUnencryptedKey.getPrivKeyBytes();
             if (!Arrays.equals(originalPrivateKeyBytes, rebornKeyBytes)) {
-                LOGGER.error("The check that encryption could be reversed failed for {}", originalKey);
+                log.error("The check that encryption could be reversed failed for {}", originalKey);
                 return false;
             } else {
                 return true;
             }
         } catch (KeyCrypterException var7) {
-            LOGGER.error(var7.getMessage());
+            log.error(var7.getMessage());
             return false;
         }
     }
 
-    private boolean isEncrypted() {
+    public boolean isEncrypted() {
         return this.keyCrypter != null && this.encryptedPrivateKey != null && this.encryptedPrivateKey.encryptedBytes.length > 0;
     }
 
@@ -671,19 +666,19 @@ public class ECKey {
     }
 
     @Nullable
-    private EncryptedData getEncryptedPrivateKey() {
+    public EncryptedData getEncryptedPrivateKey() {
         return this.encryptedPrivateKey;
     }
 
     @Nullable
-    private KeyCrypter getKeyCrypter() {
+    public KeyCrypter getKeyCrypter() {
         return this.keyCrypter;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ECKey) {
+        } else if (o != null && o instanceof ECKey) {
             ECKey other = (ECKey)o;
             return Objects.equal(this.priv, other.priv) && Objects.equal(this.pub, other.pub) && Objects.equal(this.creationTimeSeconds, other.creationTimeSeconds) && Objects.equal(this.keyCrypter, other.keyCrypter) && Objects.equal(this.encryptedPrivateKey, other.encryptedPrivateKey);
         } else {
@@ -703,39 +698,44 @@ public class ECKey {
         return "";
     }
 
-    private String getPrivateKeyAsHex() {
+    public String getPrivateKeyAsHex() {
         return CryptoUtils.HEX.encode(this.getPrivKeyBytes());
     }
 
-    private String getPublicKeyAsHex() {
+    public String getPublicKeyAsHex() {
         return CryptoUtils.HEX.encode(this.pub.getEncoded());
     }
 
-    private String getPrivateKeyAsWiF(Integer privateKeyHeader) {
+    public String getPrivateKeyAsWiF(Integer privateKeyHeader) {
         return this.getPrivateKeyEncoded(privateKeyHeader).toString();
     }
 
-    private String toString(boolean includePrivate, @Nullable KeyParameter aesKey, Integer privateKeyHeader) throws IllegalStateException {
+    private String toString(boolean includePrivate, @Nullable KeyParameter aesKey, Integer privateKeyHeader) {
         ToStringHelper helper = MoreObjects.toStringHelper(this).omitNullValues();
         helper.add("pub HEX", this.getPublicKeyAsHex());
         if (includePrivate) {
-            ECKey decryptedKey = this.isEncrypted() ? this.decrypt((KeyParameter)Preconditions.checkNotNull(aesKey)) : this;
+            ECKey decryptedKey = this.isEncrypted() ? this.decrypt((KeyParameter) Preconditions.checkNotNull(aesKey)) : this;
 
             try {
                 helper.add("priv HEX", decryptedKey.getPrivateKeyAsHex());
                 helper.add("priv WIF", decryptedKey.getPrivateKeyAsWiF(privateKeyHeader));
+            } catch (IllegalStateException var8) {
+                ;
             } catch (Exception var9) {
                 String message = var9.getMessage();
                 helper.add("priv EXCEPTION", var9.getClass().getName() + (message != null ? ": " + message : ""));
             }
         }
+
         if (this.creationTimeSeconds > 0L) {
             helper.add("creationTimeSeconds", this.creationTimeSeconds);
         }
+
         helper.add("keyCrypter", this.keyCrypter);
         if (includePrivate) {
             helper.add("encryptedPrivateKey", this.encryptedPrivateKey);
         }
+
         helper.add("isEncrypted", this.isEncrypted());
         helper.add("isPubKeyOnly", this.isPubKeyOnly());
         return helper.toString();
@@ -745,6 +745,7 @@ public class ECKey {
         if (CryptoUtils.isAndroidRuntime()) {
             new LinuxSecureRandom();
         }
+
         FixedPointUtil.precompute(CURVE_PARAMS.getG(), 12);
         CURVE = new ECDomainParameters(CURVE_PARAMS.getCurve(), CURVE_PARAMS.getG(), CURVE_PARAMS.getN(), CURVE_PARAMS.getH());
         HALF_CURVE_ORDER = CURVE_PARAMS.getN().shiftRight(1);
@@ -753,32 +754,33 @@ public class ECKey {
     }
 
     public static class KeyIsEncryptedException extends ECKey.MissingPrivateKeyException {
-        KeyIsEncryptedException() {
+        public KeyIsEncryptedException() {
         }
     }
 
-    static class MissingPrivateKeyException extends RuntimeException {
-        MissingPrivateKeyException() {
+    public static class MissingPrivateKeyException extends RuntimeException {
+        public MissingPrivateKeyException() {
         }
     }
 
     public static class ECDSASignature {
-        final BigInteger r;
+        public final BigInteger r;
         public final BigInteger s;
 
-        ECDSASignature(BigInteger r, BigInteger s) {
+        public ECDSASignature(BigInteger r, BigInteger s) {
             this.r = r;
             this.s = s;
         }
-        boolean isCanonical() {
+
+        public boolean isCanonical() {
             return this.s.compareTo(ECKey.HALF_CURVE_ORDER) <= 0;
         }
 
-        ECKey.ECDSASignature toCanonicalised() {
+        public ECKey.ECDSASignature toCanonicalised() {
             return !this.isCanonical() ? new ECKey.ECDSASignature(this.r, ECKey.CURVE.getN().subtract(this.s)) : this;
         }
 
-        byte[] encodeToDER() {
+        public byte[] encodeToDER() {
             try {
                 return this.derByteStream().toByteArray();
             } catch (IOException var2) {
@@ -786,7 +788,7 @@ public class ECKey {
             }
         }
 
-        static ECKey.ECDSASignature decodeFromDER(byte[] bytes) throws IllegalArgumentException {
+        public static ECKey.ECDSASignature decodeFromDER(byte[] bytes) throws IllegalArgumentException {
             ASN1InputStream decoder = null;
 
             ECKey.ECDSASignature var6;
@@ -796,9 +798,11 @@ public class ECKey {
                 if (seqObj == null) {
                     throw new IllegalArgumentException("Reached past end of ASN.1 stream.");
                 }
+
                 if (!(seqObj instanceof DLSequence)) {
                     throw new IllegalArgumentException("Read unexpected class: " + seqObj.getClass().getName());
                 }
+
                 DLSequence seq = (DLSequence)seqObj;
 
                 ASN1Integer r;
@@ -809,6 +813,7 @@ public class ECKey {
                 } catch (ClassCastException var16) {
                     throw new IllegalArgumentException(var16);
                 }
+
                 var6 = new ECKey.ECDSASignature(r.getPositiveValue(), s.getPositiveValue());
             } catch (IOException var17) {
                 throw new IllegalArgumentException(var17);
@@ -816,15 +821,17 @@ public class ECKey {
                 if (decoder != null) {
                     try {
                         decoder.close();
-                    } catch (IOException ignored) {
-
+                    } catch (IOException var15) {
+                        ;
                     }
                 }
+
             }
+
             return var6;
         }
 
-        ByteArrayOutputStream derByteStream() throws IOException {
+        protected ByteArrayOutputStream derByteStream() throws IOException {
             ByteArrayOutputStream bos = new ByteArrayOutputStream(72);
             DERSequenceGenerator seq = new DERSequenceGenerator(bos);
             seq.addObject(new ASN1Integer(this.r));
