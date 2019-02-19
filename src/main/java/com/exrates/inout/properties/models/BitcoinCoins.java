@@ -50,8 +50,16 @@ public class BitcoinCoins {
     private BitcoinProperty xfc;
     private BitcoinProperty toa;
     private BitcoinProperty cryp;
-    private BitcoinProperty nsr;
-    private BitcoinProperty aml;
-    private BitcoinProperty bbx;
-    private BitcoinProperty hsr;
+    private BitcoinProperty CBC;
+    private BitcoinProperty ABBC;
+    private BitcoinProperty Q;
+    private BitcoinProperty DIME;
+    private BitcoinProperty BSV;
+    private BitcoinProperty BCH;
+    private BitcoinProperty CTX;
+    private BitcoinProperty RIME;
+    private BitcoinProperty EXO;
+    private BitcoinProperty GRS;
+    private BitcoinProperty KOD;
+    private BitcoinProperty DIVI;
 }

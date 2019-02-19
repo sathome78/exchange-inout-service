@@ -285,24 +285,65 @@ public class CryptocurrencyConfig {
         return createBitcoinService(ccp.getBitcoinCoins().getCryp());
     }
 
-    @Bean(name = "nsrServiceImpl")
-    public BitcoinService nsrService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getNsr());
+    @Bean(name = "cbcServiceImpl")
+    public BitcoinService cbcService() {
+        return createBitcoinService(ccp.getBitcoinCoins().getCBC());
     }
 
-    @Bean(name = "amlServiceImpl")
-    public BitcoinService amlService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getAml());
+    @Bean(name = "abbcServiceImpl")
+    public BitcoinService abbcService() {
+        return createBitcoinService(ccp.getBitcoinCoins().getABBC());
     }
 
-    @Bean(name = "bbccServiceImpl")
-    public BitcoinService bbccService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getBbx());
+    @Bean(name = "qServiceImpl")
+    public BitcoinService qServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getQ());
     }
 
-    @Bean(name = "hsrServiceImpl")
-    public BitcoinService hcasheService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getHsr());
+    @Bean(name = "dimeServiceImpl")
+    public BitcoinService dimeServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getDIME());
+    }
+
+    @Bean(name = "bsvServiceImpl")
+    public BitcoinService bsvServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getBSV());
+    }
+
+    @Bean(name = "bchServiceImpl")
+    public BitcoinService bchServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getBCH());
+    }
+
+    @Bean(name = "ctxServiceImpl")
+    public BitcoinService ctxServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getCTX());
+    }
+
+    @Bean(name = "rimeServiceImpl")
+    public BitcoinService rimeServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getRIME());
+    }
+
+    @Bean(name = "exoServiceImpl")
+    public BitcoinService exoServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getEXO());
+    }
+
+    @Bean(name = "grsServiceImpl")
+    public BitcoinService grsServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getGRS());
+    }
+
+    @Bean(name = "kodServiceImpl")
+    public BitcoinService kodServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getKOD());
+    }
+
+
+    @Bean(name = "diviServiceImpl")
+    public BitcoinService diviServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getDIVI());
     }
 
     private BitcoinService createBitcoinService(BitcoinProperty property) {
