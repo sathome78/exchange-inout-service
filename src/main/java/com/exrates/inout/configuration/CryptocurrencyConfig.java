@@ -90,11 +90,6 @@ public class CryptocurrencyConfig {
         return createBitcoinService(ccp.getBitcoinCoins().getAtb());
     }
 
-    @Bean(name = "bitcoinCashServiceImpl")
-    public BitcoinService bchService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getBch());
-    }
-
     @Bean(name = "dogecoinServiceImpl")
     public BitcoinService dogeService() {
         return createBitcoinService(ccp.getBitcoinCoins().getDoge());
@@ -339,7 +334,6 @@ public class CryptocurrencyConfig {
     public BitcoinService kodServiceImpl() {
         return createBitcoinService(ccp.getBitcoinCoins().getKOD());
     }
-
 
     @Bean(name = "diviServiceImpl")
     public BitcoinService diviServiceImpl() {

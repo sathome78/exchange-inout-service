@@ -1893,6 +1893,588 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  INK:
+    merchant-name: Ink
+    currency-name: INK
+    contract: 0xf4c90e18727c5c76499ea6369c856a6d61d3e92e
+    isERC20: false
+    unit: GWEI
+    min-wallet-balance: 0
+  RTH:
+    merchant-name: RTH
+    currency-name: RTH
+    contract: 0x3fd8f39a962efda04956981c31ab89fab5fb8bc8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SPD:
+    merchant-name: SPD
+    currency-name: SPD
+    contract: 0x1dea979ae76f26071870f824088da78979eb91c8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MTC:
+    merchant-name: MTC
+    currency-name: MTC
+    contract: 0x905e337c6c8645263d3521205aa37bf4d034e745
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ARN:
+    merchant-name: ARN
+    currency-name: ARN
+    contract: 0xba5f11b16b155792cf3b2e6880e8706859a8aeb6
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  HST:
+    merchant-name: HST
+    currency-name: HST
+    contract: 0x554c20b7c486beee439277b4540a434566dc4c02
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  DTRC:
+    merchant-name: DTRC
+    currency-name: DTRC
+    contract: 0xc20464e0c373486d2b3335576e83a218b1618a5e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CEEK:
+    merchant-name: CEEK
+    currency-name: CEEK
+    contract: 0xb056c38f6b7dc4064367403e26424cd2c60655e1
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ANY:
+    merchant-name: ANY
+    currency-name: ANY
+    contract: 0xdf67cf04f1f268e431bfecf2c76843afb8e536c1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  TGAME:
+    merchant-name: TGAME
+    currency-name: TGAME
+    contract: 0xf8e06e4e4a80287fdca5b02dccecaa9d0954840f
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MTL:
+    merchant-name: MTL
+    currency-name: MTL
+    contract: 0xf433089366899d83a9f26a773d59ec7ecf30355e
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  LEDU:
+    merchant-name: LEDU
+    currency-name: LEDU
+    contract: 0x5b26c5d0772e5bbac8b3182ae9a13f9bb2d03765
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  ADB:
+    merchant-name: ADB
+    currency-name: ADB
+    contract: 0x2baac9330cf9ac479d819195794d79ad0c7616e3
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CEDEX:
+    merchant-name: CEDEX
+    currency-name: CEDEX
+    contract: 0xf4065e4477e91c177ded71a7a6fb5ee07dc46bc9
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GST:
+    merchant-name: GST
+    currency-name: GST
+    contract: 0x67a9099f0008c35c61c00042cd9fb03684451097
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SAT:
+    merchant-name: SAT
+    currency-name: SAT
+    contract: 0xc56b13ebbcffa67cfb7979b900b736b3fb480d78
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  CHE:
+    merchant-name: CHE
+    currency-name: CHE
+    contract: 0x632f62fcf63cb56380ffd27d63afcf5f1349f73f
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  DACC:
+    merchant-name: DACC
+    currency-name: DACC
+    contract: 0xf8c595d070d104377f58715ce2e6c93e49a87f3c
+    isERC20: false
+    unit: MWEI
+    min-wallet-balance: 0
+  ENGT:
+    merchant-name: ENGT
+    currency-name: ENGT
+    contract: 0x5dbac24e98e2a4f43adc0dc82af403fca063ce2c
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TAVITT:
+    merchant-name: TAVITT
+    currency-name: TAVITT
+    contract: 0xdd690d8824c00c84d64606ffb12640e932c1af56
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  UMT:
+    merchant-name: UMT
+    currency-name: UMT
+    contract: 0xc6be00f7ed386015a3c751d38c126c62f231138d
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MASP:
+    merchant-name: MASP
+    currency-name: MASP
+    contract: 0xce958ecf2c752c74973e89674faa30404b15a498
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SKILL:
+    merchant-name: SKILL
+    currency-name: SKILL
+    contract: 0x417d6feeae8b2fcb73d14d64be7f192e49431978
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  STOR:
+    merchant-name: STOR
+    currency-name: STOR
+    contract: 0xa3ceac0aac5c5d868973e546ce4731ba90e873c2
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  QUINT:
+    merchant-name: QUiNT
+    currency-name: QUiNT
+    contract: 0x45b73654e464945a268032cdcb8d551fe8b733ca
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TTC:
+    merchant-name: TTC
+    currency-name: TTC
+    contract: 0x53e28b07e0795869b727ee4d585b3c025b016952
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BFG:
+    merchant-name: BFG
+    currency-name: BFG
+    contract: 0x2ee3b3804f695355ddc4f8e1c54654416d7ee95a
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  JET:
+    merchant-name: JET
+    currency-name: JET
+    contract: 0x8727c112c712c4a03371ac87a74dd6ab104af768
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PAT:
+    merchant-name: PAT
+    currency-name: PAT
+    contract: 0xf3b3cad094b89392fce5fafd40bc03b80f2bc624
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  EMTV:
+    merchant-name: eMTV
+    currency-name: eMTV
+    contract: 0x07a7ed332c595b53a317afcee50733af571475e7
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  KWATT:
+    merchant-name: KWATT
+    currency-name: KWATT
+    contract: 0x241ba672574a78a3a604cdd0a94429a73a84a324
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TUSD:
+    merchant-name: TUSD
+    currency-name: TUSD
+    contract: 0x0000000000085d4780b73119b644ae5ecd22b376
+    isERC20: false
+    unit: WEI
+    min-wallet-balance: 0
+  FPWR:
+    merchant-name: FPWR
+    currency-name: FPWR
+    contract: 0xdd92e60563250012ee1c4cb4b26810c45a0591da
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CRBT:
+    merchant-name: CRBT
+    currency-name: CRBT
+    contract: 0x2cf618c19041d9db330d8222b860a624021f30fb
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HIVE:
+    merchant-name: HIVE
+    currency-name: HIVE
+    contract: 0x895f5d0b8456b980786656a33f21642807d1471c
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  CMIT:
+    merchant-name: CMIT
+    currency-name: CMIT
+    contract: 0xe11609b9a51caf7d32a55896386ac52ed90e66f1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  HDR:
+    merchant-name: HDR
+    currency-name: HDR
+    contract: 0x52494fbffe10f8c29411521040ae8618c334981e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RAC:
+    merchant-name: RAC
+    currency-name: RAC
+    contract: 0x342ba159f988f24f0b033f3cc5232377ee500543
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  IQN:
+    merchant-name: IQN
+    currency-name: IQN
+    contract: 0x0db8d8b76bc361bacbb72e2c491e06085a97ab31
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GEX:
+    merchant-name: GEX
+    currency-name: GEX
+    contract: 0xdac15794f0fadfdcf3a93aeaabdc7cac19066724
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  IXE:
+    merchant-name: IXE
+    currency-name: IXE
+    contract: 0x7a07e1a0c2514d51132183ecfea2a880ec3b7648
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  NER:
+    merchant-name: NER
+    currency-name: NER
+    contract: 0xee5dfb5ddd54ea2fb93b796a8a1b83c3fe38e0e6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PHI:
+    merchant-name: PHI
+    currency-name: PHI
+    contract: 0x13c2fab6354d3790d8ece4f0f1a3280b4a25ad96
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RET:
+    merchant-name: RET
+    currency-name: RET
+    contract: 0xd7394087e1dbbe477fe4f1cf373b9ac9459565ff
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  MFTU:
+    merchant-name: MFTU
+    currency-name: MFTU
+    contract: 0x05d412ce18f24040bb3fa45cf2c69e506586d8e8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GIGC:
+    merchant-name: GIGC
+    currency-name: GIGC
+    contract: 0xbf8aa0617df5c542f533b0e95fe2f877906ac327
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  SWM:
+    merchant-name: SWM
+    currency-name: SWM
+    contract: 0x9e88613418cf03dca54d6a2cf6ad934a78c7a17a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TIC:
+    merchant-name: TIC
+    currency-name: TIC
+    contract: 0x72430a612adc007c50e3b6946dbb1bb0fd3101d1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  BNC:
+    merchant-name: BNC
+    currency-name: BNC
+    contract: 0xef51c9377feb29856e61625caf9390bd0b67ea18
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  WTL:
+    merchant-name: WTL
+    currency-name: WTL
+    contract: 0x9a0587eae7ef64b2b38a10442a44cfa43edd7d2a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  UDOO:
+    merchant-name: uDOO
+    currency-name: uDOO
+    contract: 0x0df721639ca2f7ff0e1f618b918a65ffb199ac4e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  XAU:
+    merchant-name: XAU
+    currency-name: XAU
+    contract: 0xadf07ae026c660968223f9f376a928523f248b69
+    isERC20: false
+    unit: TWINKY
+    min-wallet-balance: 0
+  USDC:
+    merchant-name: USDC
+    currency-name: USDC
+    contract: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    isERC20: false
+    unit: MWEI
+    min-wallet-balance: 0
+  TTP:
+    merchant-name: TTP
+    currency-name: TTP
+    contract: 0x38f22479795a1a51ccd1e5a41f09c7525fb27318
+    isERC20: false
+    unit: FINNEY
+    min-wallet-balance: 0
+  MGX:
+    merchant-name: MGX
+    currency-name: MGX
+    contract: 0xc79d440551a03f84f863b1f259f135794c8a7190
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  VAI:
+    merchant-name: VAI
+    currency-name: VAI
+    contract: 0xd4078bdb652610ad5383a747d130cbe905911102
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  UNC:
+    merchant-name: UNC
+    currency-name: UNC
+    contract: 0x882fbbe226f293037fa5c06459b1f4e871b70e94
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MODL:
+    merchant-name: MODL
+    currency-name: MODL
+    contract: 0x2dc059881eef90b12e4d770364f4b14af82c5b9c
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ECTE:
+    merchant-name: ECTE
+    currency-name: ECTE
+    contract: 0xe9fa21e671bcfb04e6868784b89c19d5aa2424ea
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  S4F:
+    merchant-name: S4F
+    currency-name: S4F
+    contract: 0xaec7d1069e3a914a3eb50f0bfb1796751f2ce48a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MNC:
+    merchant-name: MNC
+    currency-name: MNC
+    contract: 0x9f0f1be08591ab7d990faf910b38ed5d60e4d5bf
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TCAT:
+    merchant-name: TCAT
+    currency-name: TCAT
+    contract: 0xaff84e86d72edb971341a6a66eb2da209446fa14
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HT:
+    merchant-name: HT
+    currency-name: HT
+    contract: 0x6f259637dcd74c767781e37bc6133cd6a68aa161
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  EDT:
+    merchant-name: EDT
+    currency-name: EDT
+    contract: 0x3766a0d0c661094c02d5f11c74f2aa92228b1548
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  POA:
+    merchant-name: POA
+    currency-name: POA
+    contract: 0x6758b7d441a9739b98552b373703d8d3d14f9e62
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MCO:
+    merchant-name: MCO
+    currency-name: MCO
+    contract: 0xb63b606ac810a52cca15e44bb630fd42d8d1d83d
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  ZIL:
+    merchant-name: ZIL
+    currency-name: ZIL
+    contract: 0x05f4a42e251f2d52b8ed15e9fedaacfcef1fad27
+    isERC20: false
+    unit: SZABO
+    min-wallet-balance: 0
+  MANA:
+    merchant-name: MANA
+    currency-name: MANA
+    contract: 0x0f5d2fb29fb7d3cfee444a200298f468908cc942
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  WABI:
+    merchant-name: WaBi
+    currency-name: WaBi
+    contract: 0x286bda1413a2df81731d4930ce2f862a35a609fe
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  NPXS:
+    merchant-name: NPXS
+    currency-name: NPXS
+    contract: 0xa15c7ebe1f07caf6bff097d8a589fb8ac49ae5b3
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  QKC:
+    merchant-name: QKC
+    currency-name: QKC
+    contract: 0xea26c4ac16d4a5a106820bc8aee85fd0b7b2b664
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HOT:
+    merchant-name: HOT
+    currency-name: HOT
+    contract: 0x6c6ee5e31d828de241282b9606c8e98ea48526e2
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ZRX:
+    merchant-name: ZRX
+    currency-name: ZRX
+    contract: 0xe41d2489571d322189246dafa5ebde1f4699f498
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BAT:
+    merchant-name: BAT
+    currency-name: BAT
+    contract: 0x0d8775f648430679a709e98d2b0cb6250d2887ef
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RDN:
+    merchant-name: RDN
+    currency-name: RDN
+    contract: 0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HNI:
+    merchant-name: HNI
+    currency-name: HNI
+    contract: 0xd6cb175719365a2ea630f266c53ddfbe4e468e25
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ELT:
+    merchant-name: ELT
+    currency-name: ELT
+    contract: 0x45d0bdfdfbfd62e14b64b0ea67dc6eac75f95d4d
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  REN:
+    merchant-name: REN
+    currency-name: REN
+    contract: 0x408e41876cccdc0f92210600ef50372656052a38
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MET:
+    merchant-name: MET
+    currency-name: MET
+    contract: 0xa3d58c4e56fedcae3a7c43a725aee9a71f0ece4e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PLTC:
+    merchant-name: PLTC
+    currency-name: PLTC
+    contract: 0x0c6e8a8358cbde54f8e4cd7f07d5ac38aec8c5a4
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  VRBS:
+    merchant-name: VRBS
+    currency-name: VRBS
+    contract: 0x0e08b02d89ca66cf157c6658c02933ef0bc38cb6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ZUBE:
+    merchant-name: ZUBE
+    currency-name: ZUBE
+    contract: 0xc5e017450346e4f9a2e477519d65affcfc90586a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ELC:
+    merchant-name: ELC
+    currency-name: ELC
+    contract: 0x2ab2ffaa942851922a50fd640893f5c42b82474e
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+
 
 lisk-coins:
   lisk:

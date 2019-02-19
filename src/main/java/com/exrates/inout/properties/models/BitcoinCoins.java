@@ -11,7 +11,6 @@ public class BitcoinCoins {
     private BitcoinProperty ltc;
     private BitcoinProperty dash;
     private BitcoinProperty atb;
-    private BitcoinProperty bch;
     private BitcoinProperty doge;
     private BitcoinProperty btg;
     private BitcoinProperty zec;
