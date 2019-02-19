@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.utils.WithdrawUtils;
@@ -194,6 +195,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
     }
+
 
     private Integer setIdAndAccept(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException {
         try {

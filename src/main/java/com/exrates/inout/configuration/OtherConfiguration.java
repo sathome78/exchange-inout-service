@@ -3,6 +3,7 @@ package com.exrates.inout.configuration;
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.zeromq.ZMQ;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import java.util.Locale;
 
 @Configuration
@@ -45,6 +48,13 @@ public class OtherConfiguration {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(qiwiClientId, qiwiClientSecret));
         return restTemplate;
+    }
+
+    @Bean
+    public Client client() {
+        Client build = ClientBuilder.newBuilder().build();
+        build.register(new LoggingFilter());
+        return build;
     }
 
     @Bean

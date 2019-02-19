@@ -252,6 +252,13 @@ public class RefillServiceImpl implements RefillService {
         return refillRequestDao.getListOfValidAddressByMerchantIdAndCurrency(merchantId, currencyId);
     }
 
+    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
+    @Override
+    public String getUsernameByRequestId(int requestId) {
+        return refillRequestDao.getGaTagByRequestId(requestId);
+    }
+
+
     @Override
     @Transactional(readOnly = true)
     public Integer getMerchantIdByAddressAndCurrencyAndUser(String address, Integer currencyId, Integer userId) {
@@ -317,6 +324,20 @@ public class RefillServiceImpl implements RefillService {
             log.error(e);
         }
         return requestId;
+    }
+
+    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
+    @Override
+    public Integer getRequestId(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException {
+        Optional<Integer> requestIdOptional = getRequestIdReadyForAutoAcceptByAddressAndMerchantIdAndCurrencyId(
+                requestAcceptDto.getAddress(),
+                requestAcceptDto.getMerchantId(),
+                requestAcceptDto.getCurrencyId());
+        if (requestIdOptional.isPresent()) {
+            return requestIdOptional.get();
+        } else {
+            throw new RefillRequestAppropriateNotFoundException(requestAcceptDto.toString());
+        }
     }
 
     @Override

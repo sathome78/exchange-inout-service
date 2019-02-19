@@ -31,6 +31,10 @@ public interface IRefillable extends IMerchantService {
         return false;
     }
 
+    default String getMerchantName(){
+        return "Not defined";
+    }
+
     Boolean toMainAccountTransferringConfirmNeeded();
 
     void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException;

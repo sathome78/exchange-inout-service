@@ -49,8 +49,8 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class AdkServiceImpl implements AdkService {
 
-    private static final String CURRENCY_NAME = "ADK";
-    private static final String MERCHANT_NAME = "ADK";
+    public static final String CURRENCY_NAME = "ADK";
+    public static final String MERCHANT_NAME = "ADK";
     private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
     private static final Object SEND_MONITOR = new Object();
     private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
@@ -285,7 +285,7 @@ public class AdkServiceImpl implements AdkService {
         return CURRENCY_NAME;
     }
 
-    public static String getMerchantName() {
+    public String getMerchantName() {
         return MERCHANT_NAME;
     }
 

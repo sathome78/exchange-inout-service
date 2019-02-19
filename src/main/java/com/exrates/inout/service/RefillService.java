@@ -25,12 +25,18 @@ public interface RefillService {
 
     List<String> getListOfValidAddressByMerchantIdAndCurrency(Integer merchantId, Integer currencyId);
 
+    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
+    String getUsernameByRequestId(int requestId);
+
     @Transactional(readOnly = true)
     Integer getMerchantIdByAddressAndCurrencyAndUser(String address, Integer currencyId, Integer userId);
 
     List<MerchantCurrency> retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies, String userEmail);
 
     Integer createRefillRequestByFact(RefillRequestAcceptDto request);
+
+    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
+    Integer getRequestId(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
 
     void confirmRefillRequest(InvoiceConfirmData invoiceConfirmData, Locale locale);
 

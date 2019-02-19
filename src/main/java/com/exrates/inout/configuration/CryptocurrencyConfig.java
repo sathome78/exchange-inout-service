@@ -19,8 +19,12 @@ import com.exrates.inout.properties.models.XemProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
+import com.exrates.inout.service.bitshares.BitsharesService;
+import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
+import com.exrates.inout.service.bitshares.ppy.PPYServiceImpl;
 import com.exrates.inout.service.btc.BitcoinService;
 import com.exrates.inout.service.btc.BitcoinServiceImpl;
+import com.exrates.inout.service.crypto_currencies.HCXPServiceImpl;
 import com.exrates.inout.service.crypto_currencies.MoneroService;
 import com.exrates.inout.service.crypto_currencies.MoneroServiceImpl;
 import com.exrates.inout.service.ethereum.EthTokenService;
@@ -1089,7 +1093,7 @@ public class CryptocurrencyConfig {
     //Bitshares
     @Bean(name = "ppyServiceImpl")
     public BitsharesService bitsharesService(){
-        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6); // TODO
+        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6);
     }
 
     @Bean(name = "aunitServiceImpl")

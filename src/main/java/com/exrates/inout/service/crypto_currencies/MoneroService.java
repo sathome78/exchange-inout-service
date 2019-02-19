@@ -3,6 +3,7 @@ package com.exrates.inout.service.crypto_currencies;
 import com.exrates.inout.service.IMerchantService;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
+import org.springframework.scheduling.annotation.Scheduled;
 
 public interface MoneroService extends IMerchantService, IRefillable, IWithdrawable {
 
@@ -40,4 +41,6 @@ public interface MoneroService extends IMerchantService, IRefillable, IWithdrawa
     default Boolean additionalFieldForRefillIsUsed() {
         return false;
     }
+
+    default void sendToMainAccount() {};
 }

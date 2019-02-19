@@ -121,5 +121,8 @@ public interface RefillRequestDao {
 
     List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId);
 
+    String getGaTagByRequestId(int requestId);
+
     List<RefillRequestFlatDto> findAllWithChildTokensWithConfirmationsByMerchantIdAndCurrencyIdAndStatusId(int merchantId, int currencyId, List<Integer> collect);
+
 }

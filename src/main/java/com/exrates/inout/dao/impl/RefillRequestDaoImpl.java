@@ -284,6 +284,24 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     }
 
     @Override
+    public String getGaTagByRequestId(int requestId) {
+        final String sql = "SELECT u.GA" +
+                " FROM REFILL_REQUEST rr" +
+                " JOIN USER u on u.id = rr.user_id " +
+                " WHERE rr.id = :requestId";
+
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("requestId", requestId);
+        }};
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
+        } catch (Exception ex) {
+            log.debug("Username (email) not found by request id: {}", requestId);
+            return null;
+        }
+    }
+
+    @Override
     public List<RefillRequestFlatDto> findAllWithChildTokensWithConfirmationsByMerchantIdAndCurrencyIdAndStatusId(int merchantId, int currencyId, List<Integer> statusIdList) {
         String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*,  " +
                 "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
