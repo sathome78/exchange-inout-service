@@ -1,17 +1,10 @@
 package com.exrates.inout.service.neo;
 
-
-import com.exrates.inout.domain.neo.Block;
-import com.exrates.inout.domain.neo.NeoAsset;
-import com.exrates.inout.domain.neo.NeoJsonRpcRequest;
-import com.exrates.inout.domain.neo.NeoJsonRpcResponse;
-import com.exrates.inout.domain.neo.NeoTransaction;
-import com.exrates.inout.exceptions.NeoApiException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.model.dto.merchants.neo.*;
+import me.exrates.service.exception.NeoApiException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -22,31 +15,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Log4j2(topic = "neo_log")
-@AllArgsConstructor
-@NoArgsConstructor
 public class NeoNodeServiceImpl implements NeoNodeService {
+
 
     private String endpoint;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
 
+    NeoNodeServiceImpl(String endpoint, RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.endpoint = endpoint;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public String getNewAddress() {
-        return invokeJsonRpcMethod("getnewaddress", Collections.emptyList(), new TypeReference<NeoJsonRpcResponse<String>>() {
-        });
+        return invokeJsonRpcMethod("getnewaddress", Collections.emptyList(), new TypeReference<NeoJsonRpcResponse<String>>() {});
     }
 
     @Override
     public Integer getBlockCount() {
-        return invokeJsonRpcMethod("getblockcount", Collections.emptyList(), new TypeReference<NeoJsonRpcResponse<Integer>>() {
-        });
+        return invokeJsonRpcMethod("getblockcount", Collections.emptyList(), new TypeReference<NeoJsonRpcResponse<Integer>>() {});
     }
 
     @Override
     public Optional<Block> getBlock(Integer height) {
         try {
-            return Optional.of(invokeJsonRpcMethod("getblock", Arrays.asList(height, 1), new TypeReference<NeoJsonRpcResponse<Block>>() {
-            }));
+            return Optional.of(invokeJsonRpcMethod("getblock", Arrays.asList(height, 1), new TypeReference<NeoJsonRpcResponse<Block>>() {}));
         } catch (Exception e) {
             log.error(e);
             return Optional.empty();
@@ -56,8 +51,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
     @Override
     public Optional<NeoTransaction> getTransactionById(String txId) {
         try {
-            return Optional.of(invokeJsonRpcMethod("getrawtransaction", Arrays.asList(txId, 1), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {
-            }));
+            return Optional.of(invokeJsonRpcMethod("getrawtransaction", Arrays.asList(txId, 1), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {}));
         } catch (Exception e) {
             log.error(e);
             return Optional.empty();
@@ -66,9 +60,12 @@ public class NeoNodeServiceImpl implements NeoNodeService {
 
     @Override
     public NeoTransaction sendToAddress(NeoAsset asset, String address, BigDecimal amount, String changeAddress) {
-        return invokeJsonRpcMethod("sendtoaddress", Arrays.asList(asset.getId(), address, amount, 0, changeAddress), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {
-        });
+        return invokeJsonRpcMethod("sendtoaddress", Arrays.asList(asset.getId(), address, amount, 0, changeAddress), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {});
     }
+
+
+
+
 
     private <T> T invokeJsonRpcMethod(String methodName, List<Object> args, TypeReference<NeoJsonRpcResponse<T>> typeReference) {
         NeoJsonRpcRequest request = new NeoJsonRpcRequest();
@@ -80,7 +77,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
     private <T> T getNeoJsonRpcResponse(NeoJsonRpcRequest request, TypeReference<NeoJsonRpcResponse<T>> typeReference) {
         String responseString = restTemplate.postForObject(endpoint, request, String.class);
         try {
-            NeoJsonRpcResponse<T> response = objectMapper.readValue(responseString, typeReference);
+            NeoJsonRpcResponse<T> response = objectMapper.readValue(responseString,  typeReference);
             if (response.getError() != null) {
                 log.error(response.getError());
                 throw new NeoApiException(response.getError().getCode(), response.getError().getMessage());
@@ -93,4 +90,8 @@ public class NeoNodeServiceImpl implements NeoNodeService {
             throw new NeoApiException(e);
         }
     }
+
+
+
+
 }

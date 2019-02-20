@@ -1,7 +1,7 @@
 package com.exrates.inout.service.aidos;
 
-import com.exrates.inout.domain.dto.BtcTransactionDto;
-import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
+import me.exrates.model.dto.merchants.btc.BtcTransactionDto;
+import me.exrates.model.dto.merchants.btc.BtcWalletPaymentItemDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface AidosNodeService {
-
     String generateNewAddress();
 
     BigDecimal getBalance();
@@ -19,6 +18,7 @@ public interface AidosNodeService {
     JSONArray getAllTransactions(Integer count, Integer from);
 
     JSONObject sendToAddress(String address, BigDecimal amount);
+
 
     JSONObject sendMany(List<BtcWalletPaymentItemDto> payments);
 

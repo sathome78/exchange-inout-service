@@ -1,18 +1,18 @@
 package com.exrates.inout.service.bitshares;
 
-import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
-import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.exceptions.MerchantInternalException;
-import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.GtagService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.utils.WithdrawUtils;
 import com.google.common.hash.Hashing;
 import lombok.Data;
 import lombok.SneakyThrows;
+import me.exrates.dao.MerchantSpecParamsDao;
+import me.exrates.model.Merchant;
+import me.exrates.model.dto.*;
+import me.exrates.service.CurrencyService;
+import me.exrates.service.GtagService;
+import me.exrates.service.MerchantService;
+import me.exrates.service.RefillService;
+import me.exrates.service.exception.MerchantInternalException;
+import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
+import me.exrates.service.util.WithdrawUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -33,9 +33,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import com.exrates.inout.domain.main.Currency;
 
-import static com.exrates.inout.service.bitshares.MemoDecryptor.decryptBTSmemo;
+import static me.exrates.service.bitshares.MemoDecryptor.decryptBTSmemo;
 
 
 @Data
@@ -195,7 +194,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
     }
-
 
     private Integer setIdAndAccept(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException {
         try {

@@ -1,6 +1,6 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.lisk.LiskAccount;
+import me.exrates.model.dto.merchants.lisk.LiskAccount;
 
 public interface LiskSpecialMethodService {
 

@@ -1,8 +1,11 @@
 package com.exrates.inout.service.tron;
 
-public interface TronTransactionsService {
+import me.exrates.model.dto.TronReceivedTransactionDto;
 
+public interface TronTransactionsService {
     boolean checkIsTransactionConfirmed(String txHash);
 
-    void processTransaction(String address, String hash, String amount);
+    void processTransaction(TronReceivedTransactionDto p);
+
+    void processTransaction(int id, String address, String hash, String amount, Integer merchantId, Integer currencyId);
 }

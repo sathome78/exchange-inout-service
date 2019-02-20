@@ -1,15 +1,13 @@
 package com.exrates.inout.service.decred;
 
-
-import com.exrates.inout.service.decred.grpc.DecredApi;
+import me.exrates.service.decred.rpc.Api;
 
 import java.util.Iterator;
 
 public interface DecredGrpcService {
+    Api.NextAddressResponse getNewAddress();
 
-    DecredApi.NextAddressResponse getNewAddress();
+    Iterator<Api.GetTransactionsResponse> getTransactions(int startBlock, int endBlockHeight);
 
-    Iterator<DecredApi.GetTransactionsResponse> getTransactions(int startBlock, int endBlockHeight);
-
-    DecredApi.BestBlockResponse getBlockInfo();
+    Api.BestBlockResponse getBlockInfo();
 }

@@ -1,7 +1,7 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.lisk.LiskAccount;
-import com.exrates.inout.domain.lisk.LiskTransaction;
+import me.exrates.model.dto.merchants.lisk.LiskAccount;
+import me.exrates.model.dto.merchants.lisk.LiskTransaction;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 

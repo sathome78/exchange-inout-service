@@ -257,9 +257,9 @@ public class MFTU extends Contract implements ethTokenERC20{
     }
 
     public List<MintEventResponse> getMintEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINT_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MINT_EVENT, transactionReceipt);
         ArrayList<MintEventResponse> responses = new ArrayList<MintEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintEventResponse typedResponse = new MintEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -273,7 +273,7 @@ public class MFTU extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintEventResponse>() {
             @Override
             public MintEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MINT_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MINT_EVENT, log);
                 MintEventResponse typedResponse = new MintEventResponse();
                 typedResponse.log = log;
                 typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -290,9 +290,9 @@ public class MFTU extends Contract implements ethTokenERC20{
     }
 
     public List<MintFinishedEventResponse> getMintFinishedEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINTFINISHED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MINTFINISHED_EVENT, transactionReceipt);
         ArrayList<MintFinishedEventResponse> responses = new ArrayList<MintFinishedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintFinishedEventResponse typedResponse = new MintFinishedEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -304,7 +304,7 @@ public class MFTU extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintFinishedEventResponse>() {
             @Override
             public MintFinishedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MINTFINISHED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MINTFINISHED_EVENT, log);
                 MintFinishedEventResponse typedResponse = new MintFinishedEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -319,9 +319,9 @@ public class MFTU extends Contract implements ethTokenERC20{
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -335,7 +335,7 @@ public class MFTU extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -352,9 +352,9 @@ public class MFTU extends Contract implements ethTokenERC20{
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -369,7 +369,7 @@ public class MFTU extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -387,9 +387,9 @@ public class MFTU extends Contract implements ethTokenERC20{
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -404,7 +404,7 @@ public class MFTU extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();

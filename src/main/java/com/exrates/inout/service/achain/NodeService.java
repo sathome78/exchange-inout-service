@@ -3,6 +3,9 @@ package com.exrates.inout.service.achain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Created by Maks on 14.06.2018.
+ */
 public interface NodeService {
 
     String getMainAccountAddress();

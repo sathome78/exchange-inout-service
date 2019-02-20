@@ -1,32 +1,25 @@
 package com.exrates.inout.service.impl;
 
-import com.exrates.inout.dao.MerchantDao;
-import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
-import com.exrates.inout.domain.dto.TransferMerchantApiDto;
-import com.exrates.inout.domain.enums.MerchantProcessType;
-import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.enums.UserCommentTopicEnum;
-import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.domain.main.MerchantCurrency;
-import com.exrates.inout.exceptions.InvalidAmountException;
-import com.exrates.inout.exceptions.MerchantCurrencyBlockedException;
-import com.exrates.inout.exceptions.MerchantServiceBeanNameNotDefinedException;
-import com.exrates.inout.exceptions.MerchantServiceNotFoundException;
-import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
-import com.exrates.inout.service.CommissionService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.IMerchantService;
-import com.exrates.inout.service.IRefillable;
-import com.exrates.inout.service.ITransferable;
-import com.exrates.inout.service.IWithdrawable;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.btc.BitcoinService;
 import lombok.SneakyThrows;
+import me.exrates.dao.MerchantDao;
+import me.exrates.model.*;
+import me.exrates.model.dto.MerchantCurrencyBasicInfoDto;
+import me.exrates.model.dto.MerchantCurrencyLifetimeDto;
+import me.exrates.model.dto.MerchantCurrencyOptionsDto;
+import me.exrates.model.dto.MerchantCurrencyScaleDto;
+import me.exrates.model.dto.merchants.btc.CoreWalletDto;
+import me.exrates.model.dto.mobileApiDto.MerchantCurrencyApiDto;
+import me.exrates.model.dto.mobileApiDto.TransferMerchantApiDto;
+import me.exrates.model.enums.*;
+import me.exrates.model.enums.invoice.RefillStatusEnum;
+import me.exrates.model.enums.invoice.WithdrawStatusEnum;
+import me.exrates.model.util.BigDecimalProcessing;
+import me.exrates.service.*;
+import me.exrates.service.api.ExchangeApi;
+import me.exrates.service.exception.*;
+import me.exrates.service.merchantStrategy.*;
+import me.exrates.service.util.BigDecimalConverter;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,53 +27,135 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
-import static com.exrates.inout.domain.enums.OperationType.USER_TRANSFER;
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.util.Objects.isNull;
+import static me.exrates.model.enums.OperationType.OUTPUT;
+import static me.exrates.model.enums.OperationType.USER_TRANSFER;
 
+/**
+ * @author Denis Savin (pilgrimm333@gmail.com)
+ */
 @Service
+@PropertySource("classpath:/merchants.properties")
 public class MerchantServiceImpl implements MerchantService {
 
-    private static final Logger LOGGER = LogManager.getLogger("merchant");
+    private static final Logger LOG = LogManager.getLogger("merchant");
 
-    private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
-
-    @Value("${btc.wallets-password-folder}")
+    @Value("${btc.walletspass.folder}")
     private String walletPropsFolder;
 
     @Autowired
     private MerchantDao merchantDao;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SendMailService sendMailService;
+
     @Autowired
     private MessageSource messageSource;
+
     @Autowired
     private MerchantServiceContext merchantServiceContext;
+
     @Autowired
     private CommissionService commissionService;
+
     @Autowired
     private CurrencyService currencyService;
+
+    @Autowired
+    private ExchangeApi exchangeApi;
+
+    private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
+
+    @Autowired
+    @Qualifier("bitcoinServiceImpl")
+    private BitcoinService bitcoinService;
+
+    @Override
+    public List<Merchant> findAllByCurrency(Currency currency) {
+        return merchantDao.findAllByCurrency(currency.getId());
+    }
 
     @Override
     public List<Merchant> findAll() {
         return merchantDao.findAll();
+    }
+
+    @Override
+    public String resolveTransactionStatus(final Transaction transaction, final Locale locale) {
+        if (transaction.getSourceType() == TransactionSourceType.WITHDRAW) {
+            WithdrawStatusEnum status = transaction.getWithdrawRequest().getStatus();
+            return messageSource.getMessage("merchants.withdraw.".concat(status.name()), null, locale);
+        }
+        if (transaction.getSourceType() == TransactionSourceType.REFILL) {
+            RefillStatusEnum status = transaction.getRefillRequest().getStatus();
+            Integer confirmations = transaction.getRefillRequest().getConfirmations();
+            return messageSource.getMessage("merchants.refill.".concat(status.name()), new Object[]{confirmations}, locale);
+        }
+        if (transaction.isProvided()) {
+            return messageSource.getMessage("transaction.provided", null, locale);
+        } else {
+            return messageSource.getMessage("transaction.notProvided", null, locale);
+        }
+    }
+
+    @Override
+    public String sendDepositNotification(final String toWallet,
+                                          final String email,
+                                          final Locale locale,
+                                          final CreditsOperation creditsOperation,
+                                          final String depositNotification) {
+        final BigDecimal amount = creditsOperation
+                .getAmount()
+                .add(creditsOperation.getCommissionAmount());
+        final String sumWithCurrency = BigDecimalProcessing.formatSpacePoint(amount, false) + " " +
+                creditsOperation
+                        .getCurrency()
+                        .getName();
+        final String notification = messageSource.getMessage(depositNotification,
+                new Object[]{sumWithCurrency, toWallet},
+                locale);
+        final Email mail = new Email();
+        mail.setTo(email);
+        mail.setSubject(messageSource
+                .getMessage("merchants.depositNotification.header", null, locale));
+        mail.setMessage(notification);
+
+        try {
+      /* TODO temporary disable
+      notificationService.createLocalizedNotification(email, NotificationEvent.IN_OUT,
+          "merchants.depositNotification.header", depositNotification,
+          new Object[]{sumWithCurrency, toWallet});*/
+            sendMailService.sendInfoMail(mail);
+        } catch (MailException e) {
+            LOG.error(e);
+        }
+        return notification;
+    }
+
+    private Map<Integer, List<Merchant>> mapMerchantsToCurrency(List<Currency> currencies) {
+        return currencies.stream()
+                .map(Currency::getId)
+                .map(currencyId -> Pair.of(currencyId, merchantDao.findAllByCurrency(currencyId)))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
     @Override
@@ -126,6 +201,7 @@ public class MerchantServiceImpl implements MerchantService {
         return result;
     }
 
+
     private List<MerchantCurrencyApiDto> findMerchantCurrenciesByCurrencyAndProcessTypes(Integer currencyId, List<String> processTypes) {
         List<MerchantCurrencyApiDto> result = merchantDao.findAllMerchantCurrencies(currencyId, userService.getUserRoleFromSecurityContext(), processTypes);
         result.forEach(item -> {
@@ -143,10 +219,112 @@ public class MerchantServiceImpl implements MerchantService {
                     }
                 }
             } catch (MerchantServiceNotFoundException | MerchantServiceBeanNameNotDefinedException e) {
-                LOGGER.warn(e);
+                LOG.warn(e);
             }
         });
         return result;
+    }
+
+    @Override
+    public List<MerchantCurrencyOptionsDto> findMerchantCurrencyOptions(List<String> processTypes) {
+        return merchantDao.findMerchantCurrencyOptions(processTypes);
+    }
+
+    @Override
+    public Map<String, String> formatResponseMessage(CreditsOperation creditsOperation) {
+        final OperationType operationType = creditsOperation.getOperationType();
+        final String commissionPercent = creditsOperation
+                .getCommission()
+                .getValue()
+                .setScale(2, ROUND_HALF_UP)
+                .toString();
+        String finalAmount = null;
+        String sumCurrency = null;
+        switch (operationType) {
+            case INPUT:
+                finalAmount = creditsOperation
+                        .getAmount()
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                sumCurrency = creditsOperation
+                        .getAmount()
+                        .add(creditsOperation.getCommissionAmount())
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                break;
+            case OUTPUT:
+                finalAmount = creditsOperation
+                        .getAmount()
+                        .subtract(creditsOperation.getCommissionAmount())
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                sumCurrency = creditsOperation
+                        .getAmount()
+                        .setScale(2, ROUND_HALF_UP) + " "
+                        + creditsOperation
+                        .getCurrency()
+                        .getName();
+                break;
+
+        }
+        final Map<String, String> result = new HashMap<>();
+        result.put("commissionPercent", commissionPercent);
+        result.put("sumCurrency", sumCurrency);
+        result.put("finalAmount", finalAmount);
+        return result;
+    }
+
+    @Override
+    public Map<String, String> formatResponseMessage(Transaction transaction) {
+        final CreditsOperation creditsOperation = new CreditsOperation.Builder()
+                .operationType(transaction.getOperationType())
+                .amount(transaction.getAmount())
+                .commissionAmount(transaction.getCommissionAmount())
+                .commission(transaction.getCommission())
+                .currency(transaction.getCurrency())
+                .build();
+        return formatResponseMessage(creditsOperation);
+
+    }
+
+    @Override
+    public void toggleSubtractMerchantCommissionForWithdraw(String merchantName, String currencyName, boolean subtractMerchantCommissionForWithdraw) {
+        merchantDao.toggleSubtractMerchantCommissionForWithdraw(merchantName, currencyName, subtractMerchantCommissionForWithdraw);
+    }
+
+    @Override
+    @Transactional
+    public void toggleMerchantBlock(Integer merchantId, Integer currencyId, OperationType operationType) {
+        merchantDao.toggleMerchantBlock(merchantId, currencyId, operationType);
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForAll(OperationType operationType, boolean blockStatus) {
+
+        if (blockStatus) {
+            if (merchantDao.isBlockStateValid(operationType)) {
+                merchantDao.backupBlockState(operationType);
+            }
+            merchantDao.setBlockForAllNonTransfer(operationType);
+        } else {
+            //check for do not restore all 1 or all 0
+            if (merchantDao.isBlockStateBackupValid(operationType)) {
+                merchantDao.restoreBlockState(operationType);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void setBlockForMerchant(Integer merchantId, Integer currencyId, OperationType operationType, boolean blockStatus) {
+        merchantDao.setBlockForMerchant(merchantId, currencyId, operationType, blockStatus);
     }
 
     @Override
@@ -201,6 +379,27 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public List<String> retrieveBtcCoreBasedMerchantNames() {
+        return merchantDao.retrieveBtcCoreBasedMerchantNames();
+    }
+
+    @Override
+    public CoreWalletDto retrieveCoreWalletByMerchantName(String merchantName, Locale locale) {
+        CoreWalletDto result = merchantDao.retrieveCoreWalletByMerchantName(merchantName).orElseThrow(() -> new MerchantNotFoundException(merchantName));
+        result.localizeTitle(messageSource, locale);
+        return result;
+    }
+
+    @Override
+    public List<CoreWalletDto> retrieveCoreWallets(Locale locale) {
+
+        List<CoreWalletDto> result = merchantDao.retrieveCoreWallets();
+        result.forEach(dto -> dto.localizeTitle(messageSource, locale));
+        return result;
+    }
+
+
+    @Override
     public Optional<String> getCoreWalletPassword(String merchantName, String currencyName) {
         Properties props = getPassMerchantProperties(merchantName);
         return Optional.ofNullable(props.getProperty("wallet.password"));
@@ -239,7 +438,7 @@ public class MerchantServiceImpl implements MerchantService {
                 commissionString = "";
             }
         }
-        LOGGER.debug("commission: " + commissionString);
+        LOG.debug("commission: " + commissionString);
         final BigDecimal resultAmount = type != OUTPUT ? amount.add(commissionAmount).setScale(currencyService.resolvePrecisionByOperationType(currency, type), ROUND_HALF_UP) :
                 amount.subtract(commissionAmount).setScale(currencyService.resolvePrecisionByOperationType(currency, type), ROUND_DOWN);
         if (resultAmount.signum() <= 0) {
@@ -261,6 +460,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public boolean isValidDestinationAddress(Integer merchantId, String address) {
+
         IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
         if (merchantService instanceof IWithdrawable) {
             return ((IWithdrawable) merchantService).isValidDestinationAddress(address);
@@ -283,10 +483,10 @@ public class MerchantServiceImpl implements MerchantService {
                 throw new IllegalArgumentException(String.format("Illegal operation type %s", operationType.name()));
         }
         List<String> result = currencyService.getWarningForMerchant(merchantId, commentTopic);
-        LOGGER.info("Warning result: " + result);
+        LOG.info("Warning result: " + result);
         List<String> resultLocalized = currencyService.getWarningForMerchant(merchantId, commentTopic).stream()
                 .map(code -> messageSource.getMessage(code, null, locale)).collect(Collectors.toList());
-        LOGGER.info("Localized result: " + resultLocalized);
+        LOG.info("Localized result: " + resultLocalized);
         return resultLocalized;
     }
 
@@ -308,5 +508,67 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId) {
         return merchantDao.findTokenMerchantsByParentId(parentId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public BigDecimal getMerchantInputCommission(int merchantId, int currencyId, String childMerchant) {
+        return merchantDao.getMerchantInputCommission(merchantId, currencyId, childMerchant);
+    }
+
+    @Override
+    public boolean setPropertyRecalculateCommissionLimitToUsd(String merchantName, String currencyName, Boolean recalculateToUsd) {
+        return merchantDao.setPropertyRecalculateCommissionLimitToUsd(merchantName, currencyName, recalculateToUsd);
+    }
+
+    @Override
+    public void updateMerchantCommissionsLimits() {
+        StopWatch stopWatch = StopWatch.createStarted();
+        LOG.info("Process of updating merchant commissions limits start...");
+
+        List<MerchantCurrencyOptionsDto> merchantCommissionsLimits = merchantDao.getAllMerchantCommissionsLimits();
+
+        final Map<String, Pair<BigDecimal, BigDecimal>> rates = exchangeApi.getRates();
+
+        if (rates.isEmpty()) {
+            LOG.info("Exchange api did not return data");
+            return;
+        }
+
+        for (MerchantCurrencyOptionsDto merchantCommissionsLimit : merchantCommissionsLimits) {
+            final String currencyName = merchantCommissionsLimit.getCurrencyName();
+            final boolean recalculateToUsd = merchantCommissionsLimit.isRecalculateToUsd();
+            BigDecimal minFixedCommissionUsdRate = merchantCommissionsLimit.getMinFixedCommissionUsdRate();
+            BigDecimal minFixedCommission = merchantCommissionsLimit.getMinFixedCommission();
+
+            Pair<BigDecimal, BigDecimal> pairRates = rates.get(currencyName);
+
+            if (isNull(pairRates)) {
+                continue;
+            }
+            final BigDecimal usdRate = pairRates.getLeft();
+            merchantCommissionsLimit.setCurrencyUsdRate(usdRate);
+
+            if (recalculateToUsd) {
+                minFixedCommission = BigDecimalConverter.convert(minFixedCommissionUsdRate.divide(usdRate, RoundingMode.HALF_UP));
+                merchantCommissionsLimit.setMinFixedCommission(minFixedCommission);
+            } else {
+                minFixedCommissionUsdRate = minFixedCommission.multiply(usdRate);
+                merchantCommissionsLimit.setMinFixedCommissionUsdRate(minFixedCommissionUsdRate);
+            }
+        }
+        merchantDao.updateMerchantCommissionsLimits(merchantCommissionsLimits);
+
+        LOG.info("Process of updating merchant commissions limits end... Time: {}", stopWatch.getTime(TimeUnit.MILLISECONDS));
+    }
+
+    @Override
+    public boolean checkAvailableRefill(Integer currencyId, Integer merchantId) {
+        return merchantDao.checkAvailable(currencyId, merchantId);
+    }
+
+    @Override
+    public MerchantCurrency findMerchantForTransferByCurrencyId(Integer currencyId, TransferTypeVoucher transferType) {
+        return merchantDao.getMerchantByCurrencyForVoucher(currencyId, transferType);
     }
 }

@@ -1,11 +1,11 @@
 package com.exrates.inout.service.achain;
 
-import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.MerchantSpecParamDto;
-import com.exrates.inout.domain.enums.AchainTransactionType;
-import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.google.common.base.Preconditions;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.dao.MerchantSpecParamsDao;
+import me.exrates.model.dto.MerchantSpecParamDto;
+import me.exrates.model.dto.achain.enums.AchainTransactionType;
+import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,26 +19,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by Maks on 14.06.2018.
+ */
 @Log4j2(topic = "achain")
 @Service
 public class TxsScanerImpl implements BlocksScaner {
-
-    private static final String PARAM_NAME = "LastScannedBlock";
-    private static final String MERCHANT_NAME = "ACHAIN";
-    private static final String CURRENCY_NAME = "ACT";
-
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private final NodeService nodeService;
     private final AchainTokenContext tokenContext;
     private final AchainService achainService;
     private final MerchantSpecParamsDao specParamsDao;
 
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private static final String PARAM_NAME = "LastScannedBlock";
+    private static final String MERCHANT_NAME = "ACHAIN";
+    private static final String CURRENCY_NAME = "ACT";
+
     @Autowired
-    public TxsScanerImpl(NodeService nodeService,
-                         AchainTokenContext tokenContext,
-                         AchainService achainService,
-                         MerchantSpecParamsDao specParamsDao) {
+    public TxsScanerImpl(NodeService nodeService, AchainTokenContext tokenContext, AchainService achainService, MerchantSpecParamsDao specParamsDao) {
         this.nodeService = nodeService;
         this.tokenContext = tokenContext;
         this.achainService = achainService;
@@ -64,7 +64,7 @@ public class TxsScanerImpl implements BlocksScaner {
         log.info("achain end block {}, last block {}", endBlock, lastProcessedBlock);
         while (lastProcessedBlock < endBlock) {
             lastProcessedBlock++;
-            JSONArray transactions = nodeService.getBlockTransactions(lastProcessedBlock);
+            JSONArray transactions =  nodeService.getBlockTransactions(lastProcessedBlock);
             checkTransactionsArray(transactions);
             saveLastBlock(lastProcessedBlock);
         }
@@ -73,7 +73,7 @@ public class TxsScanerImpl implements BlocksScaner {
     private void checkTransactionsArray(JSONArray transactions) {
         for (Object p : transactions) {
             try {
-                JSONArray tx = (JSONArray) p;
+                JSONArray tx = (JSONArray)p;
                 log.debug(tx);
                 JSONObject trx = tx.getJSONObject(1).getJSONObject("trx");
                 String result = trx.getString("result_trx_type");
@@ -135,7 +135,7 @@ public class TxsScanerImpl implements BlocksScaner {
             }
         } else if (operations.length() > 1) {
             for (Object op : operations) {
-                JSONObject opJson = (JSONObject) op;
+                JSONObject opJson = (JSONObject)op;
                 if (opJson.get("type").equals("deposit_op_type")) {
                     operation = "deposit_op_type";
                 }
@@ -155,8 +155,8 @@ public class TxsScanerImpl implements BlocksScaner {
     }
 
     private String parseAmount(Double amount) {
-        double res = amount / 100000d;
-        return Double.toString(res);
+        Double res = amount/100000d;
+        return res.toString();
     }
 
     private void acceptPayment(String address, String txHash, String amount, String merchantName, String currencyName) {

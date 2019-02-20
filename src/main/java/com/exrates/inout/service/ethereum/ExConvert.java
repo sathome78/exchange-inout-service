@@ -3,16 +3,19 @@ package com.exrates.inout.service.ethereum;
 
 import java.math.BigDecimal;
 
+/**
+ * Created by Maks on 12.03.2018.
+ */
 public class ExConvert {
 
     private ExConvert() {
     }
 
-    static BigDecimal fromWei(String number, ExConvert.Unit unit) {
+    public static BigDecimal fromWei(String number, ExConvert.Unit unit) {
         return fromWei(new BigDecimal(number), unit);
     }
 
-    private static BigDecimal fromWei(BigDecimal number, ExConvert.Unit unit) {
+    public static BigDecimal fromWei(BigDecimal number, ExConvert.Unit unit) {
         return number.divide(unit.getWeiFactor());
     }
 
@@ -20,7 +23,7 @@ public class ExConvert {
         return toWei(new BigDecimal(number), unit);
     }
 
-    static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
+    public static BigDecimal toWei(BigDecimal number, ExConvert.Unit unit) {
         return number.multiply(unit.getWeiFactor());
     }
 
@@ -41,7 +44,7 @@ public class ExConvert {
         private String name;
         private BigDecimal weiFactor;
 
-        Unit(String name, int factor) {
+        private Unit(String name, int factor) {
             this.name = name;
             this.weiFactor = BigDecimal.TEN.pow(factor);
         }
@@ -55,17 +58,20 @@ public class ExConvert {
         }
 
         public static ExConvert.Unit fromString(String name) {
-            if (name != null) {
+            if(name != null) {
                 ExConvert.Unit[] var1 = values();
                 int var2 = var1.length;
 
-                for (Unit unit : var1) {
-                    if (name.equalsIgnoreCase(unit.name)) {
+                for(int var3 = 0; var3 < var2; ++var3) {
+                    ExConvert.Unit unit = var1[var3];
+                    if(name.equalsIgnoreCase(unit.name)) {
                         return unit;
                     }
                 }
             }
+
             return valueOf(name);
         }
     }
+
 }

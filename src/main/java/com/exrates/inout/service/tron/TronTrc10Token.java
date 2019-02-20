@@ -1,11 +1,11 @@
 package com.exrates.inout.service.tron;
 
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.MerchantService;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.exrates.service.CurrencyService;
+import me.exrates.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;

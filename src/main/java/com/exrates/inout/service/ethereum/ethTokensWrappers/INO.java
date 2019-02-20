@@ -48,9 +48,9 @@ public class INO extends Contract implements ethTokenERC20 {
         final Event event = new Event("Transfer", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -62,7 +62,7 @@ public class INO extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -70,7 +70,7 @@ public class INO extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -82,12 +82,12 @@ public class INO extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnEventResponse> getBurnEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnEventResponse typedResponse = new BurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -98,7 +98,7 @@ public class INO extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnEventResponse> burnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -106,7 +106,7 @@ public class INO extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
             @Override
             public BurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnEventResponse typedResponse = new BurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -117,15 +117,15 @@ public class INO extends Contract implements ethTokenERC20 {
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());

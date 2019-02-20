@@ -3,8 +3,7 @@ package com.exrates.inout.service.qtum;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 
-public interface QtumService extends IRefillable, IWithdrawable {
-
+public interface QtumService extends IRefillable, IWithdrawable{
     @Override
     default Boolean createdRefillRequestRecordNeeded() {
         return false;

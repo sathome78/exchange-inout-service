@@ -50,9 +50,9 @@ public class DRONE extends Contract implements ethTokenERC20 {
         final Event event = new Event("Burn", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnEventResponse typedResponse = new BurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -63,7 +63,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnEventResponse> burnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -71,7 +71,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
             @Override
             public BurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnEventResponse typedResponse = new BurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -82,12 +82,12 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnerAddedEventResponse> getBurnerAddedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("BurnerAdded", 
+        final Event event = new Event("BurnerAdded",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnerAddedEventResponse> responses = new ArrayList<BurnerAddedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnerAddedEventResponse typedResponse = new BurnerAddedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -97,7 +97,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnerAddedEventResponse> burnerAddedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("BurnerAdded", 
+        final Event event = new Event("BurnerAdded",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -105,7 +105,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnerAddedEventResponse>() {
             @Override
             public BurnerAddedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnerAddedEventResponse typedResponse = new BurnerAddedEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -115,12 +115,12 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnerRemovedEventResponse> getBurnerRemovedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("BurnerRemoved", 
+        final Event event = new Event("BurnerRemoved",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnerRemovedEventResponse> responses = new ArrayList<BurnerRemovedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnerRemovedEventResponse typedResponse = new BurnerRemovedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -130,7 +130,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnerRemovedEventResponse> burnerRemovedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("BurnerRemoved", 
+        final Event event = new Event("BurnerRemoved",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -138,7 +138,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnerRemovedEventResponse>() {
             @Override
             public BurnerRemovedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnerRemovedEventResponse typedResponse = new BurnerRemovedEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -148,12 +148,12 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -164,7 +164,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<OwnershipTransferredEventResponse> ownershipTransferredEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -172,7 +172,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -183,12 +183,12 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -200,7 +200,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -208,7 +208,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -220,12 +220,12 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -237,7 +237,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -245,7 +245,7 @@ public class DRONE extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -257,15 +257,15 @@ public class DRONE extends Contract implements ethTokenERC20 {
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _amount) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_amount)),
                 Collections.<TypeReference<?>>emptyList());

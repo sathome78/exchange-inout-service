@@ -1,23 +1,16 @@
 package com.exrates.inout.service.aidos;
 
-import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
-import com.exrates.inout.domain.dto.BtcTransactionDto;
-import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
-import com.exrates.inout.domain.dto.BtcWalletInfoDto;
-import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.BtcPaymentNotFoundException;
 import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.utils.WithdrawUtils;
+import com.exrates.inout.service.util.WithdrawUtils;
 import com.google.common.base.Preconditions;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,36 +28,33 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+
 @Log4j2(topic = "adk_log")
+@PropertySource("classpath:/merchants/adk.properties")
 @Service
 public class AdkServiceImpl implements AdkService {
-
-    public static final String CURRENCY_NAME = "ADK";
-    public static final String MERCHANT_NAME = "ADK";
-    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
-    private static final Object SEND_MONITOR = new Object();
-    private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
 
     private final AidosNodeService aidosNodeService;
     private final MessageSource messageSource;
     private final MerchantService merchantService;
     private final CurrencyService currencyService;
     private final RefillService refillService;
+    private final GtagService gtagService;
     private final WithdrawUtils withdrawUtils;
 
+    public static final String CURRENCY_NAME = "ADK";
+    public static final String MERCHANT_NAME = "ADK";
     private Merchant merchant;
     private Currency currency;
+    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
+    private static final Object SEND_MONITOR = new Object();
+    private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
 
     @Autowired
     public AdkServiceImpl(AidosNodeService aidosNodeService,
@@ -71,12 +62,14 @@ public class AdkServiceImpl implements AdkService {
                           MerchantService merchantService,
                           CurrencyService currencyService,
                           RefillService refillService,
+                          GtagService gtagService,
                           WithdrawUtils withdrawUtils) {
         this.aidosNodeService = aidosNodeService;
         this.messageSource = messageSource;
         this.merchantService = merchantService;
         this.currencyService = currencyService;
         this.refillService = refillService;
+        this.gtagService = gtagService;
         this.withdrawUtils = withdrawUtils;
     }
 
@@ -110,6 +103,7 @@ public class AdkServiceImpl implements AdkService {
         String address = params.get("address");
         String hash = params.get("txId");
         BigDecimal amount = new BigDecimal(params.get("amount"));
+
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                 .address(address)
                 .merchantId(merchant.getId())
@@ -118,7 +112,16 @@ public class AdkServiceImpl implements AdkService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+
+        Integer requestId = refillService.getRequestId(requestAcceptDto);
+        requestAcceptDto.setRequestId(requestId);
+
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+
+        final String username = refillService.getUsernameByRequestId(requestId);
+
+        log.debug("Process of sending data to Google Analytics...");
+        gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
     }
 
     @Override
@@ -285,6 +288,7 @@ public class AdkServiceImpl implements AdkService {
         return CURRENCY_NAME;
     }
 
+    @Override
     public String getMerchantName() {
         return MERCHANT_NAME;
     }

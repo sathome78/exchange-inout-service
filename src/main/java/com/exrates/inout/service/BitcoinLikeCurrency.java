@@ -1,12 +1,6 @@
 package com.exrates.inout.service;
 
-import com.exrates.inout.domain.dto.BtcAdminPreparedTxDto;
-import com.exrates.inout.domain.dto.BtcBlockDto;
-import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
-import com.exrates.inout.domain.dto.BtcPreparedTransactionDto;
-import com.exrates.inout.domain.dto.BtcTransactionDto;
-import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
-import com.exrates.inout.service.btc.BitcoinService;
+import com.exrates.inout.domain.dto.*;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;

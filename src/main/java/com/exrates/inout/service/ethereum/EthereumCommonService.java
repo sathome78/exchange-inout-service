@@ -1,6 +1,6 @@
 package com.exrates.inout.service.ethereum;
 
-import com.exrates.inout.service.IMerchantService;
+import me.exrates.service.merchantStrategy.IMerchantService;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 import org.web3j.crypto.Credentials;
@@ -68,4 +68,5 @@ public interface EthereumCommonService extends IMerchantService, IRefillable, IW
     Integer minConfirmationsRefill();
 
     String getTransferAccAddress();
+
 }

@@ -320,9 +320,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<BurnEventResponse> getBurnEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(BURN_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(BURN_EVENT, transactionReceipt);
         ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnEventResponse typedResponse = new BurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -336,7 +336,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
             @Override
             public BurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(BURN_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(BURN_EVENT, log);
                 BurnEventResponse typedResponse = new BurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -353,9 +353,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<MintEventResponse> getMintEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINT_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MINT_EVENT, transactionReceipt);
         ArrayList<MintEventResponse> responses = new ArrayList<MintEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintEventResponse typedResponse = new MintEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -369,7 +369,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintEventResponse>() {
             @Override
             public MintEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MINT_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MINT_EVENT, log);
                 MintEventResponse typedResponse = new MintEventResponse();
                 typedResponse.log = log;
                 typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -386,9 +386,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<WithdrawEventResponse> getWithdrawEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(WITHDRAW_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(WITHDRAW_EVENT, transactionReceipt);
         ArrayList<WithdrawEventResponse> responses = new ArrayList<WithdrawEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             WithdrawEventResponse typedResponse = new WithdrawEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -403,7 +403,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, WithdrawEventResponse>() {
             @Override
             public WithdrawEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(WITHDRAW_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(WITHDRAW_EVENT, log);
                 WithdrawEventResponse typedResponse = new WithdrawEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -421,9 +421,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<FreezeEventResponse> getFreezeEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(FREEZE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(FREEZE_EVENT, transactionReceipt);
         ArrayList<FreezeEventResponse> responses = new ArrayList<FreezeEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             FreezeEventResponse typedResponse = new FreezeEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -437,7 +437,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, FreezeEventResponse>() {
             @Override
             public FreezeEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(FREEZE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(FREEZE_EVENT, log);
                 FreezeEventResponse typedResponse = new FreezeEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -454,9 +454,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<UnfreezeEventResponse> getUnfreezeEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UNFREEZE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UNFREEZE_EVENT, transactionReceipt);
         ArrayList<UnfreezeEventResponse> responses = new ArrayList<UnfreezeEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             UnfreezeEventResponse typedResponse = new UnfreezeEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -470,7 +470,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, UnfreezeEventResponse>() {
             @Override
             public UnfreezeEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UNFREEZE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(UNFREEZE_EVENT, log);
                 UnfreezeEventResponse typedResponse = new UnfreezeEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -487,9 +487,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -504,7 +504,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -522,9 +522,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -539,7 +539,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -557,9 +557,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<PauseEventResponse> getPauseEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(PAUSE_EVENT, transactionReceipt);
         ArrayList<PauseEventResponse> responses = new ArrayList<PauseEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             PauseEventResponse typedResponse = new PauseEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -571,7 +571,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, PauseEventResponse>() {
             @Override
             public PauseEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(PAUSE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(PAUSE_EVENT, log);
                 PauseEventResponse typedResponse = new PauseEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -586,9 +586,9 @@ public class FPWR extends Contract implements ethTokenNotERC20{
     }
 
     public List<UnpauseEventResponse> getUnpauseEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UNPAUSE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UNPAUSE_EVENT, transactionReceipt);
         ArrayList<UnpauseEventResponse> responses = new ArrayList<UnpauseEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             UnpauseEventResponse typedResponse = new UnpauseEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -600,7 +600,7 @@ public class FPWR extends Contract implements ethTokenNotERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, UnpauseEventResponse>() {
             @Override
             public UnpauseEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UNPAUSE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(UNPAUSE_EVENT, log);
                 UnpauseEventResponse typedResponse = new UnpauseEventResponse();
                 typedResponse.log = log;
                 return typedResponse;

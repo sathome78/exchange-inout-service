@@ -1,24 +1,15 @@
 package com.exrates.inout.service;
 
 
-import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyBasicInfoDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyLifetimeDto;
-import com.exrates.inout.domain.dto.MerchantCurrencyScaleDto;
-import com.exrates.inout.domain.dto.TransferMerchantApiDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import lombok.SneakyThrows;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 public interface MerchantService {
 

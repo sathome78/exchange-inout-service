@@ -47,9 +47,9 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         final Event event = new Event("WalletUpdated", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<WalletUpdatedEventResponse> responses = new ArrayList<WalletUpdatedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             WalletUpdatedEventResponse typedResponse = new WalletUpdatedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._newWallet = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -59,7 +59,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<WalletUpdatedEventResponse> walletUpdatedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("WalletUpdated", 
+        final Event event = new Event("WalletUpdated",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -67,7 +67,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, WalletUpdatedEventResponse>() {
             @Override
             public WalletUpdatedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 WalletUpdatedEventResponse typedResponse = new WalletUpdatedEventResponse();
                 typedResponse.log = log;
                 typedResponse._newWallet = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -77,12 +77,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<AdminWalletUpdatedEventResponse> getAdminWalletUpdatedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("AdminWalletUpdated", 
+        final Event event = new Event("AdminWalletUpdated",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<AdminWalletUpdatedEventResponse> responses = new ArrayList<AdminWalletUpdatedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AdminWalletUpdatedEventResponse typedResponse = new AdminWalletUpdatedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._newAdminWallet = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -92,7 +92,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<AdminWalletUpdatedEventResponse> adminWalletUpdatedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("AdminWalletUpdated", 
+        final Event event = new Event("AdminWalletUpdated",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -100,7 +100,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, AdminWalletUpdatedEventResponse>() {
             @Override
             public AdminWalletUpdatedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 AdminWalletUpdatedEventResponse typedResponse = new AdminWalletUpdatedEventResponse();
                 typedResponse.log = log;
                 typedResponse._newAdminWallet = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -110,12 +110,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<TokensPerEthUpdatedEventResponse> getTokensPerEthUpdatedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("TokensPerEthUpdated", 
+        final Event event = new Event("TokensPerEthUpdated",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TokensPerEthUpdatedEventResponse> responses = new ArrayList<TokensPerEthUpdatedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TokensPerEthUpdatedEventResponse typedResponse = new TokensPerEthUpdatedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._tokensPerEth = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -125,7 +125,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<TokensPerEthUpdatedEventResponse> tokensPerEthUpdatedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("TokensPerEthUpdated", 
+        final Event event = new Event("TokensPerEthUpdated",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -133,7 +133,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TokensPerEthUpdatedEventResponse>() {
             @Override
             public TokensPerEthUpdatedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TokensPerEthUpdatedEventResponse typedResponse = new TokensPerEthUpdatedEventResponse();
                 typedResponse.log = log;
                 typedResponse._tokensPerEth = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -143,12 +143,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<TokensMintedEventResponse> getTokensMintedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("TokensMinted", 
+        final Event event = new Event("TokensMinted",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TokensMintedEventResponse> responses = new ArrayList<TokensMintedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TokensMintedEventResponse typedResponse = new TokensMintedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -160,7 +160,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<TokensMintedEventResponse> tokensMintedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("TokensMinted", 
+        final Event event = new Event("TokensMinted",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -168,7 +168,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TokensMintedEventResponse>() {
             @Override
             public TokensMintedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TokensMintedEventResponse typedResponse = new TokensMintedEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -180,12 +180,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<TokensIssuedEventResponse> getTokensIssuedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("TokensIssued", 
+        final Event event = new Event("TokensIssued",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TokensIssuedEventResponse> responses = new ArrayList<TokensIssuedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TokensIssuedEventResponse typedResponse = new TokensIssuedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -198,7 +198,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<TokensIssuedEventResponse> tokensIssuedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("TokensIssued", 
+        final Event event = new Event("TokensIssued",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -206,7 +206,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TokensIssuedEventResponse>() {
             @Override
             public TokensIssuedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TokensIssuedEventResponse typedResponse = new TokensIssuedEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -219,12 +219,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<RefundEventResponse> getRefundEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Refund", 
+        final Event event = new Event("Refund",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<RefundEventResponse> responses = new ArrayList<RefundEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RefundEventResponse typedResponse = new RefundEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -236,7 +236,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<RefundEventResponse> refundEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Refund", 
+        final Event event = new Event("Refund",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -244,7 +244,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, RefundEventResponse>() {
             @Override
             public RefundEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 RefundEventResponse typedResponse = new RefundEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -256,12 +256,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<AirdropEventResponse> getAirdropEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Airdrop", 
+        final Event event = new Event("Airdrop",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<AirdropEventResponse> responses = new ArrayList<AirdropEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AirdropEventResponse typedResponse = new AirdropEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -273,7 +273,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<AirdropEventResponse> airdropEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Airdrop", 
+        final Event event = new Event("Airdrop",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -281,7 +281,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, AirdropEventResponse>() {
             @Override
             public AirdropEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 AirdropEventResponse typedResponse = new AirdropEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -293,12 +293,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<LockRemovedEventResponse> getLockRemovedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("LockRemoved", 
+        final Event event = new Event("LockRemoved",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LockRemovedEventResponse> responses = new ArrayList<LockRemovedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             LockRemovedEventResponse typedResponse = new LockRemovedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._participant = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -308,7 +308,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<LockRemovedEventResponse> lockRemovedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("LockRemoved", 
+        final Event event = new Event("LockRemoved",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -316,7 +316,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, LockRemovedEventResponse>() {
             @Override
             public LockRemovedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LockRemovedEventResponse typedResponse = new LockRemovedEventResponse();
                 typedResponse.log = log;
                 typedResponse._participant = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -326,12 +326,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<OwnershipTransferProposedEventResponse> getOwnershipTransferProposedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("OwnershipTransferProposed", 
+        final Event event = new Event("OwnershipTransferProposed",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<OwnershipTransferProposedEventResponse> responses = new ArrayList<OwnershipTransferProposedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferProposedEventResponse typedResponse = new OwnershipTransferProposedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -342,7 +342,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<OwnershipTransferProposedEventResponse> ownershipTransferProposedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("OwnershipTransferProposed", 
+        final Event event = new Event("OwnershipTransferProposed",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -350,7 +350,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferProposedEventResponse>() {
             @Override
             public OwnershipTransferProposedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 OwnershipTransferProposedEventResponse typedResponse = new OwnershipTransferProposedEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -361,12 +361,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -377,7 +377,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<OwnershipTransferredEventResponse> ownershipTransferredEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -385,7 +385,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -396,12 +396,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -413,7 +413,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -421,7 +421,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -433,12 +433,12 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -450,7 +450,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -458,7 +458,7 @@ public class IDH extends Contract implements ethTokenNotERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -470,43 +470,43 @@ public class IDH extends Contract implements ethTokenNotERC20 {
     }
 
     public RemoteCall<BigInteger> CLAWBACK_PERIOD() {
-        final Function function = new Function("CLAWBACK_PERIOD", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("CLAWBACK_PERIOD",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> DATE_PRESALE_START() {
-        final Function function = new Function("DATE_PRESALE_START", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("DATE_PRESALE_START",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> BONUS_ICO_WEEK_TWO() {
-        final Function function = new Function("BONUS_ICO_WEEK_TWO", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("BONUS_ICO_WEEK_TWO",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> BONUS_PRESALE() {
-        final Function function = new Function("BONUS_PRESALE", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("BONUS_PRESALE",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _amount) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_amount)),
                 Collections.<TypeReference<?>>emptyList());

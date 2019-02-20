@@ -1,14 +1,14 @@
 package com.exrates.inout.service.nem;
 
-import com.exrates.inout.domain.dto.MosaicIdDto;
-import com.exrates.inout.properties.models.XemProperty;
-import lombok.Getter;
+import me.exrates.model.dto.MosaicIdDto;
 import org.nem.core.model.mosaic.MosaicId;
 import org.nem.core.model.namespace.NamespaceId;
 import org.nem.core.model.primitive.Quantity;
 import org.nem.core.model.primitive.Supply;
 
-@Getter
+/**
+ * Created by Maks on 27.02.2018.
+ */
 public class XemMosaicServiceImpl implements XemMosaicService {
 
     private String merchantName;
@@ -20,15 +20,37 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     private MosaicId mosaicId;
     private Quantity levyFee;
 
-    public XemMosaicServiceImpl(XemProperty property) {
-        this.merchantName = property.getMerchantName();
-        this.currencyName = property.getCurrencyName();
-        this.mosaicIdDto = new MosaicIdDto(property.getNameSpaceId(), property.getName());
-        this.decimals = property.getDecimals();
-        this.divisibility = property.getDivisibility();
-        this.supply = new Supply(property.getSupply());
+
+    public XemMosaicServiceImpl(String merchantName, String currencyName, MosaicIdDto mosaicIdDto, long decimals,
+                                int divisibility, Supply supply, long levyFee) {
+        this.merchantName = merchantName;
+        this.currencyName = currencyName;
+        this.mosaicIdDto = mosaicIdDto;
+        this.decimals = decimals;
+        this.divisibility = divisibility;
+        this.supply = supply;
         this.mosaicId = new MosaicId(new NamespaceId(mosaicIdDto.getNamespaceId()), mosaicIdDto.getName());
-        this.levyFee = new Quantity(property.getLevyFee());
+        this.levyFee = new Quantity(levyFee);
+    }
+
+    @Override
+    public Quantity getLevyFee() {
+        return levyFee;
+    }
+
+    @Override
+    public MosaicId mosaicId() {
+        return mosaicId;
+    }
+
+    @Override
+    public Supply getSupply() {
+        return supply;
+    }
+
+    @Override
+    public int getDivisibility() {
+        return divisibility;
     }
 
     @Override
@@ -37,7 +59,17 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     }
 
     @Override
-    public MosaicId mosaicId() {
-        return mosaicId;
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    @Override
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    @Override
+    public long getDecimals() {
+        return decimals;
     }
 }

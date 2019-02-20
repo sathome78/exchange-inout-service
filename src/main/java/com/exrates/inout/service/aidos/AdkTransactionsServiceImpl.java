@@ -1,16 +1,16 @@
 package com.exrates.inout.service.aidos;
 
 
-import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.BtcTransactionDto;
-import com.exrates.inout.domain.dto.MerchantSpecParamDto;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.TxReceivedByAddressFlatDto;
-import com.exrates.inout.service.RefillService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.dao.MerchantSpecParamsDao;
+import me.exrates.model.dto.MerchantSpecParamDto;
+import me.exrates.model.dto.RefillRequestAcceptDto;
+import me.exrates.model.dto.RefillRequestFlatDto;
+import me.exrates.model.dto.TxReceivedByAddressFlatDto;
+import me.exrates.model.dto.merchants.btc.BtcTransactionDto;
+import me.exrates.service.RefillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2(topic = "adk_log")
 @Service
-public class AdkTransactionsServiceImpl {
+public class AdkTransactionsServiceImpl implements TransactionsCheckService {
 
-    private static final String LAST_BLOCK_PARAM = "LastBundle";
-    private static final Integer CONFIRMATION_VALUE = 100000;
-    private static final String RECEIVE_CATEGORY_VALUE = "receive";
-    private static final String MERCHANT_NAME = "ADK";
-    private static final Integer TX_SCAN_COUNT = 10;
-
-    private ScheduledExecutorService txScheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledExecutorService unconfScheduler = Executors.newScheduledThreadPool(1);
 
     private final AidosNodeService aidosNodeService;
     private final AdkService adkService;
@@ -42,12 +34,19 @@ public class AdkTransactionsServiceImpl {
     private final RefillService refillService;
     private final ObjectMapper objectMapper;
 
+
+    private static final String LAST_BLOCK_PARAM = "LastBundle";
+    private static final Integer CONFIRMATION_VALUE = 100000;
+    private static final String RECEIVE_CATEGORY_VALUE = "receive";
+    private static final String MERCHANT_NAME = "ADK";
+    private static final Integer TX_SCAN_COUNT = 10;
+
+
+    private ScheduledExecutorService txScheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService unconfScheduler = Executors.newScheduledThreadPool(1);
+
     @Autowired
-    public AdkTransactionsServiceImpl(AidosNodeService aidosNodeService,
-                                      AdkService adkService,
-                                      MerchantSpecParamsDao specParamsDao,
-                                      RefillService refillService,
-                                      ObjectMapper objectMapper) {
+    public AdkTransactionsServiceImpl(AidosNodeService aidosNodeService, AdkService adkService, MerchantSpecParamsDao specParamsDao, RefillService refillService, ObjectMapper objectMapper) {
         this.aidosNodeService = aidosNodeService;
         this.adkService = adkService;
         this.specParamsDao = specParamsDao;
@@ -61,6 +60,8 @@ public class AdkTransactionsServiceImpl {
         unconfScheduler.scheduleAtFixedRate(this::checkUnconfirmedJob, 10, 15, TimeUnit.MINUTES);
     }
 
+
+
     private void checkTransactions() {
         try {
             log.info("start check transactions");
@@ -69,8 +70,7 @@ public class AdkTransactionsServiceImpl {
             log.info("lastBundle {}", lastBundle);
             List<TxReceivedByAddressFlatDto> transactions;
             do {
-                transactions = objectMapper.readValue(aidosNodeService.getAllTransactions(TX_SCAN_COUNT, offset).toString(), new TypeReference<List<TxReceivedByAddressFlatDto>>() {
-                });
+                transactions = objectMapper.readValue(aidosNodeService.getAllTransactions(TX_SCAN_COUNT, offset).toString(), new TypeReference<List<TxReceivedByAddressFlatDto>>(){});
                 if (!transactions.isEmpty() && offset == 0) {
                     saveLastBundle(transactions.get(0).getTxId());
                 }
@@ -116,7 +116,7 @@ public class AdkTransactionsServiceImpl {
 
     private void checkUnconfirmedJob() {
         List<RefillRequestFlatDto> dtos = refillService.getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(adkService.getMerchant().getId(), adkService.getCurrency().getId());
-        dtos.forEach(p -> {
+        dtos.forEach(p->{
             try {
                 if (isTransactionConfirmed(p.getMerchantTransactionId())) {
                     processTransaction(p.getAddress(), p.getMerchantTransactionId(), p.getAmount().toString());
@@ -139,4 +139,6 @@ public class AdkTransactionsServiceImpl {
         MerchantSpecParamDto specParamsDto = specParamsDao.getByMerchantNameAndParamName(MERCHANT_NAME, LAST_BLOCK_PARAM);
         return specParamsDto.getParamValue();
     }
+
+
 }

@@ -1,7 +1,8 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.lisk.LiskAccount;
-import com.exrates.inout.domain.lisk.LiskSendTxDto;
+import me.exrates.model.dto.merchants.lisk.LiskAccount;
+import me.exrates.model.dto.merchants.lisk.LiskSendTxDto;
+
 
 public class LiskSpecialMethodServiceImpl implements LiskSpecialMethodService {
 

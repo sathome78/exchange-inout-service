@@ -1,8 +1,7 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.lisk.ArkSendTxDto;
-import com.exrates.inout.domain.lisk.LiskAccount;
-import com.exrates.inout.properties.models.LiskProperty;
+import me.exrates.model.dto.merchants.lisk.ArkSendTxDto;
+import me.exrates.model.dto.merchants.lisk.LiskAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -14,15 +13,16 @@ public class ArkSpecialMethodServiceImpl implements LiskSpecialMethodService {
 
     private final Object SEND_TX_LOCK = new Object();
 
-    private LiskProperty property;
+    private String propertySource;
 
-    public ArkSpecialMethodServiceImpl(LiskProperty property) {
-        this.property = property;
+    public ArkSpecialMethodServiceImpl(String propertySource) {
+        this.propertySource = propertySource;
     }
 
     @PostConstruct
     private void init() {
-        arkRpcClient.initClient(property);
+        arkRpcClient.initClient(propertySource);
+
     }
 
     @Override

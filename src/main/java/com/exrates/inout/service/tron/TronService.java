@@ -1,7 +1,7 @@
 package com.exrates.inout.service.tron;
 
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
+import me.exrates.model.dto.RefillRequestAcceptDto;
+import me.exrates.model.dto.TronReceivedTransactionDto;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 
@@ -48,6 +48,12 @@ public interface TronService extends IRefillable, IWithdrawable {
     default boolean specificWithdrawMerchantCommissionCountNeeded() {
         return true;
     }
+
+    Set<String> getAddressesHEX();
+
+    RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto);
+
+    void putOnBchExam(RefillRequestAcceptDto requestAcceptDto);
 
     int getMerchantId();
 

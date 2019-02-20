@@ -1,13 +1,15 @@
 package com.exrates.inout.service.decred;
 
-import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.Merchant;
+import me.exrates.model.Currency;
+import me.exrates.model.Merchant;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 
 import java.util.Set;
 
 public interface DecredService extends IWithdrawable, IRefillable {
+
+
 
     @Override
     default Boolean createdRefillRequestRecordNeeded() {

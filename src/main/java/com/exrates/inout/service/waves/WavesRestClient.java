@@ -1,15 +1,14 @@
 package com.exrates.inout.service.waves;
 
-import com.exrates.inout.domain.WavesPayment;
-import com.exrates.inout.domain.dto.waves.WavesTransaction;
+import me.exrates.model.dto.merchants.waves.WavesPayment;
+import me.exrates.model.dto.merchants.waves.WavesTransaction;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
 public interface WavesRestClient {
-
-    void init(String host, String port, String apiKey);
+    void init(Properties props);
 
     String generateNewAddress();
 
@@ -20,4 +19,6 @@ public interface WavesRestClient {
     List<WavesTransaction> getTransactionsForAddress(String address);
 
     Optional<WavesTransaction> getTransactionById(String id);
+
+    Long getAccountWavesBalance(String account);
 }

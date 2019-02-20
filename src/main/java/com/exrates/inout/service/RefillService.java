@@ -6,7 +6,6 @@ import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
-import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import org.springframework.transaction.annotation.Transactional;

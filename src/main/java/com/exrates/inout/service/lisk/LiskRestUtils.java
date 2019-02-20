@@ -1,11 +1,11 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.exceptions.LiskRestException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import me.exrates.service.exception.LiskRestException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class LiskRestUtils {
     private LiskRestUtils() {
     }
 
-    public static <T> T extractObjectFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> type) {
+    public static  <T> T extractObjectFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> type)  {
         try {
             return objectMapper.treeToValue(extractTargetNodeFromLiskResponse(objectMapper, responseBody, targetFieldName, JsonNodeType.OBJECT), type);
         } catch (JsonProcessingException e) {
@@ -27,7 +27,7 @@ public class LiskRestUtils {
         }
     }
 
-    public static <T> List<T> extractListFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> listElementType) {
+    public static <T> List<T> extractListFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> listElementType)  {
         try {
             JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, listElementType);
             String array = extractTargetNodeFromLiskResponse(objectMapper, responseBody, targetFieldName, JsonNodeType.ARRAY).toString();
@@ -37,7 +37,7 @@ public class LiskRestUtils {
         }
     }
 
-    public static JsonNode extractTargetNodeFromLiskResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, JsonNodeType targetNodeType) {
+    public static JsonNode extractTargetNodeFromLiskResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, JsonNodeType targetNodeType)  {
         try {
             JsonNode root = objectMapper.readTree(responseBody);
             JsonNode successNode = getAndValidateJsonNode("success", root, JsonNode::isBoolean);
@@ -68,4 +68,6 @@ public class LiskRestUtils {
         params.forEach(builder::queryParam);
         return builder.build().encode().toUri();
     }
+
+
 }

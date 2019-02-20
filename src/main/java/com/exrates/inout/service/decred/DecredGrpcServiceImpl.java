@@ -1,14 +1,14 @@
 package com.exrates.inout.service.decred;
 
-import com.exrates.inout.properties.CryptoCurrencyProperties;
-import com.exrates.inout.service.decred.grpc.DecredApi;
-import com.exrates.inout.service.decred.grpc.WalletServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.service.decred.rpc.Api;
+import me.exrates.service.decred.rpc.WalletServiceGrpc;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,12 +18,14 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+@PropertySource("classpath:/merchants/decred.properties")
 @Service
 @Log4j2(topic = "decred")
-public class DecredGrpcServiceImpl implements DecredGrpcService {
+public class DecredGrpcServiceImpl implements DecredGrpcService{
 
-    @Autowired
-    private CryptoCurrencyProperties ccp;
+    private @Value("${decred.host}")String host;
+    private @Value("${decred.port}")String port;
+    private @Value("${decred.cert.path}")String path;
 
     private ManagedChannel channel = null;
 
@@ -44,18 +46,18 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
     private void connect() {
         log.debug("connect");
         try {
-            File initialFile = new File(ccp.getOtherCoins().getDecred().getCertPath());
+            File initialFile = new File(path);
             InputStream streamFirst = new FileInputStream(initialFile);
             log.debug("stream size {}", streamFirst.available());
             String cert = IOUtils.toString(streamFirst, "UTF-8");
             log.debug(cert);
             InputStream stream = new FileInputStream(initialFile);
             log.debug("stream size {}", stream.available());
-            channel = NettyChannelBuilder.forAddress(ccp.getOtherCoins().getDecred().getHost(), ccp.getOtherCoins().getDecred().getPort())
+            channel = NettyChannelBuilder.forAddress(host, Integer.valueOf(port))
                     .sslContext(GrpcSslContexts
-                            .forClient()
-                            .trustManager(stream)
-                            .build())
+                        .forClient()
+                        .trustManager(stream)
+                        .build())
                     .build();
         } catch (Exception e) {
             log.error(e);
@@ -71,20 +73,20 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
     }
 
     @Override
-    public DecredApi.NextAddressResponse getNewAddress() {
+    public Api.NextAddressResponse getNewAddress() {
         WalletServiceGrpc.WalletServiceBlockingStub stub = WalletServiceGrpc.newBlockingStub(getChannel());
-        return stub.nextAddress(DecredApi.NextAddressRequest
+        return stub.nextAddress(Api.NextAddressRequest
                 .newBuilder()
-                .setKind(DecredApi.NextAddressRequest.Kind.BIP0044_INTERNAL)
+                .setKind(Api.NextAddressRequest.Kind.BIP0044_INTERNAL)
                 .setAccount(0)
-                .setGapPolicy(DecredApi.NextAddressRequest.GapPolicy.GAP_POLICY_IGNORE)
+                .setGapPolicy(Api.NextAddressRequest.GapPolicy.GAP_POLICY_IGNORE)
                 .build());
     }
 
     @Override
-    public Iterator<DecredApi.GetTransactionsResponse> getTransactions(int startBlock, int endBlockHeight) {
+    public Iterator<Api.GetTransactionsResponse> getTransactions(int startBlock, int endBlockHeight) {
         WalletServiceGrpc.WalletServiceBlockingStub stub = WalletServiceGrpc.newBlockingStub(getChannel());
-        return stub.getTransactions(DecredApi.GetTransactionsRequest
+        return stub.getTransactions(Api.GetTransactionsRequest
                 .newBuilder()
                 .setStartingBlockHeight(startBlock)
                 .setEndingBlockHeight(endBlockHeight)
@@ -92,10 +94,12 @@ public class DecredGrpcServiceImpl implements DecredGrpcService {
     }
 
     @Override
-    public DecredApi.BestBlockResponse getBlockInfo() {
+    public Api.BestBlockResponse getBlockInfo() {
         WalletServiceGrpc.WalletServiceBlockingStub stub = WalletServiceGrpc.newBlockingStub(getChannel());
-        return stub.bestBlock(DecredApi.BestBlockRequest.getDefaultInstance());
+        return stub.bestBlock(Api.BestBlockRequest.getDefaultInstance());
     }
+
+
 
     @PreDestroy
     private void destroy() {

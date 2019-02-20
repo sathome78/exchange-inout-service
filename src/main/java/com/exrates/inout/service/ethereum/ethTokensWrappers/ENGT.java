@@ -47,9 +47,9 @@ public class ENGT extends Contract implements ethTokenERC20 {
         final Event event = new Event("PoolRoleGranted", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<PoolRoleGrantedEventResponse> responses = new ArrayList<PoolRoleGrantedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             PoolRoleGrantedEventResponse typedResponse = new PoolRoleGrantedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.addr = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -59,7 +59,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<PoolRoleGrantedEventResponse> poolRoleGrantedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("PoolRoleGranted", 
+        final Event event = new Event("PoolRoleGranted",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -67,7 +67,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, PoolRoleGrantedEventResponse>() {
             @Override
             public PoolRoleGrantedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 PoolRoleGrantedEventResponse typedResponse = new PoolRoleGrantedEventResponse();
                 typedResponse.log = log;
                 typedResponse.addr = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -77,12 +77,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<PoolRoleRevokedEventResponse> getPoolRoleRevokedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("PoolRoleRevoked", 
+        final Event event = new Event("PoolRoleRevoked",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<PoolRoleRevokedEventResponse> responses = new ArrayList<PoolRoleRevokedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             PoolRoleRevokedEventResponse typedResponse = new PoolRoleRevokedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.addr = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -92,7 +92,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<PoolRoleRevokedEventResponse> poolRoleRevokedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("PoolRoleRevoked", 
+        final Event event = new Event("PoolRoleRevoked",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -100,7 +100,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, PoolRoleRevokedEventResponse>() {
             @Override
             public PoolRoleRevokedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 PoolRoleRevokedEventResponse typedResponse = new PoolRoleRevokedEventResponse();
                 typedResponse.log = log;
                 typedResponse.addr = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -110,12 +110,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<MintEventResponse> getMintEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Mint", 
+        final Event event = new Event("Mint",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<MintEventResponse> responses = new ArrayList<MintEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintEventResponse typedResponse = new MintEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -126,7 +126,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<MintEventResponse> mintEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Mint", 
+        final Event event = new Event("Mint",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -134,7 +134,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintEventResponse>() {
             @Override
             public MintEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 MintEventResponse typedResponse = new MintEventResponse();
                 typedResponse.log = log;
                 typedResponse.to = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -145,12 +145,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<MintFinishedEventResponse> getMintFinishedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("MintFinished", 
+        final Event event = new Event("MintFinished",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<MintFinishedEventResponse> responses = new ArrayList<MintFinishedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintFinishedEventResponse typedResponse = new MintFinishedEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -159,7 +159,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<MintFinishedEventResponse> mintFinishedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("MintFinished", 
+        final Event event = new Event("MintFinished",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -167,7 +167,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintFinishedEventResponse>() {
             @Override
             public MintFinishedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 MintFinishedEventResponse typedResponse = new MintFinishedEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -176,12 +176,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnEventResponse> getBurnEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnEventResponse typedResponse = new BurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -192,7 +192,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnEventResponse> burnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -200,7 +200,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
             @Override
             public BurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnEventResponse typedResponse = new BurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -211,12 +211,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -227,7 +227,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<OwnershipTransferredEventResponse> ownershipTransferredEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -235,7 +235,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -246,12 +246,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -263,7 +263,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -271,7 +271,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -283,12 +283,12 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -300,7 +300,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -308,7 +308,7 @@ public class ENGT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -320,22 +320,22 @@ public class ENGT extends Contract implements ethTokenERC20 {
     }
 
     public RemoteCall<Boolean> mintingFinished() {
-        final Function function = new Function("mintingFinished", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("mintingFinished",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());

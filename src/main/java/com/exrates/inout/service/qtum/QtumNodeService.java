@@ -1,13 +1,12 @@
 package com.exrates.inout.service.qtum;
 
-import com.exrates.inout.domain.qtum.*;
+import me.exrates.model.dto.merchants.qtum.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface QtumNodeService {
-
     String getNewAddress();
 
     String getBlockHash(Integer height);

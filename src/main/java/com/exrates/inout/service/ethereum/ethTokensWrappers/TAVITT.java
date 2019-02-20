@@ -304,9 +304,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -321,7 +321,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -339,9 +339,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -356,7 +356,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -374,9 +374,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnedEventResponse> getBurnedEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(BURNED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(BURNED_EVENT, transactionReceipt);
         ArrayList<BurnedEventResponse> responses = new ArrayList<BurnedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnedEventResponse typedResponse = new BurnedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._target = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -390,7 +390,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnedEventResponse>() {
             @Override
             public BurnedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(BURNED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(BURNED_EVENT, log);
                 BurnedEventResponse typedResponse = new BurnedEventResponse();
                 typedResponse.log = log;
                 typedResponse._target = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -407,9 +407,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<FrozenStatusEventResponse> getFrozenStatusEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(FROZENSTATUS_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(FROZENSTATUS_EVENT, transactionReceipt);
         ArrayList<FrozenStatusEventResponse> responses = new ArrayList<FrozenStatusEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             FrozenStatusEventResponse typedResponse = new FrozenStatusEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._target = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -423,7 +423,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, FrozenStatusEventResponse>() {
             @Override
             public FrozenStatusEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(FROZENSTATUS_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(FROZENSTATUS_EVENT, log);
                 FrozenStatusEventResponse typedResponse = new FrozenStatusEventResponse();
                 typedResponse.log = log;
                 typedResponse._target = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -440,9 +440,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<AllowedSetEventResponse> getAllowedSetEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOWEDSET_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOWEDSET_EVENT, transactionReceipt);
         ArrayList<AllowedSetEventResponse> responses = new ArrayList<AllowedSetEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AllowedSetEventResponse typedResponse = new AllowedSetEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._to = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -455,7 +455,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, AllowedSetEventResponse>() {
             @Override
             public AllowedSetEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOWEDSET_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOWEDSET_EVENT, log);
                 AllowedSetEventResponse typedResponse = new AllowedSetEventResponse();
                 typedResponse.log = log;
                 typedResponse._to = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -471,9 +471,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<SetSupplyLockEventResponse> getSetSupplyLockEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SETSUPPLYLOCK_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(SETSUPPLYLOCK_EVENT, transactionReceipt);
         ArrayList<SetSupplyLockEventResponse> responses = new ArrayList<SetSupplyLockEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             SetSupplyLockEventResponse typedResponse = new SetSupplyLockEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._set = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
@@ -486,7 +486,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, SetSupplyLockEventResponse>() {
             @Override
             public SetSupplyLockEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SETSUPPLYLOCK_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(SETSUPPLYLOCK_EVENT, log);
                 SetSupplyLockEventResponse typedResponse = new SetSupplyLockEventResponse();
                 typedResponse.log = log;
                 typedResponse._set = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
@@ -502,9 +502,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<SetTransferLockEventResponse> getSetTransferLockEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SETTRANSFERLOCK_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(SETTRANSFERLOCK_EVENT, transactionReceipt);
         ArrayList<SetTransferLockEventResponse> responses = new ArrayList<SetTransferLockEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             SetTransferLockEventResponse typedResponse = new SetTransferLockEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._set = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
@@ -517,7 +517,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, SetTransferLockEventResponse>() {
             @Override
             public SetTransferLockEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SETTRANSFERLOCK_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(SETTRANSFERLOCK_EVENT, log);
                 SetTransferLockEventResponse typedResponse = new SetTransferLockEventResponse();
                 typedResponse.log = log;
                 typedResponse._set = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
@@ -533,9 +533,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferAdminshipEventResponse> getTransferAdminshipEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERADMINSHIP_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFERADMINSHIP_EVENT, transactionReceipt);
         ArrayList<TransferAdminshipEventResponse> responses = new ArrayList<TransferAdminshipEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferAdminshipEventResponse typedResponse = new TransferAdminshipEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.newAdminister = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -548,7 +548,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferAdminshipEventResponse>() {
             @Override
             public TransferAdminshipEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFERADMINSHIP_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFERADMINSHIP_EVENT, log);
                 TransferAdminshipEventResponse typedResponse = new TransferAdminshipEventResponse();
                 typedResponse.log = log;
                 typedResponse.newAdminister = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -564,9 +564,9 @@ public class TAVITT extends Contract implements ethTokenERC20 {
     }
 
     public List<AdminedEventResponse> getAdminedEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ADMINED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ADMINED_EVENT, transactionReceipt);
         ArrayList<AdminedEventResponse> responses = new ArrayList<AdminedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AdminedEventResponse typedResponse = new AdminedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.administer = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -579,7 +579,7 @@ public class TAVITT extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, AdminedEventResponse>() {
             @Override
             public AdminedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ADMINED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ADMINED_EVENT, log);
                 AdminedEventResponse typedResponse = new AdminedEventResponse();
                 typedResponse.log = log;
                 typedResponse.administer = (String) eventValues.getNonIndexedValues().get(0).getValue();

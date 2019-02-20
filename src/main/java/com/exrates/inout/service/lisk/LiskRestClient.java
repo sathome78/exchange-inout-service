@@ -1,15 +1,13 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.lisk.LiskAccount;
-import com.exrates.inout.domain.lisk.LiskSendTxDto;
-import com.exrates.inout.domain.lisk.LiskTransaction;
-import com.exrates.inout.properties.models.LiskProperty;
+import me.exrates.model.dto.merchants.lisk.LiskAccount;
+import me.exrates.model.dto.merchants.lisk.LiskSendTxDto;
+import me.exrates.model.dto.merchants.lisk.LiskTransaction;
 
 import java.util.List;
 
 public interface LiskRestClient {
-
-    void initClient(LiskProperty property);
+    void initClient(String propertySource);
 
     LiskTransaction getTransactionById(String txId);
 

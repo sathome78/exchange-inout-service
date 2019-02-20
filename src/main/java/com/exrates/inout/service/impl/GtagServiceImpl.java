@@ -1,9 +1,8 @@
 package com.exrates.inout.service.impl;
 
-
-import com.exrates.inout.service.GtagService;
-import com.exrates.inout.service.api.ExchangeApi;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.service.GtagService;
+import me.exrates.service.api.ExchangeApi;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

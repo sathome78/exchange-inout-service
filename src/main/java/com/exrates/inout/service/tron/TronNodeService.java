@@ -1,8 +1,8 @@
 package com.exrates.inout.service.tron;
 
-import com.exrates.inout.domain.dto.TronNewAddressDto;
-import com.exrates.inout.domain.dto.TronTransferDto;
 import lombok.SneakyThrows;
+import me.exrates.model.dto.TronNewAddressDto;
+import me.exrates.model.dto.TronTransferDto;
 import org.json.JSONObject;
 
 public interface TronNodeService {
@@ -12,11 +12,12 @@ public interface TronNodeService {
     JSONObject transferFunds(TronTransferDto tronTransferDto);
 
     @SneakyThrows
+    JSONObject transferAsset(TronTransferDto tronTransferDto);
+
     JSONObject getTransactions(long blockNum);
 
     JSONObject getTransaction(String hash);
 
-    @SneakyThrows
     JSONObject getLastBlock();
 
     JSONObject getAccount(String addressBase58);
