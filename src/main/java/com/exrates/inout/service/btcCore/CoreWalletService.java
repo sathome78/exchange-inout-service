@@ -1,11 +1,8 @@
 package com.exrates.inout.service.btcCore;
 
+import com.exrates.inout.domain.dto.*;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
-import me.exrates.model.dto.BtcTransactionHistoryDto;
-import me.exrates.model.dto.BtcWalletInfoDto;
-import me.exrates.model.dto.TxReceivedByAddressFlatDto;
-import me.exrates.model.dto.merchants.btc.*;
 import reactor.core.publisher.Flux;
 
 import javax.annotation.Nullable;

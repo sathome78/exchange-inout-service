@@ -1,7 +1,9 @@
 package com.exrates.inout.service.monero;
 
 
-import me.exrates.service.monero.utils.MoneroUtils;
+//exrates.service.monero.utils.MoneroUtils;
+
+import com.exrates.inout.service.monero.utils.MoneroUtils;
 
 public class MoneroIntegratedAddress extends MoneroAddress {
     private String paymentId;

@@ -33,7 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.*;
+
 import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;

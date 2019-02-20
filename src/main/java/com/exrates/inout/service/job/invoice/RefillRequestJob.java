@@ -1,12 +1,12 @@
 package com.exrates.inout.service.job.invoice;
 
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.BtcTransactionHistoryDto;
-import me.exrates.service.BitcoinService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.merchantStrategy.IMerchantService;
-import me.exrates.service.merchantStrategy.MerchantServiceContext;
+//exrates.model.dto.BtcTransactionHistoryDto;
+//exrates.service.BitcoinService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.merchantStrategy.IMerchantService;
+//exrates.service.merchantStrategy.MerchantServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

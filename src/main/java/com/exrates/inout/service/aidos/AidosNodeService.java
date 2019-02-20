@@ -1,7 +1,7 @@
 package com.exrates.inout.service.aidos;
 
-import me.exrates.model.dto.merchants.btc.BtcTransactionDto;
-import me.exrates.model.dto.merchants.btc.BtcWalletPaymentItemDto;
+import com.exrates.inout.domain.dto.BtcTransactionDto;
+import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

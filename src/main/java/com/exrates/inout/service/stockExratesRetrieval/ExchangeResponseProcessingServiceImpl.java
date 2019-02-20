@@ -1,11 +1,11 @@
 package com.exrates.inout.service.stockExratesRetrieval;
 
+import com.exrates.inout.domain.dto.StockExchange;
+import com.exrates.inout.domain.dto.StockExchangeStats;
+import com.exrates.inout.domain.main.CurrencyPair;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.CurrencyPair;
-import me.exrates.model.StockExchange;
-import me.exrates.model.StockExchangeStats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +17,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+
+//exrates.model.CurrencyPair;
+//exrates.model.StockExchange;
+//exrates.model.StockExchangeStats;
 
 @Log4j2(topic = "tracker")
 @Service

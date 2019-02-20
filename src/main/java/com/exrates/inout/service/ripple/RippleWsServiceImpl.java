@@ -1,9 +1,9 @@
 package com.exrates.inout.service.ripple;
 
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.WithdrawService;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Merchant;
-import me.exrates.service.MerchantService;
-import me.exrates.service.WithdrawService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,10 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
+
+//exrates.model.Merchant;
+//exrates.service.MerchantService;
+//exrates.service.WithdrawService;
 
 /**
  * Created by maks on 11.05.2017.

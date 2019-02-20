@@ -1,7 +1,10 @@
 package com.exrates.inout.service.stockExratesRetrieval;
 
-import me.exrates.model.StockExchange;
-import me.exrates.model.StockExchangeStats;
+//exrates.model.StockExchange;
+//exrates.model.StockExchangeStats;
+
+import com.exrates.inout.domain.dto.StockExchange;
+import com.exrates.inout.domain.dto.StockExchangeStats;
 
 import java.util.List;
 

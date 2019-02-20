@@ -1,6 +1,8 @@
 package com.exrates.inout.service.nem;
 
-import me.exrates.model.dto.MosaicIdDto;
+//exrates.model.dto.MosaicIdDto;
+
+import com.exrates.inout.domain.dto.MosaicIdDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

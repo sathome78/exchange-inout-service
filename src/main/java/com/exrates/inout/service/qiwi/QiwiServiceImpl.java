@@ -1,18 +1,18 @@
 package com.exrates.inout.service.qiwi;
 
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseTransaction;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestCreateDto;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.model.dto.qiwi.response.QiwiResponseTransaction;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.GtagService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +25,18 @@ import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+//exrates.model.Currency;
+//exrates.model.Merchant;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestCreateDto;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.dto.qiwi.response.QiwiResponseTransaction;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 @Log4j2(topic = "Qiwi")
 @Service

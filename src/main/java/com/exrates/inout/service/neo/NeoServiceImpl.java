@@ -1,25 +1,21 @@
 package com.exrates.inout.service.neo;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
+import com.exrates.inout.domain.neo.NeoAsset;
+import com.exrates.inout.domain.neo.NeoTransaction;
+import com.exrates.inout.domain.neo.NeoVout;
+import com.exrates.inout.domain.other.ProfileData;
+import com.exrates.inout.exceptions.*;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.ParamMapUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.*;
-import me.exrates.model.dto.merchants.neo.AssetMerchantCurrencyDto;
-import me.exrates.model.dto.merchants.neo.NeoAsset;
-import me.exrates.model.dto.merchants.neo.NeoTransaction;
-import me.exrates.model.dto.merchants.neo.NeoVout;
-import me.exrates.service.GtagService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.NeoApiException;
-import me.exrates.service.exception.NeoPaymentProcessingException;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
-import me.exrates.service.exception.invoice.InvalidAccountException;
-import me.exrates.service.exception.invoice.MerchantException;
-import me.exrates.service.util.ParamMapUtils;
-import me.exrates.service.util.WithdrawUtils;
-import me.exrates.service.vo.ProfileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
@@ -28,13 +24,32 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
-import java.util.*;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.model.dto.merchants.neo.AssetMerchantCurrencyDto;
+//exrates.model.dto.merchants.neo.NeoAsset;
+//exrates.model.dto.merchants.neo.NeoTransaction;
+//exrates.model.dto.merchants.neo.NeoVout;
+//exrates.service.GtagService;
+//exrates.service.RefillService;
+//exrates.service.exception.NeoApiException;
+//exrates.service.exception.NeoPaymentProcessingException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.exception.invoice.MerchantException;
+//exrates.service.util.ParamMapUtils;
+//exrates.service.util.WithdrawUtils;
+//exrates.service.vo.ProfileData;
 
 @Log4j2(topic = "neo_log")
 @PropertySource("classpath:/merchants/neo.properties")

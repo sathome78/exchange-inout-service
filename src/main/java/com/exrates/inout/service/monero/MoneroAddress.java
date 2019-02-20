@@ -1,7 +1,8 @@
 package com.exrates.inout.service.monero;
 
+import com.exrates.inout.service.monero.utils.MoneroUtils;
 import lombok.EqualsAndHashCode;
-import me.exrates.service.monero.utils.MoneroUtils;
+//exrates.service.monero.utils.MoneroUtils;
 
 @EqualsAndHashCode
 public class MoneroAddress {

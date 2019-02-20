@@ -1,19 +1,14 @@
 package com.exrates.inout.service.qtum;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.qtum.QtumTokenTransaction;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestAddressDto;
-import me.exrates.model.dto.merchants.qtum.QtumTokenTransaction;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.GtagService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.ethereum.ExConvert;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.vo.ProfileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -28,11 +23,24 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.Merchant;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestAddressDto;
+//exrates.model.dto.merchants.qtum.QtumTokenTransaction;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.ethereum.ExConvert;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.vo.ProfileData;
 
 @Log4j2(topic = "qtum_log")
 @PropertySource("classpath:/merchants/qtum.properties")

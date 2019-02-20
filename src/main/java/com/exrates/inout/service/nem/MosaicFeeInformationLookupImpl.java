@@ -1,6 +1,8 @@
 package com.exrates.inout.service.nem;
 
-import me.exrates.model.dto.MosaicIdDto;
+//exrates.model.dto.MosaicIdDto;
+
+import com.exrates.inout.domain.dto.MosaicIdDto;
 import org.nem.core.model.mosaic.MosaicFeeInformation;
 import org.nem.core.model.mosaic.MosaicFeeInformationLookup;
 import org.nem.core.model.mosaic.MosaicId;

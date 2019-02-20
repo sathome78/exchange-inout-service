@@ -1,7 +1,7 @@
 package com.exrates.inout.service.omni;
 
+import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.service.handler.RestResponseErrorHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+//exrates.service.handler.RestResponseErrorHandler;
 
 @Log4j2(topic = "omni_log")
 @Service

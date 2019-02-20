@@ -1,12 +1,12 @@
 package com.exrates.inout.service.waves;
 
+import com.exrates.inout.domain.dto.waves.WavesAddress;
+import com.exrates.inout.domain.waves.WavesPayment;
+import com.exrates.inout.domain.waves.WavesTransaction;
+import com.exrates.inout.exceptions.WavesRestException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.merchants.waves.WavesAddress;
-import me.exrates.model.dto.merchants.waves.WavesPayment;
-import me.exrates.model.dto.merchants.waves.WavesTransaction;
-import me.exrates.service.exception.WavesRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,8 +19,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.*;
+
 import java.util.stream.Collectors;
+
+//exrates.model.dto.merchants.waves.WavesAddress;
+//exrates.model.dto.merchants.waves.WavesPayment;
+//exrates.model.dto.merchants.waves.WavesTransaction;
+//exrates.service.exception.WavesRestException;
 
 @Log4j2(topic = "waves_log")
 @Service

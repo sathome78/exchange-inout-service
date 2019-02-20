@@ -1,7 +1,7 @@
 package com.exrates.inout.service.lisk;
 
-import me.exrates.model.dto.merchants.lisk.ArkSendTxDto;
-import me.exrates.model.dto.merchants.lisk.LiskAccount;
+//exrates.model.dto.merchants.lisk.ArkSendTxDto;
+//exrates.model.dto.merchants.lisk.LiskAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;

@@ -1,11 +1,10 @@
 package com.exrates.inout.service.decred;
 
+import com.exrates.inout.service.decred.rpc.WalletServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.service.decred.rpc.Api;
-import me.exrates.service.decred.rpc.WalletServiceGrpc;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

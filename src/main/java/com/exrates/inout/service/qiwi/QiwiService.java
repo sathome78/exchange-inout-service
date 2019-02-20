@@ -1,6 +1,8 @@
 package com.exrates.inout.service.qiwi;
 
-import me.exrates.model.dto.qiwi.response.QiwiResponseTransaction;
+//exrates.model.dto.qiwi.response.QiwiResponseTransaction;
+
+import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseTransaction;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 

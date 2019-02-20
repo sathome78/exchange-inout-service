@@ -1,7 +1,9 @@
 package com.exrates.inout.service.ppy;
 
-import me.exrates.model.dto.*;
-import me.exrates.service.bitshares.BitsharesServiceImpl;
+//exrates.model.dto.*;
+//exrates.service.bitshares.BitsharesServiceImpl;
+
+import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
 import org.json.JSONObject;
 
 import javax.websocket.ClientEndpoint;

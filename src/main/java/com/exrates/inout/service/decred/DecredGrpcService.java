@@ -1,6 +1,5 @@
 package com.exrates.inout.service.decred;
 
-import me.exrates.service.decred.rpc.Api;
 
 import java.util.Iterator;
 

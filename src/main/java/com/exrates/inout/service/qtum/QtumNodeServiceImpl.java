@@ -1,11 +1,11 @@
 package com.exrates.inout.service.qtum;
 
 
+import com.exrates.inout.domain.qtum.*;
+import com.exrates.inout.exceptions.QtumApiException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.merchants.qtum.*;
-import me.exrates.service.exception.QtumApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -17,7 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+
+
+//exrates.model.dto.merchants.qtum.*;
+//exrates.service.exception.QtumApiException;
 
 @Service
 @Log4j2(topic = "qtum_log")

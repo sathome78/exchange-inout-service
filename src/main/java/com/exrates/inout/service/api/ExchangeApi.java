@@ -1,9 +1,9 @@
 package com.exrates.inout.service.api;
 
+import com.exrates.inout.exceptions.ExchangeApiException;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import me.exrates.service.exception.ExchangeApiException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ public class ExchangeApi {
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
     }
 
-    public Map<String, Pair<BigDecimal, BigDecimal>> getRates() {
+    public Map<String, Pair<BigDecimal, BigDecimal>> getRates() throws ExchangeApiException {
         ResponseEntity<ExchangeData> responseEntity;
         try {
             responseEntity = restTemplate.getForEntity(url, ExchangeData.class);

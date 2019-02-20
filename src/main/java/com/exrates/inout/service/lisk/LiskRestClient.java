@@ -1,8 +1,12 @@
 package com.exrates.inout.service.lisk;
 
-import me.exrates.model.dto.merchants.lisk.LiskAccount;
-import me.exrates.model.dto.merchants.lisk.LiskSendTxDto;
-import me.exrates.model.dto.merchants.lisk.LiskTransaction;
+//exrates.model.dto.merchants.lisk.LiskAccount;
+//exrates.model.dto.merchants.lisk.LiskSendTxDto;
+//exrates.model.dto.merchants.lisk.LiskTransaction;
+
+import com.exrates.inout.domain.lisk.LiskAccount;
+import com.exrates.inout.domain.lisk.LiskSendTxDto;
+import com.exrates.inout.domain.lisk.LiskTransaction;
 
 import java.util.List;
 

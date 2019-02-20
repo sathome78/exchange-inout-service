@@ -1,21 +1,21 @@
 package com.exrates.inout.service.qtum;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.other.ProfileData;
+import com.exrates.inout.domain.qtum.QtumTransaction;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestCreateDto;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.model.dto.merchants.qtum.QtumTransaction;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.GtagService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.util.WithdrawUtils;
-import me.exrates.service.vo.ProfileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -33,6 +33,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.Currency;
+//exrates.model.Merchant;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestCreateDto;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.dto.merchants.qtum.QtumTransaction;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.util.WithdrawUtils;
+//exrates.service.vo.ProfileData;
 
 @Log4j2(topic = "qtum_log")
 @Service("qtumServiceImpl")

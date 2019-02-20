@@ -1,11 +1,11 @@
 package com.exrates.inout.service.ripple;
 
+import com.exrates.inout.domain.dto.RippleAccount;
+import com.exrates.inout.domain.dto.RippleTransaction;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
+import com.exrates.inout.exceptions.RippleCheckConsensusException;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.RippleAccount;
-import me.exrates.model.dto.RippleTransaction;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.service.exception.RippleCheckConsensusException;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+
+//exrates.model.dto.RippleAccount;
+//exrates.model.dto.RippleTransaction;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.service.exception.RippleCheckConsensusException;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
 
 /**
  * Created by maks on 11.05.2017.

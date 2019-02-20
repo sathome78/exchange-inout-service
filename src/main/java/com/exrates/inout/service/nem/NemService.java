@@ -1,9 +1,9 @@
 package com.exrates.inout.service.nem;
 
-import me.exrates.model.dto.MosaicIdDto;
-import me.exrates.model.dto.NemMosaicTransferDto;
-import me.exrates.model.dto.RefillRequestFlatDto;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.domain.dto.NemMosaicTransferDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 import org.nem.core.model.Account;

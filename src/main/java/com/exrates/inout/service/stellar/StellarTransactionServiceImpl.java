@@ -1,11 +1,11 @@
 package com.exrates.inout.service.stellar;
 
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.enums.StellarNetworkModeEnum;
+import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
+import com.exrates.inout.exceptions.InvalidAccountException;
+import com.exrates.inout.exceptions.MerchantException;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.model.enums.StellarNetworkModeEnum;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
-import me.exrates.service.exception.invoice.InvalidAccountException;
-import me.exrates.service.exception.invoice.MerchantException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -23,6 +23,12 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.enums.StellarNetworkModeEnum;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.exception.invoice.MerchantException;
 
 /**
  * Created by maks on 11.06.2017.

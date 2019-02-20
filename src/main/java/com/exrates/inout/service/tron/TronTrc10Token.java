@@ -4,8 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.MerchantService;
+//exrates.service.CurrencyService;
+//exrates.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;

@@ -1,17 +1,17 @@
 package com.exrates.inout.service.job.invoice;
 
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.NemTransactionException;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.WithdrawService;
+import com.exrates.inout.service.nem.NemService;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestFlatDto;
-import me.exrates.model.dto.WithdrawRequestFlatDto;
-import me.exrates.model.enums.invoice.WithdrawStatusEnum;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.WithdrawService;
-import me.exrates.service.exception.NemTransactionException;
-import me.exrates.service.nem.NemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

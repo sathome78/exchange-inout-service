@@ -1,11 +1,11 @@
 package com.exrates.inout.service.api;
 
+import com.exrates.inout.exceptions.WalletsApiException;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import me.exrates.service.exception.WalletsApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;

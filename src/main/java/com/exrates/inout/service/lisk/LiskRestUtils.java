@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import me.exrates.service.exception.LiskRestException;
+//exrates.service.exception.LiskRestException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;

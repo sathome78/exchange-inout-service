@@ -1,6 +1,6 @@
 package com.exrates.inout.service.scheduled;
 
-import me.exrates.service.CurrencyService;
+//exrates.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;

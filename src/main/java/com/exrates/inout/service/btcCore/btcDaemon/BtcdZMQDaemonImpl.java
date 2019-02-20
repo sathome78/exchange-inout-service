@@ -1,10 +1,10 @@
 package com.exrates.inout.service.btcCore.btcDaemon;
 
+import com.exrates.inout.exceptions.BitcoinCoreException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.domain.Block;
 import com.neemre.btcdcli4j.core.domain.Transaction;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.service.exception.BitcoinCoreException;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;

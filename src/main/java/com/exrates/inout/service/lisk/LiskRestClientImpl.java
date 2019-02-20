@@ -1,12 +1,12 @@
 package com.exrates.inout.service.lisk;
 
+import com.exrates.inout.domain.lisk.LiskAccount;
+import com.exrates.inout.domain.lisk.LiskOpenAccountDto;
+import com.exrates.inout.domain.lisk.LiskSendTxDto;
+import com.exrates.inout.domain.lisk.LiskTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.merchants.lisk.LiskAccount;
-import me.exrates.model.dto.merchants.lisk.LiskOpenAccountDto;
-import me.exrates.model.dto.merchants.lisk.LiskSendTxDto;
-import me.exrates.model.dto.merchants.lisk.LiskTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,9 +15,16 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
 
-import static me.exrates.service.lisk.LiskRestUtils.*;
+
+//exrates.model.dto.merchants.lisk.LiskAccount;
+//exrates.model.dto.merchants.lisk.LiskOpenAccountDto;
+//exrates.model.dto.merchants.lisk.LiskSendTxDto;
+//exrates.model.dto.merchants.lisk.LiskTransaction;
+import static com.exrates.inout.service.lisk.LiskRestUtils.*;
+
+
+//.exrates.service.lisk.LiskRestUtils.*;
 
 @Log4j2(topic = "lisk_log")
 public class LiskRestClientImpl implements LiskRestClient {

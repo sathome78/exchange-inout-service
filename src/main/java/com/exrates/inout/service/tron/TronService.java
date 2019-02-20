@@ -1,7 +1,10 @@
 package com.exrates.inout.service.tron;
 
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.TronReceivedTransactionDto;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.TronReceivedTransactionDto;
+
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 

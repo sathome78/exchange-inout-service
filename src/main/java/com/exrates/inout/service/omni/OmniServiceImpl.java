@@ -1,25 +1,25 @@
 package com.exrates.inout.service.omni;
 
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.omni.OmniBalanceDto;
+import com.exrates.inout.domain.dto.omni.OmniTxDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
+import com.exrates.inout.exceptions.CoreWalletPasswordNotFoundException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.WithdrawUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.RefillRequestAddressShortDto;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestCreateDto;
-import me.exrates.model.dto.RefillRequestPutOnBchExamDto;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.model.dto.merchants.omni.OmniBalanceDto;
-import me.exrates.model.dto.merchants.omni.OmniTxDto;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.CoreWalletPasswordNotFoundException;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.util.WithdrawUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,6 +32,22 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//exrates.model.Currency;
+//exrates.model.Merchant;
+//exrates.model.RefillRequestAddressShortDto;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestCreateDto;
+//exrates.model.dto.RefillRequestPutOnBchExamDto;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.dto.merchants.omni.OmniBalanceDto;
+//exrates.model.dto.merchants.omni.OmniTxDto;
+//exrates.service.CurrencyService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.CoreWalletPasswordNotFoundException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "omni_log")
 @Service

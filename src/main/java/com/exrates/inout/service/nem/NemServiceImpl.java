@@ -1,17 +1,18 @@
 package com.exrates.inout.service.nem;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.enums.ActionType;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.service.*;
+import com.exrates.inout.util.BigDecimalProcessing;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.*;
-import me.exrates.model.enums.ActionType;
-import me.exrates.model.util.BigDecimalProcessing;
-import me.exrates.service.*;
-import me.exrates.service.exception.CheckDestinationTagException;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.exception.WithdrawRequestPostException;
-import me.exrates.service.util.WithdrawUtils;
 import org.json.JSONObject;
 import org.nem.core.crypto.KeyPair;
 import org.nem.core.crypto.PublicKey;
@@ -28,7 +29,18 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.model.enums.ActionType;
+//exrates.model.util.BigDecimalProcessing;
+//exrates.service.*;
+//exrates.service.exception.CheckDestinationTagException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.exception.WithdrawRequestPostException;
+//exrates.service.util.WithdrawUtils;
 
 /**
  * Created by maks on 18.07.2017.
@@ -70,7 +82,7 @@ public class NemServiceImpl implements NemService {
     private static final List<MosaicIdDto> deniedMosaicsList = new ArrayList<>();
 
     private Merchant merchant;
-    private Currency currency;
+    private com.exrates.inout.domain.main.Currency currency;
 
 
     @PostConstruct

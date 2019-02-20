@@ -1,21 +1,16 @@
 package com.exrates.inout.service.waves;
 
+import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.waves.WavesPayment;
+import com.exrates.inout.domain.waves.WavesTransaction;
+import com.exrates.inout.exceptions.*;
+import com.exrates.inout.service.*;
+import com.exrates.inout.util.ParamMapUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Email;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.*;
-import me.exrates.model.dto.merchants.waves.WavesPayment;
-import me.exrates.model.dto.merchants.waves.WavesTransaction;
-import me.exrates.service.*;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.exception.UnknownAssetIdException;
-import me.exrates.service.exception.WavesPaymentProcessingException;
-import me.exrates.service.exception.WavesRestException;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
-import me.exrates.service.exception.invoice.InvalidAccountException;
-import me.exrates.service.exception.invoice.MerchantException;
-import me.exrates.service.util.ParamMapUtils;
-import me.exrates.service.util.WithdrawUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
@@ -25,6 +20,22 @@ import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.*;
+
+//exrates.model.Email;
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.model.dto.merchants.waves.WavesPayment;
+//exrates.model.dto.merchants.waves.WavesTransaction;
+//exrates.service.*;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.exception.UnknownAssetIdException;
+//exrates.service.exception.WavesPaymentProcessingException;
+//exrates.service.exception.WavesRestException;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.exception.invoice.MerchantException;
+//exrates.service.util.ParamMapUtils;
+//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {

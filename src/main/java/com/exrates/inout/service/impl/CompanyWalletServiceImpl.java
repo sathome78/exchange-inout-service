@@ -1,13 +1,12 @@
 package com.exrates.inout.service.impl;
 
+import com.exrates.inout.dao.CompanyWalletDao;
+import com.exrates.inout.domain.main.CompanyWallet;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
+import com.exrates.inout.exceptions.WalletPersistException;
+import com.exrates.inout.service.CompanyWalletService;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.CompanyWalletDao;
-import me.exrates.model.CompanyWallet;
-import me.exrates.model.Currency;
-import me.exrates.service.CompanyWalletService;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.exception.NotEnoughUserWalletMoneyException;
-import me.exrates.service.exception.WalletPersistException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +15,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static me.exrates.model.enums.ActionType.SUBTRACT;
-import static me.exrates.model.util.BigDecimalProcessing.doAction;
+import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
+import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 
-/**
- * @author Denis Savin (pilgrimm333@gmail.com)
- */
 @Log4j2
 @Service
 public class CompanyWalletServiceImpl implements CompanyWalletService {
@@ -34,8 +26,6 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
     private static final Logger logger = LogManager.getLogger(CompanyWalletServiceImpl.class);
     @Autowired
     private CompanyWalletDao companyWalletDao;
-    @Autowired
-    private CurrencyService currencyService;
 
     @Override
     public CompanyWallet create(Currency currency) {
@@ -44,30 +34,8 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CompanyWallet> getCompanyWallets() {
-        List<CompanyWallet> compWalletList = new ArrayList<CompanyWallet>();
-        List<Currency> currList = currencyService.getAllActiveCurrencies();
-        for (Currency c : currList) {
-            CompanyWallet cw = this.findByCurrency(c);
-            if (cw != null) {
-                compWalletList.add(cw);
-            }
-        }
-        return compWalletList;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public CompanyWallet findByCurrency(Currency currency) {
         return companyWalletDao.findByCurrencyId(currency);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public CompanyWallet findByWalletId(int walletId) {
-        CompanyWallet result = companyWalletDao.findByWalletId(walletId);
-        result.setCurrency(currencyService.findById(result.getCurrency().getId()));
-        return result;
     }
 
     @Override
@@ -97,7 +65,6 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
         }
     }
 
-
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public void withdrawReservedBalance(CompanyWallet companyWallet, BigDecimal amount) {
@@ -109,20 +76,5 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
         if (!companyWalletDao.update(companyWallet)) {
             throw new WalletPersistException("Failed withdraw on company wallet " + companyWallet.toString());
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CompanyWallet> getCompanyWalletsSummaryForPermittedCurrencyList(Integer requesterUserId) {
-        Set<String> permittedCurrencies = currencyService.getCurrencyPermittedNameList(requesterUserId);
-        return  getCompanyWallets().stream()
-            .filter(e->permittedCurrencies.contains(e.getCurrency().getName()))
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public boolean substractCommissionBalanceById(Integer id, BigDecimal amount){
-        return companyWalletDao.substarctCommissionBalanceById(id, amount);
     }
 }

@@ -1,8 +1,7 @@
 package com.exrates.inout.service.stellar;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.dto.MerchantSpecParamDto;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +19,9 @@ import javax.annotation.PreDestroy;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.dto.MerchantSpecParamDto;
 
 /**
  * Created by maks on 06.06.2017.

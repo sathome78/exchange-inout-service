@@ -1,6 +1,8 @@
 package com.exrates.inout.service.ripple;
 
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 
 import java.math.BigDecimal;
 import java.util.Map;

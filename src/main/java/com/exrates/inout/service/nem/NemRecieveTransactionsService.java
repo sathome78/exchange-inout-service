@@ -1,14 +1,14 @@
 package com.exrates.inout.service.nem;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.domain.dto.NemMosaicTransferDto;
+import com.exrates.inout.exceptions.NemTransactionException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.dto.MerchantSpecParamDto;
-import me.exrates.model.dto.MosaicIdDto;
-import me.exrates.model.dto.NemMosaicTransferDto;
-import me.exrates.service.exception.NemTransactionException;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,6 +31,13 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.dto.MerchantSpecParamDto;
+//exrates.model.dto.MosaicIdDto;
+//exrates.model.dto.NemMosaicTransferDto;
+//exrates.service.exception.NemTransactionException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 /**
  * Created by maks on 21.07.2017.

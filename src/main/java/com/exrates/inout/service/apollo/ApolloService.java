@@ -1,8 +1,8 @@
 package com.exrates.inout.service.apollo;
 
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 

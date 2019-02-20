@@ -1,17 +1,17 @@
 package com.exrates.inout.service.job.invoice;
 
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Email;
-import me.exrates.model.dto.WithdrawRequestPostDto;
-import me.exrates.model.enums.invoice.InvoiceActionTypeEnum;
-import me.exrates.model.enums.invoice.InvoiceStatus;
-import me.exrates.model.enums.invoice.WithdrawStatusEnum;
-import me.exrates.service.SendMailService;
-import me.exrates.service.UserService;
-import me.exrates.service.WithdrawService;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
-import me.exrates.service.exception.invoice.InvalidAccountException;
-import me.exrates.service.exception.invoice.MerchantException;
+//exrates.model.Email;
+//exrates.model.dto.WithdrawRequestPostDto;
+//exrates.model.enums.invoice.InvoiceActionTypeEnum;
+//exrates.model.enums.invoice.InvoiceStatus;
+//exrates.model.enums.invoice.WithdrawStatusEnum;
+//exrates.service.SendMailService;
+//exrates.service.UserService;
+//exrates.service.WithdrawService;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.exception.invoice.MerchantException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static me.exrates.model.enums.invoice.InvoiceActionTypeEnum.POST_AUTO;
+//.exrates.model.enums.invoice.InvoiceActionTypeEnum.POST_AUTO;
 
 /**
  * Created by ValkSam

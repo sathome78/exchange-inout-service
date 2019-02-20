@@ -2,8 +2,8 @@ package com.exrates.inout.service.tron;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.TronNewAddressDto;
-import me.exrates.model.dto.TronTransferDto;
+//exrates.model.dto.TronNewAddressDto;
+//exrates.model.dto.TronTransferDto;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

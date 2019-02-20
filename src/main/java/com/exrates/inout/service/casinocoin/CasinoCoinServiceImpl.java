@@ -2,18 +2,18 @@ package com.exrates.inout.service.casinocoin;
 
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestCreateDto;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.GtagService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.CheckDestinationTagException;
-import me.exrates.service.exception.MerchantInternalException;
-import me.exrates.service.exception.NotImplimentedMethod;
-import me.exrates.service.util.WithdrawUtils;
+//exrates.model.Merchant;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestCreateDto;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.CheckDestinationTagException;
+//exrates.service.exception.MerchantInternalException;
+//exrates.service.exception.NotImplimentedMethod;
+//exrates.service.util.WithdrawUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+
 
 @Log4j2(topic = "casinocoin_log")
 @Service

@@ -1,11 +1,11 @@
 package com.exrates.inout.service.nem;
 
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.enums.ActionType;
+import com.exrates.inout.exceptions.NemTransactionException;
+import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.WithdrawMerchantOperationDto;
-import me.exrates.model.enums.ActionType;
-import me.exrates.model.util.BigDecimalProcessing;
-import me.exrates.service.exception.NemTransactionException;
-import me.exrates.service.exception.WithdrawRequestPostException;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.nem.core.crypto.PrivateKey;
@@ -27,6 +27,12 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.model.enums.ActionType;
+//exrates.model.util.BigDecimalProcessing;
+//exrates.service.exception.NemTransactionException;
+//exrates.service.exception.WithdrawRequestPostException;
 
 /**
  * Created by maks on 18.07.2017.

@@ -1,12 +1,12 @@
 package com.exrates.inout.service.qiwi;
 
+import com.exrates.inout.domain.dto.qiwi.request.QiwiRequest;
+import com.exrates.inout.domain.dto.qiwi.request.QiwiRequestGetTransactions;
+import com.exrates.inout.domain.dto.qiwi.request.QiwiRequestHeader;
+import com.exrates.inout.domain.dto.qiwi.response.QiwiResponse;
+import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseP2PInvoice;
+import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseTransaction;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.qiwi.request.QiwiRequest;
-import me.exrates.model.dto.qiwi.request.QiwiRequestGetTransactions;
-import me.exrates.model.dto.qiwi.request.QiwiRequestHeader;
-import me.exrates.model.dto.qiwi.response.QiwiResponse;
-import me.exrates.model.dto.qiwi.response.QiwiResponseP2PInvoice;
-import me.exrates.model.dto.qiwi.response.QiwiResponseTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +17,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+
+//exrates.model.dto.qiwi.request.QiwiRequest;
+//exrates.model.dto.qiwi.request.QiwiRequestGetTransactions;
+//exrates.model.dto.qiwi.request.QiwiRequestHeader;
+//exrates.model.dto.qiwi.response.QiwiResponse;
+//exrates.model.dto.qiwi.response.QiwiResponseP2PInvoice;
+//exrates.model.dto.qiwi.response.QiwiResponseTransaction;
 
 @Service
 @Log4j2(topic = "Qiwi")

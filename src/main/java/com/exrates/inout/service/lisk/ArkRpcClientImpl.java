@@ -1,11 +1,11 @@
 package com.exrates.inout.service.lisk;
 
+import com.exrates.inout.domain.lisk.ArkOpenAccountDto;
+import com.exrates.inout.domain.lisk.ArkSendTxDto;
+import com.exrates.inout.domain.lisk.LiskAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.merchants.lisk.ArkOpenAccountDto;
-import me.exrates.model.dto.merchants.lisk.ArkSendTxDto;
-import me.exrates.model.dto.merchants.lisk.LiskAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
@@ -18,8 +18,15 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
 
-import static me.exrates.service.lisk.LiskRestUtils.extractObjectFromResponse;
-import static me.exrates.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
+import static com.exrates.inout.service.lisk.LiskRestUtils.extractObjectFromResponse;
+import static com.exrates.inout.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
+
+//.exrates.service.lisk.LiskRestUtils.extractObjectFromResponse;
+//.exrates.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
+
+//exrates.model.dto.merchants.lisk.ArkOpenAccountDto;
+//exrates.model.dto.merchants.lisk.ArkSendTxDto;
+//exrates.model.dto.merchants.lisk.LiskAccount;
 
 @Log4j2(topic = "lisk_log")
 @Service

@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+
 public class MoneroWalletRpc {
     private static final Logger LOGGER = Logger.getLogger(wallet.MoneroWalletRpc.class);
     public static ObjectMapper MAPPER = new ObjectMapper();

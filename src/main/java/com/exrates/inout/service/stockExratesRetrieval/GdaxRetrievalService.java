@@ -1,17 +1,21 @@
 package com.exrates.inout.service.stockExratesRetrieval;
 
+import com.exrates.inout.domain.dto.StockExchange;
+import com.exrates.inout.domain.dto.StockExchangeStats;
+import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.StockExchange;
-import me.exrates.model.StockExchangeStats;
-import me.exrates.model.util.BigDecimalProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+//exrates.model.StockExchange;
+//exrates.model.StockExchangeStats;
+//exrates.model.util.BigDecimalProcessing;
 
 /**
  * Created by OLEG on 20.12.2016.

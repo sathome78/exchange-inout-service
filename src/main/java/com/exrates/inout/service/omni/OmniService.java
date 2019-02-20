@@ -1,12 +1,20 @@
 package com.exrates.inout.service.omni;
 
-import me.exrates.model.Currency;
-import me.exrates.model.Merchant;
-import me.exrates.model.RefillRequestAddressShortDto;
-import me.exrates.model.dto.RefillRequestAcceptDto;
-import me.exrates.model.dto.RefillRequestPutOnBchExamDto;
-import me.exrates.model.dto.merchants.omni.OmniBalanceDto;
-import me.exrates.model.dto.merchants.omni.OmniTxDto;
+//exrates.model.Currency;
+//exrates.model.Merchant;
+//exrates.model.RefillRequestAddressShortDto;
+//exrates.model.dto.RefillRequestAcceptDto;
+//exrates.model.dto.RefillRequestPutOnBchExamDto;
+//exrates.model.dto.merchants.omni.OmniBalanceDto;
+//exrates.model.dto.merchants.omni.OmniTxDto;
+
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.omni.OmniBalanceDto;
+import com.exrates.inout.domain.dto.omni.OmniTxDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 

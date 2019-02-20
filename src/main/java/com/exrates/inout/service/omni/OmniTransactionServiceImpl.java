@@ -1,15 +1,15 @@
 package com.exrates.inout.service.omni;
 
+import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.omni.OmniTxDto;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.RefillService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.dao.MerchantSpecParamsDao;
-import me.exrates.model.dto.*;
-import me.exrates.model.dto.merchants.omni.OmniTxDto;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.dto.*;
+//exrates.model.dto.merchants.omni.OmniTxDto;
+//exrates.service.RefillService;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 @PropertySource("classpath:/merchants/omni.properties")
 @Log4j2(topic = "omni_log")

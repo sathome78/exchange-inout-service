@@ -1,20 +1,21 @@
 package com.exrates.inout.service.lisk;
 
+import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.lisk.LiskAccount;
+import com.exrates.inout.domain.lisk.LiskTransaction;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.LiskCreateAddressException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.ParamMapUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import com.mysql.jdbc.StringUtils;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.Merchant;
-import me.exrates.model.dto.*;
-import me.exrates.model.dto.merchants.lisk.LiskAccount;
-import me.exrates.model.dto.merchants.lisk.LiskTransaction;
-import me.exrates.service.CurrencyService;
-import me.exrates.service.GtagService;
-import me.exrates.service.MerchantService;
-import me.exrates.service.RefillService;
-import me.exrates.service.exception.LiskCreateAddressException;
-import me.exrates.service.exception.RefillRequestAppropriateNotFoundException;
-import me.exrates.service.exception.WithdrawRequestPostException;
-import me.exrates.service.util.ParamMapUtils;
-import me.exrates.service.util.WithdrawUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
@@ -26,10 +27,24 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
-import java.util.*;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.model.dto.merchants.lisk.LiskAccount;
+//exrates.model.dto.merchants.lisk.LiskTransaction;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.LiskCreateAddressException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.exception.WithdrawRequestPostException;
+//exrates.service.util.ParamMapUtils;
+//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "lisk_log")
 public class LiskServiceImpl implements LiskService {

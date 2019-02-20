@@ -1,6 +1,8 @@
 package com.exrates.inout.service.qtum;
 
-import me.exrates.model.dto.merchants.qtum.*;
+//exrates.model.dto.merchants.qtum.*;
+
+import com.exrates.inout.domain.qtum.*;
 
 import java.math.BigDecimal;
 import java.util.List;

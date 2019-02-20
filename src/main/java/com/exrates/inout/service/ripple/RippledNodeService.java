@@ -1,7 +1,10 @@
 package com.exrates.inout.service.ripple;
 
-import me.exrates.model.dto.RippleAccount;
-import me.exrates.model.dto.RippleTransaction;
+//exrates.model.dto.RippleAccount;
+//exrates.model.dto.RippleTransaction;
+
+import com.exrates.inout.domain.dto.RippleAccount;
+import com.exrates.inout.domain.dto.RippleTransaction;
 import org.json.JSONObject;
 
 /**

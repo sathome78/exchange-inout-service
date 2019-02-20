@@ -1,6 +1,8 @@
 package com.exrates.inout.service.tron;
 
-import me.exrates.model.dto.TronReceivedTransactionDto;
+//exrates.model.dto.TronReceivedTransactionDto;
+
+import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 
 public interface TronTransactionsService {
     boolean checkIsTransactionConfirmed(String txHash);

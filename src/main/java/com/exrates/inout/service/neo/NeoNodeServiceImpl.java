@@ -1,10 +1,10 @@
 package com.exrates.inout.service.neo;
 
+import com.exrates.inout.domain.neo.*;
+import com.exrates.inout.exceptions.NeoApiException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.model.dto.merchants.neo.*;
-import me.exrates.service.exception.NeoApiException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -13,6 +13,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+//exrates.model.dto.merchants.neo.*;
+//exrates.service.exception.NeoApiException;
 
 @Log4j2(topic = "neo_log")
 public class NeoNodeServiceImpl implements NeoNodeService {

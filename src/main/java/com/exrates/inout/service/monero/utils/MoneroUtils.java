@@ -1,8 +1,11 @@
 package com.exrates.inout.service.monero.utils;
 
 
-import me.exrates.service.monero.MoneroAddress;
-import me.exrates.service.monero.MoneroIntegratedAddress;
+//exrates.service.monero.MoneroAddress;
+//exrates.service.monero.MoneroIntegratedAddress;
+
+import com.exrates.inout.service.monero.MoneroAddress;
+import com.exrates.inout.service.monero.MoneroIntegratedAddress;
 import wallet.MoneroException;
 
 import java.util.ArrayList;

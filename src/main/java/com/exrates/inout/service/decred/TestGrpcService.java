@@ -1,12 +1,12 @@
 package com.exrates.inout.service.decred;
 
 
+import com.exrates.inout.service.decred.rpc.WalletServiceGrpc;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
-import me.exrates.service.decred.rpc.Api;
-import me.exrates.service.decred.rpc.WalletServiceGrpc;
+import com.exrates.inout.service.decred.rpc.Api;
 
 import java.io.InputStream;
 import java.util.Iterator;

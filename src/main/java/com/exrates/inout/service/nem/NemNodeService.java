@@ -1,12 +1,8 @@
 package com.exrates.inout.service.nem;
 
+import com.exrates.inout.exceptions.*;
+import com.exrates.inout.util.RestUtil;
 import lombok.extern.log4j.Log4j2;
-import me.exrates.service.exception.NemTransactionException;
-import me.exrates.service.exception.NisNotReadyException;
-import me.exrates.service.exception.NisTransactionException;
-import me.exrates.service.exception.invoice.InsufficientCostsInWalletException;
-import me.exrates.service.exception.invoice.InvalidAccountException;
-import me.exrates.service.util.RestUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+//exrates.service.exception.NemTransactionException;
+//exrates.service.exception.NisNotReadyException;
+//exrates.service.exception.NisTransactionException;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.util.RestUtil;
 
 /**
  * Created by maks on 20.07.2017.
