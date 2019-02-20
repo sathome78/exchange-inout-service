@@ -1,4 +1,4 @@
-package com.exrates.inout.util;
+package com.exrates.inout.util.ssm;
 
 public interface SSMGetter {
 

@@ -8,8 +8,8 @@ spring:
   datasource:
     hikari:
       ssm-path: vLHjSkPJjB6JLVcA
-      username: exmicro
-      jdbc-url: jdbc:mysql://exdbdev.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/dbdev1?useSSL=false
+      username: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
@@ -1176,7 +1176,7 @@ bitcoin-coins:
       notification-block-port: 10901
       notification-wallet-port: 10902
   CBC:
-    merchant-name: CBC
+      merchant-name: CBC
       currency-name: CBC
       min-confirmations: 20
       block-target-for-fee: 20
@@ -2900,3 +2900,12 @@ payment-system-merchants:
     responseType: code
     mediaType: application/x-www-form-urlencoded
     companyWalletId: 410013968070382
+  qiwi:
+    clientId: AcOjrtX4almBGId8
+    clientSecret: KTx6Tco4oOFc8g0S8HqtP376XPSQSG
+    productionUrl: https://api.adgroup.finance
+    developmentUrl: http://18.185.170.86
+    accountAddress: 79048535193
+    accountPin: ZIz1WJqo
+    transactionStartedPosition: 0
+    transactionLimit: 100

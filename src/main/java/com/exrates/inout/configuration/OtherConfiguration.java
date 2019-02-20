@@ -1,10 +1,11 @@
 package com.exrates.inout.configuration;
 
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.QiwiProperty;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.glassfish.jersey.filter.LoggingFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -22,10 +23,11 @@ import java.util.Locale;
 @Configuration
 public class OtherConfiguration {
 
-    @Value("${qiwi.client.id}") //TODO
-    private String qiwiClientId;
-    @Value("${qiwi.client.secret}")
-    private String qiwiClientSecret;
+    private final CryptoCurrencyProperties cryptoCurrencyProperties;
+
+    public OtherConfiguration(CryptoCurrencyProperties cryptoCurrencyProperties) {
+        this.cryptoCurrencyProperties = cryptoCurrencyProperties;
+    }
 
     @Bean
     public RestTemplate restTemplate() {
@@ -46,7 +48,8 @@ public class OtherConfiguration {
     @Bean("qiwiRestTemplate")
     public RestTemplate qiwiRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(qiwiClientId, qiwiClientSecret));
+        QiwiProperty qiwiProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getQiwi();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(qiwiProperty.getClientId(), qiwiProperty.getClientSecret()));
         return restTemplate;
     }
 

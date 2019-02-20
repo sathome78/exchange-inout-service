@@ -1,4 +1,4 @@
-package com.exrates.inout.util;
+package com.exrates.inout.util.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
@@ -8,6 +8,7 @@ import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -15,10 +16,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Profile("!dev")
 public class SSMGetterImpl implements SSMGetter {
 
-    @Autowired
-    AWSSimpleSystemsManagement awsSimpleSystemsManagement;
+    private final AWSSimpleSystemsManagement awsSimpleSystemsManagement;
 
     private static Logger logger = LoggerFactory.getLogger(SSMGetterImpl.class);
 
@@ -33,6 +34,11 @@ public class SSMGetterImpl implements SSMGetter {
                        }
                    }
             );
+
+    @Autowired
+    public SSMGetterImpl(AWSSimpleSystemsManagement awsSimpleSystemsManagement) {
+        this.awsSimpleSystemsManagement = awsSimpleSystemsManagement;
+    }
 
     public String lookup(String password) {
         try {
