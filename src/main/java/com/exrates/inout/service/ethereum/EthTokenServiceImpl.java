@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.EthereumTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -41,7 +42,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -87,6 +88,15 @@ public class EthTokenServiceImpl implements EthTokenService {
     private EthereumCommonService ethereumCommonService;
     @Autowired
     private GtagService gtagService;
+
+    public EthTokenServiceImpl(EthereumTokenProperty property) {
+        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.isERC20 = property.isERC20();
+        this.unit = property.getUnit();
+        this.minWalletBalance = property.getMinWalletBalance().toBigInteger();
+    }
 
     @Override
     public Integer currencyId() {

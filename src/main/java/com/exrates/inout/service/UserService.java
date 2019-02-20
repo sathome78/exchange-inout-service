@@ -71,4 +71,6 @@ public interface UserService {
     boolean checkPin(String email, String pin, NotificationMessageEventEnum event);
 
     User getCommonReferralRoot();
+
+    void blockUserByRequest(Integer userId);
 }

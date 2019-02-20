@@ -1,9 +1,9 @@
 package com.exrates.inout.service.tron;
 
+import com.exrates.inout.domain.dto.TronNewAddressDto;
+import com.exrates.inout.domain.dto.TronTransferDto;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-//exrates.model.dto.TronNewAddressDto;
-//exrates.model.dto.TronTransferDto;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+
+//exrates.model.dto.TronNewAddressDto;
+//exrates.model.dto.TronTransferDto;
 
 @Log4j2(topic = "tron")
 @Service

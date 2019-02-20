@@ -1,6 +1,7 @@
 package com.exrates.inout.service.stellar;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
 import lombok.extern.log4j.Log4j2;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.springframework.beans.factory.annotation.Autowired;

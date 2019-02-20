@@ -62,12 +62,6 @@ public class WalletServiceImpl implements WalletService {
     private MessageSource messageSource;
 
     @Override
-    public void balanceRepresentation(final Wallet wallet) {
-        wallet
-                .setActiveBalance(wallet.getActiveBalance());
-    }
-
-    @Override
     public int getWalletId(int userId, int currencyId) {
         return walletDao.getWalletId(userId, currencyId);
     }
@@ -90,12 +84,6 @@ public class WalletServiceImpl implements WalletService {
                     BigDecimalProcessing.formatNonePoint(amountForCheck, false)));
         }
         return result;
-    }
-
-    @Transactional(propagation = Propagation.NESTED)
-    @Override
-    public int createNewWallet(Wallet wallet) {
-        return walletDao.createNewWallet(wallet);
     }
 
     @Override
@@ -226,6 +214,11 @@ public class WalletServiceImpl implements WalletService {
         return result;
     }
 
+    @Override
+    public int getWalletIdAndBlock(Integer userId, Integer currencyId) {
+        return walletDao.getWalletIdAndBlock(userId, currencyId);
+    }
+
 
     private void sendNotificationsAboutTransfer(int fromUserId, String notyAmount, String currencyName, int toUserId, String toNickName) {
         log.debug("from {} to {}", fromUserId, toUserId);
@@ -248,8 +241,4 @@ public class WalletServiceImpl implements WalletService {
         }
     }
 
-    @Override
-    public int getWalletIdAndBlock(Integer userId, Integer currencyId) {
-        return walletDao.getWalletIdAndBlock(userId, currencyId);
-    }
 }

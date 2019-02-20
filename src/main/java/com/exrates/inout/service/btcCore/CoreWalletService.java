@@ -1,6 +1,7 @@
 package com.exrates.inout.service.btcCore;
 
 import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.properties.models.BitcoinNode;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import reactor.core.publisher.Flux;
@@ -10,13 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Created by OLEG on 14.03.2017.
  */
 public interface CoreWalletService {
-  void initCoreClient(String nodePropertySource, Properties passPropertySource, boolean supportInstantSend, boolean supportSubtractFee, boolean supportReferenceLine);
   
   void initBtcdDaemon(boolean zmqEnabled);
   
@@ -73,4 +72,7 @@ public interface CoreWalletService {
     long getBlocksCount() throws BitcoindException, CommunicationException;
 
     Long getLastBlockTime() throws BitcoindException, CommunicationException;
+
+
+  void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine);
 }

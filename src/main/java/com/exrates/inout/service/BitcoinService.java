@@ -14,31 +14,31 @@ public interface BitcoinService extends IRefillable, IWithdrawable {
 
   int CONFIRMATION_NEEDED_COUNT = 4;
 
-    boolean isRawTxEnabled();
+  boolean isRawTxEnabled();
 
-    @EventListener(value = BtcWalletEvent.class)
-    void onPayment(BtcTransactionDto transactionDto);
+  @EventListener(value = BtcWalletEvent.class)
+  void onPayment(BtcTransactionDto transactionDto);
 
-    @EventListener(value = BtcBlockEvent.class)
-    void onIncomingBlock(BtcBlockDto blockDto);
+  @EventListener(value = BtcBlockEvent.class)
+  void onIncomingBlock(BtcBlockDto blockDto);
 
-    @Scheduled(initialDelay = 5 * 60000, fixedDelay = 12 * 60 * 60000)
+  @Scheduled(initialDelay = 5 * 60000, fixedDelay = 12 * 60 * 60000)
   void backupWallet();
-  
+
   BtcWalletInfoDto getWalletInfo();
-  
+
   List<BtcTransactionHistoryDto> listAllTransactions();
-  
+
   BigDecimal estimateFee();
 
-    String getEstimatedFeeString();
+  String getEstimatedFeeString();
 
-    BigDecimal getActualFee();
-  
+  BigDecimal getActualFee();
+
   void setTxFee(BigDecimal fee);
-  
+
   void submitWalletPassword(String password);
-  
+
   List<BtcPaymentResultDetailedDto> sendToMany(List<BtcWalletPaymentItemDto> payments);
 
   @Override
@@ -76,17 +76,17 @@ public interface BitcoinService extends IRefillable, IWithdrawable {
     return false;
   }
 
-    BtcAdminPreparedTxDto prepareRawTransactions(List<BtcWalletPaymentItemDto> payments);
+  BtcAdminPreparedTxDto prepareRawTransactions(List<BtcWalletPaymentItemDto> payments);
 
-    BtcAdminPreparedTxDto updateRawTransactions(List<BtcPreparedTransactionDto> preparedTransactions);
+  BtcAdminPreparedTxDto updateRawTransactions(List<BtcPreparedTransactionDto> preparedTransactions);
 
-    List<BtcPaymentResultDetailedDto> sendRawTransactions(List<BtcPreparedTransactionDto> preparedTransactions);
+  List<BtcPaymentResultDetailedDto> sendRawTransactions(List<BtcPreparedTransactionDto> preparedTransactions);
 
-    void scanForUnprocessedTransactions(@Nullable String blockHash);
+  void scanForUnprocessedTransactions(@Nullable String blockHash);
 
-    String getNewAddressForAdmin();
+  String getNewAddressForAdmin();
 
-    void setSubtractFeeFromAmount(boolean subtractFeeFromAmount);
+  void setSubtractFeeFromAmount(boolean subtractFeeFromAmount);
 
-    boolean getSubtractFeeFromAmount();
+  boolean getSubtractFeeFromAmount();
 }

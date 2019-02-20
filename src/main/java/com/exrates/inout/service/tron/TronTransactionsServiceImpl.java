@@ -1,13 +1,13 @@
 package com.exrates.inout.service.tron;
 
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
+import com.exrates.inout.domain.dto.TronTransferDto;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.bitshares.Preconditions;
 import lombok.extern.log4j.Log4j2;
-//exrates.model.dto.RefillRequestAddressDto;
-//exrates.model.dto.RefillRequestFlatDto;
-//exrates.model.dto.TronReceivedTransactionDto;
-//exrates.model.dto.TronTransferDto;
-//exrates.service.RefillService;
-//exrates.service.bitshares.Preconditions;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
+
+//exrates.model.dto.RefillRequestAddressDto;
+//exrates.model.dto.RefillRequestFlatDto;
+//exrates.model.dto.TronReceivedTransactionDto;
+//exrates.model.dto.TronTransferDto;
+//exrates.service.RefillService;
+//exrates.service.bitshares.Preconditions;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 
 @Log4j2(topic = "tron")

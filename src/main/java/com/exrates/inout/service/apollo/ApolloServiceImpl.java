@@ -9,7 +9,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.util.WithdrawUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

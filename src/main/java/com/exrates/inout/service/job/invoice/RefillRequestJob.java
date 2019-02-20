@@ -1,12 +1,12 @@
 package com.exrates.inout.service.job.invoice;
 
+import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
+import com.exrates.inout.service.BitcoinService;
+import com.exrates.inout.service.IMerchantService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.impl.MerchantServiceContext;
 import lombok.extern.log4j.Log4j2;
-//exrates.model.dto.BtcTransactionHistoryDto;
-//exrates.service.BitcoinService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.merchantStrategy.IMerchantService;
-//exrates.service.merchantStrategy.MerchantServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+//exrates.model.dto.BtcTransactionHistoryDto;
+//exrates.service.BitcoinService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.merchantStrategy.IMerchantService;
+//exrates.service.merchantStrategy.MerchantServiceContext;
 
 /**
  * Created by ValkSam

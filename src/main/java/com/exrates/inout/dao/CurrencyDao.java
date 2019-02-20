@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface CurrencyDao {
 
-    List<Currency> getAllActiveCurrencies();
+    List<Currency> getAllCurrencies();
 
     int getCurrencyId(int walletId);
 
@@ -35,4 +35,5 @@ public interface CurrencyDao {
     MerchantCurrencyScaleDto findCurrencyScaleByCurrencyId(Integer currencyId);
 
     boolean isCurrencyIco(Integer currencyId);
+
 }

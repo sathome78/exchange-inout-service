@@ -1,11 +1,11 @@
 package com.exrates.inout.service.lisk;
 
+import com.exrates.inout.exceptions.LiskRestException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-//exrates.service.exception.LiskRestException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -13,6 +13,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+//exrates.service.exception.LiskRestException;
 
 public class LiskRestUtils {
 

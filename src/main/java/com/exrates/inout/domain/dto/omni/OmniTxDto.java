@@ -1,10 +1,10 @@
 package com.exrates.inout.domain.dto.omni;
 
+import com.exrates.inout.domain.serializer.StringToBigDecimalDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import me.exrates.model.serializer.StringToBigDecimalDeserializer;
 
 import java.math.BigDecimal;
 

@@ -1,10 +1,10 @@
 package com.exrates.inout.domain.serializer;
 
+import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import me.exrates.model.util.BigDecimalProcessing;
 
 import java.io.IOException;
 import java.math.BigDecimal;

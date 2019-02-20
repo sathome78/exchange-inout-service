@@ -7,6 +7,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.waves.WavesPayment;
 import com.exrates.inout.domain.waves.WavesTransaction;
 import com.exrates.inout.exceptions.*;
+import com.exrates.inout.properties.models.WavesProperty;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.ParamMapUtils;
 import com.exrates.inout.util.WithdrawUtils;
@@ -20,6 +21,8 @@ import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.*;
+
+import static java.util.Objects.nonNull;
 
 //exrates.model.Email;
 //exrates.model.Merchant;
@@ -57,10 +60,6 @@ public class WavesServiceImpl implements WavesService {
     @Autowired
     private GtagService gtagService;
 
-    private Integer minConfirmations;
-    private String mainAccount;
-    private String feeAccount;
-    private String notifyEmail;
     private final Locale notifyEmailLocale = new Locale("RU");
 
     private final int WAVES_AMOUNT_SCALE = 8;
@@ -73,10 +72,17 @@ public class WavesServiceImpl implements WavesService {
 
     private Map<String, MerchantCurrencyBasicInfoDto> tokenMerchantCurrencyMap;
 
-
     private String currencyBaseName;
     private String merchantBaseName;
-    private String propertySource;
+    private Integer minConfirmations;
+    private String mainAccount;
+    private String feeAccount;
+    private String notifyEmail;
+    private int processDelay;
+    private String host;
+    private String port;
+    private String apiKey;
+    private Map<String, String> tokenIds;
 
     private Currency currencyBase;
     private Merchant merchantBase;
@@ -84,11 +90,18 @@ public class WavesServiceImpl implements WavesService {
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ExecutorService sendFeePool = Executors.newSingleThreadExecutor();
 
-
-    public WavesServiceImpl(String currencyBaseName, String merchantBaseName, String propertySource) {
-        this.currencyBaseName = currencyBaseName;
-        this.merchantBaseName = merchantBaseName;
-        this.propertySource = propertySource;
+    public WavesServiceImpl(WavesProperty property) {
+        this.currencyBaseName = property.getCurrencyName();
+        this.merchantBaseName = property.getMerchantName();
+        this.minConfirmations = property.getMinConfirmations();
+        this.mainAccount = property.getNode().getMainAccount();
+        this.feeAccount = property.getNode().getFeeAccount();
+        this.notifyEmail = property.getNode().getNotifyEmail();
+        this.processDelay = property.getNode().getProcessDelay();
+        this.host = property.getNode().getHost();
+        this.port = property.getNode().getPort();
+        this.apiKey = property.getNode().getApiKey();
+        this.tokenIds = property.getNode().getTokenIds();
     }
 
     @Override
@@ -103,26 +116,13 @@ public class WavesServiceImpl implements WavesService {
         }};
     }
 
+
     @PostConstruct
     private void init() {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.minConfirmations = Integer.parseInt(props.getProperty("waves.min.confirmations"));
-            this.mainAccount = props.getProperty("waves.main.account");
-            this.feeAccount = props.getProperty("waves.fee.account");
-            this.notifyEmail = props.getProperty("waves.notify.email");
-            restClient.init(props);
-            initAssets(props);
-            long processFixedDelay = Long.parseLong(props.getProperty("waves.process.delay"));
-
-            scheduler.scheduleAtFixedRate(this::processWavesTransactionsForKnownAddresses, 3L, processFixedDelay, TimeUnit.MINUTES);
-
-        } catch (Exception e) {
-            log.error(e);
-        }
+        restClient.init(host, port, apiKey);
+        initAssets();
+        scheduler.scheduleAtFixedRate(this::processWavesTransactionsForKnownAddresses, 3L, processDelay, TimeUnit.MINUTES);
     }
-
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         String address = ParamMapUtils.getIfNotNull(params, "address");
@@ -379,14 +379,14 @@ public class WavesServiceImpl implements WavesService {
     }
 
 
-    void initAssets(Properties wavesProps) {
+    private void initAssets() {
         currencyBase = currencyService.findByName(currencyBaseName);
         merchantBase = merchantService.findByName(merchantBaseName);
         List<MerchantCurrencyBasicInfoDto> tokenMerchants = merchantService.findTokenMerchantsByParentId(merchantBase.getId());
         Map<String, MerchantCurrencyBasicInfoDto> tokenMap = new HashMap<>();
         for (MerchantCurrencyBasicInfoDto tokenMerchant : tokenMerchants) {
-            String assetId = wavesProps.getProperty(String.format("waves.token.%s.id", tokenMerchant.getMerchantName()));
-            if (assetId != null) {
+            String assetId = tokenIds.get(tokenMerchant.getMerchantName());
+            if (nonNull(assetId)) {
                 tokenMap.put(assetId, tokenMerchant);
             }
         }

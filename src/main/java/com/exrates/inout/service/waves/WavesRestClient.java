@@ -8,10 +8,9 @@ import com.exrates.inout.domain.waves.WavesTransaction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 public interface WavesRestClient {
-    void init(Properties props);
+    void init(String host, String port, String apiKey);
 
     String generateNewAddress();
 

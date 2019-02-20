@@ -1,17 +1,17 @@
 package com.exrates.inout.service.job.invoice;
 
+import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
+import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
+import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
+import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
+import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
+import com.exrates.inout.exceptions.InvalidAccountException;
+import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.service.SendMailService;
+import com.exrates.inout.service.UserService;
+import com.exrates.inout.service.WithdrawService;
 import lombok.extern.log4j.Log4j2;
-//exrates.model.Email;
-//exrates.model.dto.WithdrawRequestPostDto;
-//exrates.model.enums.invoice.InvoiceActionTypeEnum;
-//exrates.model.enums.invoice.InvoiceStatus;
-//exrates.model.enums.invoice.WithdrawStatusEnum;
-//exrates.service.SendMailService;
-//exrates.service.UserService;
-//exrates.service.WithdrawService;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-//exrates.service.exception.invoice.InvalidAccountException;
-//exrates.service.exception.invoice.MerchantException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +27,19 @@ import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+//exrates.model.Email;
+//exrates.model.dto.WithdrawRequestPostDto;
+//exrates.model.enums.invoice.InvoiceActionTypeEnum;
+//exrates.model.enums.invoice.InvoiceStatus;
+//exrates.model.enums.invoice.WithdrawStatusEnum;
+//exrates.service.SendMailService;
+//exrates.service.UserService;
+//exrates.service.WithdrawService;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+//exrates.service.exception.invoice.InvalidAccountException;
+//exrates.service.exception.invoice.MerchantException;
+import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.POST_AUTO;
 
 //.exrates.model.enums.invoice.InvoiceActionTypeEnum.POST_AUTO;
 

@@ -3,19 +3,10 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.UserDao;
 import com.exrates.inout.domain.dto.UpdateUserDto;
-import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
-import com.exrates.inout.domain.enums.NotificationTypeEnum;
-import com.exrates.inout.domain.enums.TokenType;
-import com.exrates.inout.domain.enums.UserCommentTopicEnum;
-import com.exrates.inout.domain.enums.UserRole;
+import com.exrates.inout.domain.enums.*;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
-import com.exrates.inout.domain.main.Comment;
-import com.exrates.inout.domain.main.Email;
-import com.exrates.inout.domain.main.NotificationEvent;
-import com.exrates.inout.domain.main.NotificationsUserSetting;
-import com.exrates.inout.domain.main.TemporalToken;
-import com.exrates.inout.domain.main.User;
+import com.exrates.inout.domain.main.*;
 import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.NotificationsSettingsService;
 import com.exrates.inout.service.SendMailService;
@@ -33,14 +24,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -343,6 +331,12 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+
+    @Override
+    public void blockUserByRequest(Integer userId) {
+        throw new NotImplementedException();//TODO ask Maks
+    }
+
 
     private String getPinForEvent(String email, NotificationMessageEventEnum event) {
         return userDao.getPinByEmailAndEvent(email, event);

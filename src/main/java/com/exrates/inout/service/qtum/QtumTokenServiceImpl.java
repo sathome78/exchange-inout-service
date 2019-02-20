@@ -1,12 +1,19 @@
 package com.exrates.inout.service.qtum;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.qtum.QtumTokenTransaction;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.QtumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.ExConvert;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +30,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -86,11 +93,11 @@ public class QtumTokenServiceImpl implements QtumTokenService {
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public QtumTokenServiceImpl(List<String> contractAddress, String merchantName, String currencyName, ExConvert.Unit unit) {
-        this.contractAddress = contractAddress;
-        this.merchantName = merchantName;
-        this.currencyName = currencyName;
-        this.unit = unit;
+    public QtumTokenServiceImpl(QtumProperty property) {
+        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.unit = property.getUnit();
     }
 
     @PostConstruct

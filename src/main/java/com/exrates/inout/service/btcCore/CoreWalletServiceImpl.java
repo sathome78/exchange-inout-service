@@ -6,6 +6,7 @@ import com.exrates.inout.exceptions.BitcoinCoreException;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.MerchantException;
+import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.service.btcCore.btcDaemon.BtcDaemon;
 import com.exrates.inout.service.btcCore.btcDaemon.BtcHttpDaemonImpl;
 import com.exrates.inout.service.btcCore.btcDaemon.BtcdZMQDaemonImpl;
@@ -33,10 +34,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 /**
  * Created by OLEG on 14.03.2017.
@@ -68,28 +71,6 @@ public class CoreWalletServiceImpl implements CoreWalletService {
   private final Object SENDING_LOCK = new Object();
 
 
-  @Override
-  public void initCoreClient(String nodePropertySource, Properties passPropertySource, boolean supportInstantSend, boolean supportSubtractFee, boolean supportReferenceLine) {
-    try {
-      PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-      CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
-              .build();
-      Properties nodeConfig = new Properties();
-      nodeConfig.load(getClass().getClassLoader().getResourceAsStream(nodePropertySource));
-      nodeConfig.setProperty("node.bitcoind.rpc.user", passPropertySource.getProperty("node.bitcoind.rpc.user"));
-      nodeConfig.setProperty("node.bitcoind.rpc.password", passPropertySource.getProperty("node.bitcoind.rpc.password"));
-      log.info("Node config: " + nodeConfig);
-      btcdClient = new BtcdClientImpl(httpProvider, nodeConfig);
-      this.supportInstantSend = supportInstantSend;
-      this.supportSubtractFee = supportSubtractFee;
-      this.supportReferenceLine = supportReferenceLine;
-    } catch (Exception e) {
-      log.error("Could not initialize BTCD client of config {}. Reason: {} ", nodePropertySource, e.getMessage());
-      log.error(ExceptionUtils.getStackTrace(e));
-    }
-    
-  }
-  
   @Override
   public void initBtcdDaemon(boolean zmqEnabled)  {
     if (zmqEnabled) {
@@ -637,6 +618,64 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     @Override
     public Long getLastBlockTime() throws BitcoindException, CommunicationException {
         return btcdClient.getBlock(btcdClient.getBestBlockHash()).getTime();
+    }
+
+    @Override
+    public void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine) {
+        final String rpcProtocol = node.getRpcProtocol();
+        final String rpcHost = node.getRpcHost();
+        final String rpcPort = node.getRpcPort();
+        final String rpcUser = node.getRpcUser();
+        final String rpcPassword = node.getRpcPassword();
+        final String httpAuthSchema = node.getHttpAuthSchema();
+        final String notificationAlertPort = node.getNotificationAlertPort();
+        final String notificationBlockPort = node.getNotificationBlockPort();
+        final String notificationWalletPort = node.getNotificationWalletPort();
+        final String notificationInstantSendPort = node.getNotificationInstantSendPort();
+        try {
+            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+            CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
+                    .build();
+            Properties nodeConfig = new Properties();
+            if (nonNull(rpcProtocol)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.protocol", rpcProtocol);
+            }
+            if (nonNull(rpcHost)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.host", rpcHost);
+            }
+            if (nonNull(rpcPort)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.port", rpcPort);
+            }
+            if (nonNull(rpcUser)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.user", rpcUser);
+            }
+            if (nonNull(rpcPassword)) {
+                nodeConfig.setProperty("node.bitcoind.rpc.password", rpcPassword);
+            }
+            if (nonNull(httpAuthSchema)) {
+                nodeConfig.setProperty("node.bitcoind.http.auth_scheme", httpAuthSchema);
+            }
+            if (nonNull(notificationAlertPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.alert.port", notificationAlertPort);
+            }
+            if (nonNull(notificationBlockPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.block.port", notificationBlockPort);
+            }
+            if (nonNull(notificationWalletPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.wallet.port", notificationWalletPort);
+            }
+            if (nonNull(notificationInstantSendPort)) {
+                nodeConfig.setProperty("node.bitcoind.notification.instantsend.port", notificationInstantSendPort);
+            }
+            log.info("Node config: " + nodeConfig);
+            btcdClient = new BtcdClientImpl(httpProvider, nodeConfig);
+            this.supportInstantSend = node.isSupportInstantSend();
+            this.supportSubtractFee = supportSubtractFee;
+            this.supportReferenceLine = supportReferenceLine;
+        } catch (Exception ex) {
+            log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
+            log.error(ExceptionUtils.getStackTrace(ex));
+        }
     }
 
     @PreDestroy

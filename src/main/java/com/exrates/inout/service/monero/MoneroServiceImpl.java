@@ -5,7 +5,6 @@ import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.MoneroProperty;
 import com.exrates.inout.service.CurrencyService;
@@ -23,7 +22,6 @@ import wallet.MoneroWalletRpc;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,73 +32,50 @@ import java.util.concurrent.TimeUnit;
 
 public class MoneroServiceImpl implements MoneroService {
 
-    private MoneroWallet wallet;
+    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
 
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    private String HOST;
-    private String PORT;
-    private String LOGIN;
-    private String PASSWORD;
-    private String MODE;
+    private MoneroWallet wallet;
+
+    private String host;
+    private String port;
+    private String login;
+    private String password;
+    private String mode;
+    private Logger log;
 
     private List<String> ADDRESSES = new ArrayList<>();
 
     private Merchant merchant;
-
     private Currency currency;
-
     private String merchantName;
-
     private String currencyName;
-
     private Integer minConfirmations;
-
     private Integer decimals;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
-
-    private Logger log;
-
-    public MoneroServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer decimals) {
-
-        Properties props = new Properties();
-
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.HOST = props.getProperty("monero.host");
-            this.PORT = props.getProperty("monero.port");
-            this.LOGIN = props.getProperty("monero.login");
-            this.PASSWORD = props.getProperty("monero.password");
-            this.MODE = props.getProperty("monero.mode");
-            this.merchantName = merchantName;
-            this.currencyName = currencyName;
-            this.minConfirmations = minConfirmations;
-            this.decimals = decimals;
-            this.log = LogManager.getLogger(props.getProperty("monero.log"));
-        } catch (IOException e) {
-            log.error(e);
-        }
-
-    }
-
     public MoneroServiceImpl(MoneroProperty property) {
-        throw new NotImplimentedMethod("oodwa");
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.minConfirmations = property.getMinConfirmations();
+        this.decimals = property.getDecimals();
+        this.host = property.getNode().getHost();
+        this.port = property.getNode().getPort();
+        this.login = property.getNode().getLogin();
+        this.password = property.getNode().getPassword();
+        this.mode = property.getNode().getMode();
+        this.log = LogManager.getLogger(property.getNode().getLog());
     }
 
     @Override
@@ -167,10 +142,10 @@ public class MoneroServiceImpl implements MoneroService {
 
         ADDRESSES = refillService.findAllAddresses(merchant.getId(), currency.getId());
 
-        if (MODE.equals("main")){
+        if (mode.equals("main")){
             log.info(merchantName + " starting...");
             try {
-                wallet = new MoneroWalletRpc(HOST, Integer.parseInt(PORT), LOGIN, PASSWORD);
+                wallet = new MoneroWalletRpc(host, Integer.parseInt(port), login, password);
                 log.info(merchantName + " started");
                 scheduler.scheduleAtFixedRate(new Runnable() {
                     public void run() {

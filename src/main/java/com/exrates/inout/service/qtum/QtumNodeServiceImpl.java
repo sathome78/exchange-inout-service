@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.*;
 
 
 //exrates.model.dto.merchants.qtum.*;

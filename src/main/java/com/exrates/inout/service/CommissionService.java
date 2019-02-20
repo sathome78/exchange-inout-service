@@ -27,4 +27,6 @@ public interface CommissionService {
     BigDecimal calculateCommissionForRefillAmount(BigDecimal amount, Integer commissionId);
 
     Commission getDefaultCommission(OperationType referral);
+
+    BigDecimal calculateMerchantCommissionForRefillAmount(BigDecimal amount, int merchantId, int currencyId);
 }

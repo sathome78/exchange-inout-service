@@ -1,7 +1,35 @@
 package com.exrates.inout.service.casinocoin;
 
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.exceptions.MerchantInternalException;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
 //exrates.model.Merchant;
 //exrates.model.dto.RefillRequestAcceptDto;
 //exrates.model.dto.RefillRequestCreateDto;
@@ -14,16 +42,6 @@ import lombok.extern.log4j.Log4j2;
 //exrates.service.exception.MerchantInternalException;
 //exrates.service.exception.NotImplimentedMethod;
 //exrates.service.util.WithdrawUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 
 @Log4j2(topic = "casinocoin_log")

@@ -12,13 +12,15 @@ import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
 import com.exrates.inout.service.bitshares.BitsharesService;
 import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
+import com.exrates.inout.service.btc.BitcoinServiceImpl;
 import com.exrates.inout.service.ethereum.EthTokenService;
 import com.exrates.inout.service.ethereum.EthTokenServiceImpl;
 import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
 import com.exrates.inout.service.impl.CurrencyServiceImpl;
 import com.exrates.inout.service.impl.MerchantServiceImpl;
-import com.exrates.inout.service.lisk.*;
+import com.exrates.inout.service.lisk.LiskRestClient;
+import com.exrates.inout.service.lisk.LiskRestClientImpl;
 import com.exrates.inout.service.monero.MoneroService;
 import com.exrates.inout.service.monero.MoneroServiceImpl;
 import com.exrates.inout.service.monero.hcxp.HCXPServiceImpl;
@@ -980,33 +982,33 @@ public class CryptocurrencyConfig {
     }
 
     // LISK-like cryptos
-    @Bean(name = "liskServiceImpl")
-    public LiskService liskService() {
-        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-    }
-
-    @Bean(name = "btwServiceImpl")
-    public LiskService btwService() {
-        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-    }
-
-    @Bean(name = "riseServiceImpl")
-    public LiskService riseService() {
-        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-    }
-
-    @Bean(name = "arkServiceImpl")
-    public LiskService arkService() {
-        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk()));
-    }
-
-    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
-        return LiskServiceImpl.builder()
-                .property(property)
-                .liskRestClient(liskRestClient())
-                .liskSpecialMethodService(liskSpecialMethodService)
-                .build();
-    }
+//    @Bean(name = "liskServiceImpl") впадло, позже сделать todo
+//    public LiskService liskService() {
+//        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+//    }
+//
+//    @Bean(name = "btwServiceImpl")
+//    public LiskService btwService() {
+//        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+//    }
+//
+//    @Bean(name = "riseServiceImpl")
+//    public LiskService riseService() {
+//        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+//    }
+//
+//    @Bean(name = "arkServiceImpl")
+//    public LiskService arkService() {
+//        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk()));
+//    }
+//
+//    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
+//        return LiskServiceImpl.builder()
+//                .property(property)
+//                .liskRestClient(liskRestClient())
+//                .liskSpecialMethodService(liskSpecialMethodService)
+//                .build();
+//    }
 
     @Bean
     @Scope("prototype")

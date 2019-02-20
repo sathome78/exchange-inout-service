@@ -69,6 +69,13 @@ public class CommissionServiceImpl implements CommissionService {
 
     @Override
     @Transactional
+    public BigDecimal calculateMerchantCommissionForRefillAmount(BigDecimal amount, int merchantId, int currencyId) {
+        BigDecimal merchantCommissionPercent = getCommissionMerchant(merchantId, currencyId, INPUT);
+        return BigDecimalProcessing.doAction(amount, merchantCommissionPercent, MULTIPLY_PERCENT);
+    }
+
+    @Override
+    @Transactional
     public BigDecimal getCommissionMerchant(String merchant, String currency, OperationType operationType) {
         if (!(operationType == OperationType.INPUT || operationType == OperationType.OUTPUT)) {
             throw new IllegalArgumentException("Invalid operation type");

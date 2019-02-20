@@ -19,7 +19,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //exrates.model.dto.merchants.waves.WavesAddress;
@@ -53,10 +56,10 @@ public class WavesRestClientImpl implements WavesRestClient {
     private final String accountBalanceEndpoint = "/addresses/balance/{id}";
 
     @Override
-    public void init(Properties props) {
-        this.host = props.getProperty("waves.rest.host");
-        this.port = props.getProperty("waves.rest.port");
-        this.apiKey = props.getProperty("waves.rest.api.key");
+    public void init(String host, String port, String apiKey) {
+        this.host = host;
+        this.port = port;
+        this.apiKey = apiKey;
     }
 
     @Override

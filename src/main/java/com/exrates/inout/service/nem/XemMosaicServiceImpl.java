@@ -3,6 +3,7 @@ package com.exrates.inout.service.nem;
 //exrates.model.dto.MosaicIdDto;
 
 import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.properties.models.XemProperty;
 import org.nem.core.model.mosaic.MosaicId;
 import org.nem.core.model.namespace.NamespaceId;
 import org.nem.core.model.primitive.Quantity;
@@ -23,16 +24,15 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     private Quantity levyFee;
 
 
-    public XemMosaicServiceImpl(String merchantName, String currencyName, MosaicIdDto mosaicIdDto, long decimals,
-                                int divisibility, Supply supply, long levyFee) {
-        this.merchantName = merchantName;
-        this.currencyName = currencyName;
-        this.mosaicIdDto = mosaicIdDto;
-        this.decimals = decimals;
-        this.divisibility = divisibility;
-        this.supply = supply;
+    public XemMosaicServiceImpl(XemProperty property) {
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.mosaicIdDto = new MosaicIdDto(property.getNameSpaceId(), property.getName());
+        this.decimals = property.getDecimals();
+        this.divisibility = property.getDivisibility();
+        this.supply = new Supply(property.getSupply());
         this.mosaicId = new MosaicId(new NamespaceId(mosaicIdDto.getNamespaceId()), mosaicIdDto.getName());
-        this.levyFee = new Quantity(levyFee);
+        this.levyFee = new Quantity(property.getLevyFee());
     }
 
     @Override

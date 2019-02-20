@@ -7,11 +7,12 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.util.WithdrawUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,8 @@ import java.util.concurrent.TimeUnit;
  */
 //@Service
 public class EthereumCommonServiceImpl implements EthereumCommonService {
+
+    private static final String ETHEREUM = "Ethereum";
 
     @Autowired
     private CurrencyService currencyService;
@@ -113,6 +116,25 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     private BigDecimal minSumOnAccount;
 
     private Logger log;
+
+    public EthereumCommonServiceImpl(EthereumProperty property) {
+        this.url = property.getNode().getUrl();
+        this.destinationDir = property.getNode().getDestinationDir();
+        this.password = property.getNode().getPassword();
+        this.mainAddress = property.getNode().getMainAddress();
+        this.minSumOnAccount = property.getNode().getMinSumOnAccount();
+        this.minBalanceForTransfer = property.getNode().getMinBalanceForTransfer();
+        this.merchantName = property.getMerchantName();
+        this.currencyName = property.getCurrencyName();
+        this.minConfirmations = property.getMinConfirmations();
+        this.log = LogManager.getLogger(property.getNode().getLog());
+        if (this.merchantName.equals(ETHEREUM)) {
+            this.transferAccAddress = property.getNode().getTransferAccAddress();
+            this.transferAccPrivateKey = property.getNode().getTransferAccPrivatKey();
+            this.transferAccPublicKey = property.getNode().getTransferAccPublicKey();
+            this.needToCheckTokens = true;
+        }
+    }
 
     @Override
     public Web3j getWeb3j() {

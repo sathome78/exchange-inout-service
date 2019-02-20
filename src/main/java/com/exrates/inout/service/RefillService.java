@@ -1,5 +1,6 @@
 package com.exrates.inout.service;
 
+import com.exrates.inout.domain.RefillOnConfirmationDto;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
@@ -35,8 +36,6 @@ public interface RefillService {
     Integer createRefillRequestByFact(RefillRequestAcceptDto request);
 
     void confirmRefillRequest(InvoiceConfirmData invoiceConfirmData, Locale locale);
-
-    List<RefillRequestFlatDto> getInPendingByMerchantIdAndCurrencyIdList(Integer merchantId, Integer currencyId);
 
     Optional<Integer> getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(
             String address,
@@ -74,11 +73,7 @@ public interface RefillService {
 
     void autoAcceptRefillRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
 
-    void autoAcceptRefillEmptyRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
-
     void acceptRefillRequest(RefillRequestAcceptDto requestAcceptDto);
-
-    void finalizeAcceptRefillRequest(Integer requestId);
 
     @Transactional
     void declineMerchantRefillRequest(Integer requestId);
@@ -102,8 +97,6 @@ public interface RefillService {
     void returnFromWorkRefillRequest(int requestId, Integer requesterAdminId);
 
     void declineRefillRequest(int requestId, Integer requesterAdminId, String comment);
-
-    Boolean existsClosedRefillRequestForAddress(String address, Integer merchantId, Integer currencyId);
 
     RefillRequestsAdminTableDto getRefillRequestById(Integer id, String authorizedUserEmail);
 
@@ -170,4 +163,5 @@ public interface RefillService {
 
     List<RefillRequestAddressDto> findAddressDtosWithMerchantChild(int merchantId);
 
+    List<RefillOnConfirmationDto> getOnConfirmationRefills(String email, int currencyId);
 }

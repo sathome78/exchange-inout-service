@@ -1,13 +1,13 @@
 package com.exrates.inout.service.job.invoice;
 
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
+import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.RippleCheckConsensusException;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.WithdrawService;
+import com.exrates.inout.service.ripple.RippleService;
 import lombok.extern.log4j.Log4j2;
-//exrates.model.Merchant;
-//exrates.model.dto.WithdrawRequestFlatDto;
-//exrates.model.enums.invoice.WithdrawStatusEnum;
-//exrates.service.MerchantService;
-//exrates.service.WithdrawService;
-//exrates.service.exception.RippleCheckConsensusException;
-//exrates.service.ripple.RippleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+//exrates.model.Merchant;
+//exrates.model.dto.WithdrawRequestFlatDto;
+//exrates.model.enums.invoice.WithdrawStatusEnum;
+//exrates.service.MerchantService;
+//exrates.service.WithdrawService;
+//exrates.service.exception.RippleCheckConsensusException;
+//exrates.service.ripple.RippleService;
 
 /**
  * Created by maks on 16.05.2017.

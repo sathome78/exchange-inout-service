@@ -15,8 +15,6 @@ public interface CurrencyService {
 
     String getCurrencyName(int currencyId);
 
-    List<Currency> getAllCurrencies();
-
     Currency findByName(String name);
 
     Currency findById(int id);
@@ -48,4 +46,5 @@ public interface CurrencyService {
     MerchantCurrencyScaleDto getCurrencyScaleByCurrencyId(Integer currencyId);
 
     boolean isIco(Integer currencyId);
+
 }
