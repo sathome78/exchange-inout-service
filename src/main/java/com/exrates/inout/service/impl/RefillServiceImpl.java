@@ -7,10 +7,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
-import com.exrates.inout.domain.enums.MerchantProcessType;
-import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.enums.TransactionSourceType;
-import com.exrates.inout.domain.enums.WalletTransferStatus;
+import com.exrates.inout.domain.enums.*;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -59,6 +56,7 @@ import static com.exrates.inout.domain.other.WalletOperationData.BalanceType.ACT
 @Service
 @PropertySource(value = {"classpath:/job.properties"})
 public class RefillServiceImpl implements RefillService {
+
 
     @Value("${invoice.blockNotifyUsers}")
     private Boolean BLOCK_NOTIFYING;
@@ -1111,6 +1109,7 @@ public class RefillServiceImpl implements RefillService {
             userService.blockUserByRequest(p.getUserId());
         });
     }
+
     @Override
     public List<RefillRequestAddressShortDto> getBlockedAddresses(int merchantId, int currencyId) {
         return refillRequestDao.getBlockedAddresses(merchantId, currencyId);

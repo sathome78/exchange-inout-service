@@ -121,7 +121,7 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
                 break;
             }
             case Freeze_Transaction : {
-                omniService.frozeCoins(dto.getReferenceaddress(), dto.getAmount());
+                omniService.frozeCoins(dto.getReferenceaddress(), dto.getAmount()); //TODO method not working as part of microservice
                 break;
             }
         }

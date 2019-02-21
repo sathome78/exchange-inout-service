@@ -139,7 +139,6 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyDao.findById(id);
     }
 
-
     @Override
     public BigDecimal computeRandomizedAddition(Integer currencyId, OperationType operationType) {
         Optional<OperationType.AdditionalRandomAmountParam> randomAmountParam = operationType.getRandomAmountParam(currencyId);

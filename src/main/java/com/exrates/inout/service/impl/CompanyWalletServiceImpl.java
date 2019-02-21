@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
 import com.exrates.inout.exceptions.WalletPersistException;
 import com.exrates.inout.service.CompanyWalletService;
+import com.exrates.inout.service.CurrencyService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,8 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
     private static final Logger logger = LogManager.getLogger(CompanyWalletServiceImpl.class);
     @Autowired
     private CompanyWalletDao companyWalletDao;
+    @Autowired
+    private CurrencyService currencyService;
 
     @Override
     public CompanyWallet create(Currency currency) {
@@ -64,6 +67,7 @@ public class CompanyWalletServiceImpl implements CompanyWalletService {
             throw new WalletPersistException("Failed withdraw on company wallet " + companyWallet.toString());
         }
     }
+
 
     @Override
     @Transactional(propagation = Propagation.NESTED)

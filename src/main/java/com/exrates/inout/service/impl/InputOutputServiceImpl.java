@@ -6,28 +6,13 @@ import com.exrates.inout.domain.dto.MyInputOutputHistoryDto;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
-import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
-import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
-import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
-import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.domain.enums.invoice.TransferStatusEnum;
-import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
-import com.exrates.inout.domain.main.CreditsOperation;
+import com.exrates.inout.domain.enums.invoice.*;
 import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.domain.main.Payment;
-import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.Wallet;
+import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.PaginationWrapper;
 import com.exrates.inout.exceptions.UnsupportedMerchantException;
 import com.exrates.inout.exceptions.UserNotFoundException;
-import com.exrates.inout.service.CommissionService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.IRefillable;
-import com.exrates.inout.service.InputOutputService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.WalletService;
+import com.exrates.inout.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,11 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
@@ -58,16 +39,22 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     @Autowired
     private MessageSource messageSource;
+
     @Autowired
     InputOutputDao inputOutputDao;
+
     @Autowired
     private CommissionService commissionService;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private WalletService walletService;
+
     @Autowired
     private MerchantService merchantService;
+
     @Autowired
     private CurrencyService currencyService;
     @Autowired
@@ -90,15 +77,14 @@ public class InputOutputServiceImpl implements InputOutputService {
         return result;
     }
 
+
     @Override
     public List<Map<String, Object>> generateAndGetButtonsSet(
             InvoiceStatus status,
             InvoiceOperationPermission permittedOperation,
             boolean authorisedUserIsHolder,
             Locale locale) {
-        if (status == null) {
-            return EMPTY_LIST;
-        }
+        if (status == null) return EMPTY_LIST;
         InvoiceActionTypeEnum.InvoiceActionParamsValue paramsValue = InvoiceActionTypeEnum.InvoiceActionParamsValue.builder()
                 .authorisedUserIsHolder(authorisedUserIsHolder)
                 .permittedOperation(permittedOperation)
@@ -109,6 +95,7 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .peek(e -> e.put("buttonTitle", messageSource.getMessage((String) e.get("buttonTitle"), null, locale)))
                 .collect(Collectors.toList());
     }
+
 
     private String generateAndGetSummaryStatus(MyInputOutputHistoryDto row, Locale locale) {
         log.debug("status1 {}", row);
@@ -203,4 +190,5 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .build();
         return Optional.of(creditsOperation);
     }
+
 }
