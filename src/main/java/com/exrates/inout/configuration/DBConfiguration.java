@@ -1,7 +1,7 @@
 package com.exrates.inout.configuration;
 
 
-import com.exrates.inout.util.SSMGetter;
+import com.exrates.inout.util.ssm.SSMGetter;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;

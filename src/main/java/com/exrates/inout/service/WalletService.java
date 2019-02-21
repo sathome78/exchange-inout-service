@@ -15,7 +15,6 @@ import java.util.Locale;
 
 public interface WalletService {
 
-    void balanceRepresentation(Wallet wallet);
 
     int getWalletId(int userId, int currencyId);
 
@@ -23,7 +22,6 @@ public interface WalletService {
 
     boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck);
 
-    int createNewWallet(Wallet wallet);
 
     Wallet findByUserAndCurrency(User user, Currency currency);
 
@@ -44,6 +42,7 @@ public interface WalletService {
      * @return WalletTransferStatus with detail about result
      * @author ValkSam
      */
+
     WalletTransferStatus walletInnerTransfer(int walletId, BigDecimal amount, TransactionSourceType sourceType, int sourceId, String description);
 
     WalletTransferStatus walletBalanceChange(WalletOperationData walletOperationData);

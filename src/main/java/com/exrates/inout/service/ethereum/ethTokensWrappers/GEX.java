@@ -810,9 +810,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -827,7 +827,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -845,9 +845,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -862,7 +862,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -880,9 +880,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<ModifyWhiteListEventResponse> getModifyWhiteListEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MODIFYWHITELIST_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MODIFYWHITELIST_EVENT, transactionReceipt);
         ArrayList<ModifyWhiteListEventResponse> responses = new ArrayList<ModifyWhiteListEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ModifyWhiteListEventResponse typedResponse = new ModifyWhiteListEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -896,7 +896,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, ModifyWhiteListEventResponse>() {
             @Override
             public ModifyWhiteListEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MODIFYWHITELIST_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MODIFYWHITELIST_EVENT, log);
                 ModifyWhiteListEventResponse typedResponse = new ModifyWhiteListEventResponse();
                 typedResponse.log = log;
                 typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -913,9 +913,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<ModifyPrivateListEventResponse> getModifyPrivateListEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MODIFYPRIVATELIST_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MODIFYPRIVATELIST_EVENT, transactionReceipt);
         ArrayList<ModifyPrivateListEventResponse> responses = new ArrayList<ModifyPrivateListEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ModifyPrivateListEventResponse typedResponse = new ModifyPrivateListEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -929,7 +929,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, ModifyPrivateListEventResponse>() {
             @Override
             public ModifyPrivateListEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MODIFYPRIVATELIST_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MODIFYPRIVATELIST_EVENT, log);
                 ModifyPrivateListEventResponse typedResponse = new ModifyPrivateListEventResponse();
                 typedResponse.log = log;
                 typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -946,9 +946,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<StartPrivateSalesEventResponse> getStartPrivateSalesEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(STARTPRIVATESALES_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(STARTPRIVATESALES_EVENT, transactionReceipt);
         ArrayList<StartPrivateSalesEventResponse> responses = new ArrayList<StartPrivateSalesEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             StartPrivateSalesEventResponse typedResponse = new StartPrivateSalesEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -961,7 +961,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, StartPrivateSalesEventResponse>() {
             @Override
             public StartPrivateSalesEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(STARTPRIVATESALES_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(STARTPRIVATESALES_EVENT, log);
                 StartPrivateSalesEventResponse typedResponse = new StartPrivateSalesEventResponse();
                 typedResponse.log = log;
                 typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -977,9 +977,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<StartPresalesEventResponse> getStartPresalesEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(STARTPRESALES_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(STARTPRESALES_EVENT, transactionReceipt);
         ArrayList<StartPresalesEventResponse> responses = new ArrayList<StartPresalesEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             StartPresalesEventResponse typedResponse = new StartPresalesEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -992,7 +992,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, StartPresalesEventResponse>() {
             @Override
             public StartPresalesEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(STARTPRESALES_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(STARTPRESALES_EVENT, log);
                 StartPresalesEventResponse typedResponse = new StartPresalesEventResponse();
                 typedResponse.log = log;
                 typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1008,9 +1008,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<EndPresalesEventResponse> getEndPresalesEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ENDPRESALES_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ENDPRESALES_EVENT, transactionReceipt);
         ArrayList<EndPresalesEventResponse> responses = new ArrayList<EndPresalesEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             EndPresalesEventResponse typedResponse = new EndPresalesEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1023,7 +1023,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, EndPresalesEventResponse>() {
             @Override
             public EndPresalesEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ENDPRESALES_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ENDPRESALES_EVENT, log);
                 EndPresalesEventResponse typedResponse = new EndPresalesEventResponse();
                 typedResponse.log = log;
                 typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1039,9 +1039,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<StartICOEventResponse> getStartICOEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(STARTICO_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(STARTICO_EVENT, transactionReceipt);
         ArrayList<StartICOEventResponse> responses = new ArrayList<StartICOEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             StartICOEventResponse typedResponse = new StartICOEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1054,7 +1054,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, StartICOEventResponse>() {
             @Override
             public StartICOEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(STARTICO_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(STARTICO_EVENT, log);
                 StartICOEventResponse typedResponse = new StartICOEventResponse();
                 typedResponse.log = log;
                 typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1070,9 +1070,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<EndICOEventResponse> getEndICOEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ENDICO_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ENDICO_EVENT, transactionReceipt);
         ArrayList<EndICOEventResponse> responses = new ArrayList<EndICOEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             EndICOEventResponse typedResponse = new EndICOEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1085,7 +1085,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, EndICOEventResponse>() {
             @Override
             public EndICOEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ENDICO_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ENDICO_EVENT, log);
                 EndICOEventResponse typedResponse = new EndICOEventResponse();
                 typedResponse.log = log;
                 typedResponse.state = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1101,9 +1101,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<SetPrivateSalePriceEventResponse> getSetPrivateSalePriceEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SETPRIVATESALEPRICE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(SETPRIVATESALEPRICE_EVENT, transactionReceipt);
         ArrayList<SetPrivateSalePriceEventResponse> responses = new ArrayList<SetPrivateSalePriceEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             SetPrivateSalePriceEventResponse typedResponse = new SetPrivateSalePriceEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1116,7 +1116,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, SetPrivateSalePriceEventResponse>() {
             @Override
             public SetPrivateSalePriceEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SETPRIVATESALEPRICE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(SETPRIVATESALEPRICE_EVENT, log);
                 SetPrivateSalePriceEventResponse typedResponse = new SetPrivateSalePriceEventResponse();
                 typedResponse.log = log;
                 typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1132,9 +1132,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<SetPreSalePriceEventResponse> getSetPreSalePriceEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SETPRESALEPRICE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(SETPRESALEPRICE_EVENT, transactionReceipt);
         ArrayList<SetPreSalePriceEventResponse> responses = new ArrayList<SetPreSalePriceEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             SetPreSalePriceEventResponse typedResponse = new SetPreSalePriceEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1147,7 +1147,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, SetPreSalePriceEventResponse>() {
             @Override
             public SetPreSalePriceEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SETPRESALEPRICE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(SETPRESALEPRICE_EVENT, log);
                 SetPreSalePriceEventResponse typedResponse = new SetPreSalePriceEventResponse();
                 typedResponse.log = log;
                 typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1163,9 +1163,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<SetICOPriceEventResponse> getSetICOPriceEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SETICOPRICE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(SETICOPRICE_EVENT, transactionReceipt);
         ArrayList<SetICOPriceEventResponse> responses = new ArrayList<SetICOPriceEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             SetICOPriceEventResponse typedResponse = new SetICOPriceEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1178,7 +1178,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, SetICOPriceEventResponse>() {
             @Override
             public SetICOPriceEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SETICOPRICE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(SETICOPRICE_EVENT, log);
                 SetICOPriceEventResponse typedResponse = new SetICOPriceEventResponse();
                 typedResponse.log = log;
                 typedResponse.price = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1194,9 +1194,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<IssueTokensEventResponse> getIssueTokensEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ISSUETOKENS_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ISSUETOKENS_EVENT, transactionReceipt);
         ArrayList<IssueTokensEventResponse> responses = new ArrayList<IssueTokensEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             IssueTokensEventResponse typedResponse = new IssueTokensEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1212,7 +1212,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, IssueTokensEventResponse>() {
             @Override
             public IssueTokensEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ISSUETOKENS_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ISSUETOKENS_EVENT, log);
                 IssueTokensEventResponse typedResponse = new IssueTokensEventResponse();
                 typedResponse.log = log;
                 typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1231,9 +1231,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<RevokeTokensEventResponse> getRevokeTokensEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(REVOKETOKENS_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(REVOKETOKENS_EVENT, transactionReceipt);
         ArrayList<RevokeTokensEventResponse> responses = new ArrayList<RevokeTokensEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RevokeTokensEventResponse typedResponse = new RevokeTokensEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1249,7 +1249,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, RevokeTokensEventResponse>() {
             @Override
             public RevokeTokensEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(REVOKETOKENS_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(REVOKETOKENS_EVENT, log);
                 RevokeTokensEventResponse typedResponse = new RevokeTokensEventResponse();
                 typedResponse.log = log;
                 typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1268,9 +1268,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<AllocateTokensForFounderEventResponse> getAllocateTokensForFounderEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATETOKENSFORFOUNDER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATETOKENSFORFOUNDER_EVENT, transactionReceipt);
         ArrayList<AllocateTokensForFounderEventResponse> responses = new ArrayList<AllocateTokensForFounderEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AllocateTokensForFounderEventResponse typedResponse = new AllocateTokensForFounderEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.founderAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1285,7 +1285,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, AllocateTokensForFounderEventResponse>() {
             @Override
             public AllocateTokensForFounderEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATETOKENSFORFOUNDER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATETOKENSFORFOUNDER_EVENT, log);
                 AllocateTokensForFounderEventResponse typedResponse = new AllocateTokensForFounderEventResponse();
                 typedResponse.log = log;
                 typedResponse.founderAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1303,9 +1303,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<AllocateTokensForTeamEventResponse> getAllocateTokensForTeamEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATETOKENSFORTEAM_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATETOKENSFORTEAM_EVENT, transactionReceipt);
         ArrayList<AllocateTokensForTeamEventResponse> responses = new ArrayList<AllocateTokensForTeamEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AllocateTokensForTeamEventResponse typedResponse = new AllocateTokensForTeamEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.teamAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1320,7 +1320,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, AllocateTokensForTeamEventResponse>() {
             @Override
             public AllocateTokensForTeamEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATETOKENSFORTEAM_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATETOKENSFORTEAM_EVENT, log);
                 AllocateTokensForTeamEventResponse typedResponse = new AllocateTokensForTeamEventResponse();
                 typedResponse.log = log;
                 typedResponse.teamAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1338,9 +1338,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<AllocateReservedTokensEventResponse> getAllocateReservedTokensEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATERESERVEDTOKENS_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ALLOCATERESERVEDTOKENS_EVENT, transactionReceipt);
         ArrayList<AllocateReservedTokensEventResponse> responses = new ArrayList<AllocateReservedTokensEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             AllocateReservedTokensEventResponse typedResponse = new AllocateReservedTokensEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.reservedAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1354,7 +1354,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, AllocateReservedTokensEventResponse>() {
             @Override
             public AllocateReservedTokensEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATERESERVEDTOKENS_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(ALLOCATERESERVEDTOKENS_EVENT, log);
                 AllocateReservedTokensEventResponse typedResponse = new AllocateReservedTokensEventResponse();
                 typedResponse.log = log;
                 typedResponse.reservedAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1371,9 +1371,9 @@ public class GEX extends Contract implements ethTokenERC20{
     }
 
     public List<RefundEventResponse> getRefundEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(REFUND_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(REFUND_EVENT, transactionReceipt);
         ArrayList<RefundEventResponse> responses = new ArrayList<RefundEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RefundEventResponse typedResponse = new RefundEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -1388,7 +1388,7 @@ public class GEX extends Contract implements ethTokenERC20{
         return web3j.ethLogObservable(filter).map(new Func1<Log, RefundEventResponse>() {
             @Override
             public RefundEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(REFUND_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(REFUND_EVENT, log);
                 RefundEventResponse typedResponse = new RefundEventResponse();
                 typedResponse.log = log;
                 typedResponse.investorAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();

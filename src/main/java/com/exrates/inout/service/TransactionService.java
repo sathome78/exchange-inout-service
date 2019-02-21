@@ -13,5 +13,5 @@ public interface TransactionService {
 
     void setSourceId(Integer trasactionId, Integer sourceId);
 
-    boolean setStatusById(int transactionId, int status);
+    boolean setStatusById(Integer transactionId, Integer status);
 }

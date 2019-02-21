@@ -6,24 +6,12 @@ import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
-import com.exrates.inout.domain.main.Commission;
-import com.exrates.inout.domain.main.CompanyWallet;
-import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.NotificationEvent;
-import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.Wallet;
+import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
-import com.exrates.inout.exceptions.BalanceChangeException;
-import com.exrates.inout.exceptions.InvalidAmountException;
-import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
-import com.exrates.inout.exceptions.UserNotFoundException;
-import com.exrates.inout.exceptions.WalletNotFoundException;
-import com.exrates.inout.service.CommissionService;
-import com.exrates.inout.service.CompanyWalletService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.NotificationService;
-import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.WalletService;
+import com.exrates.inout.exceptions.*;
+import com.exrates.inout.service.*;
+import com.exrates.inout.service.api.ExchangeApi;
+import com.exrates.inout.service.api.WalletsApi;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
@@ -43,6 +32,8 @@ import static java.math.BigDecimal.ZERO;
 @Service
 @Transactional
 public class WalletServiceImpl implements WalletService {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private static final int decimalPlaces = 9;
 
@@ -60,12 +51,13 @@ public class WalletServiceImpl implements WalletService {
     private NotificationService notificationService;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private CryptoCurrencyBalances cryptoCurrencyBalances;
+    @Autowired
+    private ExchangeApi exchangeApi;
+    @Autowired
+    private WalletsApi walletsApi;
 
-    @Override
-    public void balanceRepresentation(final Wallet wallet) {
-        wallet
-                .setActiveBalance(wallet.getActiveBalance());
-    }
 
     @Override
     public int getWalletId(int userId, int currencyId) {
@@ -78,7 +70,6 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.getWalletABalance(walletId);
     }
 
-
     @Transactional(readOnly = true)
     @Override
     public boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck) {
@@ -90,12 +81,6 @@ public class WalletServiceImpl implements WalletService {
                     BigDecimalProcessing.formatNonePoint(amountForCheck, false)));
         }
         return result;
-    }
-
-    @Transactional(propagation = Propagation.NESTED)
-    @Override
-    public int createNewWallet(Wallet wallet) {
-        return walletDao.createNewWallet(wallet);
     }
 
     @Override
@@ -138,10 +123,6 @@ public class WalletServiceImpl implements WalletService {
         return walletDao.walletBalanceChange(walletOperationData);
     }
 
-    /*
-     * Methods defined below are overloaded versions of dashboard info supplier methods.
-     * They are supposed to use with REST API which is stateless and cannot use session-based caching.
-     * */
 
     private void changeWalletActiveBalance(BigDecimal amount, Wallet wallet, OperationType operationType,
                                            TransactionSourceType transactionSourceType) {
@@ -210,6 +191,7 @@ public class WalletServiceImpl implements WalletService {
                 .build();
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String transferCostsToUser(Integer userId, Integer fromUserWalletId, Integer toUserId, BigDecimal amount,
@@ -246,10 +228,13 @@ public class WalletServiceImpl implements WalletService {
         if (Integer.compare(fromUserWallet.getCurrencyId(), toUserWallet.getCurrencyId()) != 0) {
             throw new BalanceChangeException("ncorrect wallets");
         }
+
     }
 
     @Override
     public int getWalletIdAndBlock(Integer userId, Integer currencyId) {
         return walletDao.getWalletIdAndBlock(userId, currencyId);
     }
+
+
 }

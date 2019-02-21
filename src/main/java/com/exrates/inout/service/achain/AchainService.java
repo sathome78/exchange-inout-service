@@ -3,6 +3,9 @@ package com.exrates.inout.service.achain;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
 
+/**
+ * Created by Maks on 14.06.2018.
+ */
 public interface AchainService extends IWithdrawable, IRefillable {
 
     @Override

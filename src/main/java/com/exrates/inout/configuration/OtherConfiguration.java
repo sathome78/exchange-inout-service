@@ -1,21 +1,33 @@
 package com.exrates.inout.configuration;
 
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.QiwiProperty;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.zeromq.ZMQ;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import java.util.Locale;
 
 @Configuration
 public class OtherConfiguration {
+
+    private final CryptoCurrencyProperties cryptoCurrencyProperties;
+
+    public OtherConfiguration(CryptoCurrencyProperties cryptoCurrencyProperties) {
+        this.cryptoCurrencyProperties = cryptoCurrencyProperties;
+    }
 
     @Bean
     public RestTemplate restTemplate() {
@@ -30,6 +42,22 @@ public class OtherConfiguration {
         requestFactory.setReadTimeout(25000);
         restTemplate.setRequestFactory(requestFactory);
         return new RestTemplate();
+    }
+
+
+    @Bean("qiwiRestTemplate")
+    public RestTemplate qiwiRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        QiwiProperty qiwiProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getQiwi();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(qiwiProperty.getClientId(), qiwiProperty.getClientSecret()));
+        return restTemplate;
+    }
+
+    @Bean
+    public Client client() {
+        Client build = ClientBuilder.newBuilder().build();
+        build.register(new LoggingFilter());
+        return build;
     }
 
     @Bean

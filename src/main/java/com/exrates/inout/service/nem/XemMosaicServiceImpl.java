@@ -1,14 +1,17 @@
 package com.exrates.inout.service.nem;
 
+//exrates.model.dto.MosaicIdDto;
+
 import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.properties.models.XemProperty;
-import lombok.Getter;
 import org.nem.core.model.mosaic.MosaicId;
 import org.nem.core.model.namespace.NamespaceId;
 import org.nem.core.model.primitive.Quantity;
 import org.nem.core.model.primitive.Supply;
 
-@Getter
+/**
+ * Created by Maks on 27.02.2018.
+ */
 public class XemMosaicServiceImpl implements XemMosaicService {
 
     private String merchantName;
@@ -19,6 +22,7 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     private Supply supply;
     private MosaicId mosaicId;
     private Quantity levyFee;
+
 
     public XemMosaicServiceImpl(XemProperty property) {
         this.merchantName = property.getMerchantName();
@@ -32,12 +36,42 @@ public class XemMosaicServiceImpl implements XemMosaicService {
     }
 
     @Override
-    public MosaicIdDto getMosaicId() {
-        return mosaicIdDto;
+    public Quantity getLevyFee() {
+        return levyFee;
     }
 
     @Override
     public MosaicId mosaicId() {
         return mosaicId;
+    }
+
+    @Override
+    public Supply getSupply() {
+        return supply;
+    }
+
+    @Override
+    public int getDivisibility() {
+        return divisibility;
+    }
+
+    @Override
+    public MosaicIdDto getMosaicId() {
+        return mosaicIdDto;
+    }
+
+    @Override
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    @Override
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    @Override
+    public long getDecimals() {
+        return decimals;
     }
 }

@@ -11,6 +11,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.UserService;
+import com.exrates.inout.service.api.ExchangeApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Autowired
     private CurrencyDao currencyDao;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ExchangeApi exchangeApi;
 
     private static final Set<String> CRYPTO = new HashSet<String>() {
         {
@@ -55,13 +60,6 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyDao.getCurrencyName(currencyId);
     }
 
-
-    @Transactional(transactionManager = "slaveTxManager", readOnly = true)
-    @Override
-    public List<Currency> getAllCurrencies() {
-        return currencyDao.getAllActiveCurrencies();
-    }
-
     @Override
     public Currency findByName(String name) {
         return currencyDao.findByName(name);
@@ -71,7 +69,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     public Currency findById(int id) {
         return currencyDao.findById(id);
     }
-
 
     @Override
     public BigDecimal retrieveMinLimitForRoleAndCurrency(UserRole userRole, OperationType operationType, Integer currencyId) {
@@ -97,7 +94,6 @@ public class CurrencyServiceImpl implements CurrencyService {
                 CRYPTO.contains(currency) ? CRYPTO_PRECISION :
                         DEFAULT_PRECISION;
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -167,4 +163,5 @@ public class CurrencyServiceImpl implements CurrencyService {
         Optional.ofNullable(result.getScaleForWithdraw()).orElseThrow(() -> new ScaleForAmountNotSetException("currency: " + currencyId));
         return result;
     }
+
 }

@@ -10,7 +10,10 @@ import com.exrates.inout.service.MerchantService;
 
 import java.math.BigDecimal;
 
+
+
 public interface AdkService extends BitcoinLikeCurrency, IRefillable, IWithdrawable {
+
 
     @Override
     default Boolean createdRefillRequestRecordNeeded() {

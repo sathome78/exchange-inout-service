@@ -8,6 +8,9 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Maks on 04.04.2018.
+ */
 @Component
 public class StellarAsssetsContext {
 
@@ -25,7 +28,12 @@ public class StellarAsssetsContext {
         });
     }
 
+    StellarAsset getStellarAssetByName(String assetName) {
+        return byAssetNameMap.get(assetName);
+    }
+
     StellarAsset getStellarAssetByAssetObject(Asset asset) {
         return byAssetObjectMap.get(asset);
     }
+
 }

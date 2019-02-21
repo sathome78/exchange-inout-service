@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+//exrates.service.exception.LiskRestException;
+
 public class LiskRestUtils {
 
     private LiskRestUtils() {
     }
 
-    public static <T> T extractObjectFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> type) {
+    public static  <T> T extractObjectFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> type)  {
         try {
             return objectMapper.treeToValue(extractTargetNodeFromLiskResponse(objectMapper, responseBody, targetFieldName, JsonNodeType.OBJECT), type);
         } catch (JsonProcessingException e) {
@@ -27,7 +29,7 @@ public class LiskRestUtils {
         }
     }
 
-    public static <T> List<T> extractListFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> listElementType) {
+    public static <T> List<T> extractListFromResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, Class<T> listElementType)  {
         try {
             JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, listElementType);
             String array = extractTargetNodeFromLiskResponse(objectMapper, responseBody, targetFieldName, JsonNodeType.ARRAY).toString();
@@ -37,7 +39,7 @@ public class LiskRestUtils {
         }
     }
 
-    public static JsonNode extractTargetNodeFromLiskResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, JsonNodeType targetNodeType) {
+    public static JsonNode extractTargetNodeFromLiskResponse(ObjectMapper objectMapper, String responseBody, String targetFieldName, JsonNodeType targetNodeType)  {
         try {
             JsonNode root = objectMapper.readTree(responseBody);
             JsonNode successNode = getAndValidateJsonNode("success", root, JsonNode::isBoolean);
@@ -68,4 +70,6 @@ public class LiskRestUtils {
         params.forEach(builder::queryParam);
         return builder.build().encode().toUri();
     }
+
+
 }

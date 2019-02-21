@@ -68,4 +68,5 @@ public interface EthereumCommonService extends IMerchantService, IRefillable, IW
     Integer minConfirmationsRefill();
 
     String getTransferAccAddress();
+
 }

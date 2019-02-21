@@ -17,4 +17,5 @@ public class PaymentSystemMerchants {
     private Privat24Property privat24;
     private YandexkassaProperty yandexkassa;
     private YandexMoneyProperty yandexmoney;
+    private QiwiProperty qiwi;
 }

@@ -8,8 +8,7 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Getter @Setter
 @ToString
 public class RefillRequestAddressDto {
   private Integer id;
@@ -24,5 +23,6 @@ public class RefillRequestAddressDto {
   private LocalDateTime dateGeneration;
   private Integer confirmedTxOffset;
   private boolean needTransfer;
+  private Integer tokenParentId;
 
 }

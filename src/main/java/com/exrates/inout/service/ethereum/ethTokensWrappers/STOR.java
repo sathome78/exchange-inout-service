@@ -543,9 +543,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<UpdatedTokenInformationEventResponse> getUpdatedTokenInformationEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UPDATEDTOKENINFORMATION_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UPDATEDTOKENINFORMATION_EVENT, transactionReceipt);
         ArrayList<UpdatedTokenInformationEventResponse> responses = new ArrayList<UpdatedTokenInformationEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             UpdatedTokenInformationEventResponse typedResponse = new UpdatedTokenInformationEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.newName = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -559,7 +559,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, UpdatedTokenInformationEventResponse>() {
             @Override
             public UpdatedTokenInformationEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UPDATEDTOKENINFORMATION_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(UPDATEDTOKENINFORMATION_EVENT, log);
                 UpdatedTokenInformationEventResponse typedResponse = new UpdatedTokenInformationEventResponse();
                 typedResponse.log = log;
                 typedResponse.newName = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -576,9 +576,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<ClaimedTokensEventResponse> getClaimedTokensEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CLAIMEDTOKENS_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(CLAIMEDTOKENS_EVENT, transactionReceipt);
         ArrayList<ClaimedTokensEventResponse> responses = new ArrayList<ClaimedTokensEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ClaimedTokensEventResponse typedResponse = new ClaimedTokensEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._token = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -593,7 +593,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ClaimedTokensEventResponse>() {
             @Override
             public ClaimedTokensEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CLAIMEDTOKENS_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(CLAIMEDTOKENS_EVENT, log);
                 ClaimedTokensEventResponse typedResponse = new ClaimedTokensEventResponse();
                 typedResponse.log = log;
                 typedResponse._token = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -611,9 +611,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<UpgradeEventResponse> getUpgradeEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UPGRADE_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UPGRADE_EVENT, transactionReceipt);
         ArrayList<UpgradeEventResponse> responses = new ArrayList<UpgradeEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             UpgradeEventResponse typedResponse = new UpgradeEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -628,7 +628,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, UpgradeEventResponse>() {
             @Override
             public UpgradeEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UPGRADE_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(UPGRADE_EVENT, log);
                 UpgradeEventResponse typedResponse = new UpgradeEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -646,9 +646,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<UpgradeAgentSetEventResponse> getUpgradeAgentSetEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UPGRADEAGENTSET_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(UPGRADEAGENTSET_EVENT, transactionReceipt);
         ArrayList<UpgradeAgentSetEventResponse> responses = new ArrayList<UpgradeAgentSetEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             UpgradeAgentSetEventResponse typedResponse = new UpgradeAgentSetEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.agent = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -661,7 +661,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, UpgradeAgentSetEventResponse>() {
             @Override
             public UpgradeAgentSetEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UPGRADEAGENTSET_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(UPGRADEAGENTSET_EVENT, log);
                 UpgradeAgentSetEventResponse typedResponse = new UpgradeAgentSetEventResponse();
                 typedResponse.log = log;
                 typedResponse.agent = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -677,9 +677,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<MintingAgentChangedEventResponse> getMintingAgentChangedEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINTINGAGENTCHANGED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MINTINGAGENTCHANGED_EVENT, transactionReceipt);
         ArrayList<MintingAgentChangedEventResponse> responses = new ArrayList<MintingAgentChangedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintingAgentChangedEventResponse typedResponse = new MintingAgentChangedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.addr = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -693,7 +693,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintingAgentChangedEventResponse>() {
             @Override
             public MintingAgentChangedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MINTINGAGENTCHANGED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MINTINGAGENTCHANGED_EVENT, log);
                 MintingAgentChangedEventResponse typedResponse = new MintingAgentChangedEventResponse();
                 typedResponse.log = log;
                 typedResponse.addr = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -710,9 +710,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -726,7 +726,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -743,9 +743,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<MintedEventResponse> getMintedEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(MINTED_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(MINTED_EVENT, transactionReceipt);
         ArrayList<MintedEventResponse> responses = new ArrayList<MintedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             MintedEventResponse typedResponse = new MintedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.receiver = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -759,7 +759,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, MintedEventResponse>() {
             @Override
             public MintedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(MINTED_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(MINTED_EVENT, log);
                 MintedEventResponse typedResponse = new MintedEventResponse();
                 typedResponse.log = log;
                 typedResponse.receiver = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -776,9 +776,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -793,7 +793,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -811,9 +811,9 @@ public class STOR extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -828,7 +828,7 @@ public class STOR extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();

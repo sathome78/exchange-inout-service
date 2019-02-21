@@ -1,26 +1,16 @@
 package com.exrates.inout.service.nem;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.MosaicIdDto;
-import com.exrates.inout.domain.dto.NemMosaicTransferDto;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
-import com.exrates.inout.properties.CryptoCurrencyProperties;
-import com.exrates.inout.service.AlgorithmService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.utils.WithdrawUtils;
+import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
+import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
@@ -28,7 +18,9 @@ import org.nem.core.crypto.KeyPair;
 import org.nem.core.crypto.PublicKey;
 import org.nem.core.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,28 +29,28 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+
+//exrates.dao.MerchantSpecParamsDao;
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.model.enums.ActionType;
+//exrates.model.util.BigDecimalProcessing;
+//exrates.service.*;
+//exrates.service.exception.CheckDestinationTagException;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.exception.WithdrawRequestPostException;
+//exrates.service.util.WithdrawUtils;
+
+/**
+ * Created by maks on 18.07.2017.
+ */
 @Log4j2(topic = "nem_log")
 @Service
+@PropertySource("classpath:/merchants/nem.properties")
 public class NemServiceImpl implements NemService {
 
-    private static final String DESTINATION_TAG_ERR_MSG = "message.nem.tagError";
-
-    private static final String NEM_MERCHANT = "NEM";
-    private static final int CONFIRMATIONS_COUNT_WITHDRAW = 2; /*must be 20, but in this case its safe for us to check only 2 confirmations*/
-    private static final int CONFIRMATIONS_COUNT_REFILL = 20;
-
-    private static final BigDecimal MAX_MOSIAC_QUANTITY = new BigDecimal("9000000000000000");
-    private static final BigDecimal XEM_MAX_QUANTITY = new BigDecimal("8999999999");
-    private static final List<MosaicIdDto> DENIED_MOSAICS_LIST = new ArrayList<>();
-
-    @Autowired
-    private CryptoCurrencyProperties ccp;
     @Autowired
     private NemTransactionsService nemTransactionsService;
     @Autowired
@@ -79,18 +71,39 @@ public class NemServiceImpl implements NemService {
     private MerchantSpecParamsDao specParamsDao;
     @Autowired
     private WithdrawUtils withdrawUtils;
+    @Autowired
+    private GtagService gtagService;
+
+    private static final String NEM_MERCHANT = "NEM";
+    private static final int CONFIRMATIONS_COUNT_WITHDRAW = 2; /*must be 20, but in this case its safe for us to check only 2 confirmations*/
+    private static final int CONFIRMATIONS_COUNT_REFILL = 20;
+
+    private static final BigDecimal maxMosiacQuantity = new BigDecimal("9000000000000000");
+    private static final BigDecimal xemMaxQuantity = new BigDecimal("8999999999");
+    private static final List<MosaicIdDto> deniedMosaicsList = new ArrayList<>();
 
     private Merchant merchant;
-    private Currency currency;
+    private com.exrates.inout.domain.main.Currency currency;
+
 
     @PostConstruct
     public void init() {
-        DENIED_MOSAICS_LIST.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
-        /*DENIED_MOSAICS_LIST.add(new MosaicIdDto("dim", "coin"));*/
-        account = new Account(new KeyPair(PublicKey.fromHexString(ccp.getOtherCoins().getNem().getPublicKey())));
+        deniedMosaicsList.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
+        /*deniedMosaicsList.add(new MosaicIdDto("dim", "coin"));*/
+        account = new Account(new KeyPair(PublicKey.fromHexString(publicKey)));
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName(NEM_MERCHANT);
     }
+
+
+    private @Value("${nem.address}")
+    String address;
+    private @Value("${nem.private.key}")
+    String privateKey;
+    private @Value("${nem.public.key}")
+    String publicKey;
+
+    private static final String DESTINATION_TAG_ERR_MSG = "message.nem.tagError";
 
     protected Account account;
 
@@ -101,36 +114,33 @@ public class NemServiceImpl implements NemService {
 
     @Transactional
     @Override
-    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
+    public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
         log.debug("withdraw_XEM");
         if (!"XEM".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
             throw new WithdrawRequestPostException("Currency not supported by merchant");
         }
-        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, ccp.getOtherCoins().getNem().getPrivateKey());
+        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, privateKey);
     }
 
     @Transactional
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
-        String destinationTag = generateUniqDestinationTag(request.getUserId());
+        String destinationTag = generateUniqDestinationTag(request.getUserId(), request.getMerchantId(), request.getCurrencyId());
         String message = messageSource.getMessage("merchants.refill.XEM",
-                new Object[]{ccp.getOtherCoins().getNem().getAddress(), destinationTag}, request.getLocale());
+                new Object[]{address, destinationTag}, request.getLocale());
         return new HashMap<String, String>() {{
             put("address", destinationTag);
             put("message", message);
         }};
     }
 
-    private String generateUniqDestinationTag(int userId) {
+    private String generateUniqDestinationTag(int userId, int merchantId, int currencyId) {
         Optional<Integer> id = null;
         String destinationTag;
         int counter = 0;
         do {
             destinationTag = generateDestinationTag(String.valueOf(userId).concat(String.valueOf(counter)));
-            id = refillService.getRequestIdReadyForAutoAcceptByAddressAndMerchantIdAndCurrencyId(
-                    destinationTag,
-                    currency.getId(),
-                    merchant.getId());
+            id = refillService.getUserIdByAddressAndMerchantIdAndCurrencyId(destinationTag, merchantId, currencyId);
             counter = counter + 8;
         } while (id.isPresent());
         log.debug("tag is {}", destinationTag);
@@ -140,6 +150,7 @@ public class NemServiceImpl implements NemService {
     private String generateDestinationTag(String id) {
         return algorithmService.sha256(String.valueOf(id)).substring(0, 8);
     }
+
 
     @Synchronized
     @Override
@@ -159,8 +170,10 @@ public class NemServiceImpl implements NemService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
         requestAcceptDto.setRequestId(requestId);
+
         if (!nemTransactionsService.checkIsConfirmed(new JSONObject(params.get("transaction")), CONFIRMATIONS_COUNT_REFILL)) {
             try {
                 refillService.putOnBchExamRefillRequest(
@@ -177,6 +190,11 @@ public class NemServiceImpl implements NemService {
             }
         } else {
             refillService.autoAcceptRefillRequest(requestAcceptDto);
+
+            final String username = refillService.getUsernameByRequestId(requestId);
+
+            log.debug("Process of sending data to Google Analytics...");
+            gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
         }
     }
 
@@ -184,28 +202,31 @@ public class NemServiceImpl implements NemService {
     @Override
     public void processMosaicPayment(List<NemMosaicTransferDto> mosaics, Map<String, String> params) {
         mosaics.forEach(p -> {
-            String address = params.get("address");
-            String hash = params.get("hash");
-            XemMosaicService mosaicService = (XemMosaicService) p.getService();
-            Currency currency = currencyService.findByName(mosaicService.getCurrencyName());
-            Merchant merchant = merchantService.findByName(mosaicService.getMerchantName());
-            if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-                log.warn("{} tx duplicated {}", p.getMosaicIdDto().getNamespaceId(), hash);
-                return;
-            }
-            BigDecimal amount = p.getQuantity().divide(BigDecimal.valueOf(mosaicService.getDecimals()));
-            RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
-                    .address(address)
-                    .merchantId(merchantService.findByName(mosaicService.getMerchantName()).getId())
-                    .currencyId(currency.getId())
-                    .amount(amount)
-                    .merchantTransactionId(hash)
-                    .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
-                    .build();
-            Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
-            requestAcceptDto.setRequestId(requestId);
-            if (!nemTransactionsService.checkIsConfirmed(new JSONObject(params.get("transaction")), CONFIRMATIONS_COUNT_REFILL)) {
-                try {
+            try {
+                String address = params.get("address");
+                String hash = params.get("hash");
+                XemMosaicService mosaicService = (XemMosaicService) p.getService();
+                Currency currency = currencyService.findByName(mosaicService.getCurrencyName());
+                Merchant merchant = merchantService.findByName(mosaicService.getMerchantName());
+                if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
+                    log.warn("{} tx duplicated {}", p.getMosaicIdDto().getNamespaceId(), hash);
+                    return;
+                }
+                BigDecimal amount = p.getQuantity().divide(BigDecimal.valueOf(mosaicService.getDecimals()));
+
+                RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
+                        .address(address)
+                        .merchantId(merchantService.findByName(mosaicService.getMerchantName()).getId())
+                        .currencyId(currency.getId())
+                        .amount(amount)
+                        .merchantTransactionId(hash)
+                        .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
+                        .build();
+
+                Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+                requestAcceptDto.setRequestId(requestId);
+
+                if (!nemTransactionsService.checkIsConfirmed(new JSONObject(params.get("transaction")), CONFIRMATIONS_COUNT_REFILL)) {
                     refillService.putOnBchExamRefillRequest(
                             RefillRequestPutOnBchExamDto.builder()
                                     .requestId(requestId)
@@ -215,17 +236,20 @@ public class NemServiceImpl implements NemService {
                                     .amount(requestAcceptDto.getAmount())
                                     .hash(requestAcceptDto.getMerchantTransactionId())
                                     .build());
-                } catch (RefillRequestAppropriateNotFoundException e) {
-                    log.error(e);
-                }
-            } else {
-                try {
+                } else {
                     refillService.autoAcceptRefillRequest(requestAcceptDto);
-                } catch (RefillRequestAppropriateNotFoundException e) {
-                    log.error(e);
+
+                    final String username = refillService.getUsernameByRequestId(requestId);
+
+                    log.debug("Process of sending data to Google Analytics...");
+                    gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
                 }
+            } catch (RefillRequestAppropriateNotFoundException e) {
+                log.error(e);
             }
         });
+
+
     }
 
     private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
@@ -245,11 +269,21 @@ public class NemServiceImpl implements NemService {
                     .merchantTransactionId(dto.getMerchantTransactionId())
                     .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                     .build();
+
+            Integer requestId = refillService.getRequestId(requestAcceptDto);
+            requestAcceptDto.setRequestId(requestId);
+
             refillService.autoAcceptRefillRequest(requestAcceptDto);
+
+            final String username = refillService.getUsernameByRequestId(requestId);
+
+            log.debug("Process of sending data to Google Analytics...");
+            gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currency.getName(), username);
         } else {
             log.debug("transaction {} not confirmed yet", dto.getId());
         }
     }
+
 
     @Override
     public boolean checkSendedTransaction(String hash, String additionalParams) {
@@ -309,9 +343,9 @@ public class NemServiceImpl implements NemService {
         BigDecimal totalMosiacQuantity = BigDecimalProcessing.doAction(BigDecimal.valueOf(service.getSupply().getRaw()),
                 BigDecimal.valueOf(service.getDecimals()), ActionType.MULTIPLY);
         BigDecimal supplyRelatedAdjustment = new BigDecimal(0.8 * Math.log(BigDecimalProcessing
-                .doAction(MAX_MOSIAC_QUANTITY, totalMosiacQuantity, ActionType.DEVIDE)
+                .doAction(maxMosiacQuantity, totalMosiacQuantity, ActionType.DEVIDE)
                 .doubleValue())).setScale(0, RoundingMode.HALF_EVEN);
-        BigDecimal xemEqu = BigDecimalProcessing.doAction(BigDecimalProcessing.doAction(XEM_MAX_QUANTITY,
+        BigDecimal xemEqu = BigDecimalProcessing.doAction(BigDecimalProcessing.doAction(xemMaxQuantity,
                 BigDecimalProcessing.doAction(amount, new BigDecimal(service.getDecimals()), ActionType.MULTIPLY),
                 ActionType.MULTIPLY), totalMosiacQuantity, ActionType.DEVIDE).setScale(0, RoundingMode.DOWN);
         BigDecimal xemFee = BigDecimalProcessing.doAction(xemEqu,
@@ -319,6 +353,7 @@ public class NemServiceImpl implements NemService {
         BigDecimal unewightedFee = BigDecimalProcessing.doAction(xemFee, supplyRelatedAdjustment, ActionType.SUBTRACT).max(new BigDecimal(1));
         return BigDecimalProcessing.doAction(unewightedFee, BigDecimal.valueOf(0.05), ActionType.MULTIPLY).min(BigDecimal.valueOf(1.25));
     }
+
 
     /*message must be not more than 512 bytes*/
     @Override
@@ -334,7 +369,13 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public String getMainAddress() {
-        return ccp.getOtherCoins().getNem().getAddress();
+        return address;
+    }
+
+    @Override
+    public boolean isValidDestinationAddress(String address) {
+
+        return withdrawUtils.isValidDestinationAddress(this.address, address);
     }
 
     private BigDecimal getExrateForMosaic(int merchantId) {
@@ -343,12 +384,6 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public List<MosaicIdDto> getDeniedMosaicList() {
-        return DENIED_MOSAICS_LIST;
-    }
-
-    @Override
-    public boolean isValidDestinationAddress(String address) {
-
-        return withdrawUtils.isValidDestinationAddress(this.ccp.getOtherCoins().getNem().getAddress(), address);
+        return deniedMosaicsList;
     }
 }

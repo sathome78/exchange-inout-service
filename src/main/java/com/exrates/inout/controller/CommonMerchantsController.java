@@ -153,17 +153,6 @@ public class CommonMerchantsController {
         }
     }
 
-    @RequestMapping("/merchants/data")
-    public List<MerchantCurrency> getMerchantsData() {
-        List<Integer> currenciesId = currencyService
-                .getAllCurrencies()
-                .stream()
-                .mapToInt(Currency::getId)
-                .boxed()
-                .collect(toList());
-        return merchantService.getAllUnblockedForOperationTypeByCurrencies(currenciesId, INPUT);
-    }
-
     @GetMapping("/merchants/commission")
     public Map<String, String> getCommissions(final @RequestParam("type") OperationType type,
                                               final @RequestParam("amount") BigDecimal amount,

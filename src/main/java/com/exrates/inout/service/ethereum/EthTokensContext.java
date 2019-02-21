@@ -8,6 +8,9 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Maks on 24.01.2018.
+ */
 @Log4j2
 @Component
 public class EthTokensContext {
@@ -15,28 +18,33 @@ public class EthTokensContext {
     @Autowired
     Map<String, EthTokenService> merchantServiceMap;
 
-    private Map<Integer, EthTokenService> merchantMapByCurrencies = new HashMap<>();
-    private Map<String, Integer> contractAddressByCurrencies = new HashMap<>();
+    Map<Integer, EthTokenService> merchantMapByCurrencies = new HashMap<>();
+    Map<String, Integer> contractAddressByCurrencies = new HashMap<>();
 
     @PostConstruct
     private void init() {
-        merchantServiceMap.forEach((k,v)-> {
+        merchantServiceMap.forEach((k, v) -> {
             merchantMapByCurrencies.put(v.currencyId(), v);
-            v.getContractAddress().forEach((address)->{
+            v.getContractAddress().forEach((address) -> {
                 contractAddressByCurrencies.put(address, v.currencyId());
             });
         });
     }
 
-    EthTokenService getByCurrencyId(int currencyId) {
+    public EthTokenService getByCurrencyId(int currencyId) {
         return merchantMapByCurrencies.get(currencyId);
     }
 
-    boolean isContract(String contract){
-        return contractAddressByCurrencies.get(contract) != null;
+    public boolean isContract(String contract) {
+        if (contractAddressByCurrencies.get(contract) == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    EthTokenService getByContract(String contract){
+    public EthTokenService getByContract(String contract) {
         return getByCurrencyId(contractAddressByCurrencies.get(contract));
     }
+
 }

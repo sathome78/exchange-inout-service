@@ -1,17 +1,15 @@
 package com.exrates.inout.service.tron;
 
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestAddressDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.TronNewAddressDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.utils.WithdrawUtils;
+import com.exrates.inout.util.WithdrawUtils;
+import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -21,12 +19,17 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+//exrates.model.Merchant;
+//exrates.model.dto.*;
+//exrates.service.CurrencyService;
+//exrates.service.GtagService;
+//exrates.service.MerchantService;
+//exrates.service.RefillService;
+//exrates.service.exception.RefillRequestAppropriateNotFoundException;
+//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "tron")
 @Service
@@ -34,7 +37,6 @@ public class TronServiceImpl implements TronService {
 
     private final static String CURRENCY_NAME = "TRX";
     private final static String MERCHANT_NAME = "TRX";
-
     private int merchantId;
     private int currencyId;
 
@@ -45,29 +47,38 @@ public class TronServiceImpl implements TronService {
     private final CurrencyService currencyService;
     private final MerchantService merchantService;
     private final MessageSource messageSource;
-    private final WithdrawUtils withdrawUtils;
+    private final GtagService gtagService;
 
     @Autowired
     public TronServiceImpl(TronNodeService tronNodeService,
                            RefillService refillService,
                            CurrencyService currencyService,
                            MerchantService merchantService,
-                           WithdrawUtils withdrawUtils,
-                           MessageSource messageSource) {
+                           MessageSource messageSource,
+                           GtagService gtagService) {
         this.tronNodeService = tronNodeService;
         this.refillService = refillService;
         this.currencyService = currencyService;
         this.merchantService = merchantService;
         this.messageSource = messageSource;
-        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+    }
+
+    @Autowired
+    private WithdrawUtils withdrawUtils;
+
+    @Override
+    public Set<String> getAddressesHEX() {
+        return addressesHEX;
     }
 
     @PostConstruct
     private void init() {
         merchantId = merchantService.findByName(MERCHANT_NAME).getId();
         currencyId = currencyService.findByName(CURRENCY_NAME).getId();
-        addressesHEX.addAll(refillService.findAddressDtos(merchantId, currencyId).stream().map(RefillRequestAddressDto::getPubKey).collect(Collectors.toList()));
+        addressesHEX.addAll(refillService.findAddressDtosWithMerchantChild(merchantId).stream().map(RefillRequestAddressDto::getPubKey).collect(Collectors.toList()));
     }
+
 
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
@@ -84,13 +95,55 @@ public class TronServiceImpl implements TronService {
         }};
     }
 
+    @Override
+    public RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto) {
+        if (isTransactionDuplicate(dto.getHash(), currencyId, merchantId)) {
+            log.error("tron transaction allready received!!! {}", dto);
+            throw new RuntimeException("tron transaction allready received!!!");
+        }
+        RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
+                .address(dto.getAddressBase58())
+                .merchantId(dto.getMerchantId())
+                .currencyId(dto.getCurrencyId())
+                .amount(new BigDecimal(dto.getAmount()))
+                .merchantTransactionId(dto.getHash())
+                .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
+                .build();
+        Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        requestAcceptDto.setRequestId(requestId);
+        return requestAcceptDto;
+    }
+
+    @Override
+    public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
+        try {
+            refillService.putOnBchExamRefillRequest(
+                    RefillRequestPutOnBchExamDto.builder()
+                            .requestId(requestAcceptDto.getRequestId())
+                            .merchantId(requestAcceptDto.getMerchantId())
+                            .currencyId(requestAcceptDto.getCurrencyId())
+                            .address(requestAcceptDto.getAddress())
+                            .amount(requestAcceptDto.getAmount())
+                            .hash(requestAcceptDto.getMerchantTransactionId())
+                            .build());
+        } catch (RefillRequestAppropriateNotFoundException e) {
+            log.error(e);
+        }
+    }
+
+    @Synchronized
+    @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         String address = params.get("address");
         String hash = params.get("hash");
-        Currency currency = currencyService.findByName(CURRENCY_NAME);
-        Merchant merchant = merchantService.findByName(MERCHANT_NAME);
+        Integer id = Integer.parseInt(params.get("id"));
+        Integer merchantId = Integer.valueOf(params.get("merchant"));
+        Integer currencyId = Integer.valueOf(params.get("currency"));
+        Currency currency = currencyService.findById(currencyId);
+        Merchant merchant = merchantService.findById(merchantId);
         BigDecimal amount = new BigDecimal(params.get("amount"));
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
+                .requestId(id)
                 .address(address)
                 .merchantId(merchant.getId())
                 .currencyId(currency.getId())
@@ -99,6 +152,9 @@ public class TronServiceImpl implements TronService {
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        final String username = refillService.getUsernameByRequestId(id);
+        log.debug("Process of sending data to Google Analytics...");
+        gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
     }
 
     @Override
@@ -128,6 +184,7 @@ public class TronServiceImpl implements TronService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
+
         return withdrawUtils.isValidDestinationAddress(address);
     }
 }

@@ -1,14 +1,8 @@
 package com.exrates.inout.dao.impl;
 
-
 import com.exrates.inout.dao.RefillRequestDao;
-import com.exrates.inout.domain.dto.InvoiceConfirmData;
-import com.exrates.inout.domain.dto.OperationUserDto;
-import com.exrates.inout.domain.dto.RefillRequestAddressDto;
-import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatAdditionalDataDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.RefillOnConfirmationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -16,6 +10,7 @@ import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.PagingData;
+import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -32,16 +27,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
 import static java.util.Collections.singletonMap;
@@ -117,6 +106,10 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         refillRequestAddressDto.setDateGeneration(rs.getTimestamp("date_generation").toLocalDateTime());
         refillRequestAddressDto.setConfirmedTxOffset(rs.getInt("confirmed_tx_offset"));
         refillRequestAddressDto.setNeedTransfer(rs.getBoolean("need_transfer"));
+        try {
+            refillRequestAddressDto.setTokenParentId(rs.getInt("tokens_parrent_id"));
+        } catch (SQLException e) {
+        }
         return refillRequestAddressDto;
     };
 
@@ -126,10 +119,6 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     @Autowired
     @Qualifier(value = "masterTemplate")
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    @Qualifier(value = "slaveTemplate")
-    private NamedParameterJdbcTemplate slaveJdbcTemplate;
 
 
     @Override
@@ -258,6 +247,30 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<RefillRequestFlatDto> findAllWithoutConfirmationsByMerchantIdAndCurrencyIdAndStatusId(
+            Integer merchantId,
+            Integer currencyId,
+            List<Integer> statusList) {
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*, " +
+                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+                " FROM REFILL_REQUEST " +
+                "   LEFT JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id) " +
+                "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
+                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
+                "   LEFT JOIN REFILL_REQUEST_CONFIRMATION RRC ON (RRC.refill_request_id = REFILL_REQUEST.id) " +
+                " WHERE REFILL_REQUEST.merchant_id = :merchant_id " +
+                "       AND REFILL_REQUEST.currency_id = :currency_id " +
+                "       AND REFILL_REQUEST.status_id IN (:status_id_list) " +
+                "       AND RRC.id IS NULL ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+            put("status_id_list", statusList);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, refillRequestFlatDtoRowMapper);
     }
 
     @Override
@@ -904,6 +917,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
 
+
     @Override
     public void setConfirmationsNumberByRequestId(Integer requestId, BigDecimal amount, Integer confirmations, String blockhash) {
         String sql = " INSERT INTO REFILL_REQUEST_CONFIRMATION " +
@@ -982,6 +996,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         }
     }
 
+
     @Override
     public Optional<String> getLastBlockHashForMerchantAndCurrency(Integer merchantId, Integer currencyId) {
         String sql = "SELECT RRC.blockhash FROM REFILL_REQUEST_CONFIRMATION RRC" +
@@ -1009,6 +1024,25 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         params.put("isValidStatuses", isValidStatuses);
 
         return namedParameterJdbcTemplate.query(sql, params, (rs, row) -> rs.getString("address"));
+    }
+
+    @Override
+    public List<RefillRequestFlatDto> findAllNotAcceptedByAddressAndMerchantAndCurrency(String address, Integer merchantId, Integer currencyId) {
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*,  " +
+                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+                " FROM REFILL_REQUEST " +
+                "   JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id) AND RRA.address = :address  " +
+                "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
+                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
+                " WHERE REFILL_REQUEST.merchant_id = :merchant_id " +
+                "       AND REFILL_REQUEST.currency_id = :currency_id " +
+                "       AND REFILL_REQUEST.status_id IN (4, 6) ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+            put("address", address);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, refillRequestFlatDtoRowMapper);
     }
 
     @Override
@@ -1134,6 +1168,49 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     }
 
     @Override
+    public PagingData<List<RefillRequestAddressShortDto>> getAddresses(DataTableParams dataTableParams, RefillAddressFilterData data) {
+        String filter = data.getSQLFilterClause();
+        String searchClause = dataTableParams.getSearchByEmailAndNickClause();
+        String sqlBase =
+                String.join(" ", " FROM REFILL_REQUEST_ADDRESS RRA ",
+                        " JOIN CURRENCY CU ON CU.id = RRA.currency_id ",
+                        " JOIN MERCHANT_CURRENCY MC ON CU.id = MC.currency_id ",
+                        " JOIN MERCHANT M ON M.id = MC.merchant_id ",
+                        " JOIN USER ON USER.id = RRA.user_id  ",
+                        " WHERE M.process_type = 'CRYPTO' ");
+        String whereClauseFilter = String.join(" ",
+                StringUtils.isEmpty(filter) ? "" : " AND ".concat(filter),
+                StringUtils.isEmpty(searchClause) ? "" : " AND ".concat(searchClause));
+        String orderClause = dataTableParams.getOrderByClause();
+        String offsetAndLimit = dataTableParams.getLimitAndOffsetClause();
+        String sqlMain = String.join(" ", "SELECT RRA.*, USER.email AS email, CU.name AS currency_name",
+                sqlBase, whereClauseFilter, orderClause, offsetAndLimit);
+        String sqlCount = String.join(" ", "SELECT COUNT(*) ", sqlBase, whereClauseFilter);
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("offset", dataTableParams.getStart());
+            put("limit", dataTableParams.getLength());
+        }};
+        params.putAll(data.getNamedParams());
+        params.putAll(dataTableParams.getSearchNamedParams());
+        log.debug("sql {}", sqlCount);
+        List<RefillRequestAddressShortDto> addresses = namedParameterJdbcTemplate.query(sqlMain, params, (rs, i) -> {
+            RefillRequestAddressShortDto dto = new RefillRequestAddressShortDto();
+            dto.setUserEmail(rs.getString("email"));
+            dto.setAddress(rs.getString("address"));
+            dto.setCurrencyName(rs.getString("currency_name"));
+            dto.setGenerationDate(rs.getTimestamp("date_generation").toLocalDateTime());
+            dto.setMerchantId(rs.getInt("merchant_id"));
+            return dto;
+        });
+        Integer totalQuantity = namedParameterJdbcTemplate.queryForObject(sqlCount, params, Integer.class);
+        PagingData<List<RefillRequestAddressShortDto>> result = new PagingData<>();
+        result.setData(addresses);
+        result.setFiltered(totalQuantity);
+        result.setTotal(totalQuantity);
+        return result;
+    }
+
+    @Override
     public List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId) {
         String sql = "SELECT RR.currency_id FROM REFILL_REQUEST RR " +
                 " JOIN MERCHANT M ON M.id=RR.merchant_id " +
@@ -1141,5 +1218,129 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         return jdbcTemplate.queryForList(sql, Integer.class, parentTokenId);
     }
 
+
+    @Override
+    public List<RefillRequestAddressDto> findByAddress(String address) {
+        final String sql = "SELECT RRA.*, M.tokens_parrent_id FROM REFILL_REQUEST_ADDRESS RRA " +
+                "JOIN MERCHANT M ON M.id = RRA.merchant_id " +
+                "WHERE RRA.address = :address ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("address", address);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, refillRequestAddressRowMapper);
+    }
+
+    @Override
+    public String getUsernameByAddressAndCurrencyIdAndMerchantId(String address, int currencyId, int merchantId) {
+        final String sql = "SELECT u.email" +
+                " FROM REFILL_REQUEST_ADDRESS rra" +
+                " JOIN USER u on u.id = rra.user_id " +
+                " WHERE rra.address = :address AND rra.currency_id = :currencyId AND rra.merchant_id = :merchantId";
+
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("address", address);
+            put("currencyId", currencyId);
+            put("merchantId", merchantId);
+        }};
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
+        } catch (Exception ex) {
+            log.debug("Username (email) not found by address: {}, currency id: {} and merchant id: {}", address, currencyId, merchantId);
+            return null;
+        }
+    }
+
+    @Override
+    public String getGaTagByRequestId(int requestId) {
+        final String sql = "SELECT u.GA" +
+                " FROM REFILL_REQUEST rr" +
+                " JOIN USER u on u.id = rr.user_id " +
+                " WHERE rr.id = :requestId";
+
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("requestId", requestId);
+        }};
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
+        } catch (Exception ex) {
+            log.debug("Username (email) not found by request id: {}", requestId);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean setAddressBlocked(String address, int merchantId, int currencyId, boolean blocked) {
+        String sql = "UPDATE REFILL_REQUEST_ADDRESS SET blocked = :blocked WHERE address = :address" +
+                " AND merchant_id = :merchant_id AND currency_id = :currency_id";
+        return namedParameterJdbcTemplate.update(sql, new HashMap<String, Object>() {{
+            put("address", address);
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+            put("blocked", blocked);
+        }}) > 0 ;
+    }
+
+    @Override
+    public List<RefillRequestAddressShortDto> getBlockedAddresses(int merchantId, int currencyId) {
+        final String sql = "SELECT RRA.*, U.email FROM REFILL_REQUEST_ADDRESS RRA " +
+                " JOIN USER U ON U.id = RRA.user_id " +
+                " WHERE RRA.merchant_id = :merchantId AND RRA.currency_id = :currencyId AND RRA.blocked IS TRUE ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchantId", merchantId);
+            put("currencyId", currencyId);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, (rs, i) -> {
+            RefillRequestAddressShortDto dto = new RefillRequestAddressShortDto();
+            dto.setUserEmail(rs.getString("email"));
+            dto.setAddress(rs.getString("address"));
+            dto.setGenerationDate(rs.getTimestamp("date_generation").toLocalDateTime());
+            return dto;
+        });
+    }
+
+    @Override
+    public void setInnerTransferHash(int requestId, String hash) {
+        final String sql = "UPDATE REFILL_REQUEST " +
+                "  SET inner_transfer_hash = :hash " +
+                "  WHERE id = :id ";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", requestId);
+        params.put("hash", hash);
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    @Override
+    public List<RefillRequestAddressDto> findAllAddressesByMerchantWithChilds(int merchantId) {
+        String sql = "SELECT RRA.* FROM MERCHANT M " +
+                "JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.merchant_id = M.id)" +
+                "where M.id = :merchant_id OR M.tokens_parrent_id = :merchant_id ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, refillRequestAddressRowMapper);
+    }
+
+    @Override
+    public List<RefillOnConfirmationDto> getOnConfirmationDtos(Integer userId, int currencyId) {
+        final String sql = "SELECT RR.amount as amount, RR.merchant_transaction_id as hash, RRA.address as address, RRQ.confirmation_number as collectedConfirmations, RR.merchant_id as merchantId " +
+                "FROM REFILL_REQUEST RR " +
+                "JOIN REFILL_REQUEST_CONFIRMATION RRQ ON RRQ.id = (SELECT MAX(RRQ_sub.id) FROM REFILL_REQUEST_CONFIRMATION RRQ_sub WHERE RRQ_sub.refill_request_id = RR.id) " +
+                "JOIN REFILL_REQUEST_ADDRESS RRA ON RRA.id = RR.refill_request_address_id " +
+                "WHERE RR.currency_id = :currency AND RR.status_id = :status AND RR.user_id = :user_id";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("currency", currencyId);
+            put("user_id", userId);
+            put("status", RefillStatusEnum.ON_BCH_EXAM.getCode());
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, (rs, i) -> {
+            RefillOnConfirmationDto dto = new RefillOnConfirmationDto();
+            dto.setAddress(rs.getString("address"));
+            dto.setHash(rs.getString("hash"));
+            dto.setAmount(rs.getBigDecimal("amount"));
+            dto.setCollectedConfirmations(rs.getInt("collectedConfirmations"));
+            dto.setMerchantId(rs.getInt("merchantId"));
+            return dto;
+        });
+    }
 }
 

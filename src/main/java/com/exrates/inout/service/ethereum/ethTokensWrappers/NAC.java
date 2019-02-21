@@ -48,9 +48,9 @@ public class NAC extends Contract implements ethTokenERC20 {
         final Event event = new Event("LogBuy", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogBuyEventResponse> responses = new ArrayList<LogBuyEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             LogBuyEventResponse typedResponse = new LogBuyEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -61,7 +61,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<LogBuyEventResponse> logBuyEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("LogBuy", 
+        final Event event = new Event("LogBuy",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -69,7 +69,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogBuyEventResponse>() {
             @Override
             public LogBuyEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogBuyEventResponse typedResponse = new LogBuyEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -80,12 +80,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<LogBurnEventResponse> getLogBurnEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("LogBurn", 
+        final Event event = new Event("LogBurn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogBurnEventResponse> responses = new ArrayList<LogBurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             LogBurnEventResponse typedResponse = new LogBurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -96,7 +96,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<LogBurnEventResponse> logBurnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("LogBurn", 
+        final Event event = new Event("LogBurn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -104,7 +104,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogBurnEventResponse>() {
             @Override
             public LogBurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogBurnEventResponse typedResponse = new LogBurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -115,12 +115,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<LogPhaseSwitchEventResponse> getLogPhaseSwitchEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("LogPhaseSwitch", 
+        final Event event = new Event("LogPhaseSwitch",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogPhaseSwitchEventResponse> responses = new ArrayList<LogPhaseSwitchEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             LogPhaseSwitchEventResponse typedResponse = new LogPhaseSwitchEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.newPhase = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -130,7 +130,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<LogPhaseSwitchEventResponse> logPhaseSwitchEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("LogPhaseSwitch", 
+        final Event event = new Event("LogPhaseSwitch",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -138,7 +138,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogPhaseSwitchEventResponse>() {
             @Override
             public LogPhaseSwitchEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogPhaseSwitchEventResponse typedResponse = new LogPhaseSwitchEventResponse();
                 typedResponse.log = log;
                 typedResponse.newPhase = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -148,12 +148,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<LogMigrateEventResponse> getLogMigrateEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("LogMigrate", 
+        final Event event = new Event("LogMigrate",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<LogMigrateEventResponse> responses = new ArrayList<LogMigrateEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             LogMigrateEventResponse typedResponse = new LogMigrateEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -165,7 +165,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<LogMigrateEventResponse> logMigrateEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("LogMigrate", 
+        final Event event = new Event("LogMigrate",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -173,7 +173,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, LogMigrateEventResponse>() {
             @Override
             public LogMigrateEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 LogMigrateEventResponse typedResponse = new LogMigrateEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -185,12 +185,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -202,7 +202,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -210,7 +210,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -222,12 +222,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferToBuyerEventResponse> getTransferToBuyerEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("TransferToBuyer", 
+        final Event event = new Event("TransferToBuyer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferToBuyerEventResponse> responses = new ArrayList<TransferToBuyerEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferToBuyerEventResponse typedResponse = new TransferToBuyerEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -240,7 +240,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferToBuyerEventResponse> transferToBuyerEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("TransferToBuyer", 
+        final Event event = new Event("TransferToBuyer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -248,7 +248,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferToBuyerEventResponse>() {
             @Override
             public TransferToBuyerEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferToBuyerEventResponse typedResponse = new TransferToBuyerEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -261,12 +261,12 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferToExchangeEventResponse> getTransferToExchangeEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("TransferToExchange", 
+        final Event event = new Event("TransferToExchange",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferToExchangeEventResponse> responses = new ArrayList<TransferToExchangeEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferToExchangeEventResponse typedResponse = new TransferToExchangeEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -279,7 +279,7 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferToExchangeEventResponse> transferToExchangeEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("TransferToExchange", 
+        final Event event = new Event("TransferToExchange",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -287,7 +287,7 @@ public class NAC extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferToExchangeEventResponse>() {
             @Override
             public TransferToExchangeEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferToExchangeEventResponse typedResponse = new TransferToExchangeEventResponse();
                 typedResponse.log = log;
                 typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -300,29 +300,29 @@ public class NAC extends Contract implements ethTokenERC20 {
     }
 
     public RemoteCall<String> namiMultiSigWallet() {
-        final Function function = new Function("namiMultiSigWallet", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("namiMultiSigWallet",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<BigInteger> currentPhase() {
-        final Function function = new Function("currentPhase", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("currentPhase",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());

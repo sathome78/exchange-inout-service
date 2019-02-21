@@ -1,5 +1,6 @@
 package com.exrates.inout.service;
 
+import com.exrates.inout.domain.RefillOnConfirmationDto;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RefillService {
+
+    Map<String, String> callRefillIRefillable(RefillRequestCreateDto request);
 
     Map<String, Object> createRefillRequest(RefillRequestCreateDto requestCreateDto);
 
@@ -65,9 +68,15 @@ public interface RefillService {
 
     void setConfirmationCollectedNumber(RefillRequestSetConfirmationsNumberDto confirmationsNumberDto) throws RefillRequestAppropriateNotFoundException;
 
+    @Transactional
+    Integer createAndAutoAcceptRefillRequest(RefillRequestAcceptDto requestAcceptDto);
+
     void autoAcceptRefillRequest(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
 
     void acceptRefillRequest(RefillRequestAcceptDto requestAcceptDto);
+
+    @Transactional
+    void declineMerchantRefillRequest(Integer requestId);
 
     RefillRequestFlatDto getFlatById(Integer id);
 
@@ -89,9 +98,9 @@ public interface RefillService {
 
     void declineRefillRequest(int requestId, Integer requesterAdminId, String comment);
 
-    Boolean existsClosedRefillRequestForAddress(String address, Integer merchantId, Integer currencyId);
-
     RefillRequestsAdminTableDto getRefillRequestById(Integer id, String authorizedUserEmail);
+
+    RefillRequestFlatAdditionalDataDto getAdditionalData(int requestId);
 
     @Transactional
     Integer manualCreateRefillRequestCrypto(RefillRequestManualDto refillDto, Locale locale) throws DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
@@ -111,6 +120,8 @@ public interface RefillService {
 
     String getPaymentMessageForTag(String serviceBeanName, String tag, Locale locale);
 
+    List<RefillRequestFlatDto> findAllNotAcceptedByAddressAndMerchantAndCurrency(String address, Integer merchantId, Integer currencyId);
+
     int getTxOffsetForAddress(String address);
 
     void updateTxOffsetForAddress(String address, Integer offset);
@@ -121,6 +132,8 @@ public interface RefillService {
 
     List<RefillRequestAddressDto> findByAddressMerchantAndCurrency(String address, Integer merchantId, Integer currencyId);
 
+    DataTable<List<RefillRequestAddressShortDto>> getAdressesShortDto(DataTableParams dataTableParams, RefillAddressFilterData filterData);
+
     List<Integer> getUnconfirmedTxsCurrencyIdsForTokens(int parentTokenId);
 
     List<RefillRequestFlatDto> getInExamineWithChildTokensByMerchantIdAndCurrencyIdList(int merchantId, int currencyId);
@@ -128,4 +141,27 @@ public interface RefillService {
     List<RefillRequestAddressDto> findAddressDtos(Integer merchantId, Integer currencyId);
 
     void invalidateAddress(String address, Integer merchantId, Integer currencyId);
+
+    String getUsernameByAddressAndCurrencyIdAndMerchantId(String address, int currencyId, int merchantId);
+
+    String getUsernameByRequestId(int requestId);
+
+    Integer getRequestId(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
+
+    void blockUserByFrozeTx(String address, int merchantId, int currencyId);
+
+    List<RefillRequestAddressShortDto> getBlockedAddresses(int merchantId, int currencyId);
+
+    @Transactional
+    int createRequestByFactAndSetHash(RefillRequestAcceptDto requestAcceptDto);
+
+    @Transactional
+    void setHashByRequestId(int requestId, String hash) throws DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
+
+    @Transactional
+    void setInnerTransferHash(int requestId, String hash);
+
+    List<RefillRequestAddressDto> findAddressDtosWithMerchantChild(int merchantId);
+
+    List<RefillOnConfirmationDto> getOnConfirmationRefills(String email, int currencyId);
 }

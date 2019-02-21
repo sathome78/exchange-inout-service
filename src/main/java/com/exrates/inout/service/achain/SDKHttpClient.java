@@ -17,9 +17,13 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
+/**
+ * Created by Maks on 14.06.2018.
+ */
 @Log4j2(topic = "achain")
 @Service
 public class SDKHttpClient {
+
 
     private CloseableHttpClient httpclient;
 
@@ -28,6 +32,9 @@ public class SDKHttpClient {
         this.httpclient = closeableHttpClient;
     }
 
+    /**
+     * Dealing exclusively with a parameter is json's broadcast transaction
+     */
     public String post(String url, String key, String method, String... params) {
         String temp = "{\"jsonrpc\":\"2.0\",\"params\":" + Arrays.toString(params) +
                 ",\"id\":\"" + new Random().nextInt(1024) + "\",\"method\":\"" +

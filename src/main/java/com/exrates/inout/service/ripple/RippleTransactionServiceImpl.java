@@ -5,11 +5,12 @@ import com.exrates.inout.domain.dto.RippleTransaction;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.RippleCheckConsensusException;
-import com.exrates.inout.properties.CryptoCurrencyProperties;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +19,26 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+//exrates.model.dto.RippleAccount;
+//exrates.model.dto.RippleTransaction;
+//exrates.model.dto.WithdrawMerchantOperationDto;
+//exrates.service.exception.RippleCheckConsensusException;
+//exrates.service.exception.invoice.InsufficientCostsInWalletException;
+
+/**
+ * Created by maks on 11.05.2017.
+ */
 @Log4j2(topic = "ripple_log")
 @Service
+@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleTransactionServiceImpl implements RippleTransactionService {
+
+    @Autowired
+    private RippledNodeService rippledNodeService;
+
+
+    private @Value("${ripple.account.address}") String address;
+    private @Value("${ripple.account.secret}") String secret;
 
     private static final Integer XRP_AMOUNT_MULTIPLIER = 1000000;
     private static final Integer XRP_DECIMALS = 6;
@@ -28,15 +46,11 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
     private static final String SEQUENCE_PARAM = "sequence";
     private static final String LEDGER = "ledger";
 
-    @Autowired
-    private CryptoCurrencyProperties ccp;
-    @Autowired
-    private RippledNodeService rippledNodeService;
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
-        RippleAccount account = RippleAccount.builder().name(ccp.getOtherCoins().getRipple().getAccountAddress()).secret(ccp.getOtherCoins().getRipple().getAccountSecret()).build();
-        BigDecimal accountFromBalance = getAccountBalance(ccp.getOtherCoins().getRipple().getAccountAddress());
+        RippleAccount account = RippleAccount.builder().name(address).secret(secret).build();
+        BigDecimal accountFromBalance = getAccountBalance(address);
         if (accountFromBalance.compareTo(XRP_MIN_BALANCE) < 0) {
             throw new InsufficientCostsInWalletException("XRP BALANCE LOW");
         }
@@ -45,7 +59,7 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         RippleTransaction transaction = this.sendMoney(account, new BigDecimal(withdrawMerchantOperationDto.getAmount()),
                 withdrawMerchantOperationDto.getAccountTo(), destinationTag);
         log.debug("xrp transaction sended {}", transaction);
-        return rippleTransactionToMap(transaction);
+        return  rippleTransactionToMap(transaction);
     }
 
     /*send xrp*/
@@ -57,13 +71,15 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         return transaction;
     }
 
+
+
     /*https://ripple.com/build/reliable-transaction-submission/*/
     private RippleTransaction prepareTransaction(BigDecimal amount, RippleAccount account, String destinationAccount, Integer destinationTag) {
         Integer lastValidatedLedger = rippledNodeService.getServerState()
                 .getJSONObject("state")
                 .getJSONObject("validated_ledger")
                 .getInt("seq") + 4;
-        Integer sequence = rippledNodeService.getAccountInfo(ccp.getOtherCoins().getRipple().getAccountAddress())
+        Integer sequence = rippledNodeService.getAccountInfo(address)
                 .getJSONObject("account_data")
                 .getInt("Sequence");
         /*todo check if destination account exist? because we spent comisiion if trying transfer to such address*/
@@ -93,6 +109,7 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
                 .divide(new BigDecimal(XRP_AMOUNT_MULTIPLIER))
                 .setScale(XRP_DECIMALS, RoundingMode.HALF_DOWN);
     }
+
 
     @Override
     public BigDecimal getAccountBalance(String accountName) {
@@ -134,4 +151,10 @@ public class RippleTransactionServiceImpl implements RippleTransactionService {
         map.put("params", jsonObject.toString());
         return map;
     }
+
+
+
+
+
+
 }

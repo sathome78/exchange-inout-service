@@ -5,6 +5,9 @@ import com.exrates.inout.domain.dto.TronTransferDto;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 
+//exrates.model.dto.TronNewAddressDto;
+//exrates.model.dto.TronTransferDto;
+
 public interface TronNodeService {
 
     TronNewAddressDto getNewAddress();
@@ -12,11 +15,12 @@ public interface TronNodeService {
     JSONObject transferFunds(TronTransferDto tronTransferDto);
 
     @SneakyThrows
+    JSONObject transferAsset(TronTransferDto tronTransferDto);
+
     JSONObject getTransactions(long blockNum);
 
     JSONObject getTransaction(String hash);
 
-    @SneakyThrows
     JSONObject getLastBlock();
 
     JSONObject getAccount(String addressBase58);

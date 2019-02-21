@@ -3,12 +3,12 @@ package com.exrates.inout.service.aidos;
 
 import com.exrates.inout.domain.dto.BtcTransactionDto;
 import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
-import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,12 @@ import java.util.stream.Collectors;
 
 @Log4j2(topic = "adk_log")
 @Service
+@PropertySource("classpath:/merchants/adk.properties")
 public class AidosNodeServiceImpl implements AidosNodeService {
 
-    @Autowired
-    private CryptoCurrencyProperties ccp;
-
+    private @Value("${node.adk.rpc.host}")String nodeHost;
+    private @Value("${node.adk.rpc.user}")String rpcUser;
+    private @Value("${node.adk.rpc.password}")String rpcPassword;
     private URI nodeURI;
 
     private static final String[] EMPTY_PARAMS = {};
@@ -41,9 +42,9 @@ public class AidosNodeServiceImpl implements AidosNodeService {
     private void init() {
         objectMapper = new ObjectMapper();
         restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(ccp.getOtherCoins().getAdk().getRpcUser(), ccp.getOtherCoins().getAdk().getRpcPassword()));
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(rpcUser, rpcPassword));
         try {
-            nodeURI = new URI(ccp.getOtherCoins().getAdk().getRpcHost());
+            nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
             log.error("wrong ADK url");
         }
@@ -67,6 +68,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         return response.getBigDecimal("result");
     }
 
+
     @Override
     public BtcTransactionDto getTransaction(String txId) {
         RequestEntity requestEntity = RequestEntity
@@ -83,7 +85,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
 
     @Override
     public JSONArray getAllTransactions() {
-        return getAllTransactions(999999999, 0);
+        return getAllTransactions(999999999 ,0);
     }
 
     @Override
@@ -114,8 +116,8 @@ public class AidosNodeServiceImpl implements AidosNodeService {
     public JSONObject sendMany(List<BtcWalletPaymentItemDto> payments) {
         String convertedPayments =
                 new JSONObject(payments
-                        .stream()
-                        .collect(Collectors.toMap(BtcWalletPaymentItemDto::getAddress, BtcWalletPaymentItemDto::getAmount))).toString();
+                                .stream()
+                                .collect(Collectors.toMap(BtcWalletPaymentItemDto::getAddress, BtcWalletPaymentItemDto::getAmount))).toString();
         RequestEntity requestEntity = RequestEntity
                 .post(nodeURI)
                 .body(createRequestBody("sendmany", "6", new Object[]{"", convertedPayments}).toString());
@@ -148,4 +150,5 @@ public class AidosNodeServiceImpl implements AidosNodeService {
     private <T> T makeRequest(RequestEntity requestEntity, Class<T> clazz) {
         return restTemplate.exchange(requestEntity, clazz).getBody();
     }
+
 }

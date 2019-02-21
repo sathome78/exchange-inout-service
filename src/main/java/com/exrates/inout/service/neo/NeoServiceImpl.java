@@ -1,11 +1,7 @@
 package com.exrates.inout.service.neo;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
-import com.exrates.inout.domain.dto.RefillRequestSetConfirmationsNumberDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
@@ -13,16 +9,11 @@ import com.exrates.inout.domain.neo.NeoAsset;
 import com.exrates.inout.domain.neo.NeoTransaction;
 import com.exrates.inout.domain.neo.NeoVout;
 import com.exrates.inout.domain.other.ProfileData;
-import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
-import com.exrates.inout.exceptions.InvalidAccountException;
-import com.exrates.inout.exceptions.MerchantException;
-import com.exrates.inout.exceptions.NeoApiException;
-import com.exrates.inout.exceptions.NeoPaymentProcessingException;
-import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.models.NeoProperty;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.utils.WithdrawUtils;
 import com.exrates.inout.util.ParamMapUtils;
+import com.exrates.inout.util.WithdrawUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +24,14 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 
 @Log4j2(topic = "neo_log")
 @PropertySource("classpath:/merchants/neo.properties")

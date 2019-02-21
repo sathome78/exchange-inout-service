@@ -47,9 +47,9 @@ public class DGTX extends Contract implements ethTokenERC20 {
         final Event event = new Event("Finalized", 
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<FinalizedEventResponse> responses = new ArrayList<FinalizedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             FinalizedEventResponse typedResponse = new FinalizedEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -58,7 +58,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<FinalizedEventResponse> finalizedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Finalized", 
+        final Event event = new Event("Finalized",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -66,7 +66,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, FinalizedEventResponse>() {
             @Override
             public FinalizedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 FinalizedEventResponse typedResponse = new FinalizedEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -75,12 +75,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<NewOraclizeQueryEventResponse> getNewOraclizeQueryEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("newOraclizeQuery", 
+        final Event event = new Event("newOraclizeQuery",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<NewOraclizeQueryEventResponse> responses = new ArrayList<NewOraclizeQueryEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             NewOraclizeQueryEventResponse typedResponse = new NewOraclizeQueryEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.description = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -90,7 +90,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<NewOraclizeQueryEventResponse> newOraclizeQueryEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("newOraclizeQuery", 
+        final Event event = new Event("newOraclizeQuery",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -98,7 +98,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, NewOraclizeQueryEventResponse>() {
             @Override
             public NewOraclizeQueryEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 NewOraclizeQueryEventResponse typedResponse = new NewOraclizeQueryEventResponse();
                 typedResponse.log = log;
                 typedResponse.description = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -108,12 +108,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<NewETHUSDPriceEventResponse> getNewETHUSDPriceEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("newETHUSDPrice", 
+        final Event event = new Event("newETHUSDPrice",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<NewETHUSDPriceEventResponse> responses = new ArrayList<NewETHUSDPriceEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             NewETHUSDPriceEventResponse typedResponse = new NewETHUSDPriceEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.price = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -123,7 +123,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<NewETHUSDPriceEventResponse> newETHUSDPriceEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("newETHUSDPrice", 
+        final Event event = new Event("newETHUSDPrice",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -131,7 +131,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, NewETHUSDPriceEventResponse>() {
             @Override
             public NewETHUSDPriceEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 NewETHUSDPriceEventResponse typedResponse = new NewETHUSDPriceEventResponse();
                 typedResponse.log = log;
                 typedResponse.price = (String) eventValues.getNonIndexedValues().get(0).getValue();
@@ -141,12 +141,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<BurnEventResponse> getBurnEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             BurnEventResponse typedResponse = new BurnEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -157,7 +157,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<BurnEventResponse> burnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Burn", 
+        final Event event = new Event("Burn",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -165,7 +165,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
             @Override
             public BurnEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 BurnEventResponse typedResponse = new BurnEventResponse();
                 typedResponse.log = log;
                 typedResponse.burner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -176,12 +176,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<DynamicBytes>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -194,7 +194,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<TransferEventResponse> transferEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Transfer", 
+        final Event event = new Event("Transfer",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<DynamicBytes>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -202,7 +202,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
             public TransferEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 TransferEventResponse typedResponse = new TransferEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -215,12 +215,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -232,7 +232,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Approval", 
+        final Event event = new Event("Approval",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -240,7 +240,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override
             public ApprovalEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 ApprovalEventResponse typedResponse = new ApprovalEventResponse();
                 typedResponse.log = log;
                 typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -252,12 +252,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<DepositReleasedEventResponse> getDepositReleasedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("DepositReleased", 
+        final Event event = new Event("DepositReleased",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<DepositReleasedEventResponse> responses = new ArrayList<DepositReleasedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             DepositReleasedEventResponse typedResponse = new DepositReleasedEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -266,7 +266,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<DepositReleasedEventResponse> depositReleasedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("DepositReleased", 
+        final Event event = new Event("DepositReleased",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -274,7 +274,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, DepositReleasedEventResponse>() {
             @Override
             public DepositReleasedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 DepositReleasedEventResponse typedResponse = new DepositReleasedEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -283,12 +283,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<RefundsEnabledEventResponse> getRefundsEnabledEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("RefundsEnabled", 
+        final Event event = new Event("RefundsEnabled",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<RefundsEnabledEventResponse> responses = new ArrayList<RefundsEnabledEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RefundsEnabledEventResponse typedResponse = new RefundsEnabledEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -297,7 +297,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<RefundsEnabledEventResponse> refundsEnabledEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("RefundsEnabled", 
+        final Event event = new Event("RefundsEnabled",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -305,7 +305,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, RefundsEnabledEventResponse>() {
             @Override
             public RefundsEnabledEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 RefundsEnabledEventResponse typedResponse = new RefundsEnabledEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -314,12 +314,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<RefundsDisabledEventResponse> getRefundsDisabledEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("RefundsDisabled", 
+        final Event event = new Event("RefundsDisabled",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<RefundsDisabledEventResponse> responses = new ArrayList<RefundsDisabledEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RefundsDisabledEventResponse typedResponse = new RefundsDisabledEventResponse();
             typedResponse.log = eventValues.getLog();
             responses.add(typedResponse);
@@ -328,7 +328,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<RefundsDisabledEventResponse> refundsDisabledEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("RefundsDisabled", 
+        final Event event = new Event("RefundsDisabled",
                 Arrays.<TypeReference<?>>asList(),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -336,7 +336,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, RefundsDisabledEventResponse>() {
             @Override
             public RefundsDisabledEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 RefundsDisabledEventResponse typedResponse = new RefundsDisabledEventResponse();
                 typedResponse.log = log;
                 return typedResponse;
@@ -345,12 +345,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<RefundedEventResponse> getRefundedEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("Refunded", 
+        final Event event = new Event("Refunded",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<RefundedEventResponse> responses = new ArrayList<RefundedEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             RefundedEventResponse typedResponse = new RefundedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.beneficiary = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -361,7 +361,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<RefundedEventResponse> refundedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("Refunded", 
+        final Event event = new Event("Refunded",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -369,7 +369,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, RefundedEventResponse>() {
             @Override
             public RefundedEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 RefundedEventResponse typedResponse = new RefundedEventResponse();
                 typedResponse.log = log;
                 typedResponse.beneficiary = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -380,12 +380,12 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
-        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(event, transactionReceipt);
         ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
-        for (Contract.EventValuesWithLog eventValues : valueList) {
+        for (EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -396,7 +396,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public Observable<OwnershipTransferredEventResponse> ownershipTransferredEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        final Event event = new Event("OwnershipTransferred", 
+        final Event event = new Event("OwnershipTransferred",
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList());
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
@@ -404,7 +404,7 @@ public class DGTX extends Contract implements ethTokenERC20 {
         return web3j.ethLogObservable(filter).map(new Func1<Log, OwnershipTransferredEventResponse>() {
             @Override
             public OwnershipTransferredEventResponse call(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
+                EventValuesWithLog eventValues = extractEventParametersWithLog(event, log);
                 OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
                 typedResponse.log = log;
                 typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -415,15 +415,15 @@ public class DGTX extends Contract implements ethTokenERC20 {
     }
 
     public RemoteCall<String> name() {
-        final Function function = new Function("name", 
-                Arrays.<Type>asList(), 
+        final Function function = new Function("name",
+                Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
-                "approve", 
+                "approve",
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_value)),
                 Collections.<TypeReference<?>>emptyList());

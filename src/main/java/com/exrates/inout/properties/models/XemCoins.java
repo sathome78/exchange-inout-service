@@ -9,4 +9,7 @@ public class XemCoins {
 
     private XemProperty dim;
     private XemProperty npxs;
+    private XemProperty DIM_EUR;
+    private XemProperty DIM_USD;
+    private XemProperty DIGIC;
 }

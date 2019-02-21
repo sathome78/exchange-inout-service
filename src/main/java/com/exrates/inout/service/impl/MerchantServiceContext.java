@@ -15,13 +15,13 @@ import java.util.Optional;
 
 @Component
 public class MerchantServiceContext {
+    @Autowired
+    Map<String, IMerchantService> merchantServiceMap;
 
     @Autowired
-    private Map<String, IMerchantService> merchantServiceMap;
-    @Autowired
-    private MerchantService merchantService;
+    MerchantService merchantService;
 
-    public IMerchantService getMerchantService(String serviceBeanName) {
+    public  IMerchantService getMerchantService(String serviceBeanName) {
         if (StringUtils.isEmpty(serviceBeanName)) {
             throw new MerchantServiceBeanNameNotDefinedException("");
         }
@@ -29,9 +29,15 @@ public class MerchantServiceContext {
                 .orElseThrow(() -> new MerchantServiceNotFoundException(serviceBeanName));
     }
 
-    public IMerchantService getMerchantService(Integer merchantId) {
+    public  IMerchantService getMerchantService(Integer merchantId) {
         Merchant merchant = Optional.ofNullable(merchantService.findById(merchantId))
                 .orElseThrow(() -> new MerchantNotFoundException(String.valueOf(merchantId)));
+        return getMerchantService(merchant.getServiceBeanName());
+    }
+
+    public IMerchantService getMerchantServiceByName(String merchantName) {
+        Merchant merchant = Optional.ofNullable(merchantService.findByName(merchantName))
+                .orElseThrow(() -> new MerchantNotFoundException(merchantName));
         return getMerchantService(merchant.getServiceBeanName());
     }
 }

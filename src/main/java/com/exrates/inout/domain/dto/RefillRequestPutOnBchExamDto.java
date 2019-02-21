@@ -1,12 +1,16 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Builder
-@Data
+@Getter
+@Setter
+@ToString
 public class RefillRequestPutOnBchExamDto {
   private Integer requestId;
   private Integer merchantId;
@@ -15,4 +19,6 @@ public class RefillRequestPutOnBchExamDto {
   private String address;
   private String hash;
   private String blockhash;
+  private int confirmations;
 }
+
