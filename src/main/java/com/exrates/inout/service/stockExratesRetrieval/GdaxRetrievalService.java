@@ -53,7 +53,7 @@ public class GdaxRetrievalService implements StockExrateRetrievalService {
                 stockExchangeStats.setVolume(BigDecimalProcessing.parseNonePoint(statsRoot.get("volume").asText()));
                 stockExchangeStatsList.add(stockExchangeStats);
             } catch (IOException e) {
-                log.error(e);
+                //log.error(e);
             }
         });
         return stockExchangeStatsList;

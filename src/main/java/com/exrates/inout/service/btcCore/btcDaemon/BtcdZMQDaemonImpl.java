@@ -75,7 +75,7 @@ public class BtcdZMQDaemonImpl implements BtcDaemon{
                                     log.warn("Illegal notification format: {}", hex);
                                 }
                             } catch (Exception e) {
-                                log.error(e);
+                                //log.error(e);
                                 if (!isActive) {
                                     onError.accept(e);
                                 }
@@ -149,7 +149,7 @@ public class BtcdZMQDaemonImpl implements BtcDaemon{
         try {
             return btcdClient.getBlock(blockhash);
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new BitcoinCoreException(e.getMessage());
         }
     }

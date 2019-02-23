@@ -38,7 +38,7 @@ public class OtherConfiguration {
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
-        requestFactory.setConnectionRequestTimeout(25000);
+        requestFactory.setConnectionRequestTimeout(5*1000);
         requestFactory.setReadTimeout(25000);
         restTemplate.setRequestFactory(requestFactory);
         return new RestTemplate();

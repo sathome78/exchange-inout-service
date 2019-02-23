@@ -58,4 +58,6 @@ public interface UserDao {
     void updatePinByUserEmail(String userEmail, String pin, NotificationMessageEventEnum event);
 
     User getCommonReferralRoot();
+
+    UserRole getUserRoles(String currentUserEmail);
 }

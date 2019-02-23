@@ -43,7 +43,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public long getBlockCount() {
-        log.debug("NodeServiceImpl|getBlockCount");
+        //log.debug("NodeServiceImpl|getBlockCount");
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block_count", new JSONArray());
         JSONObject createTaskJson = new JSONObject(result);
@@ -52,7 +52,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public JSONArray getBlock(long blockNum) {
-        log.debug("NodeServiceImpl|getBlock [{}]", blockNum);
+        //log.debug("NodeServiceImpl|getBlock [{}]", blockNum);
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block", String.valueOf(blockNum));
         JSONObject createTaskJson = new JSONObject(result);
@@ -61,7 +61,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public boolean getSyncState() {
-        log.debug("NodeServiceImpl|getSyncState [{}]");
+        //log.debug("NodeServiceImpl|getSyncState [{}]");
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_is_synced", new JSONArray());
         JSONObject createTaskJson = new JSONObject(result);
@@ -70,7 +70,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public JSONArray getBlockTransactions(long blockNum) {
-        log.debug("NodeServiceImpl|getBlockTransactions [{}]", blockNum);
+        //log.debug("NodeServiceImpl|getBlockTransactions [{}]", blockNum);
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block_transactions", String.valueOf(blockNum));
         JSONObject transactions = new JSONObject(result);
@@ -81,8 +81,8 @@ public class NodeServiceImpl implements NodeService {
     public JSONObject getPrettyContractTransaction(String innerHash) {
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(innerHash);
-        log.info("getPretty|[result_trx_id={}]",
-                innerHash);
+        //log.info("getPretty|[result_trx_id={}]",
+//                innerHash);
         String result =
                 httpClient
                         .post(nodeUrl, rpcUser, "blockchain_get_pretty_contract_transaction", jsonArray);
@@ -91,7 +91,7 @@ public class NodeServiceImpl implements NodeService {
 
    /* @Override
     public List<TransactionDTO> getTransactionsList(String account, String asset, Integer limit, String startBlock, String endBlock) {
-        log.info("NodeServiceImpl|getTransactionsList [{}, {}, {}, {}]", account, asset, limit, startBlock, endBlock);
+        //log.info("NodeServiceImpl|getTransactionsList [{}, {}, {}, {}]", account, asset, limit, startBlock, endBlock);
         String result =
                 httpClient.post(nodeUrl, rpcUser, "wallet_account_transaction_history",
                         account, asset, limit.toString(), startBlock, endBlock);
@@ -107,7 +107,7 @@ public class NodeServiceImpl implements NodeService {
                 dto.setConfirmed(isConfirmed);
                 txsList.add(dto);
             } catch (Exception e) {
-                log.error(e);
+                //////log.error(e);
             }
         });
         return null;
@@ -117,7 +117,7 @@ public class NodeServiceImpl implements NodeService {
     /*@Override
     public TransactionDTO getTransaction(long blockNum, String trxId) {
         try {
-            log.info("NodeServiceImpl|getBlock [{}]", trxId);
+            //log.info("NodeServiceImpl|getBlock [{}]", trxId);
             String result = httpClient.post(nodeUrl, rpcUser, "blockchain_get_transaction", trxId);
             JSONObject createTaskJson = new JSONObject(result);
             JSONArray resultJsonArray = createTaskJson.getJSONArray("result");
@@ -147,13 +147,13 @@ public class NodeServiceImpl implements NodeService {
 
 
             JSONObject operationData = operationJson.getJSONObject("data");
-            log.info("BlockchainServiceImpl|operationData={}", operationData);
+            //log.info("BlockchainServiceImpl|operationData={}", operationData);
 
             String resultTrxId =
                     resultJsonArray.getJSONObject(1).getJSONObject("trx").getString("result_trx_id");
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(StringUtils.isEmpty(resultTrxId) ? trxId : resultTrxId);
-            log.info("getTransaction|transaction_op_type|[blockId={}][trxId={}][result_trx_id={}]", blockNum, trxId,
+            //log.info("getTransaction|transaction_op_type|[blockId={}][trxId={}][result_trx_id={}]", blockNum, trxId,
                     resultTrxId);
             String resultSignee =
                     httpClient
@@ -212,7 +212,7 @@ public class NodeServiceImpl implements NodeService {
             }*//*
             return transactionDTO;
         } catch (Exception e) {
-            log.error("NodeServiceImpl", e);
+            //////log.error("NodeServiceImpl", e);
         }
         return null;
     }*/

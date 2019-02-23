@@ -60,7 +60,7 @@ public class ArkRpcClientImpl implements ArkRpcClient {
             this.broadcastTxUrl = String.join("", host, ":", sendTxPort, broadcastTxEndpoint);
 
         } catch (IOException e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

@@ -19,6 +19,8 @@ spring:
     host: 172.10.10.236
     port: 6379
 
+logging:
+  level: debug
 #slave:
 #  datasource:
 #    hikari:

@@ -1,6 +1,7 @@
 package com.exrates.inout.controller;
 
 import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.enums.UserOperationAuthority;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.InvoiceBank;
@@ -10,6 +11,7 @@ import com.exrates.inout.exceptions.*;
 import com.exrates.inout.exceptions.entity.ErrorInfo;
 import com.exrates.inout.service.InputOutputService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.UserOperationService;
 import com.exrates.inout.service.UserService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -45,21 +47,30 @@ public class RefillRequestController {
 
     private final LocaleResolver localeResolver;
 
+    private final UserOperationService userOperationService;
+
     @Autowired
-    public RefillRequestController(MessageSource messageSource, RefillService refillService, UserService userService, InputOutputService inputOutputService, LocaleResolver localeResolver) {
+    public RefillRequestController(MessageSource messageSource, RefillService refillService, UserService userService, InputOutputService inputOutputService, LocaleResolver localeResolver, UserOperationService userOperationService) {
         this.messageSource = messageSource;
         this.refillService = refillService;
         this.userService = userService;
         this.inputOutputService = inputOutputService;
         this.localeResolver = localeResolver;
+        this.userOperationService = userOperationService;
     }
 
     @RequestMapping(value = "/refill/request/create", method = POST)
     @ResponseBody
     public Map<String, Object> createRefillRequest(
-            @RequestBody RefillRequestParamsDto requestParamsDto, Principal principal, Locale locale)  {
+            @RequestBody RefillRequestParamsDto requestParamsDto,
+            Principal principal,
+            Locale locale, HttpServletRequest servletRequest) {
         if (requestParamsDto.getOperationType() != INPUT) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
+        }
+        boolean accessToOperationForUser = userOperationService.getStatusAuthorityForUserByOperation(userService.getIdByEmail(servletRequest.getUserPrincipal().getName()), UserOperationAuthority.INPUT);
+        if(!accessToOperationForUser) {
+            throw new UserOperationAccessException(messageSource.getMessage("merchant.operationNotAvailable", null, localeResolver.resolveLocale(servletRequest)));
         }
         if (!refillService.checkInputRequestsLimit(requestParamsDto.getCurrency(), principal.getName())) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));

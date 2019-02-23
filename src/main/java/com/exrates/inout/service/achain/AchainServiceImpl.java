@@ -102,7 +102,7 @@ public class AchainServiceImpl implements AchainService {
         Merchant merchant = merchantService.findByName(params.get("merchant"));
         BigDecimal amount = new BigDecimal(params.get("amount"));
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.warn("achain tx duplicated {}", hash);
+            //log.warn("achain tx duplicated {}", hash);
             return;
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -115,14 +115,14 @@ public class AchainServiceImpl implements AchainService {
                 .build();
 
         Integer requestId;
-        log.info("try to accept payment {}", requestAcceptDto);
+        //log.info("try to accept payment {}", requestAcceptDto);
         try {
             requestId = refillService.getRequestId(requestAcceptDto);
             requestAcceptDto.setRequestId(requestId);
 
             refillService.autoAcceptRefillRequest(requestAcceptDto);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.debug("RefillRequestNotFountException: " + params);
+            //log.debug("RefillRequestNotFountException: " + params);
             requestId = refillService.createRefillRequestByFact(requestAcceptDto);
             requestAcceptDto.setRequestId(requestId);
 
@@ -130,7 +130,7 @@ public class AchainServiceImpl implements AchainService {
         }
         final String username = refillService.getUsernameByRequestId(requestId);
 
-        log.debug("Process of sending data to Google Analytics...");
+        //log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
     }
 
@@ -141,7 +141,7 @@ public class AchainServiceImpl implements AchainService {
 
     @Override
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
-        log.debug("comission merchant {}", merchantId);
+        //log.debug("comission merchant {}", merchantId);
         Merchant merchant = merchantService.findById(merchantId);
         if (merchant.getName().equals(MERCHANT_NAME)) {
             return ACT_COMISSION;

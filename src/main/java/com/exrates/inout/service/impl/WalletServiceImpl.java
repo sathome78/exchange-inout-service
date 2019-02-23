@@ -76,9 +76,9 @@ public class WalletServiceImpl implements WalletService {
         BigDecimal balance = getWalletABalance(walletId);
         boolean result = balance.compareTo(amountForCheck) >= 0;
         if (!result) {
-            log.error(String.format("Not enough wallet money: wallet id %s, actual amount %s but needed %s", walletId,
-                    BigDecimalProcessing.formatNonePoint(balance, false),
-                    BigDecimalProcessing.formatNonePoint(amountForCheck, false)));
+            //log.error(String.format("Not enough wallet money: wallet id %s, actual amount %s but needed %s", walletId,
+//                    BigDecimalProcessing.formatNonePoint(balance, false),
+//                    BigDecimalProcessing.formatNonePoint(amountForCheck, false)));
         }
         return result;
     }

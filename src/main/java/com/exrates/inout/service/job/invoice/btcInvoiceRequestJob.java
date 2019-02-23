@@ -33,7 +33,7 @@ public class btcInvoiceRequestJob {
 // Integer expireCount = bitcoinService.clearExpiredInvoices(EXPIRE_CLEAN_INTERVAL_MINUTES);
       }
     } catch (Exception e){
-      log.error(ExceptionUtils.getStackTrace(e));
+      //log.error(ExceptionUtils.getStackTrace(e));
     }
   }
 

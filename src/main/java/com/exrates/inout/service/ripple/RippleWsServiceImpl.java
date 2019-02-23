@@ -77,7 +77,7 @@ public class RippleWsServiceImpl {
             try {
                 jsonMessage = new JSONObject(msg);
             } catch (Exception e) {
-                log.error(e);
+                //log.error(e);
                 return;
             }
             Object messageType = jsonMessage.get("type");
@@ -108,7 +108,7 @@ public class RippleWsServiceImpl {
                         try {
                             subscribeToTransactions();
                         } catch (Exception e) {
-                           log.error("ripple ws error {}", e);
+                           //log.error("ripple ws error {}", e);
                         }
                     }
                     return;
@@ -123,7 +123,7 @@ public class RippleWsServiceImpl {
                 }
             }
         } catch (Exception e) {
-            log.error("exception {}", e);
+            //log.error("exception {}", e);
         }
     }
 
@@ -155,7 +155,7 @@ public class RippleWsServiceImpl {
             log.debug("ripple node ws connection established");
             subscribeToTransactions();
         } catch (Exception e) {
-            log.error("error connection to ripple node {}", e);
+            //log.error("error connection to ripple node {}", e);
         }
     }
 
@@ -187,7 +187,7 @@ public class RippleWsServiceImpl {
 
     @OnClose
     public void close(final Session session, final CloseReason reason) {
-        log.error("Connection lost. Session closed : {}. Reason : {}", session, reason);
+        //log.error("Connection lost. Session closed : {}. Reason : {}", session, reason);
         if (!shutdown) {
             connectAndSubscribe();
         }
@@ -199,7 +199,7 @@ public class RippleWsServiceImpl {
             shutdown = true;
             session.close();
         } catch (IOException e) {
-            log.error("error closing session");
+            //log.error("error closing session");
         }
     }
 

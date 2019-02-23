@@ -376,4 +376,16 @@ public class UserDaoImpl implements UserDao {
         }
         return result.get(0);
     }
+
+    public UserRole getUserRoles(String email) {
+        String sql = "select USER_ROLE.name as role_name from USER " +
+                "inner join USER_ROLE on USER.roleid = USER_ROLE.id where USER.email = :email ";
+        Map<String, String> namedParameters = new HashMap<>();
+        namedParameters.put("email", email);
+        return namedParameterJdbcTemplate.query(sql, namedParameters, (rs, row) -> {
+            UserRole role = UserRole.valueOf(rs.getString("role_name"));
+            return role;
+        }).get(0);
+    }
+
 }

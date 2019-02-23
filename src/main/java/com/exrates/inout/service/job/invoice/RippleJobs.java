@@ -65,10 +65,10 @@ public class RippleJobs {
                withdrawService.finalizePostWithdrawalRequest(id);
             }
         } catch (RippleCheckConsensusException e) {
-            log.error("xrp transaction validation error " + e);
+            //log.error("xrp transaction validation error " + e);
             withdrawService.rejectToReview(id);
         } catch (Exception e) {
-            log.error("xrp transaction check error, will check it next time " + e);
+            //log.error("xrp transaction check error, will check it next time " + e);
         }
     }
 }

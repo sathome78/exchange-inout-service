@@ -89,7 +89,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             wsUrl = props.getProperty("wsUrl");
             scheduler.scheduleAtFixedRate(this::reconnect, SCANING_INITIAL_DELAY, PERIOD, TimeUnit.MINUTES);
         } catch (IOException e){
-            log.error(e);
+            //log.error(e);
         }
     }
 
@@ -101,13 +101,13 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             merchant = merchantService.findByName(merchantName);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
             if(merchantSpecParam == null){
-                log.error("Can not find merchant spec param with merchantId = " + merchant.getId() + " and param name = " + lastIrreversebleBlockParam + ", using default value = 0");
+                //log.error("Can not find merchant spec param with merchantId = " + merchant.getId() + " and param name = " + lastIrreversebleBlockParam + ", using default value = 0");
                 lastIrreversibleBlockValue = 0;
             } else {
                 lastIrreversibleBlockValue = Integer.valueOf(merchantSpecParam.getParamValue());
             }
         }catch (Exception ex){
-            log.error(ex);
+            //log.error(ex);
         }
     }
 
@@ -117,7 +117,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             try {
                 connectAndSubscribe();
             } catch (Exception e) {
-                log.error(e);
+                //log.error(e);
             }
         }
     }
@@ -204,7 +204,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             refillService.autoAcceptRefillRequest(requestAcceptDto);
             return requestId;
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw e;
         }
     }
@@ -212,7 +212,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @Override
     public RefillRequestAcceptDto createRequest(String hash, String address, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.error("aunit transaction allready received!!! {}" + hash);
+            //log.error("aunit transaction allready received!!! {}" + hash);
             throw new RuntimeException("aunit transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -283,7 +283,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             endpoint = session.getBasicRemote();
             subscribeToTransactions();
         } catch (Exception e) {
-            log.error(merchantName + " node error " + e.getMessage());
+            //log.error(merchantName + " node error " + e.getMessage());
         }
     }
 
@@ -354,7 +354,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             else if (msg.contains("previous")) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from aunit \n" + msg);
         } catch (Exception e) {
-            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            //log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
@@ -403,7 +403,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
 
             }
         } catch (NoSuchAlgorithmException e) {
-            log.error("Memo can not be decrypted : " + e.getClass());
+            //log.error("Memo can not be decrypted : " + e.getClass());
         }
     }
 
@@ -417,7 +417,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         try {
             processPayment(map);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

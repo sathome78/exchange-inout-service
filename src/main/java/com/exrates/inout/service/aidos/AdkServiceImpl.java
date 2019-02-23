@@ -139,7 +139,7 @@ public class AdkServiceImpl implements AdkService {
     @Override
     public RefillRequestAcceptDto createRequest(String address, String hash, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.error("ADK transaction allready received!!! {}", hash);
+            //log.error("ADK transaction allready received!!! {}", hash);
             throw new RuntimeException("ADK transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -168,7 +168,7 @@ public class AdkServiceImpl implements AdkService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

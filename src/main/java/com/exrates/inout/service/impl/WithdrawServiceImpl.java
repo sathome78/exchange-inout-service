@@ -117,7 +117,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                         delayDescription,
                         locale);
             } catch (final MailException e) {
-                log.error(e);
+                //log.error(e);
             }
             profileData.setTime2();
             BigDecimal newAmount = walletService.getWalletABalance(request.getUserWalletId());
@@ -441,14 +441,14 @@ public class WithdrawServiceImpl implements WithdrawService {
                     userService.addUserComment(WITHDRAW_POSTED, comment, userEmail, false);
                     notificationService.notifyUser(withdrawRequestResult.getUserId(), NotificationEvent.IN_OUT, title, comment);
                 } catch (Exception e) {
-                    log.error("cant send notification on withdraw {}", e);
+                    //log.error("cant send notification on withdraw {}", e);
                 }
             }
         } catch (MerchantException e) {
-            log.error(e);
+            //log.error(e);
             throw e;
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new WithdrawRequestPostException(String.format("withdraw data: %s via merchant: %s", withdrawMerchantOperation.toString(), merchantService.toString()));
         }
     }
@@ -472,7 +472,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                 notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT, title, comment);
             }
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new WithdrawRequestPostException(withdrawRequest.toString());
         }
     }

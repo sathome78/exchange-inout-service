@@ -316,7 +316,7 @@ public class ECKey {
                 byte[] signature = NativeSecp256k1.sign(input.getBytes(), CryptoUtils.bigIntegerToBytes(privateKeyForSigning, 32));
                 return ECKey.ECDSASignature.decodeFromDER(signature);
             } catch (AssertFailException var6) {
-                log.error("Caught AssertFailException inside secp256k1", var6);
+                //log.error("Caught AssertFailException inside secp256k1", var6);
                 throw new RuntimeException(var6);
             }
         } else {
@@ -339,7 +339,7 @@ public class ECKey {
             try {
                 return NativeSecp256k1.verify(data, signature.encodeToDER(), pub);
             } catch (AssertFailException var6) {
-                log.error("Caught AssertFailException inside secp256k1", var6);
+                //log.error("Caught AssertFailException inside secp256k1", var6);
                 return false;
             }
         } else {
@@ -350,7 +350,7 @@ public class ECKey {
             try {
                 return signer.verifySignature(data, signature.r, signature.s);
             } catch (NullPointerException var7) {
-                log.error("Caught NPE inside bouncy castle", var7);
+                //log.error("Caught NPE inside bouncy castle", var7);
                 return false;
             }
         }
@@ -361,7 +361,7 @@ public class ECKey {
             try {
                 return NativeSecp256k1.verify(data, signature, pub);
             } catch (AssertFailException var4) {
-                log.error("Caught AssertFailException inside secp256k1", var4);
+                //log.error("Caught AssertFailException inside secp256k1", var4);
                 return false;
             }
         } else {
@@ -640,13 +640,13 @@ public class ECKey {
             byte[] originalPrivateKeyBytes = originalKey.getPrivKeyBytes();
             byte[] rebornKeyBytes = rebornUnencryptedKey.getPrivKeyBytes();
             if (!Arrays.equals(originalPrivateKeyBytes, rebornKeyBytes)) {
-                log.error("The check that encryption could be reversed failed for {}", originalKey);
+                //log.error("The check that encryption could be reversed failed for {}", originalKey);
                 return false;
             } else {
                 return true;
             }
         } catch (KeyCrypterException var7) {
-            log.error(var7.getMessage());
+            //log.error(var7.getMessage());
             return false;
         }
     }

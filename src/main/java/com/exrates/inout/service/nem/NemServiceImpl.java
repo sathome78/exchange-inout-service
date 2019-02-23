@@ -186,7 +186,7 @@ public class NemServiceImpl implements NemService {
                                 .hash(requestAcceptDto.getMerchantTransactionId())
                                 .build());
             } catch (RefillRequestAppropriateNotFoundException e) {
-                log.error(e);
+                //log.error(e);
             }
         } else {
             refillService.autoAcceptRefillRequest(requestAcceptDto);
@@ -245,7 +245,7 @@ public class NemServiceImpl implements NemService {
                     gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
                 }
             } catch (RefillRequestAppropriateNotFoundException e) {
-                log.error(e);
+                //log.error(e);
             }
         });
 
@@ -297,7 +297,7 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
-        log.error("comission merchant {}", merchantId);
+        //log.error("comission merchant {}", merchantId);
         if (!merchantId.equals(merchant.getId())) {
             return countSpecComissionForMosaic(amount, destinationTag, merchantId);
         }
@@ -363,7 +363,7 @@ public class NemServiceImpl implements NemService {
                 throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, this.additionalWithdrawFieldName());
             }
         } catch (UnsupportedEncodingException e) {
-            log.error("unsupported encoding {}", e);
+            //log.error("unsupported encoding {}", e);
         }
     }
 

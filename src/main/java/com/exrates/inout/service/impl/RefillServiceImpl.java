@@ -180,7 +180,7 @@ public class RefillServiceImpl implements RefillService {
                 result.put("message", notification);
                 result.put("requestId", request.getId());
             } catch (MailException e) {
-                log.error(e);
+                //log.error(e);
             }
         }
         return result;
@@ -260,7 +260,7 @@ public class RefillServiceImpl implements RefillService {
                     request,
                     locale);
         } catch (MailException e) {
-            log.error(e);
+            //log.error(e);
         }
         return requestId;
     }
@@ -1040,7 +1040,7 @@ public class RefillServiceImpl implements RefillService {
         try {
             fillAdressesDtos(data.getData());
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
         DataTable<List<RefillRequestAddressShortDto>> output = new DataTable<>();
         output.setData(data.getData());
@@ -1122,7 +1122,7 @@ public class RefillServiceImpl implements RefillService {
         try {
             this.setHashByRequestId(requestId, requestAcceptDto.getMerchantTransactionId());
         } catch (DuplicatedMerchantTransactionIdOrAttemptToRewriteException e) {
-            log.error(e);
+            //log.error(e);
             throw new RuntimeException(e);
         }
         return requestId;

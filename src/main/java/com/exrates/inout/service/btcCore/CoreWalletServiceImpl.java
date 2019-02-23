@@ -18,6 +18,7 @@ import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
 import com.neemre.btcdcli4j.core.domain.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -82,8 +83,8 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     try {
       btcDaemon.init();
     } catch (Exception e) {
-      log.error(e);
-      log.error(ExceptionUtils.getStackTrace(e));
+      //log.error(e);
+      //log.error(ExceptionUtils.getStackTrace(e));
     }
   }
   
@@ -103,7 +104,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       }
       return btcdClient.getNewAddress();
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new BitcoinCoreException("Cannot generate new address!");
     }
   }
@@ -113,11 +114,11 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         try {
             keyPoolSize = btcdClient.getInfo().getKeypoolSize();
         } catch (BitcoindException | CommunicationException e) {
-            log.error(e);
+            //log.error(e);
             try {
                 keyPoolSize = btcdClient.getWalletInfo().getKeypoolSize();
             } catch (BitcoindException | CommunicationException e2) {
-                log.error(e2);
+                //log.error(e2);
                 throw new BitcoinCoreException("Cannot generate new address!");
             }
         }
@@ -133,7 +134,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       log.debug("Backing up wallet to file: " + filename);
       btcdClient.backupWallet(filename);
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
     }
   }
   
@@ -154,7 +155,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             return Optional.of(conflicted);
           }
         } catch (BitcoindException | CommunicationException e) {
-          log.error(e);
+          //log.error(e);
         }
       }
       return Optional.empty();
@@ -169,7 +170,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       log.debug(this);
       return handleConflicts(btcdClient.getTransaction(txId)).map(this::convert);
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
     }
     return Optional.empty();
   }
@@ -209,12 +210,12 @@ public class CoreWalletServiceImpl implements CoreWalletService {
           dto.setUnconfirmedBalance(BigDecimalProcessing.formatNonePoint(unconfirmedBalance, true));
           dto.setTransactionCount(walletInfo.getTxCount());
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
           try {
               BigDecimal spendableBalance = btcdClient.getBalance();
               dto.setBalance(BigDecimalProcessing.formatNonePoint(spendableBalance, true));
           } catch (BitcoindException | CommunicationException e1) {
-              log.error(e1);
+              //log.error(e1);
           }
       }
       return dto;
@@ -235,7 +236,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         return dto;
       })).collect(Collectors.toList());
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new BitcoinCoreException(e.getMessage());
     }
   }
@@ -257,7 +258,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                 return dto;
               }).collect(Collectors.toList());
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new BitcoinCoreException(e.getMessage());
     }
   }
@@ -268,7 +269,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         try {
             return listSinceBlockExChecked(blockHash, merchantId, currencyId);
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new BitcoinCoreException(e);
         }
     }
@@ -294,7 +295,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     try {
       return listSinceBlockExChecked(blockHash, merchantId, currencyId);
     } catch (Exception e) {
-      log.error(e);
+      //log.error(e);
       return Collections.emptyList();
     }
   }
@@ -306,7 +307,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     try {
       return btcdClient.estimateFee(blockCount);
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       try {
         SmartFee smartFee = btcdClient.estimateSmartFee(blockCount);
         if (smartFee.getErrors() != null && !smartFee.getErrors().isEmpty()) {
@@ -315,7 +316,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
           return smartFee.getFeeRate();
         }
       } catch (BitcoindException | CommunicationException e1) {
-        log.error(e1);
+        //log.error(e1);
       }
       return new BigDecimal(-1L);
     }
@@ -327,11 +328,11 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       return btcdClient.getInfo().getPayTxFee();
 
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       try {
         return btcdClient.getWalletInfo().getPayTxFee();
       } catch (BitcoindException | CommunicationException e1) {
-        log.error(e1);
+        //log.error(e1);
       }
       throw new BitcoinCoreException(e);
     }
@@ -343,7 +344,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     try {
       btcdClient.setTxFee(fee);
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new BitcoinCoreException(e.getMessage());
     }
   }
@@ -353,7 +354,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     try {
       unlockWallet(password, 60);
     } catch (BitcoindException | CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new BitcoinCoreException(e.getMessage());
     }
   }
@@ -381,7 +382,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       }
       return result;
     } catch (BitcoindException e) {
-      log.error(e);
+      //log.error(e);
       if (e.getCode() == -5) {
         throw new InvalidAccountException();
       }
@@ -391,7 +392,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       throw new MerchantException(e.getMessage());
     }
     catch (CommunicationException e) {
-      log.error(e);
+      //log.error(e);
       throw new MerchantException(e.getMessage());
     }
   }
@@ -418,7 +419,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
                 btcdClient.walletLock();
             }
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 
@@ -426,7 +427,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         try {
             return btcdClient.getInfo().getUnlockedUntil();
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             return btcdClient.getWalletInfo().getUnlockedUntil();
         }
     }
@@ -458,7 +459,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       }
       return new BtcPaymentResultDto(txId);
     } catch (Exception e) {
-      log.error(e);
+      //log.error(e);
       return new BtcPaymentResultDto(e);
     }
   }
@@ -484,7 +485,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       String port = btcdClient.getNodeConfig().getProperty(portProperty);
       return source.apply(port).map(mapper);
     } else {
-      log.error("Client not initialized!");
+      //log.error("Client not initialized!");
       return Flux.empty();
     }
   }
@@ -537,7 +538,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             btcdClient.lockUnspent(unlock, txOverview.getVIn().stream()
                     .map(vin -> new OutputOverview(vin.getTxId(), vin.getVOut())).collect(Collectors.toList()));
         } catch (BitcoindException | CommunicationException e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 
@@ -552,7 +553,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
           String txId = btcdClient.sendRawTransaction(signatureResult.getHex(), false);
           return new BtcPaymentResultDto(txId);
       } catch (Exception e) {
-          log.error(e);
+          //log.error(e);
           return new BtcPaymentResultDto(e);
       }
   }
@@ -571,7 +572,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
            }
 
       } catch (BitcoindException | CommunicationException e) {
-          log.error(e);
+          //log.error(e);
       }
   }
 
@@ -589,11 +590,11 @@ public class CoreWalletServiceImpl implements CoreWalletService {
       try {
           return btcdClient.getBestBlockHash();
       } catch (BitcoindException | CommunicationException e) {
-          log.error(e);
+          //log.error(e);
           try {
               return btcdClient.getBlockHash(btcdClient.getBlockCount());
           } catch (BitcoindException | CommunicationException e1) {
-              log.error(e1);
+              //log.error(e1);
           }
           throw new BitcoinCoreException(e);
       }
@@ -605,7 +606,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
           Block block = btcdClient.getBlock(blockHash);
           return new BtcBlockDto(block.getHash(), block.getHeight(), block.getTime());
       } catch (BitcoindException | CommunicationException e) {
-          log.error(e);
+          //log.error(e);
           throw new BitcoinCoreException(e);
       }
   }
@@ -634,7 +635,15 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         final String notificationInstantSendPort = node.getNotificationInstantSendPort();
         try {
             PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-            CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
+            double timeout = 10;
+            RequestConfig config = RequestConfig.custom().
+                    setConnectTimeout(10 * 1000).
+                    setConnectionRequestTimeout(10 * 1000).
+                    setSocketTimeout(10 * 1000).build();
+
+            CloseableHttpClient httpProvider = HttpClients.custom()
+                    .setConnectionManager(cm)
+                    .setDefaultRequestConfig(config)
                     .build();
             Properties nodeConfig = new Properties();
             if (nonNull(rpcProtocol)) {
@@ -673,8 +682,8 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             this.supportSubtractFee = supportSubtractFee;
             this.supportReferenceLine = supportReferenceLine;
         } catch (Exception ex) {
-            log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
-            log.error(ExceptionUtils.getStackTrace(ex));
+            //log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
+            //log.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

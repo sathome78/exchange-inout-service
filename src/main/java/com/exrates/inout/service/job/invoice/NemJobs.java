@@ -72,10 +72,10 @@ public class NemJobs {
                 withdrawService.finalizePostWithdrawalRequest(id);
             }
         } catch (NemTransactionException e) {
-            log.error("nem transaction not included in block " + e);
+            //log.error("nem transaction not included in block " + e);
             withdrawService.rejectToReview(id);
         } catch (Exception e) {
-            log.error("nem transaction check error, will check it next time " + e);
+            //log.error("nem transaction check error, will check it next time " + e);
         }
     }
 
@@ -96,8 +96,8 @@ public class NemJobs {
         try {
             nemService.checkRecievedTransaction(dto);
         } catch (Exception e) {
-            log.error(e);
-            log.error("error checking nem tx confirmations {}", dto);
+            //log.error(e);
+            //log.error("error checking nem tx confirmations {}", dto);
         }
     }
 

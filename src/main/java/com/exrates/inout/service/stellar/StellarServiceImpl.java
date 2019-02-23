@@ -144,7 +144,7 @@ public class StellarServiceImpl implements StellarService {
         try {
             this.processPayment(paramsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error("xlm refill address not found {}", payment);
+            //log.error("xlm refill address not found {}", payment);
         }
     }
 

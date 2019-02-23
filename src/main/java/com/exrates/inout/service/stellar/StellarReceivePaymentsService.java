@@ -95,7 +95,7 @@ public class StellarReceivePaymentsService {
         try {
             transactionResponse = stellarTransactionService.getTxByURI(SEVER_URL, response.getLinks().getTransaction().getUri());
         } catch (Exception e) {
-            log.error("error getting transaction {}", e);
+            //log.error("error getting transaction {}", e);
         }
         log.debug("process transaction");
         stellarService.onTransactionReceive(transactionResponse, response.getAmount(), currencyName, merchant);

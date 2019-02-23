@@ -57,16 +57,16 @@ public class TxsScanerImpl implements BlocksScaner {
 
     @Override
     public void scan() {
-        log.info("achain scan tx's");
+        //log.info("achain scan tx's");
         /*check is node synced*/
         if (!nodeService.getSyncState()) {
-            log.debug("achain not synced");
+            //log.debug("achain not synced");
             return;
         }
         Long lastProcessedBlock = loadLastBlock();
         /*scan to the pred-last block*/
         Long endBlock = nodeService.getBlockCount() - 1;
-        log.info("achain end block {}, last block {}", endBlock, lastProcessedBlock);
+        //log.info("achain end block {}, last block {}", endBlock, lastProcessedBlock);
         while (lastProcessedBlock < endBlock) {
             lastProcessedBlock++;
             JSONArray transactions =  nodeService.getBlockTransactions(lastProcessedBlock);
@@ -79,7 +79,7 @@ public class TxsScanerImpl implements BlocksScaner {
         for (Object p : transactions) {
             try {
                 JSONArray tx = (JSONArray)p;
-                log.debug(tx);
+                //log.debug(tx);
                 JSONObject trx = tx.getJSONObject(1).getJSONObject("trx");
                 String result = trx.getString("result_trx_type");
                 String recieveAccount = trx.getString("alp_account");
@@ -91,10 +91,10 @@ public class TxsScanerImpl implements BlocksScaner {
                     JSONArray operations = trx.getJSONArray("operations");
                     if ("transaction_op_type".equals(operations.getJSONObject(0).getString("type")) &&
                             result.equals("complete_result_transaction")) {
-                        log.info(operations);
+                        //log.info(operations);
                         JSONObject innerTrx = operations.getJSONObject(0).getJSONObject("data")
                                 .getJSONObject("trx").getJSONArray("operations").getJSONObject(0).getJSONObject("data");
-                        log.info(innerTrx);
+                        //log.info(innerTrx);
                         String[] args = innerTrx.getString("args").split("\\|");
                         String fullAddress = args[0];
                         if (!(fullAddress.startsWith(nodeService.getMainAccountAddress()) &&
@@ -111,14 +111,14 @@ public class TxsScanerImpl implements BlocksScaner {
                     }
                 }
             } catch (Exception e) {
-                log.error(e);
+                ////log.error(e);
             }
         }
     }
 
 
     private void processAct(JSONArray tx, JSONObject trx, String recieveAccount) {
-        log.info("income tx {}", trx);
+        //log.info("income tx {}", trx);
         //determine the transaction type
         JSONArray operations = trx.getJSONArray("operations");
         AchainTransactionType transactionType = determinteTxType(operations);
@@ -174,7 +174,7 @@ public class TxsScanerImpl implements BlocksScaner {
         try {
             achainService.processPayment(paymentParamsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
+            ////log.error(e);
         }
     }
 

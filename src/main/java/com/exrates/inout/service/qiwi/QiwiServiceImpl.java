@@ -112,7 +112,7 @@ public class QiwiServiceImpl implements QiwiService {
         try {
             this.processPayment(paramsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error("*** Qiwi *** refill address not found {}", transaction);
+            //log.error("*** Qiwi *** refill address not found {}", transaction);
         }
     }
 

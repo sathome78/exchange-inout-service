@@ -66,7 +66,7 @@ public class QtumNodeServiceImpl implements QtumNodeService {
         try {
             return Optional.of(invokeJsonRpcMethod("listsinceblock", Arrays.asList(blockHash), new TypeReference<QtumJsonRpcResponse<QtumListTransactions>>() {}));
         }catch (Exception e){
-            log.error(e);
+            ////log.error(e);
             return Optional.empty();
         }
     }
@@ -149,7 +149,7 @@ public class QtumNodeServiceImpl implements QtumNodeService {
             String responseString = restTemplate.postForObject(endpoint, request, String.class);
             QtumJsonRpcResponse<T> response = objectMapper.readValue(responseString, typeReference);
             if (response.getError() != null) {
-                log.error(response.getError());
+                ////log.error(response.getError());
                 throw new QtumApiException(response.getError().getCode(), response.getError().getMessage());
             }
             if (response.getResult() == null && !request.getMethod().equals("walletpassphrase")) {
@@ -159,7 +159,7 @@ public class QtumNodeServiceImpl implements QtumNodeService {
         } catch (HttpStatusCodeException e){
             throw new QtumApiException(e.getResponseBodyAsString());
         } catch (Exception e){
-            log.error(e);
+            ////log.error(e);
             throw new QtumApiException(e);
         }
     }
@@ -169,7 +169,7 @@ public class QtumNodeServiceImpl implements QtumNodeService {
         try {
             QtumJsonRpcResponseList<T> response = objectMapper.readValue(responseString,  typeReference);
             if (response.getError() != null) {
-                log.error(response.getError());
+                ////log.error(response.getError());
                 throw new QtumApiException(response.getError().getCode(), response.getError().getMessage());
             }
             if (response.getResult() == null && !request.getMethod().equals("walletpassphrase")) {

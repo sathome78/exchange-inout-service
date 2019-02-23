@@ -49,7 +49,7 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.POST_
 @Service
 @Log4j2(topic = "job")
 @PropertySource(value = {"classpath:/job.properties"})
-public class withdrawRequestJob {
+public class WithdrawRequestJob {
   
   
   @Value("${withdraw.rejectErrorTimeout}")
@@ -84,7 +84,7 @@ public class withdrawRequestJob {
     try {
       withdrawService.setAllAvailableInPostingStatus();
     } catch (Exception e) {
-      log.error(ExceptionUtils.getStackTrace(e));
+      //log.error(ExceptionUtils.getStackTrace(e));
     }
     log.info("after setInPostingStatus()");
 
@@ -108,25 +108,25 @@ public class withdrawRequestJob {
           log.info("successful withdrawal: " + withdrawRequest.toString());
         }
         catch (InsufficientCostsInWalletException e) {
-          log.error(ExceptionUtils.getStackTrace(e));
+          //log.error(ExceptionUtils.getStackTrace(e));
           withdrawService.rejectToReview(withdrawRequest.getId());
           sendEmailsOnInsufficientCosts(withdrawRequest.getCurrencyName());
         }
         catch (InvalidAccountException e) {
-          log.error(ExceptionUtils.getStackTrace(e));
+          //log.error(ExceptionUtils.getStackTrace(e));
           withdrawService.rejectError(withdrawRequest.getId(), e.getReason());
         }
         catch (MerchantException e) {
-          log.error(ExceptionUtils.getStackTrace(e));
+          //log.error(ExceptionUtils.getStackTrace(e));
           withdrawService.rejectToReview(withdrawRequest.getId());
         }
         catch (Exception e) {
-          log.error(ExceptionUtils.getStackTrace(e));
+          //log.error(ExceptionUtils.getStackTrace(e));
         }
       }
     }
         catch (Exception e) {
-      log.error(ExceptionUtils.getStackTrace(e));
+      //log.error(ExceptionUtils.getStackTrace(e));
     }
   }
   
