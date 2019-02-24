@@ -21,9 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.dto.MerchantSpecParamDto;
-
 /**
  * Created by maks on 06.06.2017.
  */
