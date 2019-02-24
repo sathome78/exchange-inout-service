@@ -1,9 +1,11 @@
 package org.stellar.sdk;
 
-import com.google.common.io.BaseEncoding;
-import org.stellar.sdk.xdr.*;
+import org.apache.commons.codec.binary.Base64;
+import org.stellar.sdk.xdr.DecoratedSignature;
+import org.stellar.sdk.xdr.EnvelopeType;
+import org.stellar.sdk.xdr.SignatureHint;
+import org.stellar.sdk.xdr.XdrDataOutputStream;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -19,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents <a href="https://www.stellar.org/developers/learn/concepts/transactions.html" target="_blank">Transaction</a> in Stellar network.
  */
 public class Transaction {
-  private static final int BASE_FEE = 100;
+  private final int BASE_FEE = 100;
 
   private final int mFee;
   private final KeyPair mSourceAccount;
@@ -29,13 +31,13 @@ public class Transaction {
   private final TimeBounds mTimeBounds;
   private List<DecoratedSignature> mSignatures;
 
-  Transaction(KeyPair sourceAccount, int fee, long sequenceNumber, Operation[] operations, Memo memo, TimeBounds timeBounds) {
+  Transaction(KeyPair sourceAccount, long sequenceNumber, Operation[] operations, Memo memo, TimeBounds timeBounds) {
     mSourceAccount = checkNotNull(sourceAccount, "sourceAccount cannot be null");
     mSequenceNumber = checkNotNull(sequenceNumber, "sequenceNumber cannot be null");
     mOperations = checkNotNull(operations, "operations cannot be null");
     checkArgument(operations.length > 0, "At least one operation required");
 
-    mFee = fee;
+    mFee = operations.length * BASE_FEE;
     mSignatures = new ArrayList<DecoratedSignature>();
     mMemo = memo != null ? memo : Memo.none();
     mTimeBounds = timeBounds;
@@ -57,7 +59,7 @@ public class Transaction {
    */
   public void sign(byte[] preimage) {
     checkNotNull(preimage, "preimage cannot be null");
-    Signature signature = new Signature();
+    org.stellar.sdk.xdr.Signature signature = new org.stellar.sdk.xdr.Signature();
     signature.setSignature(preimage);
 
     byte[] hash = Util.hash(preimage);
@@ -136,26 +138,19 @@ public class Transaction {
   }
 
   /**
-   * Returns operations in this transaction.
-   */
-  public Operation[] getOperations() {
-    return mOperations;
-  }
-
-  /**
    * Generates Transaction XDR object.
    */
   public org.stellar.sdk.xdr.Transaction toXdr() {
     // fee
-    Uint32 fee = new Uint32();
+    org.stellar.sdk.xdr.Uint32 fee = new org.stellar.sdk.xdr.Uint32();
     fee.setUint32(mFee);
     // sequenceNumber
-    Int64 sequenceNumberUint = new Int64();
-    sequenceNumberUint.setInt64(mSequenceNumber);
-    SequenceNumber sequenceNumber = new SequenceNumber();
+    org.stellar.sdk.xdr.Uint64 sequenceNumberUint = new org.stellar.sdk.xdr.Uint64();
+    sequenceNumberUint.setUint64(mSequenceNumber);
+    org.stellar.sdk.xdr.SequenceNumber sequenceNumber = new org.stellar.sdk.xdr.SequenceNumber();
     sequenceNumber.setSequenceNumber(sequenceNumberUint);
     // sourceAccount
-    AccountID sourceAccount = new AccountID();
+    org.stellar.sdk.xdr.AccountID sourceAccount = new org.stellar.sdk.xdr.AccountID();
     sourceAccount.setAccountID(mSourceAccount.getXdrPublicKey());
     // operations
     org.stellar.sdk.xdr.Operation[] operations = new org.stellar.sdk.xdr.Operation[mOperations.length];
@@ -178,51 +173,14 @@ public class Transaction {
   }
 
   /**
-   * Creates a <code>Transaction</code> instance from previously build <code>TransactionEnvelope</code>
-   * @param envelope Base-64 encoded <code>TransactionEnvelope</code>
-   * @return
-   * @throws IOException
+   * Generates TransactionEnvelope XDR object. Transaction need to have at least one signature.
    */
-  public static Transaction fromEnvelopeXdr(String envelope) throws IOException {
-    BaseEncoding base64Encoding = BaseEncoding.base64();
-    byte[] bytes = base64Encoding.decode(envelope);
-
-    TransactionEnvelope transactionEnvelope = TransactionEnvelope.decode(new XdrDataInputStream(new ByteArrayInputStream(bytes)));
-    return fromEnvelopeXdr(transactionEnvelope);
-  }
-
-  /**
-   * Creates a <code>Transaction</code> instance from previously build <code>TransactionEnvelope</code>
-   * @param envelope
-   * @return
-   */
-  public static Transaction fromEnvelopeXdr(TransactionEnvelope envelope) {
-    org.stellar.sdk.xdr.Transaction tx = envelope.getTx();
-    int mFee = tx.getFee().getUint32();
-    KeyPair mSourceAccount = KeyPair.fromXdrPublicKey(tx.getSourceAccount().getAccountID());
-    Long mSequenceNumber = tx.getSeqNum().getSequenceNumber().getInt64();
-    Memo mMemo = Memo.fromXdr(tx.getMemo());
-    TimeBounds mTimeBounds = TimeBounds.fromXdr(tx.getTimeBounds());
-
-    Operation[] mOperations = new Operation[tx.getOperations().length];
-    for (int i = 0; i < tx.getOperations().length; i++) {
-      mOperations[i] = Operation.fromXdr(tx.getOperations()[i]);
+  public org.stellar.sdk.xdr.TransactionEnvelope toEnvelopeXdr() {
+    if (mSignatures.size() == 0) {
+      throw new NotEnoughSignaturesException("Transaction must be signed by at least one signer. Use transaction.sign().");
     }
 
-    Transaction transaction = new Transaction(mSourceAccount, mFee, mSequenceNumber, mOperations, mMemo, mTimeBounds);
-
-    for (DecoratedSignature signature : envelope.getSignatures()) {
-      transaction.mSignatures.add(signature);
-    }
-
-    return transaction;
-  }
-
-  /**
-   * Generates TransactionEnvelope XDR object.
-   */
-  public TransactionEnvelope toEnvelopeXdr() {
-    TransactionEnvelope xdr = new TransactionEnvelope();
+    org.stellar.sdk.xdr.TransactionEnvelope xdr = new org.stellar.sdk.xdr.TransactionEnvelope();
     org.stellar.sdk.xdr.Transaction transaction = this.toXdr();
     xdr.setTx(transaction);
 
@@ -237,13 +195,12 @@ public class Transaction {
    */
   public String toEnvelopeXdrBase64() {
     try {
-      TransactionEnvelope envelope = this.toEnvelopeXdr();
+      org.stellar.sdk.xdr.TransactionEnvelope envelope = this.toEnvelopeXdr();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(outputStream);
-      TransactionEnvelope.encode(xdrOutputStream, envelope);
-
-      BaseEncoding base64Encoding = BaseEncoding.base64();
-      return base64Encoding.encode(outputStream.toByteArray());
+      org.stellar.sdk.xdr.TransactionEnvelope.encode(xdrOutputStream, envelope);
+      Base64 base64Codec = new Base64();
+      return base64Codec.encodeAsString(outputStream.toByteArray());
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -257,9 +214,6 @@ public class Transaction {
     private Memo mMemo;
     private TimeBounds mTimeBounds;
     List<Operation> mOperations;
-    private boolean timeoutSet;
-
-    public static final long TIMEOUT_INFINITE = 0;
 
     /**
      * Construct a new transaction builder.
@@ -320,55 +274,12 @@ public class Transaction {
     }
 
     /**
-     * Because of the distributed nature of the Stellar network it is possible that the status of your transaction
-     * will be determined after a long time if the network is highly congested.
-     * If you want to be sure to receive the status of the transaction within a given period you should set the
-     * {@link TimeBounds} with <code>maxTime</code> on the transaction (this is what <code>setTimeout</code> does
-     * internally; if there's <code>minTime</code> set but no <code>maxTime</code> it will be added).
-     * Call to <code>Builder.setTimeout</code> is required if Transaction does not have <code>max_time</code> set.
-     * If you don't want to set timeout, use <code>TIMEOUT_INFINITE</code>. In general you should set
-     * <code>TIMEOUT_INFINITE</code> only in smart contracts.
-     * Please note that Horizon may still return <code>504 Gateway Timeout</code> error, even for short timeouts.
-     * In such case you need to resubmit the same transaction again without making any changes to receive a status.
-     * This method is using the machine system time (UTC), make sure it is set correctly.
-     * @param timeout Timeout in seconds.
-     * @see TimeBounds
-     * @return
-     */
-    public Builder setTimeout(long timeout) {
-      if (mTimeBounds != null && mTimeBounds.getMaxTime() > 0) {
-        throw new RuntimeException("TimeBounds.max_time has been already set - setting timeout would overwrite it.");
-      }
-
-      if (timeout < 0) {
-        throw new RuntimeException("timeout cannot be negative");
-      }
-
-      timeoutSet = true;
-      if (timeout > 0) {
-        long timeoutTimestamp = System.currentTimeMillis() / 1000L + timeout;
-        if (mTimeBounds == null) {
-          mTimeBounds = new TimeBounds(0, timeoutTimestamp);
-        } else {
-          mTimeBounds = new TimeBounds(mTimeBounds.getMinTime(), timeoutTimestamp);
-        }
-      }
-
-      return this;
-    }
-
-    /**
      * Builds a transaction. It will increment sequence number of the source account.
      */
     public Transaction build() {
-      // Ensure setTimeout called or maxTime is set
-      if ((mTimeBounds == null || mTimeBounds != null && mTimeBounds.getMaxTime() == 0) && !timeoutSet) {
-        throw new RuntimeException("TimeBounds has to be set or you must call setTimeout(TIMEOUT_INFINITE).");
-      }
-
       Operation[] operations = new Operation[mOperations.size()];
       operations = mOperations.toArray(operations);
-      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
+      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
       // Increment sequence number when there were no exceptions when creating a transaction
       mSourceAccount.incrementSequenceNumber();
       return transaction;

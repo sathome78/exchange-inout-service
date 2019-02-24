@@ -20,8 +20,7 @@ import java.io.IOException;
 //      ALLOW_TRUST = 7,
 //      ACCOUNT_MERGE = 8,
 //      INFLATION = 9,
-//      MANAGE_DATA = 10,
-//      BUMP_SEQUENCE = 11
+//      MANAGE_DATA = 10
 //  };
 
 //  ===========================================================================
@@ -37,7 +36,6 @@ public enum OperationType  {
   ACCOUNT_MERGE(8),
   INFLATION(9),
   MANAGE_DATA(10),
-  BUMP_SEQUENCE(11),
   ;
   private int mValue;
 
@@ -63,7 +61,6 @@ public enum OperationType  {
       case 8: return ACCOUNT_MERGE;
       case 9: return INFLATION;
       case 10: return MANAGE_DATA;
-      case 11: return BUMP_SEQUENCE;
       default:
         throw new RuntimeException("Unknown enum value: " + value);
     }

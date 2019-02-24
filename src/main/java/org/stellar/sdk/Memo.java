@@ -1,6 +1,6 @@
 package org.stellar.sdk;
 
-import com.google.common.io.BaseEncoding;
+import org.apache.commons.codec.DecoderException;
 
 /**
  * <p>The memo contains optional extra information. It is the responsibility of the client to interpret this value. Memos can be one of the following types:</p>
@@ -49,8 +49,9 @@ public abstract class Memo {
     /**
      * Creates new {@link MemoHash} instance from hex-encoded string
      * @param hexString
+     * @throws DecoderException
      */
-    public static MemoHash hash(String hexString) {
+    public static MemoHash hash(String hexString) throws DecoderException {
         return new MemoHash(hexString);
     }
 
@@ -65,29 +66,11 @@ public abstract class Memo {
     /**
      * Creates new {@link MemoReturnHash} instance from hex-encoded string.
      * @param hexString
+     * @throws DecoderException
      */
-    public static MemoReturnHash returnHash(String hexString) {
-        // We change to lowercase because we want to decode both: upper cased and lower cased alphabets.
-        return new MemoReturnHash(BaseEncoding.base16().lowerCase().decode(hexString.toLowerCase()));
-    }
-
-    public static Memo fromXdr(org.stellar.sdk.xdr.Memo memo) {
-        switch (memo.getDiscriminant()) {
-            case MEMO_NONE:
-                return none();
-            case MEMO_ID:
-                return id(memo.getId().getUint64().longValue());
-            case MEMO_TEXT:
-                return text(memo.getText());
-            case MEMO_HASH:
-                return hash(memo.getHash().getHash());
-            case MEMO_RETURN:
-                return returnHash(memo.getRetHash().getHash());
-            default:
-                throw new RuntimeException("Unknown memo type");
-        }
+    public static MemoReturnHash returnHash(String hexString) throws DecoderException {
+        return new MemoReturnHash(hexString);
     }
 
     abstract org.stellar.sdk.xdr.Memo toXdr();
-    abstract public boolean equals(Object o);
 }

@@ -1,15 +1,14 @@
 package org.stellar.sdk.requests;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
+import org.apache.http.client.fluent.Request;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.responses.Page;
 import org.stellar.sdk.responses.operations.OperationResponse;
 
 import java.io.IOException;
+import java.net.URI;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,8 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Builds requests connected to operations.
  */
 public class OperationsRequestBuilder extends RequestBuilder {
-  public OperationsRequestBuilder(OkHttpClient httpClient, HttpUrl serverURI) {
-    super(httpClient, serverURI, "operations");
+  public OperationsRequestBuilder(URI serverURI) {
+    super(serverURI, "operations");
   }
 
   /**
@@ -26,14 +25,10 @@ public class OperationsRequestBuilder extends RequestBuilder {
    * This method is helpful for getting the links.
    * @throws IOException
    */
-  public OperationResponse operation(HttpUrl uri) throws IOException {
+  public OperationResponse operation(URI uri) throws IOException {
     TypeToken type = new TypeToken<OperationResponse>() {};
     ResponseHandler<OperationResponse> responseHandler = new ResponseHandler<OperationResponse>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (OperationResponse) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -86,28 +81,10 @@ public class OperationsRequestBuilder extends RequestBuilder {
    * @throws TooManyRequestsException when too many requests were sent to the Horizon server.
    * @throws IOException
    */
-  public static Page<OperationResponse> execute(OkHttpClient httpClient, HttpUrl uri) throws IOException, TooManyRequestsException {
+  public static Page<OperationResponse> execute(URI uri) throws IOException, TooManyRequestsException {
     TypeToken type = new TypeToken<Page<OperationResponse>>() {};
     ResponseHandler<Page<OperationResponse>> responseHandler = new ResponseHandler<Page<OperationResponse>>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
-  }
-
-  /**
-   * Allows to stream SSE events from horizon.
-   * Certain endpoints in Horizon can be called in streaming mode using Server-Sent Events.
-   * This mode will keep the connection to horizon open and horizon will continue to return
-   * responses as ledgers close.
-   * @see <a href="http://www.w3.org/TR/eventsource/" target="_blank">Server-Sent Events</a>
-   * @see <a href="https://www.stellar.org/developers/horizon/learn/responses.html" target="_blank">Response Format documentation</a>
-   * @param listener {@link OperationResponse} implementation with {@link OperationResponse} type
-   * @return EventSource object, so you can <code>close()</code> connection when not needed anymore
-   */
-  public SSEStream<OperationResponse> stream(final EventListener<OperationResponse> listener) {
-    return SSEStream.create(httpClient,this,OperationResponse.class,listener);
+    return (Page<OperationResponse>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -117,7 +94,7 @@ public class OperationsRequestBuilder extends RequestBuilder {
    * @throws IOException
    */
   public Page<OperationResponse> execute() throws IOException, TooManyRequestsException {
-    return this.execute(this.httpClient, this.buildUri());
+    return this.execute(this.buildUri());
   }
 
   @Override

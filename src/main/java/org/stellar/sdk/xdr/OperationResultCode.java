@@ -12,9 +12,8 @@ import java.io.IOException;
 //  {
 //      opINNER = 0, // inner object result is valid
 //  
-//      opBAD_AUTH = -1,     // too few valid signatures / wrong network
-//      opNO_ACCOUNT = -2,   // source account was not found
-//      opNOT_SUPPORTED = -3 // operation not supported at this time
+//      opBAD_AUTH = -1,  // too few valid signatures / wrong network
+//      opNO_ACCOUNT = -2 // source account was not found
 //  };
 
 //  ===========================================================================
@@ -22,7 +21,6 @@ public enum OperationResultCode  {
   opINNER(0),
   opBAD_AUTH(-1),
   opNO_ACCOUNT(-2),
-  opNOT_SUPPORTED(-3),
   ;
   private int mValue;
 
@@ -40,7 +38,6 @@ public enum OperationResultCode  {
       case 0: return opINNER;
       case -1: return opBAD_AUTH;
       case -2: return opNO_ACCOUNT;
-      case -3: return opNOT_SUPPORTED;
       default:
         throw new RuntimeException("Unknown enum value: " + value);
     }

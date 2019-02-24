@@ -1,22 +1,21 @@
 package org.stellar.sdk.requests;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
+import org.apache.http.client.utils.URIBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
  * Abstract class for request builders.
  */
 public abstract class RequestBuilder {
-  protected HttpUrl.Builder uriBuilder;
-  protected OkHttpClient httpClient;
+  protected URIBuilder uriBuilder;
   private ArrayList<String> segments;
   private boolean segmentsAdded;
 
-  RequestBuilder(OkHttpClient httpClient, HttpUrl serverURI, String defaultSegment) {
-    this.httpClient = httpClient;
-    uriBuilder = serverURI.newBuilder();
+  RequestBuilder(URI serverURI, String defaultSegment) {
+    uriBuilder = new URIBuilder(serverURI);
     segments = new ArrayList<String>();
     if (defaultSegment != null) {
       this.setSegments(defaultSegment);
@@ -47,7 +46,7 @@ public abstract class RequestBuilder {
    * @param cursor
    */
   public RequestBuilder cursor(String cursor) {
-    uriBuilder.setQueryParameter("cursor", cursor);
+    uriBuilder.addParameter("cursor", cursor);
     return this;
   }
 
@@ -58,7 +57,7 @@ public abstract class RequestBuilder {
    * @param number maxium number of records to return
    */
   public RequestBuilder limit(int number) {
-    uriBuilder.setQueryParameter("limit", String.valueOf(number));
+    uriBuilder.addParameter("limit", String.valueOf(number));
     return this;
   }
 
@@ -67,17 +66,23 @@ public abstract class RequestBuilder {
    * @param direction {@link Order}
    */
   public RequestBuilder order(Order direction) {
-    uriBuilder.setQueryParameter("order", direction.getValue());
+    uriBuilder.addParameter("order", direction.getValue());
     return this;
   }
 
-  HttpUrl buildUri() {
+  URI buildUri() {
     if (segments.size() > 0) {
+      String path = "";
       for (String segment : segments) {
-        uriBuilder.addPathSegment(segment);
+        path += "/"+segment;
       }
+      uriBuilder.setPath(path);
     }
-    return uriBuilder.build();
+    try {
+      return uriBuilder.build();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**

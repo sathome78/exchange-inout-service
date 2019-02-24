@@ -8,23 +8,23 @@ import java.io.IOException;
 
 // === xdr source ============================================================
 
-//  typedef int64 SequenceNumber;
+//  typedef uint64 SequenceNumber;
 
 //  ===========================================================================
 public class SequenceNumber  {
-  private Int64 SequenceNumber;
-  public Int64 getSequenceNumber() {
+  private Uint64 SequenceNumber;
+  public Uint64 getSequenceNumber() {
     return this.SequenceNumber;
   }
-  public void setSequenceNumber(Int64 value) {
+  public void setSequenceNumber(Uint64 value) {
     this.SequenceNumber = value;
   }
   public static void encode(XdrDataOutputStream stream, SequenceNumber  encodedSequenceNumber) throws IOException {
-  Int64.encode(stream, encodedSequenceNumber.SequenceNumber);
+  Uint64.encode(stream, encodedSequenceNumber.SequenceNumber);
   }
   public static SequenceNumber decode(XdrDataInputStream stream) throws IOException {
     SequenceNumber decodedSequenceNumber = new SequenceNumber();
-  decodedSequenceNumber.SequenceNumber = Int64.decode(stream);
+  decodedSequenceNumber.SequenceNumber = Uint64.decode(stream);
     return decodedSequenceNumber;
   }
 }

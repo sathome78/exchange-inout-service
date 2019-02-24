@@ -1,22 +1,27 @@
 package org.stellar.sdk.requests;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import org.apache.http.client.fluent.Request;
+import org.glassfish.jersey.media.sse.EventSource;
+import org.glassfish.jersey.media.sse.InboundEvent;
+import org.glassfish.jersey.media.sse.SseFeature;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.responses.AccountResponse;
+import org.stellar.sdk.responses.GsonSingleton;
 import org.stellar.sdk.responses.Page;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Builds requests connected to accounts.
  */
 public class AccountsRequestBuilder extends RequestBuilder {
-  public AccountsRequestBuilder(OkHttpClient httpClient, HttpUrl serverURI) {
-    super(httpClient, serverURI, "accounts");
+  public AccountsRequestBuilder(URI serverURI) {
+    super(serverURI, "accounts");
   }
 
   /**
@@ -24,14 +29,10 @@ public class AccountsRequestBuilder extends RequestBuilder {
    * This method is helpful for getting the links.
    * @throws IOException
    */
-  public AccountResponse account(HttpUrl uri) throws IOException {
+  public AccountResponse account(URI uri) throws IOException {
     TypeToken type = new TypeToken<AccountResponse>() {};
     ResponseHandler<AccountResponse> responseHandler = new ResponseHandler<AccountResponse>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (AccountResponse) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -52,14 +53,10 @@ public class AccountsRequestBuilder extends RequestBuilder {
    * @throws TooManyRequestsException when too many requests were sent to the Horizon server.
    * @throws IOException
    */
-  public static Page<AccountResponse> execute(OkHttpClient httpClient, HttpUrl uri) throws IOException, TooManyRequestsException {
+  public static Page<AccountResponse> execute(URI uri) throws IOException, TooManyRequestsException {
     TypeToken type = new TypeToken<Page<AccountResponse>>() {};
     ResponseHandler<Page<AccountResponse>> responseHandler = new ResponseHandler<Page<AccountResponse>>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (Page<AccountResponse>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -72,9 +69,21 @@ public class AccountsRequestBuilder extends RequestBuilder {
    * @param listener {@link EventListener} implementation with {@link AccountResponse} type
    * @return EventSource object, so you can <code>close()</code> connection when not needed anymore
    */
-  public SSEStream<AccountResponse> stream(final EventListener<AccountResponse> listener) {
-
-    return SSEStream.create(httpClient,this,AccountResponse.class,listener);
+  public EventSource stream(final EventListener<AccountResponse> listener) {
+    Client client = ClientBuilder.newBuilder().register(SseFeature.class).build();
+    WebTarget target = client.target(this.buildUri());
+    EventSource eventSource = new EventSource(target) {
+      @Override
+      public void onEvent(InboundEvent inboundEvent) {
+        String data = inboundEvent.readData(String.class);
+        if (data.equals("\"hello\"")) {
+          return;
+        }
+        AccountResponse account = GsonSingleton.getInstance().fromJson(data, AccountResponse.class);
+        listener.onEvent(account);
+      }
+    };
+    return eventSource;
   }
 
   /**
@@ -84,7 +93,7 @@ public class AccountsRequestBuilder extends RequestBuilder {
    * @throws IOException
    */
   public Page<AccountResponse> execute() throws IOException, TooManyRequestsException {
-    return this.execute(this.httpClient, this.buildUri());
+    return this.execute(this.buildUri());
   }
 
   @Override

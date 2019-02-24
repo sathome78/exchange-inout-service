@@ -1,15 +1,14 @@
 package org.stellar.sdk.requests;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
+import org.apache.http.client.fluent.Request;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.responses.OfferResponse;
 import org.stellar.sdk.responses.Page;
 
 import java.io.IOException;
+import java.net.URI;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,8 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Builds requests connected to offers.
  */
 public class OffersRequestBuilder extends RequestBuilder {
-  public OffersRequestBuilder(OkHttpClient httpClient, HttpUrl serverURI) {
-    super(httpClient, serverURI, "offers");
+  public OffersRequestBuilder(URI serverURI) {
+    super(serverURI, "offers");
   }
 
   /**
@@ -39,17 +38,11 @@ public class OffersRequestBuilder extends RequestBuilder {
    * @throws TooManyRequestsException when too many requests were sent to the Horizon server.
    * @throws IOException
    */
-  public static Page<OfferResponse> execute(OkHttpClient httpClient, HttpUrl uri) throws IOException, TooManyRequestsException {
+  public static Page<OfferResponse> execute(URI uri) throws IOException, TooManyRequestsException {
     TypeToken type = new TypeToken<Page<OfferResponse>>() {};
     ResponseHandler<Page<OfferResponse>> responseHandler = new ResponseHandler<Page<OfferResponse>>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (Page<OfferResponse>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
-
-
 
   /**
    * Build and execute request.
@@ -58,7 +51,7 @@ public class OffersRequestBuilder extends RequestBuilder {
    * @throws IOException
    */
   public Page<OfferResponse> execute() throws IOException, TooManyRequestsException {
-    return this.execute(this.httpClient, this.buildUri());
+    return this.execute(this.buildUri());
   }
 
   @Override

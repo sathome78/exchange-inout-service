@@ -26,14 +26,10 @@ public class OfferResponse extends Response {
   private final String amount;
   @SerializedName("price")
   private final String price;
-  @SerializedName("last_modified_ledger")
-  private final Integer lastModifiedLedger;
-  @SerializedName("last_modified_time")
-  private final String lastModifiedTime;
   @SerializedName("_links")
   private final Links links;
 
-  public OfferResponse(Long id, String pagingToken, KeyPair seller, Asset selling, Asset buying, String amount, String price, Integer lastModifiedLedger, String lastModifiedTime, Links links) {
+  OfferResponse(Long id, String pagingToken, KeyPair seller, Asset selling, Asset buying, String amount, String price, Links links) {
     this.id = id;
     this.pagingToken = pagingToken;
     this.seller = seller;
@@ -41,8 +37,6 @@ public class OfferResponse extends Response {
     this.buying = buying;
     this.amount = amount;
     this.price = price;
-    this.lastModifiedLedger = lastModifiedLedger;
-    this.lastModifiedTime = lastModifiedTime;
     this.links = links;
   }
 
@@ -74,15 +68,6 @@ public class OfferResponse extends Response {
     return price;
   }
 
-  public Integer getLastModifiedLedger() {
-    return lastModifiedLedger;
-  }
-
-  // Can be null if ledger adding an offer has not been ingested yet.
-  public String getLastModifiedTime() {
-    return lastModifiedTime;
-  }
-
   public Links getLinks() {
     return links;
   }
@@ -94,19 +79,19 @@ public class OfferResponse extends Response {
     @SerializedName("self")
     private final Link self;
     @SerializedName("offer_maker")
-    private final Link offerMaker;
+    private final Link offerMager;
 
-    public Links(Link self, Link offerMaker) {
+    public Links(Link self, Link offerMager) {
       this.self = self;
-      this.offerMaker = offerMaker;
+      this.offerMager = offerMager;
     }
 
     public Link getSelf() {
       return self;
     }
 
-    public Link getOfferMaker() {
-      return offerMaker;
+    public Link getOfferMager() {
+      return offerMager;
     }
   }
 }

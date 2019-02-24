@@ -1,31 +1,25 @@
 package org.stellar.sdk.responses;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.client.fluent.Request;
 import org.stellar.sdk.requests.ResponseHandler;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
 /**
  * Represents page of objects.
  * @see <a href="https://www.stellar.org/developers/horizon/reference/resources/page.html" target="_blank">Page documentation</a>
  */
-public class Page<T> extends Response implements TypedResponse<Page<T>> {
-
+public class Page<T> extends Response {
   @SerializedName("records")
   private ArrayList<T> records;
   @SerializedName("links")
   private Links links;
-
-  private TypeToken<Page<T>> type;
 
   Page() {}
 
@@ -38,27 +32,18 @@ public class Page<T> extends Response implements TypedResponse<Page<T>> {
   }
 
   /**
-   * @return The next page of results or null when there is no link for the next page of results
+   * @return The next page of results or null when there is no more results
    * @throws URISyntaxException
    * @throws IOException
    */
-  public Page<T> getNextPage(OkHttpClient httpClient) throws URISyntaxException, IOException {
+  public Page<T> getNextPage() throws URISyntaxException, IOException {
     if (this.getLinks().getNext() == null) {
       return null;
     }
-    TypeToken<Page<T>> type = requireNonNull(this.type, "type cannot be null, is it being correctly set after the creation of this " + getClass().getSimpleName() + "?");
+    TypeToken type = new TypeToken<Page<T>>() {};
     ResponseHandler<Page<T>> responseHandler = new ResponseHandler<Page<T>>(type);
-    String url = this.getLinks().getNext().getHref();
-
-    Request request = new Request.Builder().get().url(url).build();
-    okhttp3.Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
-  }
-
-  @Override
-  public void setType(TypeToken<Page<T>> type) {
-	this.type = type;
+    URI uri = new URI(this.getLinks().getNext().getHref());
+    return (Page<T>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**

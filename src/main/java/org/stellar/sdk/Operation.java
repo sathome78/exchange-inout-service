@@ -1,6 +1,6 @@
 package org.stellar.sdk;
 
-import com.google.common.io.BaseEncoding;
+import org.apache.commons.codec.binary.Base64;
 import org.stellar.sdk.xdr.AccountID;
 import org.stellar.sdk.xdr.XdrDataOutputStream;
 
@@ -54,8 +54,8 @@ public abstract class Operation {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(outputStream);
       org.stellar.sdk.xdr.Operation.encode(xdrOutputStream, operation);
-      BaseEncoding base64Encoding = BaseEncoding.base64();
-      return base64Encoding.encode(outputStream.toByteArray());
+      Base64 base64Codec = new Base64();
+      return base64Codec.encodeAsString(outputStream.toByteArray());
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -98,9 +98,6 @@ public abstract class Operation {
         break;
       case MANAGE_DATA:
         operation = new ManageDataOperation.Builder(body.getManageDataOp()).build();
-        break;
-      case BUMP_SEQUENCE:
-        operation = new BumpSequenceOperation.Builder(body.getBumpSequenceOp()).build();
         break;
       default:
         throw new RuntimeException("Unknown operation body " + body.getDiscriminant());

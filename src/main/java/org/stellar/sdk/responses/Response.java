@@ -1,22 +1,16 @@
 package org.stellar.sdk.responses;
 
-import okhttp3.Headers;
+import org.apache.http.Header;
 
 public abstract class Response {
   protected int rateLimitLimit;
   protected int rateLimitRemaining;
   protected int rateLimitReset;
 
-  public void setHeaders(Headers headers) {
-    if (headers.get("X-Ratelimit-Limit") != null) {
-      this.rateLimitLimit = Integer.parseInt(headers.get("X-Ratelimit-Limit"));
-    }
-    if (headers.get("X-Ratelimit-Remaining") != null) {
-      this.rateLimitRemaining = Integer.parseInt(headers.get("X-Ratelimit-Remaining"));
-    }
-    if (headers.get("X-Ratelimit-Reset") != null) {
-      this.rateLimitReset = Integer.parseInt(headers.get("X-Ratelimit-Reset"));
-    }
+  public void setHeaders(Header limit, Header remaining, Header reset) {
+    this.rateLimitLimit = Integer.parseInt(limit.getValue());
+    this.rateLimitRemaining = Integer.parseInt(remaining.getValue());
+    this.rateLimitReset = Integer.parseInt(reset.getValue());
   }
 
   /**
@@ -27,11 +21,6 @@ public abstract class Response {
    */
   public int getRateLimitLimit() {
     return rateLimitLimit;
-  }
-
-
-  public String getPagingToken() {
-    throw new UnsupportedOperationException("this response does not have a paging token");
   }
 
   /**

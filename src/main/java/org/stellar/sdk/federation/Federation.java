@@ -1,5 +1,9 @@
 package org.stellar.sdk.federation;
 
+import com.google.common.net.InternetDomainName;
+
+import java.io.IOException;
+
 /**
  * Helper class for resolving Stellar addresses.
  *
@@ -35,7 +39,7 @@ public class Federation {
       return new FederationResponse(null, value, null, null);
     } else if (tokens.length == 2) {
       String domain = tokens[1];
-      FederationServer server = FederationServer.createForDomain(domain);
+      FederationServer server = FederationServer.createForDomain(InternetDomainName.from(domain));
       return server.resolveAddress(value);
     } else {
       throw new MalformedAddressException();

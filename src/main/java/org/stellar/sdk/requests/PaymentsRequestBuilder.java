@@ -1,15 +1,22 @@
 package org.stellar.sdk.requests;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
+import org.apache.http.client.fluent.Request;
+import org.glassfish.jersey.media.sse.EventSource;
+import org.glassfish.jersey.media.sse.InboundEvent;
+import org.glassfish.jersey.media.sse.SseFeature;
 import org.stellar.sdk.KeyPair;
+import org.stellar.sdk.responses.GsonSingleton;
 import org.stellar.sdk.responses.Page;
 import org.stellar.sdk.responses.operations.OperationResponse;
 
 import java.io.IOException;
+import java.net.URI;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,8 +24,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Builds requests connected to payments.
  */
 public class PaymentsRequestBuilder extends RequestBuilder {
-  public PaymentsRequestBuilder(OkHttpClient httpClient, HttpUrl serverURI) {
-    super(httpClient, serverURI, "payments");
+  public PaymentsRequestBuilder(URI serverURI) {
+    super(serverURI, "payments");
   }
 
   /**
@@ -60,14 +67,10 @@ public class PaymentsRequestBuilder extends RequestBuilder {
    * @throws TooManyRequestsException when too many requests were sent to the Horizon server.
    * @throws IOException
    */
-  public static Page<OperationResponse> execute(OkHttpClient httpClient, HttpUrl uri) throws IOException, TooManyRequestsException {
+  public static Page<OperationResponse> execute(URI uri) throws IOException, TooManyRequestsException {
     TypeToken type = new TypeToken<Page<OperationResponse>>() {};
     ResponseHandler<Page<OperationResponse>> responseHandler = new ResponseHandler<Page<OperationResponse>>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (Page<OperationResponse>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -80,8 +83,21 @@ public class PaymentsRequestBuilder extends RequestBuilder {
    * @param listener {@link EventListener} implementation with {@link OperationResponse} type
    * @return EventSource object, so you can <code>close()</code> connection when not needed anymore
    */
-  public SSEStream<OperationResponse> stream(final EventListener<OperationResponse> listener) {
-    return SSEStream.create(httpClient,this,OperationResponse.class,listener);
+  public EventSource stream(final EventListener<OperationResponse> listener) {
+    Client client = ClientBuilder.newBuilder().register(SseFeature.class).build();
+    WebTarget target = client.target(this.buildUri());
+    EventSource eventSource = new EventSource(target) {
+      @Override
+      public void onEvent(InboundEvent inboundEvent) {
+        String data = inboundEvent.readData(String.class);
+        if (data.equals("\"hello\"")) {
+          return;
+        }
+        OperationResponse payment = GsonSingleton.getInstance().fromJson(data, OperationResponse.class);
+        listener.onEvent(payment);
+      }
+    };
+    return eventSource;
   }
 
   /**
@@ -91,7 +107,7 @@ public class PaymentsRequestBuilder extends RequestBuilder {
    * @throws IOException
    */
   public Page<OperationResponse> execute() throws IOException, TooManyRequestsException {
-    return this.execute(this.httpClient, this.buildUri());
+    return this.execute(this.buildUri());
   }
 
   @Override

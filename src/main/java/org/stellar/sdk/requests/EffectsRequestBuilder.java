@@ -1,15 +1,22 @@
 package org.stellar.sdk.requests;
 
 import com.google.gson.reflect.TypeToken;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
+import org.apache.http.client.fluent.Request;
+import org.glassfish.jersey.media.sse.EventSource;
+import org.glassfish.jersey.media.sse.InboundEvent;
+import org.glassfish.jersey.media.sse.SseFeature;
 import org.stellar.sdk.KeyPair;
+import org.stellar.sdk.responses.GsonSingleton;
 import org.stellar.sdk.responses.Page;
 import org.stellar.sdk.responses.effects.EffectResponse;
 
 import java.io.IOException;
+import java.net.URI;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,8 +24,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Builds requests connected to effects.
  */
 public class EffectsRequestBuilder extends RequestBuilder {
-  public EffectsRequestBuilder(OkHttpClient httpClient, HttpUrl serverURI) {
-    super(httpClient, serverURI, "effects");
+  public EffectsRequestBuilder(URI serverURI) {
+    super(serverURI, "effects");
   }
 
   /**
@@ -70,14 +77,10 @@ public class EffectsRequestBuilder extends RequestBuilder {
    * @throws TooManyRequestsException when too many requests were sent to the Horizon server.
    * @throws IOException
    */
-  public static Page<EffectResponse> execute(OkHttpClient httpClient, HttpUrl uri) throws IOException, TooManyRequestsException {
+  public static Page<EffectResponse> execute(URI uri) throws IOException, TooManyRequestsException {
     TypeToken type = new TypeToken<Page<EffectResponse>>() {};
     ResponseHandler<Page<EffectResponse>> responseHandler = new ResponseHandler<Page<EffectResponse>>(type);
-
-    Request request = new Request.Builder().get().url(uri).build();
-    Response response = httpClient.newCall(request).execute();
-
-    return responseHandler.handleResponse(response);
+    return (Page<EffectResponse>) Request.Get(uri).execute().handleResponse(responseHandler);
   }
 
   /**
@@ -90,8 +93,21 @@ public class EffectsRequestBuilder extends RequestBuilder {
    * @param listener {@link EventListener} implementation with {@link EffectResponse} type
    * @return EventSource object, so you can <code>close()</code> connection when not needed anymore
    */
-  public SSEStream<EffectResponse> stream(final EventListener<EffectResponse> listener) {
-    return SSEStream.create(httpClient,this,EffectResponse.class,listener);
+  public EventSource stream(final EventListener<EffectResponse> listener) {
+    Client client = ClientBuilder.newBuilder().register(SseFeature.class).build();
+    WebTarget target = client.target(this.buildUri());
+    EventSource eventSource = new EventSource(target) {
+      @Override
+      public void onEvent(InboundEvent inboundEvent) {
+        String data = inboundEvent.readData(String.class);
+        if (data.equals("\"hello\"")) {
+          return;
+        }
+        EffectResponse effect = GsonSingleton.getInstance().fromJson(data, EffectResponse.class);
+        listener.onEvent(effect);
+      }
+    };
+    return eventSource;
   }
 
   /**
@@ -101,7 +117,7 @@ public class EffectsRequestBuilder extends RequestBuilder {
    * @throws IOException
    */
   public Page<EffectResponse> execute() throws IOException, TooManyRequestsException {
-    return this.execute(this.httpClient, this.buildUri());
+    return this.execute(this.buildUri());
   }
 
   @Override

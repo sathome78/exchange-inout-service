@@ -12,8 +12,6 @@ import java.io.IOException;
 //  {
 //  case 0:
 //      OperationMeta operations<>;
-//  case 1:
-//      TransactionMetaV1 v1;
 //  };
 
 //  ===========================================================================
@@ -33,13 +31,6 @@ public class TransactionMeta  {
   public void setOperations(OperationMeta[] value) {
     this.operations = value;
   }
-  private TransactionMetaV1 v1;
-  public TransactionMetaV1 getV1() {
-    return this.v1;
-  }
-  public void setV1(TransactionMetaV1 value) {
-    this.v1 = value;
-  }
   public static void encode(XdrDataOutputStream stream, TransactionMeta encodedTransactionMeta) throws IOException {
   stream.writeInt(encodedTransactionMeta.getDiscriminant().intValue());
   switch (encodedTransactionMeta.getDiscriminant()) {
@@ -49,9 +40,6 @@ public class TransactionMeta  {
   for (int i = 0; i < operationssize; i++) {
     OperationMeta.encode(stream, encodedTransactionMeta.operations[i]);
   }
-  break;
-  case 1:
-  TransactionMetaV1.encode(stream, encodedTransactionMeta.v1);
   break;
   }
   }
@@ -66,9 +54,6 @@ public class TransactionMeta  {
   for (int i = 0; i < operationssize; i++) {
     decodedTransactionMeta.operations[i] = OperationMeta.decode(stream);
   }
-  break;
-  case 1:
-  decodedTransactionMeta.v1 = TransactionMetaV1.decode(stream);
   break;
   }
     return decodedTransactionMeta;

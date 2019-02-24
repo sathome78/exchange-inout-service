@@ -1,14 +1,11 @@
 package org.stellar.sdk.responses;
 
 import com.google.gson.annotations.SerializedName;
-import org.stellar.sdk.Asset;
 import org.stellar.sdk.KeyPair;
-import org.stellar.sdk.Price;
-;
 
 /**
  * Represents trades response.
- * @see <a href="https://www.stellar.org/developers/horizon/reference/endpoints/trades.html" target="_blank">Trades documentation</a>
+ * @see <a href="https://www.stellar.org/developers/horizon/reference/endpoints/trades-for-orderbook.html" target="_blank">Trades for Orderbook documentation</a>
  * @see org.stellar.sdk.requests.TradesRequestBuilder
  * @see org.stellar.sdk.Server#trades()
  */
@@ -17,66 +14,48 @@ public class TradeResponse extends Response {
     private final String id;
     @SerializedName("paging_token")
     private final String pagingToken;
-    @SerializedName("ledger_close_time")
-    private final String ledgerCloseTime;
+    @SerializedName("created_at")
+    private final String createdAt;
 
-    @SerializedName("offer_id")
-    private final String offerId;
+    @SerializedName("seller")
+    protected final KeyPair seller;
+    @SerializedName("sold_amount")
+    protected final String soldAmount;
+    @SerializedName("sold_asset_type")
+    protected final String soldAssetType;
+    @SerializedName("sold_asset_code")
+    protected final String soldAssetCode;
+    @SerializedName("sold_asset_issuer")
+    protected final String soldAssetIssuer;
 
-    @SerializedName("base_is_seller")
-    protected final boolean baseIsSeller;
-
-    @SerializedName("base_account")
-    protected final KeyPair baseAccount;
-    @SerializedName("base_offer_id")
-    private final String baseOfferId;
-    @SerializedName("base_amount")
-    protected final String baseAmount;
-    @SerializedName("base_asset_type")
-    protected final String baseAssetType;
-    @SerializedName("base_asset_code")
-    protected final String baseAssetCode;
-    @SerializedName("base_asset_issuer")
-    protected final String baseAssetIssuer;
-
-    @SerializedName("counter_account")
-    protected final KeyPair counterAccount;
-    @SerializedName("counter_offer_id")
-    private final String counterOfferId;
-    @SerializedName("counter_amount")
-    protected final String counterAmount;
-    @SerializedName("counter_asset_type")
-    protected final String counterAssetType;
-    @SerializedName("counter_asset_code")
-    protected final String counterAssetCode;
-    @SerializedName("counter_asset_issuer")
-    protected final String counterAssetIssuer;
-
-    @SerializedName("price")
-    protected final Price price;
+    @SerializedName("buyer")
+    protected final KeyPair buyer;
+    @SerializedName("bought_amount")
+    protected final String boughtAmount;
+    @SerializedName("bought_asset_type")
+    protected final String boughtAssetType;
+    @SerializedName("bought_asset_code")
+    protected final String boughtAssetCode;
+    @SerializedName("bought_asset_issuer")
+    protected final String boughtAssetIssuer;
 
     @SerializedName("_links")
     private Links links;
 
-    public TradeResponse(String id, String pagingToken, String ledgerCloseTime, String offerId, boolean baseIsSeller, KeyPair baseAccount, String baseOfferId, String baseAmount, String baseAssetType, String baseAssetCode, String baseAssetIssuer, KeyPair counterAccount, String counterOfferId, String counterAmount, String counterAssetType, String counterAssetCode, String counterAssetIssuer, Price price) {
+    public TradeResponse(String id, String pagingToken, String createdAt, KeyPair seller, String soldAmount, String soldAssetType, String soldAssetCode, String soldAssetIssuer, KeyPair buyer, String boughtAmount, String boughtAssetType, String boughtAssetCode, String boughtAssetIssuer) {
         this.id = id;
         this.pagingToken = pagingToken;
-        this.ledgerCloseTime = ledgerCloseTime;
-        this.offerId = offerId;
-        this.baseIsSeller = baseIsSeller;
-        this.baseAccount = baseAccount;
-        this.baseOfferId = baseOfferId;
-        this.baseAmount = baseAmount;
-        this.baseAssetType = baseAssetType;
-        this.baseAssetCode = baseAssetCode;
-        this.baseAssetIssuer = baseAssetIssuer;
-        this.counterAccount = counterAccount;
-        this.counterOfferId = counterOfferId;
-        this.counterAmount = counterAmount;
-        this.counterAssetType = counterAssetType;
-        this.counterAssetCode = counterAssetCode;
-        this.counterAssetIssuer = counterAssetIssuer;
-        this.price = price;
+        this.createdAt = createdAt;
+        this.seller = seller;
+        this.soldAmount = soldAmount;
+        this.soldAssetType = soldAssetType;
+        this.soldAssetCode = soldAssetCode;
+        this.soldAssetIssuer = soldAssetIssuer;
+        this.buyer = buyer;
+        this.boughtAmount = boughtAmount;
+        this.boughtAssetType = boughtAssetType;
+        this.boughtAssetCode = boughtAssetCode;
+        this.boughtAssetIssuer = boughtAssetIssuer;
     }
 
     public String getId() {
@@ -87,76 +66,48 @@ public class TradeResponse extends Response {
         return pagingToken;
     }
 
-    public String getLedgerCloseTime() {
-        return ledgerCloseTime;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getOfferId() {
-        return offerId;
+    public KeyPair getSeller() {
+        return seller;
     }
 
-    public boolean isBaseSeller() {
-        return baseIsSeller;
+    public String getSoldAmount() {
+        return soldAmount;
     }
 
-    public String getBaseOfferId() {
-        return baseOfferId;
+    public String getSoldAssetType() {
+        return soldAssetType;
     }
 
-    public KeyPair getBaseAccount() {
-        return baseAccount;
+    public String getSoldAssetCode() {
+        return soldAssetCode;
     }
 
-    public String getBaseAmount() {
-        return baseAmount;
+    public String getSoldAssetIssuer() {
+        return soldAssetIssuer;
     }
 
-    public Asset getBaseAsset() {
-        return Asset.create(this.baseAssetType, this.baseAssetCode, this.baseAssetIssuer);
+    public KeyPair getBuyer() {
+        return buyer;
     }
 
-    public String getBaseAssetType() {
-        return baseAssetType;
+    public String getBoughtAmount() {
+        return boughtAmount;
     }
 
-    public String getBaseAssetCode() {
-        return baseAssetCode;
+    public String getBoughtAssetType() {
+        return boughtAssetType;
     }
 
-    public String getBaseAssetIssuer() {
-        return baseAssetIssuer;
+    public String getBoughtAssetCode() {
+        return boughtAssetCode;
     }
 
-    public KeyPair getCounterAccount() {
-        return counterAccount;
-    }
-
-    public String getCounterOfferId() {
-        return counterOfferId;
-    }
-
-    public Asset getCounterAsset() {
-        return Asset.create(this.counterAssetType, this.counterAssetCode, this.counterAssetIssuer);
-    }
-
-    public String getCounterAmount() {
-        return counterAmount;
-    }
-
-    public String getCounterAssetType() {
-        return counterAssetType;
-    }
-
-    public String getCounterAssetCode() {
-        return counterAssetCode;
-    }
-
-    public String getCounterAssetIssuer() {
-        return counterAssetIssuer;
-    }
-
-    public Price getPrice() {
-        return price;
+    public String getBoughtAssetIssuer() {
+        return boughtAssetIssuer;
     }
 
     public Links getLinks() {
@@ -167,29 +118,29 @@ public class TradeResponse extends Response {
      * Links connected to a trade.
      */
     public static class Links {
-        @SerializedName("base")
-        private final Link base;
-        @SerializedName("counter")
-        private final Link counter;
-        @SerializedName("operation")
-        private final Link operation;
+        @SerializedName("self")
+        private final Link self;
+        @SerializedName("seller")
+        private final Link seller;
+        @SerializedName("buyer")
+        private final Link buyer;
 
-        public Links(Link base, Link counter, Link operation) {
-            this.base = base;
-            this.counter = counter;
-            this.operation = operation;
+        public Links(Link self, Link seller, Link buyer) {
+            this.self = self;
+            this.seller = seller;
+            this.buyer = buyer;
         }
 
-        public Link getBase() {
-            return base;
+        public Link getSelf() {
+            return self;
         }
 
-        public Link getCounter() {
-            return counter;
+        public Link getSeller() {
+            return seller;
         }
 
-        public Link getOperation() {
-            return operation;
+        public Link getBuyer() {
+            return buyer;
         }
     }
 }

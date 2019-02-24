@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Log4j2(topic = "bitcoin_core")
@@ -161,31 +160,31 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @PostConstruct
     void startBitcoin() {
-        Properties passSource;
-        if (node.isEnabled()) {
-            try {
-                passSource = merchantService.getPassMerchantProperties(merchantName);
-                if (!passSource.containsKey("wallet.password") || StringUtils.isEmpty(passSource.getProperty("wallet.password"))) {
-                    throw new RuntimeException("No wallet password");
-                }
-            } catch (Exception e) {
-                log.info("{} not started, pass props error", merchantName);
-                return;
-            }
-            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine);
-            bitcoinWalletService.initBtcdDaemon(node.isZmqEnabled());
-            bitcoinWalletService.blockFlux().subscribe(this::onIncomingBlock);
-            if (supportWalletNotifications) {
-                bitcoinWalletService.walletFlux().subscribe(this::onPayment);
-            } else {
-                newTxCheckerScheduler.scheduleAtFixedRate(this::checkForNewTransactions, 3, 1, TimeUnit.MINUTES);
-            }
-            if (node.isSupportInstantSend()) {
-                bitcoinWalletService.instantSendFlux().subscribe(this::onPayment);
-            }
-            log.info("btc service started {} ", merchantName);
-            new Thread(()->examineMissingPaymentsOnStartup()).start();
-        }
+//        Properties passSource;
+//        if (node.isEnabled()) {
+//            try {
+//                passSource = merchantService.getPassMerchantProperties(merchantName);
+//                if (!passSource.containsKey("wallet.password") || StringUtils.isEmpty(passSource.getProperty("wallet.password"))) {
+//                    throw new RuntimeException("No wallet password");
+//                }
+//            } catch (Exception e) {
+//                log.info("{} not started, pass props error", merchantName);
+//                return;
+//            }
+//            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine);
+//            bitcoinWalletService.initBtcdDaemon(node.isZmqEnabled());
+//            bitcoinWalletService.blockFlux().subscribe(this::onIncomingBlock);
+//            if (supportWalletNotifications) {
+//                bitcoinWalletService.walletFlux().subscribe(this::onPayment);
+//            } else {
+//                newTxCheckerScheduler.scheduleAtFixedRate(this::checkForNewTransactions, 3, 1, TimeUnit.MINUTES);
+//            }
+//            if (node.isSupportInstantSend()) {
+//                bitcoinWalletService.instantSendFlux().subscribe(this::onPayment);
+//            }
+//            log.info("btc service started {} ", merchantName);
+//            new Thread(()->examineMissingPaymentsOnStartup()).start();
+//        }
 
     }
 

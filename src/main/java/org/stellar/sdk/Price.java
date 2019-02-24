@@ -23,7 +23,7 @@ public class Price {
      * @param n numerator
      * @param d denominator
      */
-    public Price(int n, int d) {
+    Price(int n, int d) {
         this.n = n;
         this.d = d;
     }
@@ -44,8 +44,6 @@ public class Price {
 
     /**
      * Approximates <code>price</code> to a fraction.
-     * Please remember that this function can give unexpected results for values that cannot be represented as a
-     * fraction with 32-bit numerator and denominator. It's safer to create a Price object using the constructor.
      * @param price Ex. "1.25"
      */
     public static Price fromString(String price) {
