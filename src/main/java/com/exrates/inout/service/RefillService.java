@@ -165,5 +165,5 @@ public interface RefillService {
 
     List<RefillOnConfirmationDto> getOnConfirmationRefills(String email, int currencyId);
 
-    Optional<RefillRequestFlatDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
+    Optional<RefillRequestAddressDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
 }

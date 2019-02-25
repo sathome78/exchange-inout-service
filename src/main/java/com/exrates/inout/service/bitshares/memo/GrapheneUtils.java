@@ -1,4 +1,4 @@
-package com.exrates.inout.service.bitshares;// GrapheneUtils.java, by @alexpmorris, 2018-02-22
+package com.exrates.inout.service.bitshares.memo;// GrapheneUtils.java, by @alexpmorris, 2018-02-22
 //
 // easily verify messages passed between javascript <-> java using a graphene keypair
 //

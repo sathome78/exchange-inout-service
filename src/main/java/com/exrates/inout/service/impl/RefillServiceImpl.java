@@ -1161,7 +1161,7 @@ public class RefillServiceImpl implements RefillService {
     }
 
     @Override
-    public Optional<RefillRequestFlatDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
+    public Optional<RefillRequestAddressDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
         try {
             return Optional.of(refillRequestDao.findByAddressAndMerchantIdAndCurrencyIdAndUserId(address, merchantId, currencyId, userId));
         } catch (EmptyResultDataAccessException e){

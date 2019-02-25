@@ -44,6 +44,8 @@ public interface RefillRequestDao {
 
     Optional<Integer> create(RefillRequestCreateDto request);
 
+    Integer storeRefillRequestAddress(RefillRequestCreateDto request);
+
     Optional<String> findLastValidAddressByMerchantIdAndCurrencyIdAndUserId(Integer merchantId, Integer currencyId, Integer userId);
 
     List<String> getListOfValidAddressByMerchantIdAndCurrency(
@@ -142,5 +144,5 @@ public interface RefillRequestDao {
 
     List<RefillOnConfirmationDto> getOnConfirmationDtos(Integer userId, int currencyId);
 
-    RefillRequestFlatDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
+    RefillRequestAddressDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
 }

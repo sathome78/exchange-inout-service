@@ -1,4 +1,4 @@
-package com.exrates.inout.service.bitshares;
+package com.exrates.inout.service.bitshares.memo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;

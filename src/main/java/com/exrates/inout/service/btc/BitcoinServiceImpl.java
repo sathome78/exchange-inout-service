@@ -42,8 +42,10 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @Autowired
     private RefillService refillService;
+
     @Autowired
     private CurrencyService currencyService;
+
     @Autowired
     private MerchantService merchantService;
     @Autowired
@@ -56,7 +58,6 @@ public class BitcoinServiceImpl implements BitcoinService {
     private WithdrawUtils withdrawUtils;
     @Autowired
     private GtagService gtagService;
-
     private String backupFolder;
 
     private String nodePropertySource;
@@ -647,4 +648,8 @@ public class BitcoinServiceImpl implements BitcoinService {
         newTxCheckerScheduler.shutdown();
     }
 
+
+    public String getCurrencyName() {
+        return currencyName;
+    }
 }

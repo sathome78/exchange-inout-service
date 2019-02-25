@@ -2,7 +2,8 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.InoutTestConfig;
 import com.exrates.inout.controller.RefillRequestController;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.dao.RefillRequestDao;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestParamsDto;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.main.Currency;
@@ -11,7 +12,8 @@ import com.exrates.inout.dto.UserInfoDto;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.btc.BitcoinServiceImpl;
+import com.exrates.inout.service.bitshares.aunit.AunitServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -39,17 +40,25 @@ public class RefillServiceImplTest extends InoutTestConfig {
     private CurrencyService currencyService;
     @Autowired
     private RefillService refillService;
+    @Autowired
+    private RefillRequestDao refillRequestDao;
 
-    @MockBean(name = "bitcoinServiceImpl")
-    private BitcoinServiceImpl bitcoinService;
+    @MockBean(name = "aunitServiceImpl")
+    private AunitServiceImpl aunitService;
 
+    private Merchant aunitMerchant;
+    private Currency aunitCurrency;
+
+    @Before
+    public void setUp(){
+        aunitMerchant = merchantService.findByName("AUNIT");
+        aunitCurrency = currencyService.findByName("AUNIT");
+    }
     @Test
-    public void createRefillRequest() {
-        Merchant merchant = merchantService.findByName("BTC");
-        Currency currency = currencyService.findByName("BTC");
+    public void createRefillRequestAddress() {
         String address = "TestAddres132daws";
 
-        Mockito.when(bitcoinService.refill(any())).thenReturn(new HashMap<String, String>() {{
+        Mockito.when(aunitService.refill(any())).thenReturn(new HashMap<String, String>() {{
             put("address", address);
             put("message", "Send bablo here");
             put("qr", "TestAddresdaws");
@@ -63,22 +72,24 @@ public class RefillServiceImplTest extends InoutTestConfig {
         Mockito.when(request.getAttribute(any())).thenReturn(new Locale("en"));
 
         RefillRequestParamsDto refillReqDto = new RefillRequestParamsDto();
-        refillReqDto.setCurrency(currency.getId());
-        refillReqDto.setMerchant(merchant.getId());
+        refillReqDto.setCurrency(aunitCurrency.getId());
+        refillReqDto.setMerchant(aunitMerchant.getId());
         refillReqDto.setSum(null);
         refillReqDto.setOperationType(OperationType.INPUT);
         refillReqDto.setGenerateNewAddress(true);
 
-        Map<String, Object> result = refillRequestController.createRefillRequest(refillReqDto, authentication, new Locale("en"), request);
+        refillRequestController.createRefillRequest(refillReqDto, authentication, new Locale("en"), request);
 
-        Optional<RefillRequestFlatDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, merchant.getId(), currency.getId(), userInfoDto.getId());
+        Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), userInfoDto.getId());
         assertTrue(refillRequestFlatDtoOptional.isPresent());
 
-        RefillRequestFlatDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
+        RefillRequestAddressDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
         assertEquals(address, refillRequestFlatDto.getAddress());
         assertEquals(userInfoDto.getId(), refillRequestFlatDto.getUserId());
-        assertEquals(currency.getId(), (long) refillRequestFlatDto.getCurrencyId());
-        assertEquals(merchant.getId(), (long) refillRequestFlatDto.getMerchantId());
+        assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
+        assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
+
+
     }
 
 }

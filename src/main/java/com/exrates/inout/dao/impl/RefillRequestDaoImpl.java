@@ -469,7 +469,8 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         return refillRequestParamId;
     }
 
-    private Integer storeRefillRequestAddress(RefillRequestCreateDto request) {
+    @Override
+    public Integer storeRefillRequestAddress(RefillRequestCreateDto request) {
         MapSqlParameterSource params;
         Integer refillRequestAddressId;
         final String addAddressSql = "INSERT INTO REFILL_REQUEST_ADDRESS " +
@@ -1344,7 +1345,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     }
 
     @Override
-    public RefillRequestFlatDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
+    public RefillRequestAddressDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
         String sql = "SELECT * FROM REFILL_REQUEST_ADDRESS WHERE " +
                 "address = :address AND currency_id = :currencyId AND merchant_id = :merchantId AND user_id = :userId";
 
@@ -1354,7 +1355,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         params.put("currencyId", currencyId);
         params.put("userId", userId);
 
-        return namedParameterJdbcTemplate.queryForObject(sql, params, refillRequestFlatDtoRowMapper);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, refillRequestAddressRowMapper);
     }
 }
 

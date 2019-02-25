@@ -6,7 +6,7 @@ import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.bitshares.Preconditions;
+import com.exrates.inout.service.bitshares.memo.Preconditions;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
