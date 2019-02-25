@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1159,4 +1160,12 @@ public class RefillServiceImpl implements RefillService {
         return dtos;
     }
 
+    @Override
+    public Optional<RefillRequestFlatDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
+        try {
+            return Optional.of(refillRequestDao.findByAddressAndMerchantIdAndCurrencyIdAndUserId(address, merchantId, currencyId, userId));
+        } catch (EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
+    }
 }

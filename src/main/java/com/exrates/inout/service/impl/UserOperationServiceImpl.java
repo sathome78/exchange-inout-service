@@ -44,7 +44,7 @@ public class UserOperationServiceImpl implements UserOperationService {
     }
 
     @Override
-    public void updateUserOperationAuthority(List<UserOperationAuthorityOption> options, Integer userId, String currentUserEmail) {
+        public void updateUserOperationAuthority(List<UserOperationAuthorityOption> options, Integer userId, String currentUserEmail) {
         UserRole currentUserRole = userDao.getUserRoles(currentUserEmail);
         UserRole updatedUserRole = userDao.getUserRoleById(userId);
         if (currentUserRole != UserRole.ADMINISTRATOR && updatedUserRole == UserRole.ADMINISTRATOR) {

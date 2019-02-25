@@ -1342,5 +1342,19 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
             return dto;
         });
     }
+
+    @Override
+    public RefillRequestFlatDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId){
+        String sql = "SELECT * FROM REFILL_REQUEST_ADDRESS WHERE " +
+                "address = :address AND currency_id = :currencyId AND merchant_id = :merchantId AND user_id = :userId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("address", address);
+        params.put("merchantId", merchantId);
+        params.put("currencyId", currencyId);
+        params.put("userId", userId);
+
+        return namedParameterJdbcTemplate.queryForObject(sql, params, refillRequestFlatDtoRowMapper);
+    }
 }
 

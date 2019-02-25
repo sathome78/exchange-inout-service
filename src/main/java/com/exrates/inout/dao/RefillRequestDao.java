@@ -141,4 +141,6 @@ public interface RefillRequestDao {
     List<RefillRequestAddressDto> findAllAddressesByMerchantWithChilds(int merchantId);
 
     List<RefillOnConfirmationDto> getOnConfirmationDtos(Integer userId, int currencyId);
+
+    RefillRequestFlatDto findByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
 }
