@@ -42,10 +42,9 @@ public class UserDaoImpl implements UserDao {
     private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
 
     private final String SELECT_USER =
-            "SELECT USER.id, u.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
+            "SELECT USER.id, USER.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
                     "USER.phone, USER.status, USER_ROLE.name AS role_name FROM USER " +
-                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id LEFT JOIN REFERRAL_USER_GRAPH " +
-                    "ON USER.id = REFERRAL_USER_GRAPH.child LEFT JOIN USER AS u ON REFERRAL_USER_GRAPH.parent = u.id ";
+                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id ";
 
     @Autowired
     @Qualifier(value = "masterTemplate")
@@ -116,12 +115,7 @@ public class UserDaoImpl implements UserDao {
         namedParameters.put("status", String.valueOf(user.getStatus().getStatus()));
         namedParameters.put("roleid", String.valueOf(user.getRole().getRole()));
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(sqlUser, new MapSqlParameterSource(namedParameters), keyHolder);
-        int userId = keyHolder.getKey().intValue();
-        Map<String, Integer> userIdParamMap = Collections.singletonMap("user_id", userId);
-
-        return namedParameterJdbcTemplate.update(sqlWallet, userIdParamMap) > 0
-                && namedParameterJdbcTemplate.update(sqlNotificationOptions, userIdParamMap) > 0;
+        return namedParameterJdbcTemplate.update(sqlUser, new MapSqlParameterSource(namedParameters), keyHolder) == 1;
     }
 
     public UserRole getUserRoleById(Integer id) {

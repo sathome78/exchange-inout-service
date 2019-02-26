@@ -19,6 +19,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -86,7 +87,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional(readOnly = true)
     public Wallet findByUserAndCurrency(User user, Currency currency) {
-        return walletDao.findByUserAndCurrency(user.getId(), currency.getId());
+        throw new NotImplimentedMethod("TODO: implelemnt http call to core");
     }
 
     @Override
@@ -120,7 +121,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletTransferStatus walletBalanceChange(final WalletOperationData walletOperationData) {
-        return walletDao.walletBalanceChange(walletOperationData);
+        throw new NotImplementedException();
     }
 
 

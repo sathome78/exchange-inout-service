@@ -1,7 +1,6 @@
 package com.exrates.inout.controller;
 
 import com.exrates.inout.domain.dto.*;
-import com.exrates.inout.domain.enums.UserOperationAuthority;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.InvoiceBank;
@@ -67,10 +66,6 @@ public class RefillRequestController {
             Locale locale, HttpServletRequest servletRequest) {
         if (requestParamsDto.getOperationType() != INPUT) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
-        }
-        boolean accessToOperationForUser = userOperationService.getStatusAuthorityForUserByOperation(userService.getIdByEmail(servletRequest.getUserPrincipal().getName()), UserOperationAuthority.INPUT);
-        if(!accessToOperationForUser) {
-            throw new UserOperationAccessException(messageSource.getMessage("merchant.operationNotAvailable", null, localeResolver.resolveLocale(servletRequest)));
         }
         if (!refillService.checkInputRequestsLimit(requestParamsDto.getCurrency(), principal.getName())) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));

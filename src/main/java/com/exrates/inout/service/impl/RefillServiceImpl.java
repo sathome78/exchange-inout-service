@@ -92,7 +92,7 @@ public class RefillServiceImpl implements RefillService {
     private NotificationService notificationService;
 
     @Autowired
-    TransactionDescription transactionDescription;
+    private TransactionDescription transactionDescription;
 
     @Autowired
     MerchantServiceContext merchantServiceContext;
@@ -104,7 +104,7 @@ public class RefillServiceImpl implements RefillService {
     private UserFilesService userFilesService;
 
     @Autowired
-    InputOutputService inputOutputService;
+    private InputOutputService inputOutputService;
 
     @Override
     public Map<String, String> callRefillIRefillable(RefillRequestCreateDto request) {

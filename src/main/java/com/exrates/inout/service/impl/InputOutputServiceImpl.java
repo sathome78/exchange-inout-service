@@ -152,7 +152,6 @@ public class InputOutputServiceImpl implements InputOutputService {
             }
         }
         User user = userService.findByEmail(userEmail);
-        Wallet wallet = walletService.findByUserAndCurrency(user, currency);
         CommissionDataDto commissionData = commissionService.normalizeAmountAndCalculateCommission(
                 user.getId(),
                 amount,
@@ -169,7 +168,8 @@ public class InputOutputServiceImpl implements InputOutputService {
         } catch (RuntimeException e) {
             throw new UserNotFoundException(messageSource.getMessage("transfer.nonExistentUser", new Object[]{payment.getRecipient()}, locale));
         }
-
+        
+        Wallet wallet = walletService.findByUserAndCurrency(user, currency); //TODO make http req for getting wallet of both user`s
         Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient, currency);
         CreditsOperation creditsOperation = new CreditsOperation.Builder()
                 .initialAmount(commissionData.getAmount())

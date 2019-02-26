@@ -80,11 +80,6 @@ public class RefillRequestsAdminTableDto extends OnlineTableDto {
         this.address = refillRequestFlatDto.getAddress();
         this.adminHolderId = refillRequestFlatDto.getAdminHolderId();
         this.adminHolderEmail = refillRequestFlatAdditionalDataDto.getAdminHolderEmail();
-        this.recipientBankName = refillRequestFlatDto.getRecipientBankName();
-        this.recipientBankAccount = refillRequestFlatDto.getRecipientBankAccount();
-        this.recipientBankRecipient = refillRequestFlatDto.getRecipientBankRecipient();
-        this.payerBankName = refillRequestFlatDto.getPayerBankName();
-        this.payerBankCode = refillRequestFlatDto.getPayerBankCode();
         this.payerBankAccount = refillRequestFlatDto.getPayerAccount();
         this.receiptScan = refillRequestFlatDto.getReceiptScan();
         this.userFullName = refillRequestFlatDto.getUserFullName();

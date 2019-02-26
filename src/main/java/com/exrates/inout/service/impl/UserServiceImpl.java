@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -234,10 +233,6 @@ public class UserServiceImpl implements UserService {
         return userDao.getPreferredLangByEmail(email);
     }
 
-    @PostConstruct
-    private void initTokenTriggers() {
-        tokenScheduler.initTrigers();
-    }
 
     public Locale getUserLocaleForMobile(String email) {
         String lang = getPreferedLangByEmail(email);

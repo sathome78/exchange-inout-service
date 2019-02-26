@@ -54,10 +54,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         refillRequestFlatDto.setPubKey(rs.getString("pub_key"));
         refillRequestFlatDto.setBrainPrivKey(rs.getString("brain_priv_key"));
         refillRequestFlatDto.setUserId(rs.getInt("user_id"));
-        refillRequestFlatDto.setPayerBankName(rs.getString("payer_bank_name"));
-        refillRequestFlatDto.setPayerBankCode(rs.getString("payer_bank_code"));
         refillRequestFlatDto.setPayerAccount(rs.getString("payer_account"));
-        refillRequestFlatDto.setRecipientBankAccount(rs.getString("payer_account"));
         refillRequestFlatDto.setUserFullName(rs.getString("user_full_name"));
         refillRequestFlatDto.setRemark(rs.getString("remark"), "");
         refillRequestFlatDto.setReceiptScan(rs.getString("receipt_scan"));
@@ -70,11 +67,6 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         refillRequestFlatDto.setCurrencyId(rs.getInt("currency_id"));
         refillRequestFlatDto.setMerchantId(rs.getInt("merchant_id"));
         refillRequestFlatDto.setMerchantTransactionId(rs.getString("merchant_transaction_id"));
-        refillRequestFlatDto.setRecipientBankId(rs.getInt("recipient_bank_id"));
-        refillRequestFlatDto.setRecipientBankName(rs.getString("name"));
-        refillRequestFlatDto.setRecipientBankAccount(rs.getString("account_number"));
-        refillRequestFlatDto.setRecipientBankRecipient(rs.getString("recipient"));
-        refillRequestFlatDto.setRecipientBankDetails(rs.getString("bank_details"));
         refillRequestFlatDto.setMerchantRequestSign(rs.getString("merchant_request_sign"));
         refillRequestFlatDto.setAdminHolderId(rs.getInt("admin_holder_id"));
         refillRequestFlatDto.setRefillRequestAddressId(rs.getInt("refill_request_address_id"));
@@ -227,12 +219,10 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
             String address, Integer merchantId,
             Integer currencyId,
             String hash) {
-        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*, " +
-                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*" +
                 " FROM REFILL_REQUEST " +
                 "   JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id) AND (RRA.address = :address) " +
                 "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
-                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
                 " WHERE REFILL_REQUEST.merchant_id = :merchant_id " +
                 "       AND REFILL_REQUEST.currency_id = :currency_id " +
                 "       AND REFILL_REQUEST.merchant_transaction_id = :hash ";
@@ -254,8 +244,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
             Integer merchantId,
             Integer currencyId,
             List<Integer> statusList) {
-        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*, " +
-                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.* " +
                 " FROM REFILL_REQUEST " +
                 "   LEFT JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id) " +
                 "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
@@ -278,12 +267,10 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
             Integer merchantId,
             Integer currencyId,
             List<Integer> statusIdList) {
-        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*,  " +
-                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*  " +
                 " FROM REFILL_REQUEST " +
                 "   LEFT JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id)  " +
                 "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
-                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
                 " WHERE REFILL_REQUEST.merchant_id = :merchant_id " +
                 "       AND REFILL_REQUEST.currency_id = :currency_id " +
                 "       AND REFILL_REQUEST.status_id IN (:status_id_list) " +
@@ -298,12 +285,10 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
 
     @Override
     public List<RefillRequestFlatDto> findAllWithChildTokensWithConfirmationsByMerchantIdAndCurrencyIdAndStatusId(int merchantId, int currencyId, List<Integer> statusIdList) {
-        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*,  " +
-                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*  " +
                 " FROM REFILL_REQUEST " +
                 "   LEFT JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id)  " +
                 "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
-                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
                 "   LEFT JOIN MERCHANT M ON M.tokens_parrent_id = :merchant_id " +
                 " WHERE ((REFILL_REQUEST.merchant_id = :merchant_id  " +
                 "       AND REFILL_REQUEST.currency_id = :currency_id) OR M.id = REFILL_REQUEST.merchant_id) " +
@@ -661,12 +646,10 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
 
     @Override
     public Optional<RefillRequestFlatDto> getFlatByIdAndBlock(Integer id) {
-        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.*,  " +
-                "                 INVOICE_BANK.name, INVOICE_BANK.account_number, INVOICE_BANK.recipient, INVOICE_BANK.bank_details " +
+        String sql = "SELECT  REFILL_REQUEST.*, RRA.*, RRP.* " +
                 " FROM REFILL_REQUEST " +
                 "   LEFT JOIN REFILL_REQUEST_ADDRESS RRA ON (RRA.id = REFILL_REQUEST.refill_request_address_id)  " +
                 "   LEFT JOIN REFILL_REQUEST_PARAM RRP ON (RRP.id = REFILL_REQUEST.refill_request_param_id) " +
-                "   LEFT JOIN INVOICE_BANK ON (INVOICE_BANK.id = RRP.recipient_bank_id) " +
                 " WHERE REFILL_REQUEST.id = :id " +
                 " FOR UPDATE ";
         try {
