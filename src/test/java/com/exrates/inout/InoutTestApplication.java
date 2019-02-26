@@ -56,7 +56,6 @@ public class InoutTestApplication {
 
     @Before
     public void clean(){
-        jdbcTemplate.update("DELETE FROM USER_COMMENT WHERE 1", new HashMap<>());
         jdbcTemplate.update("DELETE FROM REFILL_REQUEST_CONFIRMATION WHERE 1", new HashMap<>());
         jdbcTemplate.update("DELETE FROM REFILL_REQUEST WHERE 1", new HashMap<>());
         jdbcTemplate.update("DELETE FROM REFILL_REQUEST_ADDRESS WHERE 1", new HashMap<>());

@@ -515,7 +515,7 @@ public class RefillServiceImpl implements RefillService {
                 new Integer[]{requestId},
                 locale);
         String userEmail = userService.getEmailById(refillRequestFlatDto.getUserId());
-        userService.addUserComment(REFILL_ACCEPTED, comment, userEmail, false);
+//        userService.addUserComment(REFILL_ACCEPTED, comment, userEmail, false);
         notificationService.notifyUser(refillRequestFlatDto.getUserId(), NotificationEvent.IN_OUT, title, comment);
     }
 
