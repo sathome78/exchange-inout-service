@@ -486,7 +486,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
                 .addValue("priv_key", request.getPrivKey())
                 .addValue("pub_key", request.getPubKey())
                 .addValue("brain_priv_key", request.getBrainPrivKey());
-        namedParameterJdbcTemplate.update(addAddressSql, params);
+        int count = namedParameterJdbcTemplate.update(addAddressSql, params);
         refillRequestAddressId = request.getId();
         return refillRequestAddressId;
     }

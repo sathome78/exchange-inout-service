@@ -9,6 +9,7 @@ import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.dto.UserInfoDto;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -17,12 +18,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -43,7 +46,8 @@ public class RefillServiceImplTest extends InoutTestConfig {
     @Autowired
     private RefillRequestDao refillRequestDao;
 
-    @MockBean(name = "aunitServiceImpl")
+    @Autowired
+    @Qualifier("aunitServiceImpl")
     private AunitServiceImpl aunitService;
 
     private Merchant aunitMerchant;
@@ -55,15 +59,7 @@ public class RefillServiceImplTest extends InoutTestConfig {
         aunitCurrency = currencyService.findByName("AUNIT");
     }
     @Test
-    public void createRefillRequestAddress() {
-        String address = "TestAddres132daws";
-
-        Mockito.when(aunitService.refill(any())).thenReturn(new HashMap<String, String>() {{
-            put("address", address);
-            put("message", "Send bablo here");
-            put("qr", "TestAddresdaws");
-        }});
-
+    public void createRefillRequestAddress() throws RefillRequestAppropriateNotFoundException {
         Principal authentication = Mockito.mock(Principal.class);
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         UserInfoDto userInfoDto = registerNewUser();
@@ -78,7 +74,8 @@ public class RefillServiceImplTest extends InoutTestConfig {
         refillReqDto.setOperationType(OperationType.INPUT);
         refillReqDto.setGenerateNewAddress(true);
 
-        refillRequestController.createRefillRequest(refillReqDto, authentication, new Locale("en"), request);
+        Map<String, Object> result = refillRequestController.createRefillRequest(refillReqDto, authentication, new Locale("en"), request);
+        String address = (String) ((Map)result.get("params")).get("address");
 
         Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), userInfoDto.getId());
         assertTrue(refillRequestFlatDtoOptional.isPresent());
@@ -88,6 +85,17 @@ public class RefillServiceImplTest extends InoutTestConfig {
         assertEquals(userInfoDto.getId(), refillRequestFlatDto.getUserId());
         assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
         assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
+
+        //refill todo create wallet on startup
+        String amount = "0.1";
+        String hash = "hash123";
+        Map<String, String> map = new HashMap<>();
+
+        map.put("address", address);
+        map.put("hash", hash);
+        map.put("amount", amount);
+        aunitService.createRequest(hash, address, new BigDecimal(amount));
+        aunitService.processPayment(map);
 
 
     }

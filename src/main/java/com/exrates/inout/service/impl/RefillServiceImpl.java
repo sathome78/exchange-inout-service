@@ -941,14 +941,16 @@ public class RefillServiceImpl implements RefillService {
     private String sendRefillNotificationAfterCreationByFact(
             RefillRequestCreateDto request,
             Locale locale) {
-        String title = messageSource.getMessage("merchants.refillNotification.header", null, locale);
+//        String title = messageSource.getMessage("merchants.refillNotification.header", null, locale); todo
+        String title = "demo";
         String mainNotificationMessageCodeSuffix = "";
         String mainNotificationMessageCode = "merchants.refillNotification.".concat(request.getStatus().name()).concat(mainNotificationMessageCodeSuffix);
         Object[] messageParams = {
                 request.getId(),
                 request.getMerchantDescription()
         };
-        String notification = messageSource.getMessage(mainNotificationMessageCode, messageParams, locale);
+//        String notification = messageSource.getMessage(mainNotificationMessageCode, messageParams, locale); todo
+        String notification = "demo";
         notificationService.notifyUser(request.getUserId(), NotificationEvent.IN_OUT, title, notification);
         return notification;
     }

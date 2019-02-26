@@ -135,8 +135,9 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
         Integer destinationTag = generateUniqDestinationTag(request.getUserId());
-        String message = messageSource.getMessage("merchants.refill.xrp",
-                new String[]{mainAddress, destinationTag.toString()}, request.getLocale());
+//        String message = messageSource.getMessage("merchants.refill.xrp",
+//                new String[]{mainAddress, destinationTag.toString()}, request.getLocale());
+        String message = "demo";
         return new HashMap<String, String>() {{
             put("address", String.valueOf(destinationTag));
             put("message", message);
