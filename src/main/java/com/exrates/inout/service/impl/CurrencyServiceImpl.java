@@ -156,6 +156,11 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
+    public List<Currency> getAllActiveCurrencies() {
+        return currencyDao.getAllActiveCurrencies();
+    }
+
+    @Override
     @Transactional
     public MerchantCurrencyScaleDto getCurrencyScaleByCurrencyId(Integer currencyId) {
         MerchantCurrencyScaleDto result = currencyDao.findCurrencyScaleByCurrencyId(currencyId);

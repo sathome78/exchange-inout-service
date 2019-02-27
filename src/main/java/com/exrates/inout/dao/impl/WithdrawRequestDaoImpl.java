@@ -409,9 +409,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
             put("merchant_id", merchantId);
             put("statuses", statusId);
         }};
-        return jdbcTemplate.query(sql, params, (rs, i) -> {
-            return withdrawRequestFlatDtoRowMapper.mapRow(rs, i);
-        });
+        return jdbcTemplate.query(sql, params, (rs, i) -> withdrawRequestFlatDtoRowMapper.mapRow(rs, i));
     }
 
     @Override
@@ -466,6 +464,12 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         });
     }
 
+    @Override
+    public List<WithdrawRequestFlatDto> findByUserId(Integer id) {
+        String sql = "SELECT * FROM WITHDRAW_REQUEST WHERE user_id = :user_id";
+
+        return jdbcTemplate.query(sql, Collections.singletonMap("user_id", id), (rs, i) -> withdrawRequestFlatDtoRowMapper.mapRow(rs, i));
+    }
 
     private String getPermissionClause(Integer requesterUserId) {
         if (requesterUserId == null) {

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserInfoDto {
+public class TestUser {
     private Integer id;
     private String email;
 }

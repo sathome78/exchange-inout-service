@@ -1170,4 +1170,34 @@ public class RefillServiceImpl implements RefillService {
             return Optional.empty();
         }
     }
+
+    @Override
+    public Map<String, Object> prepareRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException {
+        if (requestParamsDto.getOperationType() != INPUT) {
+            throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
+        }
+        if (!checkInputRequestsLimit(requestParamsDto.getCurrency(), email)) {
+            throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));
+        }
+        Boolean forceGenerateNewAddress = requestParamsDto.getGenerateNewAddress() != null && requestParamsDto.getGenerateNewAddress();
+        if (!forceGenerateNewAddress) {
+            Optional<String> address = getAddressByMerchantIdAndCurrencyIdAndUserId(
+                    requestParamsDto.getMerchant(),
+                    requestParamsDto.getCurrency(),
+                    userService.getIdByEmail(email)
+            );
+            if (address.isPresent()) {
+                String message = messageSource.getMessage("refill.messageAboutCurrentAddress", new String[]{address.get()}, locale);
+                throw new ForceGenerationAddressException(address.get(), message);
+            }
+        }
+        RefillStatusEnum beginStatus = (RefillStatusEnum) RefillStatusEnum.X_STATE.nextState(CREATE_BY_USER);
+        Payment payment = new Payment(INPUT);
+        payment.setCurrency(requestParamsDto.getCurrency());
+        payment.setMerchant(requestParamsDto.getMerchant());
+        payment.setSum(requestParamsDto.getSum() == null ? 0 : requestParamsDto.getSum().doubleValue());
+        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, email, locale)
+                .orElseThrow(InvalidAmountException::new);
+        return createRefillRequest(new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale));
+    }
 }

@@ -208,4 +208,14 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return !npJdbcTemplate.queryForList(sql, Collections.singletonMap("currency_id", currencyId), Integer.class).isEmpty();
     }
 
+    @Override
+    public List<Currency> getAllActiveCurrencies() {
+        String sql = "SELECT id, name FROM CURRENCY WHERE hidden IS NOT TRUE ";
+
+        return npJdbcTemplate.query(sql, (rs, row) -> Currency.builder()
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
+                .build());
+    }
+
 }

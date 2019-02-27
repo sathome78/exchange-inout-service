@@ -1,10 +1,7 @@
 package com.exrates.inout.controller;
 
 import com.exrates.inout.domain.dto.*;
-import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.InvoiceBank;
-import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.domain.other.PaginationWrapper;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.exceptions.entity.ErrorInfo;
@@ -25,10 +22,11 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import static com.exrates.inout.domain.enums.OperationType.INPUT;
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREATE_BY_USER;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -64,37 +62,15 @@ public class RefillRequestController {
             @RequestBody RefillRequestParamsDto requestParamsDto,
             Principal principal,
             Locale locale, HttpServletRequest servletRequest) {
-        if (requestParamsDto.getOperationType() != INPUT) {
-            throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
+        try {
+            return refillService.prepareRefillRequestCreateDto(requestParamsDto, principal.getName(), locale);
+        } catch (ForceGenerationAddressException e) {
+            return new HashMap<String, Object>() {{
+                put("address", e.getAddress());
+                put("message", e.getMessage());
+                put("qr", e.getAddress());
+            }};
         }
-        if (!refillService.checkInputRequestsLimit(requestParamsDto.getCurrency(), principal.getName())) {
-            throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));
-        }
-        Boolean forceGenerateNewAddress = requestParamsDto.getGenerateNewAddress() != null && requestParamsDto.getGenerateNewAddress();
-        if (!forceGenerateNewAddress) {
-            Optional<String> address = refillService.getAddressByMerchantIdAndCurrencyIdAndUserId(
-                    requestParamsDto.getMerchant(),
-                    requestParamsDto.getCurrency(),
-                    userService.getIdByEmail(principal.getName())
-            );
-            if (address.isPresent()) {
-                String message = messageSource.getMessage("refill.messageAboutCurrentAddress", new String[]{address.get()}, locale);
-                return new HashMap<String, Object>() {{
-                    put("address", address.get());
-                    put("message", message);
-                    put("qr", address.get());
-                }};
-            }
-        }
-        RefillStatusEnum beginStatus = (RefillStatusEnum) RefillStatusEnum.X_STATE.nextState(CREATE_BY_USER);
-        Payment payment = new Payment(INPUT);
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum() == null ? 0 : requestParamsDto.getSum().doubleValue());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, principal.getName(), locale)
-                .orElseThrow(InvalidAmountException::new);
-        RefillRequestCreateDto request = new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale);
-        return refillService.createRefillRequest(request);
     }
 
 

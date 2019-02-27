@@ -134,7 +134,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    private Integer createWithdraw(WithdrawRequestCreateDto withdrawRequestCreateDto) {
+    @Override
+    public Integer createWithdraw(WithdrawRequestCreateDto withdrawRequestCreateDto) {
         merchantServiceContext.getMerchantService(withdrawRequestCreateDto.getMerchantId())
                 .checkWithdrawAddressName(withdrawRequestCreateDto.getDestinationWallet());
         WithdrawStatusEnum currentStatus = WithdrawStatusEnum.convert(withdrawRequestCreateDto.getStatusId());
