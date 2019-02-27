@@ -1172,7 +1172,7 @@ public class RefillServiceImpl implements RefillService {
     }
 
     @Override
-    public Map<String, Object> prepareRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException {
+    public Map<String, Object> prepareAndCreateRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException {
         if (requestParamsDto.getOperationType() != INPUT) {
             throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
         }

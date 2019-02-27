@@ -168,5 +168,5 @@ public interface RefillService {
 
     Optional<RefillRequestAddressDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
 
-    Map<String, Object> prepareRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException;
+    Map<String, Object> prepareAndCreateRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException;
 }

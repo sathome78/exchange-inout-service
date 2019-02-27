@@ -75,11 +75,12 @@ public class RefillTest extends InoutTestApplication {
 
         String amount = "0.1";
         String hash = "hash123";
-        Map<String, String> map = new HashMap<>();
 
+        Map<String, String> map = new HashMap<>();
         map.put("address", address);
         map.put("hash", hash);
         map.put("amount", amount);
+
         aunitService.createRequest(hash, address, new BigDecimal(amount));
 
         Authentication authentication = Mockito.mock(Authentication.class);

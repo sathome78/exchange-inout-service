@@ -63,7 +63,7 @@ public class RefillRequestController {
             Principal principal,
             Locale locale, HttpServletRequest servletRequest) {
         try {
-            return refillService.prepareRefillRequestCreateDto(requestParamsDto, principal.getName(), locale);
+            return refillService.prepareAndCreateRefillRequestCreateDto(requestParamsDto, principal.getName(), locale);
         } catch (ForceGenerationAddressException e) {
             return new HashMap<String, Object>() {{
                 put("address", e.getAddress());
