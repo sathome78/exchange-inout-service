@@ -78,4 +78,6 @@ public interface WithdrawService {
 
     @Transactional(readOnly = true)
     List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
+
+    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, String email, Locale locale);
 }

@@ -5,7 +5,6 @@ import com.exrates.inout.dao.WithdrawRequestDao;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
-import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
@@ -642,7 +641,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         return infoDto;
     }
 
-    public Map<String, String> prepareAndCreateWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, String email, Locale locale){
+    @Override
+    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, String email, Locale locale){
         if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), email)) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }
@@ -658,16 +658,14 @@ public class WithdrawServiceImpl implements WithdrawService {
         payment.setDestinationTag(requestParamsDto.getDestinationTag());
         CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, email, locale)
                 .orElseThrow(InvalidAmountException::new);
-        WithdrawRequestCreateDto withdrawRequestCreateDto = new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
-        try {
-            secureServiceImpl.checkEventAdditionalPin(request, email,
-                    NotificationMessageEventEnum.WITHDRAW, getAmountWithCurrency(withdrawRequestCreateDto));
-        } catch (PinCodeCheckNeedException e) {
-            request.getSession().setAttribute(withdrawRequestSessionAttr, withdrawRequestCreateDto);
-            throw e;
-        }
-
+        return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
     }
+
+
+    private String getAmountWithCurrency(WithdrawRequestCreateDto dto) {
+        return String.join("", dto.getAmount().stripTrailingZeros().toPlainString(), " ", dto.getCurrencyName());
+    }
+
     private WithdrawStatusEnum checkPermissionOnActionAndGetNewStatus(Integer requesterAdminId, WithdrawRequestFlatDto withdrawRequest, InvoiceActionTypeEnum action) {
         Boolean requesterAdminIsHolder = requesterAdminId.equals(withdrawRequest.getAdminHolderId());
         InvoiceOperationPermission permission = userService.getCurrencyPermissionsByUserIdAndCurrencyIdAndDirection(

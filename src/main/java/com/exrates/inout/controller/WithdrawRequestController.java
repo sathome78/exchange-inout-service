@@ -5,10 +5,7 @@ import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
 import com.exrates.inout.domain.dto.WithdrawRequestParamsDto;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
-import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.ClientBank;
-import com.exrates.inout.domain.main.CreditsOperation;
-import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.exceptions.entity.ErrorInfo;
 import com.exrates.inout.service.*;
@@ -31,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -67,22 +63,8 @@ public class WithdrawRequestController {
             @RequestBody WithdrawRequestParamsDto requestParamsDto,
             Principal principal, HttpServletRequest request,
             Locale locale) {
-        if (!withdrawService.checkOutputRequestsLimit(requestParamsDto.getCurrency(), principal.getName())) {
-            throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
-        }
-        if (!StringUtils.isEmpty(requestParamsDto.getDestinationTag())) {
-            merchantService.checkDestinationTag(requestParamsDto.getMerchant(), requestParamsDto.getDestinationTag());
-        }
-        WithdrawStatusEnum beginStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getBeginState();
-        Payment payment = new Payment(OUTPUT);
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum().doubleValue());
-        payment.setDestination(requestParamsDto.getDestination());
-        payment.setDestinationTag(requestParamsDto.getDestinationTag());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, principal.getName(), locale)
-                .orElseThrow(InvalidAmountException::new);
-        WithdrawRequestCreateDto withdrawRequestCreateDto = new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
+        WithdrawRequestCreateDto withdrawRequestCreateDto = withdrawService.prepareWithdrawRequest(requestParamsDto, principal.getName(), locale);
+
         try {
             secureServiceImpl.checkEventAdditionalPin(request, principal.getName(),
                     NotificationMessageEventEnum.WITHDRAW, getAmountWithCurrency(withdrawRequestCreateDto));
