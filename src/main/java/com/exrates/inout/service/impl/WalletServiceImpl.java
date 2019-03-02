@@ -13,6 +13,7 @@ import com.exrates.inout.service.*;
 import com.exrates.inout.service.api.ExchangeApi;
 import com.exrates.inout.service.api.WalletsApi;
 import com.exrates.inout.util.BigDecimalProcessing;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,6 +33,7 @@ import static java.math.BigDecimal.ZERO;
 @Log4j2
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");

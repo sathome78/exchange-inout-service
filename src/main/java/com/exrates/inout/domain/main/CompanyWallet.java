@@ -3,12 +3,13 @@ package com.exrates.inout.domain.main;
 import lombok.Data;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Data
-public class CompanyWallet implements RowMapper<CompanyWallet> {
+public class CompanyWallet implements RowMapper<CompanyWallet>, Serializable {
     private int id;
     private Currency currency;
     private BigDecimal balance;

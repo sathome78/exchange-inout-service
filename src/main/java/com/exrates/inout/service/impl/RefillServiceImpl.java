@@ -7,12 +7,13 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
-import com.exrates.inout.domain.enums.*;
+import com.exrates.inout.domain.enums.MerchantProcessType;
+import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.other.WalletOperationData;
@@ -20,6 +21,7 @@ import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.google.common.base.Preconditions;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +46,6 @@ import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static com.exrates.inout.domain.enums.UserCommentTopicEnum.REFILL_ACCEPTED;
 import static com.exrates.inout.domain.enums.UserCommentTopicEnum.REFILL_DECLINE;
-import static com.exrates.inout.domain.enums.WalletTransferStatus.SUCCESS;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
 import static com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection.REFILL;
 import static com.exrates.inout.domain.enums.invoice.RefillStatusEnum.EXPIRED;
@@ -56,6 +57,7 @@ import static com.exrates.inout.domain.other.WalletOperationData.BalanceType.ACT
 
 @Service
 @PropertySource(value = {"classpath:/job.properties"})
+@RequiredArgsConstructor
 public class RefillServiceImpl implements RefillService {
 
 
@@ -105,6 +107,8 @@ public class RefillServiceImpl implements RefillService {
 
     @Autowired
     private InputOutputService inputOutputService;
+
+    private final RabbitServiceImpl rabbitService;
 
     @Override
     public Map<String, String> callRefillIRefillable(RefillRequestCreateDto request) {
@@ -515,7 +519,7 @@ public class RefillServiceImpl implements RefillService {
                 new Integer[]{requestId},
                 locale);
         String userEmail = userService.getEmailById(refillRequestFlatDto.getUserId());
-//        userService.addUserComment(REFILL_ACCEPTED, comment, userEmail, false);
+//        userService.addUserComment(REFILL_ACCEPTED, comment, userEmail, false); TODO
         notificationService.notifyUser(refillRequestFlatDto.getUserId(), NotificationEvent.IN_OUT, title, comment);
     }
 
@@ -617,19 +621,11 @@ public class RefillServiceImpl implements RefillService {
             walletOperationData.setCommissionAmount(commission);
             walletOperationData.setSourceType(TransactionSourceType.REFILL);
             walletOperationData.setSourceId(refillRequest.getId());
+            walletOperationData.setCurrencyId(refillRequest.getCurrencyId());
             String description = transactionDescription.get(currentStatus, action);
             walletOperationData.setDescription(description);
-            WalletTransferStatus walletTransferStatus = walletService.walletBalanceChange(walletOperationData);
-            if (walletTransferStatus != SUCCESS) {
-                throw new RefillRequestRevokeException(walletTransferStatus.name());
-            }
-            profileData.setTime2();
-            CompanyWallet companyWallet = companyWalletService.findByCurrency(new Currency(refillRequest.getCurrencyId()));
-            companyWalletService.deposit(
-                    companyWallet,
-                    amountToEnroll,
-                    walletOperationData.getCommissionAmount()
-            );
+
+            rabbitService.sendAcceptRefillEvent(walletOperationData);
             profileData.setTime3();
             return refillRequest;
         } finally {

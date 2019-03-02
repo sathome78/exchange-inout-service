@@ -4,9 +4,11 @@ import com.exrates.inout.domain.enums.CurrencyPairType;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 @Component
 @ToString
-public class CurrencyPair {
+public class CurrencyPair implements Serializable {
     private int id;
     private String name;
     private Currency currency1;

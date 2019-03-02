@@ -4,10 +4,11 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class Wallet {
+public class Wallet implements Serializable {
 
     private int id;
     private int currencyId;

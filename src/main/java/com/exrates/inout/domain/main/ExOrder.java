@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
 @Getter
 @Setter
-public class ExOrder {
+public class ExOrder implements Serializable {
     private int id;
     private int userId;
     private int currencyPairId;

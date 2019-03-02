@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @ToString
@@ -11,7 +13,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Currency {
+public class Currency implements Serializable {
 
     private int id;
     private String name;

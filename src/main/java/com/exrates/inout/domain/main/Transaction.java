@@ -6,12 +6,13 @@ import com.exrates.inout.domain.serializer.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
 @Data
-public class Transaction {
+public class Transaction implements Serializable {
     private int id;
     private Wallet userWallet;
     private CompanyWallet companyWallet;

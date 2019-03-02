@@ -6,7 +6,6 @@ import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.RefillRequestParamsDto;
 import com.exrates.inout.domain.enums.OperationType;
-import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
@@ -51,8 +50,7 @@ public class RefillTest extends InoutTestApplication {
         Mockito.when(principal.getName()).thenReturn(testUser.getEmail());
         Mockito.when(request.getUserPrincipal()).thenReturn(principal);
         Mockito.when(request.getAttribute(any())).thenReturn(new Locale("en"));
-        Mockito.when(walletService.findByUserAndCurrency(any(), any())).thenReturn(new Wallet(-1, null, null));
-        Mockito.when(walletService.walletBalanceChange(any())).thenReturn(WalletTransferStatus.SUCCESS);
+        Mockito.when(walletService.findByUserAndCurrency(any(), any())).thenReturn(new Wallet(aunitService.getCurrency().getId(), null, null));
 
         RefillRequestParamsDto refillReqDto = new RefillRequestParamsDto();
         refillReqDto.setCurrency(aunitCurrency.getId());

@@ -13,10 +13,12 @@ import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.service.CommissionService;
+import com.exrates.inout.service.WalletService;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -39,6 +41,9 @@ public class WithdrawTest extends InoutTestApplication {
 
     @Autowired
     private WithdrawRequestDao withdrawRequestDao;
+
+    @MockBean
+    private WalletService walletService;
 
     @Test
     public void withdraw(){

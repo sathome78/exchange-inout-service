@@ -3,8 +3,10 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Merchant {
+public class Merchant implements Serializable {
     private int id;
     private String name;
     private String description;

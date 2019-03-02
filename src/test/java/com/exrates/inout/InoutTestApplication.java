@@ -44,9 +44,6 @@ public class InoutTestApplication {
     protected NotificationService notificationService;
 
     @MockBean
-    protected CompanyWalletService companyWalletService;
-
-    @MockBean
     private GtagService gtagService;
 
     @MockBean

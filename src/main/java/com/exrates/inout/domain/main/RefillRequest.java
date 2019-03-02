@@ -3,11 +3,12 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class RefillRequest {
+public class RefillRequest implements Serializable {
     private int id;
     private String address;
     private Integer userId;
