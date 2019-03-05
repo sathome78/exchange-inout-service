@@ -37,8 +37,8 @@ public class InoutTestApplication {
     @Qualifier("masterTemplate")
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @MockBean
-    protected WalletService walletService;
+//    @MockBean
+//    protected WalletService walletService;
 
     @MockBean
     protected NotificationService notificationService;
@@ -74,8 +74,8 @@ public class InoutTestApplication {
         User user = new User();
         user.setEmail("user" + id++ +"@gmail.com");
         user.setStatus(UserStatus.ACTIVE);
+        user.setId(id);
         userDao.create(user);
-        user.setId(userDao.getIdByEmail(user.getEmail()));
 
         return new TestUser(user.getId(), user.getEmail());
     }

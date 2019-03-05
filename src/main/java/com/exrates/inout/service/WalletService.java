@@ -23,7 +23,7 @@ public interface WalletService {
     boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck);
 
 
-    Wallet findByUserAndCurrency(User user, Currency currency);
+    Wallet findByUserAndCurrency(int userId, int currencyId);
 
     Wallet create(User user, Currency currency);
 

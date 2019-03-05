@@ -169,8 +169,8 @@ public class InputOutputServiceImpl implements InputOutputService {
             throw new UserNotFoundException(messageSource.getMessage("transfer.nonExistentUser", new Object[]{payment.getRecipient()}, locale));
         }
         
-        Wallet wallet = walletService.findByUserAndCurrency(user, currency); //TODO make http req for getting wallet of both user`s
-        Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient, currency);
+        Wallet wallet = walletService.findByUserAndCurrency(user.getId(), currency.getId());
+        Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient.getId(), currency.getId());
         CreditsOperation creditsOperation = new CreditsOperation.Builder()
                 .initialAmount(commissionData.getAmount())
                 .amount(commissionData.getResultAmount())

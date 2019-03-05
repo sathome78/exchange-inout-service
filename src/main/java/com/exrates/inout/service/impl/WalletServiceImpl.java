@@ -9,6 +9,7 @@ import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
+import com.exrates.inout.properties.EndpointProperties;
 import com.exrates.inout.service.*;
 import com.exrates.inout.service.api.ExchangeApi;
 import com.exrates.inout.service.api.WalletsApi;
@@ -17,9 +18,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
@@ -39,6 +43,7 @@ public class WalletServiceImpl implements WalletService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private static final int decimalPlaces = 9;
+    private static final String FIND_BY_USER_AND_CURRENCY = "/findWalletByUserAndCurrency";
 
     @Autowired
     private WalletDao walletDao;
@@ -60,11 +65,16 @@ public class WalletServiceImpl implements WalletService {
     private ExchangeApi exchangeApi;
     @Autowired
     private WalletsApi walletsApi;
-
+    @Autowired
+    private RestTemplate template;
+    @Autowired
+    private EndpointProperties endpoints;
 
     @Override
     public int getWalletId(int userId, int currencyId) {
-        return walletDao.getWalletId(userId, currencyId);
+        Wallet wallet = findByUserAndCurrency(userId, currencyId);
+
+        return wallet == null ? 0 : wallet.getId();
     }
 
     @Override
@@ -88,8 +98,27 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
-    public Wallet findByUserAndCurrency(User user, Currency currency) {
-        throw new NotImplimentedMethod("TODO: implelemnt http call to core");
+    public Wallet findByUserAndCurrency(int userId, int currencyId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + FIND_BY_USER_AND_CURRENCY)
+                    .queryParam("userId", userId)
+                    .queryParam("currencyId", currencyId);
+
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Wallet> response = template.exchange(
+                    builder.toUriString(),
+                    HttpMethod.GET,
+                    entity,
+                    Wallet.class);
+            return response.getBody();
+        } catch (Exception e){
+            log.error(e);
+            return null;
+        }
     }
 
     @Override

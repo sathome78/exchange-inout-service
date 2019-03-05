@@ -84,6 +84,11 @@ mail:
     allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
 
+
+endpoints:
+  stock: http://localhost:8079/
+  inoutPrefix: /inout
+
 telegram:
   bot:
     url: https://t.me/exrates_local_test_bot

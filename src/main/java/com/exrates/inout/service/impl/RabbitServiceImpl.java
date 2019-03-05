@@ -16,7 +16,7 @@ public class RabbitServiceImpl {
     public RabbitServiceImpl(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
-    //"refill"
+
     public void send(String route, Object data){
         rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName, route, data);
     }

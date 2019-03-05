@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>inout</name>
+    <name>exrates-inout</name>
     <description>Service for input and output funds</description>
 
     <parent>

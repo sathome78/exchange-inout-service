@@ -10,11 +10,13 @@ import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.WalletService;
 import com.exrates.inout.service.bitshares.aunit.AunitServiceImpl;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +32,7 @@ import java.util.Optional;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 public class RefillTest extends InoutTestApplication {
 
@@ -42,6 +45,9 @@ public class RefillTest extends InoutTestApplication {
     @Qualifier("aunitServiceImpl")
     private AunitServiceImpl aunitService;
 
+    @MockBean
+    private WalletService walletService;
+
     @Test
     public void createRefillRequestAddress() throws RefillRequestAppropriateNotFoundException {
         Principal principal = Mockito.mock(Principal.class);
@@ -50,7 +56,7 @@ public class RefillTest extends InoutTestApplication {
         Mockito.when(principal.getName()).thenReturn(testUser.getEmail());
         Mockito.when(request.getUserPrincipal()).thenReturn(principal);
         Mockito.when(request.getAttribute(any())).thenReturn(new Locale("en"));
-        Mockito.when(walletService.findByUserAndCurrency(any(), any())).thenReturn(new Wallet(aunitService.getCurrency().getId(), null, null));
+        Mockito.when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(new Wallet(aunitService.getCurrency().getId(), null, null));
 
         RefillRequestParamsDto refillReqDto = new RefillRequestParamsDto();
         refillReqDto.setCurrency(aunitCurrency.getId());

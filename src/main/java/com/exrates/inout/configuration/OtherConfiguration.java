@@ -8,6 +8,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,6 +31,7 @@ public class OtherConfiguration {
     }
 
     @Bean
+    @Primary
     public RestTemplate restTemplate() {
         HttpClientBuilder b = HttpClientBuilder.create();
         HttpClient client = b.build();

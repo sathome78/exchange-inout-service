@@ -39,6 +39,10 @@ spring:
 #      connection-test-query: SELECT 1 FROM DUAL
 #      driver-class-name: com.mysql.jdbc.Driver
 
+endpoints:
+  stock: http://localhost:8079/
+  inoutPrefix: /inout
+  
 eureka:
   client:
     serviceUrl:

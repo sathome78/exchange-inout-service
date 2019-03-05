@@ -48,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
         CompanyWallet companyWallet = companyWalletService.findByCurrency(currency);
         companyWallet = companyWallet == null ? companyWalletService.create(currency) : companyWallet;
 
-        Wallet userWallet = walletService.findByUserAndCurrency(user, currency);
+        Wallet userWallet = walletService.findByUserAndCurrency(user.getId(), currency.getId());
         userWallet = userWallet == null ? walletService.create(user, currency) : userWallet;
 
         Transaction transaction = new Transaction();
