@@ -134,7 +134,7 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     @Override
     @Transactional
-    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, String userEmail, Locale locale) {
+    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userId, Locale locale) {
         merchantService.checkMerchantIsBlocked(payment.getMerchant(), payment.getCurrency(), payment.getOperationType());
         OperationType operationType = payment.getOperationType();
         BigDecimal amount = valueOf(payment.getSum());
@@ -151,7 +151,7 @@ public class InputOutputServiceImpl implements InputOutputService {
                 throw new UnsupportedMerchantException(exceptionMessage);
             }
         }
-        User user = userService.findByEmail(userEmail);
+        User user = new User(userId);
         CommissionDataDto commissionData = commissionService.normalizeAmountAndCalculateCommission(
                 user.getId(),
                 amount,

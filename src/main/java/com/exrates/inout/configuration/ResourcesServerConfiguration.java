@@ -2,10 +2,8 @@ package com.exrates.inout.configuration;
 
 import com.exrates.inout.domain.enums.AdminAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -14,8 +12,8 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 import static com.exrates.inout.domain.enums.AdminAuthority.PROCESS_WITHDRAW;
 import static org.springframework.http.HttpMethod.POST;
 
-@EnableResourceServer
-@Configuration
+//@EnableResourceServer
+//@Configuration
 public class ResourcesServerConfiguration extends ResourceServerConfigurerAdapter {
 
     private final

@@ -51,7 +51,7 @@ public interface WithdrawService {
 
     Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
 
-    boolean checkOutputRequestsLimit(int merchantId, String email);
+    boolean checkOutputRequestsLimit(int merchantId, int email);
 
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
@@ -79,5 +79,5 @@ public interface WithdrawService {
     @Transactional(readOnly = true)
     List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 
-    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, String email, Locale locale);
+    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale);
 }

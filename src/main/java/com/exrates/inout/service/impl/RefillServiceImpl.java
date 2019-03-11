@@ -20,7 +20,6 @@ import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -882,33 +881,33 @@ public class RefillServiceImpl implements RefillService {
     @Transactional
     @Override
     public Integer manualCreateRefillRequestCrypto(RefillRequestManualDto refillDto, Locale locale) throws DuplicatedMerchantTransactionIdOrAttemptToRewriteException {
-        User user = Preconditions.checkNotNull(userService.findByEmail(refillDto.getEmail()), "user not found");
-        if (!this.checkInputRequestsLimit(refillDto.getCurrency(), refillDto.getEmail())) {
-            throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));
-        }
-        Integer merchantId = Preconditions.checkNotNull(this.getMerchantIdByAddressAndCurrencyAndUser(
-                refillDto.getAddress(),
-                refillDto.getCurrency(),
-                user.getId()), "address not found");
-        Payment payment = new Payment(INPUT);
-        payment.setCurrency(refillDto.getCurrency());
-        payment.setMerchant(merchantId);
-        payment.setSum(refillDto.getAmount() == null ? 0 : refillDto.getAmount().doubleValue());
-        refillDto.setMerchantId(merchantId);
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, refillDto.getEmail(), locale)
-                .orElseThrow(InvalidAmountException::new);
-        RefillRequestCreateDto request = new RefillRequestCreateDto(
-                new RefillRequestParamsDto(refillDto),
-                creditsOperation,
-                RefillStatusEnum.ON_PENDING,
-                locale);
-        request.setNeedToCreateRefillRequestRecord(true);
-        Integer reqId = this.createRefillByFact(request).orElseThrow(() -> new RuntimeException("refiil not created"));
-        ;
-        if (!StringUtils.isEmpty(refillDto.getTxHash())) {
-            refillRequestDao.setMerchantTransactionIdById(reqId, refillDto.getTxHash());
-        }
-        return reqId;
+//        User user = Preconditions.checkNotNull(userService.findByEmail(refillDto.getEmail()), "user not found");
+//        if (!this.checkInputRequestsLimit(refillDto.getCurrency(), refillDto.getEmail())) {
+//            throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));
+//        }
+//        Integer merchantId = Preconditions.checkNotNull(this.getMerchantIdByAddressAndCurrencyAndUser(
+//                refillDto.getAddress(),
+//                refillDto.getCurrency(),
+//                user.getId()), "address not found");
+//        Payment payment = new Payment(INPUT);
+//        payment.setCurrency(refillDto.getCurrency());
+//        payment.setMerchant(merchantId);
+//        payment.setSum(refillDto.getAmount() == null ? 0 : refillDto.getAmount().doubleValue());
+//        refillDto.setMerchantId(merchantId);
+//        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, refillDto.getEmail(), locale)
+//                .orElseThrow(InvalidAmountException::new);
+//        RefillRequestCreateDto request = new RefillRequestCreateDto(
+//                new RefillRequestParamsDto(refillDto),
+//                creditsOperation,
+//                RefillStatusEnum.ON_PENDING,
+//                locale);
+//        request.setNeedToCreateRefillRequestRecord(true);
+//        Integer reqId = this.createRefillByFact(request).orElseThrow(() -> new RuntimeException("refiil not created"));
+//        ;
+//        if (!StringUtils.isEmpty(refillDto.getTxHash())) {
+//            refillRequestDao.setMerchantTransactionIdById(reqId, refillDto.getTxHash());
+//        }
+        return null;
     }
 
     private Optional<Integer> createRefillByFact(RefillRequestCreateDto request) {
@@ -1167,33 +1166,4 @@ public class RefillServiceImpl implements RefillService {
         }
     }
 
-    @Override
-    public Map<String, Object> prepareAndCreateRefillRequestCreateDto(RefillRequestParamsDto requestParamsDto, String email, Locale locale) throws ForceGenerationAddressException {
-        if (requestParamsDto.getOperationType() != INPUT) {
-            throw new IllegalOperationTypeException(requestParamsDto.getOperationType().name());
-        }
-        if (!checkInputRequestsLimit(requestParamsDto.getCurrency(), email)) {
-            throw new RequestLimitExceededException(messageSource.getMessage("merchants.InputRequestsLimit", null, locale));
-        }
-        Boolean forceGenerateNewAddress = requestParamsDto.getGenerateNewAddress() != null && requestParamsDto.getGenerateNewAddress();
-        if (!forceGenerateNewAddress) {
-            Optional<String> address = getAddressByMerchantIdAndCurrencyIdAndUserId(
-                    requestParamsDto.getMerchant(),
-                    requestParamsDto.getCurrency(),
-                    userService.getIdByEmail(email)
-            );
-            if (address.isPresent()) {
-                String message = messageSource.getMessage("refill.messageAboutCurrentAddress", new String[]{address.get()}, locale);
-                throw new ForceGenerationAddressException(address.get(), message);
-            }
-        }
-        RefillStatusEnum beginStatus = (RefillStatusEnum) RefillStatusEnum.X_STATE.nextState(CREATE_BY_USER);
-        Payment payment = new Payment(INPUT);
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum() == null ? 0 : requestParamsDto.getSum().doubleValue());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, email, locale)
-                .orElseThrow(InvalidAmountException::new);
-        return createRefillRequest(new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale));
-    }
 }

@@ -602,8 +602,8 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOutputRequestsLimit(int merchantId, String email) {
-        return withdrawRequestDao.checkOutputRequests(merchantId, email);
+    public boolean checkOutputRequestsLimit(int merchantId, int userId) {
+        return withdrawRequestDao.checkOutputRequests(merchantId, userId);
     }
 
     @Transactional(readOnly = true)
@@ -642,8 +642,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     }
 
     @Override
-    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, String email, Locale locale){
-        if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), email)) {
+    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale){
+        if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId)) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }
         if (!StringUtils.isEmpty(requestParamsDto.getDestinationTag())) {
@@ -656,7 +656,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         payment.setSum(requestParamsDto.getSum().doubleValue());
         payment.setDestination(requestParamsDto.getDestination());
         payment.setDestinationTag(requestParamsDto.getDestinationTag());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, email, locale)
+        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, locale)
                 .orElseThrow(InvalidAmountException::new);
         return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
     }

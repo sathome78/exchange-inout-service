@@ -22,6 +22,7 @@ public interface WalletService {
 
     boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck);
 
+//SEC_TOKEN <PASS123> lookup(ssmPath)
 
     Wallet findByUserAndCurrency(int userId, int currencyId);
 

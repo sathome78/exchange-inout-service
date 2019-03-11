@@ -22,7 +22,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -62,15 +61,7 @@ public class RefillRequestController {
             @RequestBody RefillRequestParamsDto requestParamsDto,
             Principal principal,
             Locale locale, HttpServletRequest servletRequest) {
-        try {
-            return refillService.prepareAndCreateRefillRequestCreateDto(requestParamsDto, principal.getName(), locale);
-        } catch (ForceGenerationAddressException e) {
-            return new HashMap<String, Object>() {{
-                put("address", e.getAddress());
-                put("message", e.getMessage());
-                put("qr", e.getAddress());
-            }};
-        }
+            return null;
     }
 
 

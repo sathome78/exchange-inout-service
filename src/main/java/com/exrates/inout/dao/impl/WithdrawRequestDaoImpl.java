@@ -13,6 +13,7 @@ import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -264,32 +265,7 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
                 "   M.name AS merchant_name, " +
                 "   MC.subtract_merchant_commission_for_withdraw " +
                 " FROM WITHDRAW_REQUEST WR " +
-                " JOIN CURRENCY CUR ON (CUR.id = WR.currency  public WithdrawRequestFlatAdditionalDataDto getAdditionalDataForId(int id) {\n" +
-                "    String sql = \"SELECT \" +\n" +
-                "        \"   CUR.name AS currency_name, \" +\n" +
-                "        \"   USER.email AS user_email, \" +\n" +
-                "        \"   ADMIN.email AS admin_email, \" +\n" +
-                "        \"   M.name AS merchant_name, \" +\n" +
-                "        \"   MC.subtract_merchant_commission_for_withdraw \" +\n" +
-                "        \" FROM WITHDRAW_REQUEST WR \" +\n" +
-                "        \" JOIN CURRENCY CUR ON (CUR.id = WR.currency_id) \" +\n" +
-                "        \" JOIN USER USER ON (USER.id = WR.user_id) \" +\n" +
-                "        \" LEFT JOIN USER ADMIN ON (ADMIN.id = WR.admin_holder_id) \" +\n" +
-                "        \" JOIN MERCHANT M ON (M.id = WR.merchant_id)\" +\n" +
-                "        \" JOIN MERCHANT_CURRENCY MC ON CUR.id = MC.currency_id AND M.id = MC.merchant_id \" +\n" +
-                "        \" WHERE WR.id = :id\";\n" +
-                "    return jdbcTemplate.queryForObject(sql, singletonMap(\"id\", id), (rs, idx) -> {\n" +
-                "          WithdrawRequestFlatAdditionalDataDto withdrawRequestFlatAdditionalDataDto = new WithdrawRequestFlatAdditionalDataDto();\n" +
-                "          withdrawRequestFlatAdditionalDataDto.setUserEmail(rs.getString(\"user_email\"));\n" +
-                "          withdrawRequestFlatAdditionalDataDto.setAdminHolderEmail(rs.getString(\"admin_email\"));\n" +
-                "          withdrawRequestFlatAdditionalDataDto.setCurrencyName(rs.getString(\"currency_name\"));\n" +
-                "          withdrawRequestFlatAdditionalDataDto.setMerchantName(rs.getString(\"merchant_name\"));\n" +
-                "          withdrawRequestFlatAdditionalDataDto.setIsMerchantCommissionSubtractedForWithdraw(\n" +
-                "                  rs.getBoolean(\"subtract_merchant_commission_for_withdraw\"));\n" +
-                "          return withdrawRequestFlatAdditionalDataDto;\n" +
-                "        }\n" +
-                "    );\n" +
-                "  }_id) " +
+                " JOIN CURRENCY CUR ON (CUR.id = WR.currency_id) " +
                 " JOIN USER USER ON (USER.id = WR.user_id) " +
                 " LEFT JOIN USER ADMIN ON (ADMIN.id = WR.admin_holder_id) " +
                 " JOIN MERCHANT M ON (M.id = WR.merchant_id)" +
@@ -353,20 +329,20 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
     }
 
     @Override
-    public boolean checkOutputRequests(int currencyId, String email) {
-        String sql = "SELECT " +
-                " (SELECT COUNT(*) FROM WITHDRAW_REQUEST REQUEST " +
-                " JOIN USER ON(USER.id = REQUEST.user_id) " +
-                " WHERE USER.email = :email and REQUEST.currency_id = :currency_id " +
-                " and DATE(REQUEST.date_creation) = CURDATE()) <  " +
-                " " +
-                "(SELECT CURRENCY_LIMIT.max_daily_request FROM CURRENCY_LIMIT  " +
-                " JOIN USER ON (USER.roleid = CURRENCY_LIMIT.user_role_id)" +
-                " WHERE USER.email = :email AND operation_type_id = 2 AND currency_id = :currency_id) ;";
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("currency_id", currencyId);
-        params.put("email", email);
-        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
+    public boolean checkOutputRequests(int currencyId, int userId) {
+        throw new NotImplementedException("");
+//        String sql = "SELECT " +
+//                " (SELECT COUNT(*) FROM WITHDRAW_REQUEST REQUEST " +
+//                " WHERE REQUEST.user_id = :user_id and REQUEST.currency_id = :currency_id " + //TODO inout test
+//                " and DATE(REQUEST.date_creation) = CURDATE()) <  " +
+//                " " +
+//                "(SELECT CURRENCY_LIMIT.max_daily_request FROM CURRENCY_LIMIT  " +
+//                " JOIN USER ON (USER.roleid = CURRENCY_LIMIT.user_role_id)" + //TODO take user role id
+//                " WHERE USER.email = :email AND operation_type_id = 2 AND currency_id = :currency_id) ;";
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("currency_id", currencyId);
+//        params.put("user_id", userId);
+//        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
 
     @Override
