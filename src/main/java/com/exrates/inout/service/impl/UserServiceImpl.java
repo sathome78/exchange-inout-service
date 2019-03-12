@@ -6,7 +6,10 @@ import com.exrates.inout.domain.dto.UpdateUserDto;
 import com.exrates.inout.domain.enums.*;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
-import com.exrates.inout.domain.main.*;
+import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.domain.main.NotificationsUserSetting;
+import com.exrates.inout.domain.main.TemporalToken;
+import com.exrates.inout.domain.main.User;
 import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.NotificationsSettingsService;
 import com.exrates.inout.service.SendMailService;
@@ -18,9 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -245,39 +245,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean addUserComment(UserCommentTopicEnum topic, String newComment, String email, boolean sendMessage) {
+        throw new NotImplementedException();
 
-        User user = findByEmail(email);
-        User creator;
-        Comment comment = new Comment();
-        comment.setMessageSent(sendMessage);
-        comment.setUser(user);
-        comment.setComment(newComment);
-        comment.setUserCommentTopic(topic);
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            creator = findByEmail(auth.getName());
-            comment.setCreator(creator);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        boolean success = userDao.addUserComment(comment);
-
-        if (comment.isMessageSent()) {
-            notificationService.notifyUser(user.getId(), NotificationEvent.ADMIN, "admin.subjectCommentTitle",
-                    "admin.subjectCommentMessage", new Object[]{": " + newComment});
-        }
-
-        return success;
     }
 
     public UserRole getUserRoleFromSecurityContext() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String grantedAuthority = authentication.getAuthorities().
-                stream().map(GrantedAuthority::getAuthority)
-                .filter(USER_ROLES::contains)
-                .findFirst().orElse(ROLE_DEFAULT_COMMISSION.name());
-        LOGGER.debug("Granted authority: " + grantedAuthority);
-        return UserRole.valueOf(grantedAuthority);
+        throw new NotImplementedException();
     }
 
     @Transactional(readOnly = true)

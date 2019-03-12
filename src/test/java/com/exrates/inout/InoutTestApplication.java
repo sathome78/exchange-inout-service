@@ -46,9 +46,6 @@ public class InoutTestApplication {
     @MockBean
     private GtagService gtagService;
 
-    @MockBean
-    protected SecureService secureService;
-
     @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverClassName;
     @Value("${spring.datasource.hikari.jdbc-url}")

@@ -86,8 +86,8 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Autowired
     private MerchantService merchantService;
-    @Autowired
-    private SecureService secureServiceImpl;
+//    @Autowired
+//    private SecureService secureServiceImpl;
 
     @Override
     @Transactional(readOnly = true)

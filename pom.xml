@@ -379,11 +379,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>me.exrates</groupId>-->
-            <!--<artifactId>ssm-integration</artifactId>-->
-            <!--<version>1.0.2</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>me.exrates</groupId>
+            <artifactId>ssm-integration</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,10 +1,10 @@
 package com.exrates.inout.configuration;
 
 import com.exrates.inout.properties.SsmProperties;
-import com.exrates.inout.service.SSMGetter;
-import com.exrates.inout.service.SSMGetterImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import me.exrates.SSMGetter;
+import me.exrates.SSMGetterImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +29,7 @@ public class SSMConfiguration {
 
         @Override
         public String lookup(String s) {
-            return "MOCK_TOKEN";
+            return "root";
         }
     }
 }

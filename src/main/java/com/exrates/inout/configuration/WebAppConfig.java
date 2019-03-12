@@ -1,9 +1,9 @@
 package com.exrates.inout.configuration;
 
 import com.exrates.inout.controller.interceptor.TokenInterceptor;
-import com.exrates.inout.service.SSMGetter;
+import com.exrates.inout.properties.SsmProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import me.exrates.SSMGetter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,11 +14,10 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     private final SSMGetter ssmGetter;
 
-    @Value("{ssm.path}")
-    private String inoutPath;
+    private final SsmProperties ssmProperties;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor(ssmGetter.lookup(inoutPath)));
+        registry.addInterceptor(new TokenInterceptor(ssmGetter.lookup(ssmProperties.getPath())));
     }
 }

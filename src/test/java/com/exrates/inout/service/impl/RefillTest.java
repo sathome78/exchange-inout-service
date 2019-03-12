@@ -17,9 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -87,11 +84,6 @@ public class RefillTest extends InoutTestApplication {
 
         aunitService.createRequest(hash, address, new BigDecimal(amount));
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-        Mockito.when(authentication.getName()).thenReturn(testUser.getEmail());
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
         aunitService.processPayment(map);
 
         Optional<RefillRequestFlatDto> flatOptional = refillService.findFlatByAddressAndMerchantIdAndCurrencyIdAndHash(address, aunitMerchant.getId(), aunitCurrency.getId(), hash);

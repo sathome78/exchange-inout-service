@@ -23,10 +23,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -184,37 +183,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     public boolean update(UpdateUserDto user) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = auth.getName(); //get logged in username
-        LOGGER.debug("Updating user: " + user.getEmail() + " by " + currentUser +
-                ", newRole: " + user.getRole() + ", newStatus: " + user.getStatus());
+        throw new NotImplementedException();
 
-        String sql = "UPDATE USER SET";
-        StringBuilder fieldsStr = new StringBuilder(" ");
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        /*email is present in UpdateUserDto but used for hold email to send notification only, not for update email*/
-        if (user.getPhone() != null) {
-            fieldsStr.append("phone = '" + user.getPhone()).append("',");
-        }
-        if (user.getStatus() != null) {
-            fieldsStr.append("status = " + user.getStatus().getStatus()).append(",");
-        }
-        if (user.getRole() != null) {
-            fieldsStr.append("roleid = " + user.getRole().getRole()).append(",");
-        }
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            fieldsStr.append("password = '" + passwordEncoder.encode(user.getPassword())).append("',");
-        }
-        if (user.getFinpassword() != null && !user.getFinpassword().isEmpty()) {
-            fieldsStr.append("finpassword = '" + passwordEncoder.encode(user.getFinpassword())).append("',");
-        }
-        if (fieldsStr.toString().trim().length() == 0) {
-            return true;
-        }
-        sql = sql + fieldsStr.toString().replaceAll(",$", " ") + "WHERE USER.id = :id";
-        Map<String, Integer> namedParameters = new HashMap<>();
-        namedParameters.put("id", user.getId());
-        return namedParameterJdbcTemplate.update(sql, namedParameters) > 0;
     }
 
     public boolean createTemporalToken(TemporalToken token) {
