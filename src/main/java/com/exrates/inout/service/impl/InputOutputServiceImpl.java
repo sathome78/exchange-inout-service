@@ -6,14 +6,13 @@ import com.exrates.inout.domain.dto.MyInputOutputHistoryDto;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.PaginationWrapper;
 import com.exrates.inout.exceptions.UnsupportedMerchantException;
-import com.exrates.inout.exceptions.UserNotFoundException;
 import com.exrates.inout.service.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +133,7 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     @Override
     @Transactional
-    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userId, Locale locale) {
+    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userId, UserRole userRole) {
         merchantService.checkMerchantIsBlocked(payment.getMerchant(), payment.getCurrency(), payment.getOperationType());
         OperationType operationType = payment.getOperationType();
         BigDecimal amount = valueOf(payment.getSum());
@@ -157,19 +156,11 @@ public class InputOutputServiceImpl implements InputOutputService {
                 amount,
                 operationType,
                 currency.getId(),
-                merchant.getId(), payment.getDestinationTag());
+                merchant.getId(), payment.getDestinationTag(), userRole);
         TransactionSourceType transactionSourceType = operationType.getTransactionSourceType();
-        User recipient = null;
-        try {
-            if (!StringUtils.isEmpty(payment.getRecipient())) {
-                recipient = userService.getIdByNickname(payment.getRecipient()) > 0 ?
-                        userService.findByNickname(payment.getRecipient()) : userService.findByEmail(payment.getRecipient());
-            }
-        } catch (RuntimeException e) {
-            throw new UserNotFoundException(messageSource.getMessage("transfer.nonExistentUser", new Object[]{payment.getRecipient()}, locale));
-        }
         
         Wallet wallet = walletService.findByUserAndCurrency(user.getId(), currency.getId());
+        User recipient = payment.getUserRecipient();
         Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient.getId(), currency.getId());
         CreditsOperation creditsOperation = new CreditsOperation.Builder()
                 .initialAmount(commissionData.getAmount())
@@ -190,5 +181,4 @@ public class InputOutputServiceImpl implements InputOutputService {
                 .build();
         return Optional.of(creditsOperation);
     }
-
 }

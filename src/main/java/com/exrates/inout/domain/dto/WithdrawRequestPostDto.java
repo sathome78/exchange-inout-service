@@ -1,5 +1,6 @@
 package com.exrates.inout.domain.dto;
 
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import lombok.Data;
 
@@ -24,4 +25,5 @@ public class WithdrawRequestPostDto {
   private Integer merchantId;
   private Integer currencyId;
   private Integer userId;
+  private UserRole userRole;
 }

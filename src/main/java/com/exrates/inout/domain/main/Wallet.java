@@ -3,11 +3,13 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
+@EqualsAndHashCode
 public class Wallet implements Serializable {
 
     private int id;
@@ -73,27 +75,6 @@ public class Wallet implements Serializable {
 
     public void setReservedBalance(BigDecimal reservedBalance) {
         this.reservedBalance = reservedBalance;
-    }
-
-    /**
-     * Currently represents currency and balance on wallet
-     * 1,2,3 -> RUB,USD,EUR respectively
-     * any other value - BTC
-     *
-     * @return
-     */
-    public String getFullName() {
-        final String activeBalance;
-        switch (currencyId) {
-            case 1:
-            case 2:
-            case 3:
-                activeBalance = this.activeBalance.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-                break;
-            default:
-                activeBalance = this.activeBalance.toString();
-        }
-        return name + " " + activeBalance;
     }
 
     @Override

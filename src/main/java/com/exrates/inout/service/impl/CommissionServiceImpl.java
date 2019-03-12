@@ -88,9 +88,9 @@ public class CommissionServiceImpl implements CommissionService {
             Integer currencyId,
             Integer merchantId,
             Locale locale,
-            String destinationTag) {
+            String destinationTag, UserRole userRole) {
         Map<String, String> result = new HashMap<>();
-        CommissionDataDto commissionData = normalizeAmountAndCalculateCommission(userId, amount, type, currencyId, merchantId, destinationTag);
+        CommissionDataDto commissionData = normalizeAmountAndCalculateCommission(userId, amount, type, currencyId, merchantId, destinationTag, userRole);
         result.put("amount", commissionData.getAmount().toPlainString());
         if (!commissionData.getSpecificMerchantComissionCount()) {
 
@@ -124,13 +124,13 @@ public class CommissionServiceImpl implements CommissionService {
                                                                    BigDecimal amount,
                                                                    OperationType type,
                                                                    Integer currencyId,
-                                                                   Integer merchantId, String destinationTag) {
+                                                                   Integer merchantId, String destinationTag, UserRole userRole) {
         Boolean specMerchantComissionCount = false;
         Commission companyCommission;
         if (type == OperationType.OUTPUT && currencyService.isIco(currencyId)) {
             companyCommission = Commission.zeroComission();
         } else {
-            companyCommission = findCommissionByTypeAndRole(type, userService.getUserRoleFromDB(userId));
+            companyCommission = findCommissionByTypeAndRole(type, userRole);
         }
         BigDecimal companyCommissionRate = companyCommission.getValue();
         String companyCommissionUnit = "%";

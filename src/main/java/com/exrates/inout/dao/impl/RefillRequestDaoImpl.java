@@ -5,6 +5,7 @@ import com.exrates.inout.domain.RefillOnConfirmationDto;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
@@ -885,19 +886,18 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
     }
 
     @Override
-    public boolean checkInputRequests(int currencyId, String email) {
+    public boolean checkInputRequests(int currencyId, UserRole userRole, int userId) {
         String sql = "SELECT " +
                 " (SELECT COUNT(*) FROM REFILL_REQUEST REQUEST " +
-                " JOIN USER ON(USER.id = REQUEST.user_id) " +
-                " WHERE USER.email = :email and REQUEST.currency_id = currency_id " +
+                " WHERE REQUEST.user_id = :user_id and REQUEST.currency_id = currency_id " +
                 " and DATE(REQUEST.date_creation) = CURDATE()) <  " +
                 " " +
                 "(SELECT CURRENCY_LIMIT.max_daily_request FROM CURRENCY_LIMIT  " +
-                " JOIN USER ON (USER.roleid = CURRENCY_LIMIT.user_role_id) " +
-                " WHERE USER.email = :email AND operation_type_id = 1 AND currency_id = :currency_id) ;";
+                " WHERE CURRENCY_LIMIT.user_role_id = :user_role_id AND operation_type_id = 1 AND currency_id = :currency_id) ;";
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("currency_id", currencyId);
-        params.put("email", email);
+        params.put("user_role_id", userRole.getRole());
+        params.put("user_id", userId);
         return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
 

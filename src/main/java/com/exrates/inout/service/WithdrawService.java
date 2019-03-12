@@ -3,6 +3,7 @@ package com.exrates.inout.service;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
@@ -49,7 +50,7 @@ public interface WithdrawService {
 
     void confirmWithdrawalRequest(int requestId, Integer requesterAdminId);
 
-    Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
+    Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag, UserRole userRole);
 
     boolean checkOutputRequestsLimit(int merchantId, int email);
 
@@ -79,5 +80,5 @@ public interface WithdrawService {
     @Transactional(readOnly = true)
     List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 
-    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale);
+    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole);
 }

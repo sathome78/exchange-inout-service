@@ -37,8 +37,8 @@ public class InoutTestApplication {
     @Qualifier("masterTemplate")
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-//    @MockBean
-//    protected WalletService walletService;
+    @MockBean
+    protected WalletService walletService;
 
     @MockBean
     protected NotificationService notificationService;

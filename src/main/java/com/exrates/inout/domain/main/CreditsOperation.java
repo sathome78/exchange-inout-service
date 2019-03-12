@@ -3,30 +3,32 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 @Getter
+@NoArgsConstructor
 public class CreditsOperation {
 
-    private final User user;
-    private final BigDecimal origAmountAtCreationRequest;
-    private final BigDecimal amount;
-    private final BigDecimal commissionAmount;
-    private final OperationType operationType;
-    private final Commission commission;
-    private final Currency currency;
-    private final Wallet wallet;
-    private final Merchant merchant;
-    private final BigDecimal merchantCommissionAmount;
-    private final Optional<String> destination;
-    private final Optional<String> destinationTag;
-    private final TransactionSourceType transactionSourceType;
+    private User user;
+    private BigDecimal origAmountAtCreationRequest;
+    private BigDecimal amount;
+    private BigDecimal commissionAmount;
+    private OperationType operationType;
+    private Commission commission;
+    private Currency currency;
+    private Wallet wallet;
+    private Merchant merchant;
+    private BigDecimal merchantCommissionAmount;
+    private Optional<String> destination;
+    private Optional<String> destinationTag;
+    private TransactionSourceType transactionSourceType;
     private Boolean generateAdditionalRefillAddressAvailable;
     private Boolean storeSameAddressForParentAndTokens;
-    private final User recipient;
-    private final Wallet recipientWallet;
+    private User recipient;
+    private Wallet recipientWallet;
 
     private CreditsOperation(Builder builder) {
         this.user = builder.user;

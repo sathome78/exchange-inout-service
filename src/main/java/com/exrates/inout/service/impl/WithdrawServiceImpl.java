@@ -7,6 +7,7 @@ import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -415,7 +416,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         IWithdrawable merchantService = (IWithdrawable) merchantServiceContext.getMerchantService(withdrawRequest.getMerchantServiceBeanName());
         CommissionDataDto dto = commissionService
                 .normalizeAmountAndCalculateCommission(withdrawRequest.getUserId(), withdrawRequest.getAmount(), OperationType.OUTPUT,
-                        withdrawRequest.getCurrencyId(), withdrawRequest.getMerchantId(), withdrawRequest.getDestinationTag());
+                        withdrawRequest.getCurrencyId(), withdrawRequest.getMerchantId(), withdrawRequest.getDestinationTag(), withdrawRequest.getUserRole()); //TODO set userRole to WithdrawRequestPostDto
         log.debug("Commission data: " + dto);
         BigDecimal finalAmount = dto.getResultAmount();
         log.debug("Final amount: " + BigDecimalProcessing.formatNoneComma(finalAmount, false));
@@ -509,12 +510,12 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     @Transactional(readOnly = true)
     public Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount,
-                                                                                Integer currencyId, Integer merchantId, Locale locale, String destinationTag) {
+                                                                                Integer currencyId, Integer merchantId, Locale locale, String destinationTag, UserRole userRole) {
         OperationType operationType = OUTPUT;
         BigDecimal addition = currencyService.computeRandomizedAddition(currencyId, operationType);
         amount = amount.add(addition);
         merchantService.checkAmountForMinSum(merchantId, currencyId, amount);
-        Map<String, String> result = commissionService.computeCommissionAndMapAllToString(userId, amount, operationType, currencyId, merchantId, locale, destinationTag);
+        Map<String, String> result = commissionService.computeCommissionAndMapAllToString(userId, amount, operationType, currencyId, merchantId, locale, destinationTag, userRole);
         result.put("addition", addition.toString());
         return result;
     }
@@ -642,7 +643,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     }
 
     @Override
-    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale){
+    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole){
         if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId)) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }
@@ -656,7 +657,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         payment.setSum(requestParamsDto.getSum().doubleValue());
         payment.setDestination(requestParamsDto.getDestination());
         payment.setDestinationTag(requestParamsDto.getDestinationTag());
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, locale)
+        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, userRole)
                 .orElseThrow(InvalidAmountException::new);
         return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
     }

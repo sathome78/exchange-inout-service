@@ -10,6 +10,7 @@ import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -677,7 +678,7 @@ public class RefillServiceImpl implements RefillService {
             BigDecimal amount,
             Integer currencyId,
             Integer merchantId,
-            Locale locale) {
+            Locale locale, UserRole userRole) {
         OperationType operationType = INPUT;
         BigDecimal addition = currencyService.computeRandomizedAddition(currencyId, operationType);
         amount = amount.add(addition);
@@ -690,7 +691,7 @@ public class RefillServiceImpl implements RefillService {
                 currencyId,
                 merchantId,
                 locale,
-                null);
+                null, userRole);
         result.put("addition", addition.toString());
         return result;
     }
@@ -769,8 +770,8 @@ public class RefillServiceImpl implements RefillService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkInputRequestsLimit(int currencyId, String email) {
-        return refillRequestDao.checkInputRequests(currencyId, email);
+    public boolean checkInputRequestsLimit(int currencyId, UserRole userRole, int userId) {
+        return refillRequestDao.checkInputRequests(currencyId, userRole, userId);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.exrates.inout.domain.RefillOnConfirmationDto;
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.PagingData;
@@ -84,7 +85,7 @@ public interface RefillRequestDao {
 
     void setMerchantTransactionIdById(Integer id, String merchantTransactionId) throws DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
 
-    boolean checkInputRequests(int currencyId, String email);
+    boolean checkInputRequests(int currencyId, UserRole userRole, int userId);
 
     void setConfirmationsNumberByRequestId(Integer requestId, BigDecimal amount, Integer confirmations, String blockhash);
 

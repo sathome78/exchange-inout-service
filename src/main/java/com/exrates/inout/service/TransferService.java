@@ -7,6 +7,7 @@ import com.exrates.inout.domain.dto.VoucherAdminTableDto;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.VoucherFilterData;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public interface TransferService {
 
     TransferRequestFlatDto getFlatById(Integer id);
 
-    Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale);
+    Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, UserRole userRole);
 
     Optional<TransferRequestFlatDto> getByHashAndStatus(String code, Integer requiredStatus, boolean block);
 
