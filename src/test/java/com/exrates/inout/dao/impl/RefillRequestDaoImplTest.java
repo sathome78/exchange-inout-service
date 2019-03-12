@@ -27,7 +27,9 @@ public class RefillRequestDaoImplTest extends InoutTestApplication {
         refillRequestCreateDto.setStatus(RefillStatusEnum.ACCEPTED_AUTO);
         refillRequestCreateDto.setCommissionId(6);
         refillRequestCreateDto.setNeedToCreateRefillRequestRecord(true);
+        refillRequestCreateDto.setAddress("test");
 
+        refillRequestDao.storeRefillRequestAddress(refillRequestCreateDto);
         refillRequestDao.create(refillRequestCreateDto);
     }
 }

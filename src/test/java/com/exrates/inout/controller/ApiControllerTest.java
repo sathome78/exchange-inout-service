@@ -2,9 +2,12 @@ package com.exrates.inout.controller;
 
 import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.controller.interceptor.TokenInterceptor;
+import com.exrates.inout.dao.RefillRequestDao;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserRole;
+import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.domain.main.User;
@@ -27,6 +30,7 @@ import java.util.Optional;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,6 +48,8 @@ public class ApiControllerTest extends InoutTestApplication {
     private SsmProperties ssmProperties;
     @Autowired
     private TokenInterceptor tokenInterceptor;
+    @Autowired
+    private RefillRequestDao refillRequestDao;
 
     @Test
     public void prepareCreditsOperation() throws Exception {
@@ -100,15 +106,39 @@ public class ApiControllerTest extends InoutTestApplication {
 
     @Test
     public void getAddressByMerchantIdAndCurrencyIdAndUserId() throws Exception {
-        TestUser testUser = new TestUser(100500, "email");
+        TestUser testUser = registerNewUser();
+        String address = "test";
 
-        String response = mvc.perform(get("/getAddressByMerchantIdAndCurrencyIdAndUserId"
-                + "?currency_id=" + aunitCurrency.getId()
-                + "&merchant_id=" + aunitMerchant.getId())
+        String response = performGetAddressMyMerchantIdAndCurrencyIdAndUserId(testUser, aunitCurrency.getId(), aunitMerchant.getId());
+        Optional<String> o = objectMapper.readValue(response, new TypeReference<Optional<String>>() {{
+        }});
+        assertFalse(o.isPresent());
+
+        storeRefillRequest(testUser, address);
+
+        response = performGetAddressMyMerchantIdAndCurrencyIdAndUserId(testUser, aunitCurrency.getId(), aunitMerchant.getId());
+        assertEquals(address, response);
+    }
+
+    private void storeRefillRequest(TestUser testUser, String address) {
+        RefillRequestCreateDto refillRequestCreateDto = new RefillRequestCreateDto();
+        refillRequestCreateDto.setUserId(testUser.getId());
+        refillRequestCreateDto.setMerchantId(aunitMerchant.getId());
+        refillRequestCreateDto.setCurrencyId(aunitCurrency.getId());
+        refillRequestCreateDto.setAmount(new BigDecimal(10));
+        refillRequestCreateDto.setStatus(RefillStatusEnum.ACCEPTED_AUTO);
+        refillRequestCreateDto.setCommissionId(6);
+        refillRequestCreateDto.setNeedToCreateRefillRequestRecord(true);
+        refillRequestCreateDto.setAddress(address);
+        refillRequestDao.storeRefillRequestAddress(refillRequestCreateDto);
+    }
+
+    private String performGetAddressMyMerchantIdAndCurrencyIdAndUserId(TestUser testUser, int currencyId, int merchantId) throws Exception {
+        return mvc.perform(get("/getAddressByMerchantIdAndCurrencyIdAndUserId"
+                + "?currency_id=" + currencyId
+                + "&merchant_id=" + merchantId)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", testUser.getRole())).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        System.out.println("result = " + objectMapper.readValue(response, new TypeReference<Optional<String>>(){{}}));
     }
 }
