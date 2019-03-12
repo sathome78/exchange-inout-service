@@ -97,7 +97,7 @@ public class HCXPServiceImpl implements MoneroService {
             this.decimals = decimals;
             this.log = LogManager.getLogger(props.getProperty("monero.log"));
         } catch (IOException e) {
-            log.error(e);
+            //log.error(e);
         }
 
     }
@@ -144,7 +144,7 @@ public class HCXPServiceImpl implements MoneroService {
             ADDRESSES.add(address);
 
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
 
         String message = messageSource.getMessage("merchants.refill.btc",
@@ -177,7 +177,7 @@ public class HCXPServiceImpl implements MoneroService {
                     }
                 }, 3, 30, TimeUnit.MINUTES);
             }catch (Exception e){
-                log.error(e);
+                //log.error(e);
             }
         }else {
             log.info(merchantName + " test mode...");
@@ -201,13 +201,13 @@ public class HCXPServiceImpl implements MoneroService {
             //TODO remove after successfully withdraw
             String mainAccountVerification = "hysGeMWsvZdBq7tBimycV71rXSwJPkn4f2gRNfDwP2AogUK7cNYt7saCAcYA9cFsvpeUEiiYA44jm1GRswFENhan2XEaiEfMo";
             if(!mainAccount.equals(mainAccountVerification)){
-                log.error("Unexpected main account address, expected " + mainAccountVerification + ", but was " + mainAccount);
+                //log.error("Unexpected main account address, expected " + mainAccountVerification + ", but was " + mainAccount);
                 return;
             }
             MoneroTransaction transaction = wallet.send(mainAccount, amountToSend, "", 0, 10);
             log.info(transaction);
         }catch (Throwable e){
-            log.error(e);
+            //log.error(e);
         }
     }
 
@@ -252,14 +252,14 @@ public class HCXPServiceImpl implements MoneroService {
 
                     processPayment(mapPayment);
                 }catch (Exception e){
-                    log.error(e);
+                    //log.error(e);
                 }
             }
 
             log.info(new Date());
 
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

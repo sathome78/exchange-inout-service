@@ -15,8 +15,6 @@ public class RefillRequestFlatDto extends RequestWithRemarkAbstractDto {
     private String pubKey;
     private String brainPrivKey;
     private Integer userId;
-    private String payerBankName;
-    private String payerBankCode;
     private String payerAccount;
     private String userFullName;
     private String receiptScan;
@@ -29,11 +27,6 @@ public class RefillRequestFlatDto extends RequestWithRemarkAbstractDto {
     private Integer currencyId;
     private Integer merchantId;
     private String merchantTransactionId;
-    private String recipientBankName;
-    private Integer recipientBankId;
-    private String recipientBankAccount;
-    private String recipientBankRecipient;
-    private String recipientBankDetails;
     private String merchantRequestSign;
     private Integer adminHolderId;
     private Integer refillRequestAddressId;

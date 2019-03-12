@@ -3,12 +3,14 @@ package com.exrates.inout.domain.main;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.UserStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class User {
 
     private int id;
@@ -27,6 +29,10 @@ public class User {
     private UserRole role = UserRole.USER;
     private String parentEmail;
     private List<UserFile> userFiles = Collections.emptyList();
+
+    public User(int userId) {
+        this.id = userId;
+    }
 
 
     public String getIp() {

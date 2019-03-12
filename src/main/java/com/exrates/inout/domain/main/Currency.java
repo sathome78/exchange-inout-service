@@ -1,29 +1,48 @@
 package com.exrates.inout.domain.main;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
+import lombok.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
-public class Currency implements RowMapper<Currency> {
+@Builder
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Currency implements Serializable {
 
     private int id;
     private String name;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
+    private boolean hidden;
 
     public Currency(int id) {
         this.id = id;
     }
 
     @Override
-    public Currency mapRow(ResultSet resultSet, int i) throws SQLException {
-        return null;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Currency currency = (Currency) o;
+
+        if (id != currency.id) return false;
+        if (name != null ? !name.equals(currency.name) : currency.name != null) return false;
+        return description != null ? description.equals(currency.description) : currency.description == null;
     }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
+
 }

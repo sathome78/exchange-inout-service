@@ -101,7 +101,7 @@ public class KrakenRetrievalService implements StockExrateRetrievalService {
                 });
 
             } catch (IOException e) {
-                log.error(e);
+                //log.error(e);
             }
 
         });

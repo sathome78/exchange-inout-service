@@ -2,13 +2,15 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.UserRole;
+import jnr.ffi.annotations.SaveError;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class Commission {
+public class Commission implements Serializable {
     private int id;
     private OperationType operationType;
     private BigDecimal value;

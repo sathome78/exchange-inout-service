@@ -23,10 +23,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,10 +41,9 @@ public class UserDaoImpl implements UserDao {
     private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
 
     private final String SELECT_USER =
-            "SELECT USER.id, u.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
+            "SELECT USER.id, USER.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
                     "USER.phone, USER.status, USER_ROLE.name AS role_name FROM USER " +
-                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id LEFT JOIN REFERRAL_USER_GRAPH " +
-                    "ON USER.id = REFERRAL_USER_GRAPH.child LEFT JOIN USER AS u ON REFERRAL_USER_GRAPH.parent = u.id ";
+                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id ";
 
     @Autowired
     @Qualifier(value = "masterTemplate")
@@ -93,13 +91,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     public boolean create(User user) {
-        String sqlUser = "insert into USER(nickname,email,password,phone,status,roleid ) " +
-                "values(:nickname,:email,:password,:phone,:status,:roleid)";
+        String sqlUser = "insert into USER(id,nickname,email,password,phone,status,roleid ) " +
+                "values(:id,:nickname,:email,:password,:phone,:status,:roleid)";
         String sqlWallet = "INSERT INTO WALLET (currency_id, user_id) select id, :user_id from CURRENCY;";
         String sqlNotificationOptions = "INSERT INTO NOTIFICATION_OPTIONS(notification_event_id, user_id, send_notification, send_email) " +
                 "select id, :user_id, default_send_notification, default_send_email FROM NOTIFICATION_EVENT; ";
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("email", user.getEmail());
+        namedParameters.put("id", user.getId());
         namedParameters.put("nickname", user.getNickname());
         if (user.getPassword() != null) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -116,12 +115,7 @@ public class UserDaoImpl implements UserDao {
         namedParameters.put("status", String.valueOf(user.getStatus().getStatus()));
         namedParameters.put("roleid", String.valueOf(user.getRole().getRole()));
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(sqlUser, new MapSqlParameterSource(namedParameters), keyHolder);
-        int userId = keyHolder.getKey().intValue();
-        Map<String, Integer> userIdParamMap = Collections.singletonMap("user_id", userId);
-
-        return namedParameterJdbcTemplate.update(sqlWallet, userIdParamMap) > 0
-                && namedParameterJdbcTemplate.update(sqlNotificationOptions, userIdParamMap) > 0;
+        return namedParameterJdbcTemplate.update(sqlUser, new MapSqlParameterSource(namedParameters), keyHolder) == 1;
     }
 
     public UserRole getUserRoleById(Integer id) {
@@ -189,37 +183,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     public boolean update(UpdateUserDto user) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = auth.getName(); //get logged in username
-        LOGGER.debug("Updating user: " + user.getEmail() + " by " + currentUser +
-                ", newRole: " + user.getRole() + ", newStatus: " + user.getStatus());
+        throw new NotImplementedException();
 
-        String sql = "UPDATE USER SET";
-        StringBuilder fieldsStr = new StringBuilder(" ");
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        /*email is present in UpdateUserDto but used for hold email to send notification only, not for update email*/
-        if (user.getPhone() != null) {
-            fieldsStr.append("phone = '" + user.getPhone()).append("',");
-        }
-        if (user.getStatus() != null) {
-            fieldsStr.append("status = " + user.getStatus().getStatus()).append(",");
-        }
-        if (user.getRole() != null) {
-            fieldsStr.append("roleid = " + user.getRole().getRole()).append(",");
-        }
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            fieldsStr.append("password = '" + passwordEncoder.encode(user.getPassword())).append("',");
-        }
-        if (user.getFinpassword() != null && !user.getFinpassword().isEmpty()) {
-            fieldsStr.append("finpassword = '" + passwordEncoder.encode(user.getFinpassword())).append("',");
-        }
-        if (fieldsStr.toString().trim().length() == 0) {
-            return true;
-        }
-        sql = sql + fieldsStr.toString().replaceAll(",$", " ") + "WHERE USER.id = :id";
-        Map<String, Integer> namedParameters = new HashMap<>();
-        namedParameters.put("id", user.getId());
-        return namedParameterJdbcTemplate.update(sql, namedParameters) > 0;
     }
 
     public boolean createTemporalToken(TemporalToken token) {
@@ -376,4 +341,16 @@ public class UserDaoImpl implements UserDao {
         }
         return result.get(0);
     }
+
+    public UserRole getUserRoles(String email) {
+        String sql = "select USER_ROLE.name as role_name from USER " +
+                "inner join USER_ROLE on USER.roleid = USER_ROLE.id where USER.email = :email ";
+        Map<String, String> namedParameters = new HashMap<>();
+        namedParameters.put("email", email);
+        return namedParameterJdbcTemplate.query(sql, namedParameters, (rs, row) -> {
+            UserRole role = UserRole.valueOf(rs.getString("role_name"));
+            return role;
+        }).get(0);
+    }
+
 }

@@ -56,7 +56,7 @@ public class WalletsApi {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(ETHEREUM_CONTRACTS_PROPERTY_FILE));
         } catch (Exception ex) {
-            log.error("Ethereum contracts data not loaded from [{}]", ETHEREUM_CONTRACTS_PROPERTY_FILE);
+            //log.error("Ethereum contracts data not loaded from [{}]", ETHEREUM_CONTRACTS_PROPERTY_FILE);
         }
         this.ethereumContractsData = new HashMap<>();
         this.ethereumContractsData.putAll(properties.entrySet()

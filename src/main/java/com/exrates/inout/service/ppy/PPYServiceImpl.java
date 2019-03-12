@@ -26,7 +26,7 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
             else if (msg.contains("previous")) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            //log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }

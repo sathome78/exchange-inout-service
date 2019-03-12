@@ -58,7 +58,7 @@ public class RefillRequestJob {
             try {
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
             } catch (Exception e) {
-                log.error(e);
+                //log.error(e);
             }
         }
 
@@ -83,7 +83,7 @@ public class RefillRequestJob {
 
             }
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 
@@ -91,7 +91,7 @@ public class RefillRequestJob {
         try {
             getBitcoinServiceByMerchantName(merchantName).processPayment(params);
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

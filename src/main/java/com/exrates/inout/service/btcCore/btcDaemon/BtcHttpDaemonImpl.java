@@ -27,7 +27,7 @@ public class BtcHttpDaemonImpl implements BtcDaemon {
         try {
             daemon = new BtcdDaemonImpl(btcdClient);
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

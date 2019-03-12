@@ -164,4 +164,7 @@ public interface RefillService {
     List<RefillRequestAddressDto> findAddressDtosWithMerchantChild(int merchantId);
 
     List<RefillOnConfirmationDto> getOnConfirmationRefills(String email, int currencyId);
+
+    Optional<RefillRequestAddressDto> getByAddressAndMerchantIdAndCurrencyIdAndUserId(String address, int merchantId, int currencyId, int userId);
+
 }

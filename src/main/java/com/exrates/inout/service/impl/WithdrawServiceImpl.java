@@ -19,6 +19,7 @@ import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,8 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Autowired
     private MerchantService merchantService;
+//    @Autowired
+//    private SecureService secureServiceImpl;
 
     @Override
     @Transactional(readOnly = true)
@@ -117,7 +120,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                         delayDescription,
                         locale);
             } catch (final MailException e) {
-                log.error(e);
+                //log.error(e);
             }
             profileData.setTime2();
             BigDecimal newAmount = walletService.getWalletABalance(request.getUserWalletId());
@@ -134,7 +137,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    private Integer createWithdraw(WithdrawRequestCreateDto withdrawRequestCreateDto) {
+    @Override
+    public Integer createWithdraw(WithdrawRequestCreateDto withdrawRequestCreateDto) {
         merchantServiceContext.getMerchantService(withdrawRequestCreateDto.getMerchantId())
                 .checkWithdrawAddressName(withdrawRequestCreateDto.getDestinationWallet());
         WithdrawStatusEnum currentStatus = WithdrawStatusEnum.convert(withdrawRequestCreateDto.getStatusId());
@@ -441,14 +445,14 @@ public class WithdrawServiceImpl implements WithdrawService {
                     userService.addUserComment(WITHDRAW_POSTED, comment, userEmail, false);
                     notificationService.notifyUser(withdrawRequestResult.getUserId(), NotificationEvent.IN_OUT, title, comment);
                 } catch (Exception e) {
-                    log.error("cant send notification on withdraw {}", e);
+                    //log.error("cant send notification on withdraw {}", e);
                 }
             }
         } catch (MerchantException e) {
-            log.error(e);
+            //log.error(e);
             throw e;
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new WithdrawRequestPostException(String.format("withdraw data: %s via merchant: %s", withdrawMerchantOperation.toString(), merchantService.toString()));
         }
     }
@@ -472,7 +476,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                 notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT, title, comment);
             }
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new WithdrawRequestPostException(withdrawRequest.toString());
         }
     }
@@ -598,8 +602,8 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOutputRequestsLimit(int merchantId, String email) {
-        return withdrawRequestDao.checkOutputRequests(merchantId, email);
+    public boolean checkOutputRequestsLimit(int merchantId, int userId) {
+        return withdrawRequestDao.checkOutputRequests(merchantId, userId);
     }
 
     @Transactional(readOnly = true)
@@ -637,6 +641,31 @@ public class WithdrawServiceImpl implements WithdrawService {
         return infoDto;
     }
 
+    @Override
+    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale){
+        if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId)) {
+            throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
+        }
+        if (!StringUtils.isEmpty(requestParamsDto.getDestinationTag())) {
+            merchantService.checkDestinationTag(requestParamsDto.getMerchant(), requestParamsDto.getDestinationTag());
+        }
+        WithdrawStatusEnum beginStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getBeginState();
+        Payment payment = new Payment(OUTPUT);
+        payment.setCurrency(requestParamsDto.getCurrency());
+        payment.setMerchant(requestParamsDto.getMerchant());
+        payment.setSum(requestParamsDto.getSum().doubleValue());
+        payment.setDestination(requestParamsDto.getDestination());
+        payment.setDestinationTag(requestParamsDto.getDestinationTag());
+        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, locale)
+                .orElseThrow(InvalidAmountException::new);
+        return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
+    }
+
+
+    private String getAmountWithCurrency(WithdrawRequestCreateDto dto) {
+        return String.join("", dto.getAmount().stripTrailingZeros().toPlainString(), " ", dto.getCurrencyName());
+    }
+
     private WithdrawStatusEnum checkPermissionOnActionAndGetNewStatus(Integer requesterAdminId, WithdrawRequestFlatDto withdrawRequest, InvoiceActionTypeEnum action) {
         Boolean requesterAdminIsHolder = requesterAdminId.equals(withdrawRequest.getAdminHolderId());
         InvoiceOperationPermission permission = userService.getCurrencyPermissionsByUserIdAndCurrencyIdAndDirection(
@@ -670,5 +699,6 @@ public class WithdrawServiceImpl implements WithdrawService {
                 "merchants.withdrawNotification.header", notificationMessageCode, messageParams);
         return notification;
     }
+
 
 }

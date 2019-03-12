@@ -62,7 +62,7 @@ public class RippleJobs {
         try {
             boolean checked = rippleService.checkSendedTransaction(hash, additionalParams);
             if (checked) {
-               withdrawService.finalizePostWithdrawalRequest(id);
+                withdrawService.finalizePostWithdrawalRequest(id);
             }
         } catch (RippleCheckConsensusException e) {
             log.error("xrp transaction validation error " + e);

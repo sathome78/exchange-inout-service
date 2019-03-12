@@ -89,16 +89,16 @@ public class ApolloReceiveServiceImpl {
                                     put("id", String.valueOf(requestAcceptDto.getRequestId()));
                                 }});
                             } catch (RefillRequestAppropriateNotFoundException e) {
-                                log.error(e);
+                                ////log.error(e);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    log.error(e);
+                    ////log.error(e);
                 }
             });
         } catch (JSONException e) {
-            log.error(e);
+            ////log.error(e);
         }
     }
 
@@ -120,11 +120,11 @@ public class ApolloReceiveServiceImpl {
                         }});
                     }
                 } catch (Exception e) {
-                    log.error(e);
+                    ////log.error(e);
                 }
             });
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

@@ -119,7 +119,7 @@ public class WavesRestClientImpl implements WavesRestClient {
         try {
             return Optional.of(restTemplate.getForObject(generateBaseUrl() + transactionByIdEndpoint, WavesTransaction.class, params));
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             return Optional.empty();
         }
     }

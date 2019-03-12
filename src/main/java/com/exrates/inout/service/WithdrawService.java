@@ -30,6 +30,9 @@ public interface WithdrawService {
 
     MerchantCurrencyAutoParamDto getAutoWithdrawParamsByMerchantAndCurrency(Integer merchantId, Integer currencyId);
 
+    @Transactional(rollbackFor = {Exception.class})
+    Integer createWithdraw(WithdrawRequestCreateDto withdrawRequestCreateDto);
+
     List<MerchantCurrency> retrieveAddressAndAdditionalParamsForWithdrawForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies);
 
     DataTable<List<WithdrawRequestsAdminTableDto>> getWithdrawRequestByStatusList(List<Integer> requestStatus, DataTableParams dataTableParams, WithdrawFilterData withdrawFilterData, String authorizedUserEmail, Locale locale);
@@ -48,7 +51,7 @@ public interface WithdrawService {
 
     Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
 
-    boolean checkOutputRequestsLimit(int merchantId, String email);
+    boolean checkOutputRequestsLimit(int merchantId, int email);
 
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
@@ -75,4 +78,6 @@ public interface WithdrawService {
 
     @Transactional(readOnly = true)
     List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
+
+    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale);
 }

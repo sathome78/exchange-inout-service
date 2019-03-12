@@ -70,7 +70,7 @@ public class LiskRestClientImpl implements LiskRestClient {
             this.countNodeType = JsonNodeType.valueOf(props.getProperty("lisk.tx.count.nodeType"));
 
         } catch (IOException e) {
-            log.error(e);
+            //log.error(e);
         }
     }
 

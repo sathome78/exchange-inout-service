@@ -8,17 +8,26 @@ import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
+import com.exrates.inout.dto.WalletInnerTransferDto;
 import com.exrates.inout.exceptions.*;
+import com.exrates.inout.properties.EndpointProperties;
 import com.exrates.inout.service.*;
 import com.exrates.inout.service.api.ExchangeApi;
 import com.exrates.inout.service.api.WalletsApi;
 import com.exrates.inout.util.BigDecimalProcessing;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,11 +40,16 @@ import static java.math.BigDecimal.ZERO;
 @Log4j2
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private static final int decimalPlaces = 9;
+    private static final String FIND_WALLET_BY_USER_AND_CURRENCY = "/findWalletByUserAndCurrency";
+    private static final String CHECK_WALLET_ENOUGH_MONEY = "/isEnoughWalletMoney";
+    private static final String GET_WALLET_ABALANCE = "/getWalletABalance";
+    private static final String WALLET_INNER_TRANSFER = "/walletInnerTransfer";
 
     @Autowired
     private WalletDao walletDao;
@@ -57,36 +71,77 @@ public class WalletServiceImpl implements WalletService {
     private ExchangeApi exchangeApi;
     @Autowired
     private WalletsApi walletsApi;
-
+    @Autowired
+    private RestTemplate template;
+    @Autowired
+    private EndpointProperties endpoints;
 
     @Override
     public int getWalletId(int userId, int currencyId) {
-        return walletDao.getWalletId(userId, currencyId);
+        Wallet wallet = findByUserAndCurrency(userId, currencyId);
+
+        return wallet == null ? 0 : wallet.getId();
     }
 
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public BigDecimal getWalletABalance(int walletId) {
-        return walletDao.getWalletABalance(walletId);
+        HttpHeaders headers = getHeaders();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + GET_WALLET_ABALANCE)
+                .queryParam("walletId", walletId);
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<BigDecimal> response = template.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                entity,
+                BigDecimal.class);
+        return response.getBody();
     }
 
     @Transactional(readOnly = true)
     @Override
     public boolean ifEnoughMoney(int walletId, BigDecimal amountForCheck) {
-        BigDecimal balance = getWalletABalance(walletId);
-        boolean result = balance.compareTo(amountForCheck) >= 0;
-        if (!result) {
-            log.error(String.format("Not enough wallet money: wallet id %s, actual amount %s but needed %s", walletId,
-                    BigDecimalProcessing.formatNonePoint(balance, false),
-                    BigDecimalProcessing.formatNonePoint(amountForCheck, false)));
-        }
-        return result;
+        HttpHeaders headers = getHeaders();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + CHECK_WALLET_ENOUGH_MONEY)
+                .queryParam("walletId", walletId)
+                .queryParam("amountForCheck", amountForCheck);
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Boolean> response = template.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                entity,
+                Boolean.class);
+        return response.getBody();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Wallet findByUserAndCurrency(User user, Currency currency) {
-        return walletDao.findByUserAndCurrency(user.getId(), currency.getId());
+    public Wallet findByUserAndCurrency(int userId, int currencyId) {
+        try {
+            HttpHeaders headers = getHeaders();
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + FIND_WALLET_BY_USER_AND_CURRENCY)
+                    .queryParam("userId", userId)
+                    .queryParam("currencyId", currencyId);
+
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Wallet> response = template.exchange(
+                    builder.toUriString(),
+                    HttpMethod.GET,
+                    entity,
+                    Wallet.class);
+            return response.getBody();
+        } catch (Exception e){
+            log.error(e);
+            return null;
+        }
     }
 
     @Override
@@ -113,14 +168,35 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @Transactional
+    @SneakyThrows
     public WalletTransferStatus walletInnerTransfer(int walletId, BigDecimal amount, TransactionSourceType sourceType, int sourceId, String description) {
-        return walletDao.walletInnerTransfer(walletId, amount, sourceType, sourceId, description);
+        HttpHeaders headers = getHeaders();
+
+        WalletInnerTransferDto walletInnerTransferDto = WalletInnerTransferDto.builder()
+                .walletId(walletId)
+                .amount(amount)
+                .description(description)
+                .sourceId(sourceId)
+                .sourceType(sourceType)
+                .build();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + WALLET_INNER_TRANSFER);
+
+        HttpEntity<?> entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(walletInnerTransferDto), headers);
+
+
+        ResponseEntity<WalletTransferStatus> response = template.exchange(
+                builder.toUriString(),
+                HttpMethod.POST,
+                entity,
+                WalletTransferStatus.class);
+
+        return response.getBody();
     }
 
     @Override
     public WalletTransferStatus walletBalanceChange(final WalletOperationData walletOperationData) {
-        return walletDao.walletBalanceChange(walletOperationData);
+        throw new NotImplementedException();
     }
 
 
@@ -237,4 +313,10 @@ public class WalletServiceImpl implements WalletService {
     }
 
 
+
+    private HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        return headers;
+    }
 }

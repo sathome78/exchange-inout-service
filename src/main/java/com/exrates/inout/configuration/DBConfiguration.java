@@ -1,9 +1,9 @@
 package com.exrates.inout.configuration;
 
 
-import com.exrates.inout.util.ssm.SSMGetter;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import me.exrates.SSMGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +42,7 @@ public class DBConfiguration {
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(getPassword(ssmPath));
-        hikariConfig.setMaximumPoolSize(50);
+        hikariConfig.setMaximumPoolSize(5);
         return new HikariDataSource(hikariConfig);
     }
 
@@ -53,7 +53,7 @@ public class DBConfiguration {
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(getPassword(ssmPath));
-        hikariConfig.setMaximumPoolSize(50);
+        hikariConfig.setMaximumPoolSize(5);
         hikariConfig.setReadOnly(true);
         return new HikariDataSource(hikariConfig);
     }

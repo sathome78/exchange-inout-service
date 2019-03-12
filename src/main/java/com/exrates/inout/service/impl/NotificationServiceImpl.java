@@ -1,10 +1,8 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.NotificationDao;
-import com.exrates.inout.domain.main.Email;
 import com.exrates.inout.domain.main.NotificationEvent;
-import com.exrates.inout.domain.main.NotificationOption;
-import com.exrates.inout.domain.main.User;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.service.NotificationService;
 import com.exrates.inout.service.SendMailService;
 import com.exrates.inout.service.UserService;
@@ -61,15 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Transactional(rollbackFor = Exception.class)
     public void notifyUser(Integer userId, NotificationEvent cause, String titleMessage, String message) {
-        User user = userService.getUserById(userId);
-        NotificationOption option = notificationDao.findUserOptionForEvent(userId, cause);
-        if (option.isSendEmail()) {
-            Email email = new Email();
-            email.setSubject(titleMessage);
-            email.setMessage(message);
-            email.setTo(user.getEmail());
-            sendMailService.sendInfoMail(email);
-        }
+        throw new NotImplimentedMethod("");
     }
 
     @Override

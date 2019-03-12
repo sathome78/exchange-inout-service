@@ -82,7 +82,7 @@ public class NemTransactionsService {
                 put("hash", result.getJSONObject("transactionHash").getString("data"));
             }};
         } catch (Exception e) {
-            log.error(e);
+            //log.error(e);
             throw new WithdrawRequestPostException("error post NEM withdraw");
         }
     }
@@ -97,7 +97,7 @@ public class NemTransactionsService {
                 attachment.addMosaic(mosaic);
             }
         } catch (UnsupportedEncodingException e) {
-            log.error("unsupported encoding {}", e);
+            //log.error("unsupported encoding {}", e);
         }
         TransferTransaction transaction = new  TransferTransaction(currentTimeStamp,
                 nemService.getAccount(), reipient, transformToNemAmount(withdrawMerchantOperationDto.getAmount()),  attachment);

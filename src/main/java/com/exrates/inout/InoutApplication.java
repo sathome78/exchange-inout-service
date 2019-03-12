@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 })
 @EnableTransactionManagement
 @EnableEurekaClient
-public class InoutApplication {
+public class InoutApplication  {
 
     public static void main(String[] args) {
         SpringApplication.run(InoutApplication.class, args);

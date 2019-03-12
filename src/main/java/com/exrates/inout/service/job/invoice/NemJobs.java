@@ -53,7 +53,7 @@ public class NemJobs {
     public void init() {
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName("NEM");
-       /* scheduler.scheduleAtFixedRate(this::checkWithdrawals, 1, 5, TimeUnit.MINUTES);*/
+        /* scheduler.scheduleAtFixedRate(this::checkWithdrawals, 1, 5, TimeUnit.MINUTES);*/
         scheduler.scheduleAtFixedRate(this::checkReffils, 3, 5, TimeUnit.MINUTES);
     }
 

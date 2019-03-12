@@ -21,9 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.dto.MerchantSpecParamDto;
-
 /**
  * Created by maks on 06.06.2017.
  */
@@ -95,7 +92,7 @@ public class StellarReceivePaymentsService {
         try {
             transactionResponse = stellarTransactionService.getTxByURI(SEVER_URL, response.getLinks().getTransaction().getUri());
         } catch (Exception e) {
-            log.error("error getting transaction {}", e);
+            //log.error("error getting transaction {}", e);
         }
         log.debug("process transaction");
         stellarService.onTransactionReceive(transactionResponse, response.getAmount(), currencyName, merchant);

@@ -138,7 +138,7 @@ public class EthTokenServiceImpl implements EthTokenService {
                 try {
                     transferFundsToMainAccount();
                 } catch (Exception e) {
-                    log.error(e);
+                    ////log.error(e);
                 }
             }
         }, 3, 10, TimeUnit.MINUTES);
@@ -158,7 +158,7 @@ public class EthTokenServiceImpl implements EthTokenService {
             TransactionReceipt transactionReceipt = new TransactionReceipt();
             transactionReceipt = ethereumCommonService.getWeb3j().ethGetTransactionReceipt(transaction.getHash()).send().getResult();
             if (transactionReceipt == null) {
-                log.error("receipt null " + transaction.getHash());
+                ////log.error("receipt null " + transaction.getHash());
                 return;
             }
             List<Log> logsList = transactionReceipt.getLogs();
@@ -195,14 +195,14 @@ public class EthTokenServiceImpl implements EthTokenService {
                                     .hash(transaction.getHash())
                                     .blockhash(transaction.getBlockNumber().toString()).build());
                         } catch (RefillRequestAppropriateNotFoundException e) {
-                            log.error(e);
+                            ////log.error(e);
                         }
                         pendingTransactions.add(refillService.getFlatById(requestId));
                     }
                 }
             });
         } catch (Exception e) {
-            log.error(e);
+            ////log.error(e);
         }
     }
 
@@ -229,7 +229,7 @@ public class EthTokenServiceImpl implements EthTokenService {
                                 providedTransactions.add(pendingTransaction);
                             }
                         } catch (EthereumException | IOException e) {
-                            log.error(merchant.getName() + " " + e);
+                            ////log.error(merchant.getName() + " " + e);
                         }
                     }
 
@@ -272,7 +272,7 @@ public class EthTokenServiceImpl implements EthTokenService {
             log.debug("Process of sending data to Google Analytics...");
             gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currency.getName(), username);
         } catch (Exception e) {
-            log.error(e);
+            ////log.error(e);
         }
     }
 
@@ -363,7 +363,7 @@ public class EthTokenServiceImpl implements EthTokenService {
                 }
 
             } catch (Exception e) {
-                log.error(e);
+                ////log.error(e);
             }
         }
     }

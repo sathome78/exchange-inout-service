@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -41,12 +42,15 @@ public class AidosNodeServiceImpl implements AidosNodeService {
     @PostConstruct
     private void init() {
         objectMapper = new ObjectMapper();
-        restTemplate = new RestTemplate();
+        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpComponentsClientHttpRequestFactory.setConnectionRequestTimeout(5*1000);
+        restTemplate = new RestTemplate(httpComponentsClientHttpRequestFactory);
+
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(rpcUser, rpcPassword));
         try {
             nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
-            log.error("wrong ADK url");
+            //log.error("wrong ADK url");
         }
     }
 
@@ -78,7 +82,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         try {
             return objectMapper.readValue(result.toString(), BtcTransactionDto.class);
         } catch (IOException e) {
-            log.error(e);
+            //log.error(e);
             throw new RuntimeException(e);
         }
     }

@@ -134,7 +134,7 @@ public class InputOutputServiceImpl implements InputOutputService {
 
     @Override
     @Transactional
-    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, String userEmail, Locale locale) {
+    public Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userId, Locale locale) {
         merchantService.checkMerchantIsBlocked(payment.getMerchant(), payment.getCurrency(), payment.getOperationType());
         OperationType operationType = payment.getOperationType();
         BigDecimal amount = valueOf(payment.getSum());
@@ -151,8 +151,7 @@ public class InputOutputServiceImpl implements InputOutputService {
                 throw new UnsupportedMerchantException(exceptionMessage);
             }
         }
-        User user = userService.findByEmail(userEmail);
-        Wallet wallet = walletService.findByUserAndCurrency(user, currency);
+        User user = new User(userId);
         CommissionDataDto commissionData = commissionService.normalizeAmountAndCalculateCommission(
                 user.getId(),
                 amount,
@@ -169,8 +168,9 @@ public class InputOutputServiceImpl implements InputOutputService {
         } catch (RuntimeException e) {
             throw new UserNotFoundException(messageSource.getMessage("transfer.nonExistentUser", new Object[]{payment.getRecipient()}, locale));
         }
-
-        Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient, currency);
+        
+        Wallet wallet = walletService.findByUserAndCurrency(user.getId(), currency.getId());
+        Wallet recipientWallet = recipient == null ? null : walletService.findByUserAndCurrency(recipient.getId(), currency.getId());
         CreditsOperation creditsOperation = new CreditsOperation.Builder()
                 .initialAmount(commissionData.getAmount())
                 .amount(commissionData.getResultAmount())

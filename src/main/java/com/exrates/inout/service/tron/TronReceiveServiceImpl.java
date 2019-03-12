@@ -106,7 +106,7 @@ public class TronReceiveServiceImpl {
                         tronService.putOnBchExam(dto);
                     }
                 } catch (Exception e) {
-                    log.error(e);
+                    //log.error(e);
                 }
             }
         });
@@ -139,7 +139,7 @@ public class TronReceiveServiceImpl {
             try {
                 list.add(fromJson((JSONObject) p));
             } catch (Exception e) {
-                log.error(e);
+                ////log.error(e);
             }
         });
         return list;

@@ -1072,16 +1072,16 @@ public class CryptocurrencyConfig {
         return new TronTrc10Token("BTT", "BTT", 6, "1002000", "31303032303030", "1002000");
     }
 
-    //Bitshares
-    @Bean(name = "ppyServiceImpl")
-    public BitsharesService bitsharesService(){
-        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6);
-    }
-
-    @Bean(name = "aunitServiceImpl")
-    public BitsharesService aunitServiceImpl(){
-        return new BitsharesServiceImpl("AUNIT", "AUNIT", "merchants/aunit.properties", 5){};
-    }
+//    //Bitshares
+//    @Bean(name = "ppyServiceImpl")
+//    public BitsharesService bitsharesService(){
+//        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6);
+//    }
+//
+//    @Bean(name = "aunitServiceImpl")
+//    public BitsharesService aunitServiceImpl(){
+//        return new BitsharesServiceImpl("AUNIT", "AUNIT", "merchants/aunit.properties", 5){};
+//    }
 
     //Qtum tokens:
     @Bean(name = "spcServiceImpl")

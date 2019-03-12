@@ -2,10 +2,10 @@ package com.exrates.inout.service.job.invoice;
 
 import com.exrates.inout.service.BitcoinService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @PropertySource(value = {"classpath:/job.properties"})
 @Log4j2(topic = "job")
+@EnableAutoConfiguration
 public class btcInvoiceRequestJob {
 
   @Value("${btcInvoice.invoiceTimeOutIntervalMinutes}")
@@ -33,7 +34,7 @@ public class btcInvoiceRequestJob {
 // Integer expireCount = bitcoinService.clearExpiredInvoices(EXPIRE_CLEAN_INTERVAL_MINUTES);
       }
     } catch (Exception e){
-      log.error(ExceptionUtils.getStackTrace(e));
+      //log.error(ExceptionUtils.getStackTrace(e));
     }
   }
 

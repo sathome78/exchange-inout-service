@@ -47,4 +47,5 @@ public interface CurrencyService {
 
     boolean isIco(Integer currencyId);
 
+    List<Currency> getAllActiveCurrencies();
 }

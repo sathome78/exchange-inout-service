@@ -41,7 +41,7 @@ public interface WithdrawRequestDao {
 
     List<ClientBank> findClientBanksForCurrency(Integer currencyId);
 
-    boolean checkOutputRequests(int currencyId, String email);
+    boolean checkOutputRequests(int currencyId, int email);
 
     Optional<Integer> findUserIdById(Integer requestId);
 
@@ -52,4 +52,6 @@ public interface WithdrawRequestDao {
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 
     WithdrawRequestInfoDto findWithdrawInfo(Integer id);
+
+    List<WithdrawRequestFlatDto> findByUserId(Integer id);
 }

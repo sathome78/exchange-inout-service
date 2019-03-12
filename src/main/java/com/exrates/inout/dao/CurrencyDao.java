@@ -36,4 +36,5 @@ public interface CurrencyDao {
 
     boolean isCurrencyIco(Integer currencyId);
 
+    List<Currency> getAllActiveCurrencies();
 }

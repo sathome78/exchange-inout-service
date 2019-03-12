@@ -70,7 +70,7 @@ public class ExchangeResponseProcessingServiceImpl implements ExchangeResponsePr
                 node = node.get(nodeName);
             }
         } catch (IOException e) {
-            log.error(e);
+            //log.error(e);
         }
         return node;
     }
