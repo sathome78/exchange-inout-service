@@ -3,10 +3,12 @@ package com.exrates.inout.domain.dto;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 public class WithdrawRequestCreateDto {
     private Integer id;
     private Integer userId;

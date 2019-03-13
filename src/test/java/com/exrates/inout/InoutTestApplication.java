@@ -3,7 +3,6 @@ package com.exrates.inout;
 import com.exrates.inout.configuration.RabbitConfig;
 import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.UserDao;
-import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.UserStatus;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
@@ -94,14 +93,14 @@ public abstract class InoutTestApplication {
 
     }
 
-    protected TestUser registerNewUser(){
+    protected User registerNewUser(){
         User user = new User();
         user.setEmail("user" + id++ +"@gmail.com");
         user.setStatus(UserStatus.ACTIVE);
         user.setId(id);
         userDao.create(user);
 
-        return new TestUser(user.getId(), user.getEmail());
+        return new User(user.getId(), user.getEmail());
     }
 
     public static boolean compareObjects(Object A, Object B) {

@@ -5,13 +5,13 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.controller.WithdrawRequestController;
 import com.exrates.inout.dao.WithdrawRequestDao;
 import com.exrates.inout.domain.dto.CommissionDataDto;
-import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
 import com.exrates.inout.domain.dto.WithdrawRequestParamsDto;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
+import com.exrates.inout.domain.main.User;
 import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.service.CommissionService;
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +48,7 @@ public class WithdrawTest extends InoutTestApplication {
         final BigDecimal amountToWithdraw = new BigDecimal("10");
 
         Principal principal = Mockito.mock(Principal.class);
-        TestUser sender = registerNewUser();
+        User sender = registerNewUser();
         HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
         Mockito.when(principal.getName()).thenReturn(sender.getEmail());
         Mockito.when(servletRequest.getUserPrincipal()).thenReturn(principal);

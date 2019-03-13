@@ -4,8 +4,8 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
+import com.exrates.inout.domain.main.User;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.bitshares.aunit.AunitServiceImpl;
@@ -36,7 +36,7 @@ public class RefillTest extends InoutTestApplication {
 
     @Test
     public void fullRefillTest() throws RefillRequestAppropriateNotFoundException {
-        TestUser testUser = registerNewUser();
+        User testUser = registerNewUser();
         Integer walletId = 1;
         int commissionId = 15;
         String merchantDescription = "Aunit Coin";
@@ -70,7 +70,7 @@ public class RefillTest extends InoutTestApplication {
 
         RefillRequestAddressDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
         assertEquals(address, refillRequestFlatDto.getAddress());
-        assertEquals(testUser.getId(), refillRequestFlatDto.getUserId());
+        assertEquals(testUser.getId(), (int)refillRequestFlatDto.getUserId());
         assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
         assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
 

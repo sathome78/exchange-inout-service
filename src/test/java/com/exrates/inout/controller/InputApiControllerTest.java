@@ -4,7 +4,6 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.dao.RefillRequestDao;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserRole;
@@ -58,7 +57,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         payment.setMerchant(aunitMerchant.getId());
         payment.setSum(amountForRefill);
 
-        TestUser testUser = new TestUser(100500, "email");
+        User testUser = new User(100500, "email");
         UserRole userRole = UserRole.USER;
 
         Wallet wallet = new Wallet(aunitCurrency.getId(), new User(testUser.getId()), null);
@@ -88,7 +87,7 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test //TODO test case of false response
     public void checkInputRequestsLimit() throws Exception {
-        TestUser testUser = new TestUser(100500, "email");
+        User testUser = new User(100500, "email");
         UserRole userRole = UserRole.USER;
 
         String result = mvc.perform(get("/api/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
@@ -103,7 +102,7 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test
     public void getAddressByMerchantIdAndCurrencyIdAndUserId() throws Exception {
-        TestUser testUser = registerNewUser();
+        User testUser = registerNewUser();
         String address = "test";
 
         String response = performGetAddressMyMerchantIdAndCurrencyIdAndUserId(testUser, aunitCurrency.getId(), aunitMerchant.getId());
@@ -117,7 +116,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         assertEquals(address, response);
     }
 
-    private void storeRefillRequest(TestUser testUser, String address) {
+    private void storeRefillRequest(User testUser, String address) {
         RefillRequestCreateDto refillRequestCreateDto = new RefillRequestCreateDto();
         refillRequestCreateDto.setUserId(testUser.getId());
         refillRequestCreateDto.setMerchantId(aunitMerchant.getId());
@@ -130,7 +129,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         refillRequestDao.storeRefillRequestAddress(refillRequestCreateDto);
     }
 
-    private String performGetAddressMyMerchantIdAndCurrencyIdAndUserId(TestUser testUser, int currencyId, int merchantId) throws Exception {
+    private String performGetAddressMyMerchantIdAndCurrencyIdAndUserId(User testUser, int currencyId, int merchantId) throws Exception {
         return mvc.perform(get("/api/getAddressByMerchantIdAndCurrencyIdAndUserId"
                 + "?currency_id=" + currencyId
                 + "&merchant_id=" + merchantId)
@@ -141,7 +140,7 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test
     public void createRefillRequest() throws Exception {
-        TestUser testUser = registerNewUser();
+        User testUser = registerNewUser();
         Integer walletId = 1;
         int commissionId = 15;
         String merchantDescription = "Aunit Coin";
@@ -180,7 +179,7 @@ public class InputApiControllerTest extends InoutTestApplication {
 
         RefillRequestAddressDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
         assertEquals(address, refillRequestFlatDto.getAddress());
-        assertEquals(testUser.getId(), refillRequestFlatDto.getUserId());
+        assertEquals(testUser.getId(), (int)refillRequestFlatDto.getUserId());
         assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
         assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
 

@@ -34,6 +34,11 @@ public class User {
         this.id = userId;
     }
 
+    public User(int id, String email) {
+        this.id = id;
+        this.email = email;
+    }
+
 
     public String getIp() {
         return ipaddress;
