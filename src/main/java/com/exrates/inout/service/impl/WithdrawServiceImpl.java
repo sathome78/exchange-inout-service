@@ -643,7 +643,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     }
 
     @Override
-    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole){
+    public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole) throws CheckDestinationTagException {
         if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId)) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }

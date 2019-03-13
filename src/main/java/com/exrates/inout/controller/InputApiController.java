@@ -15,9 +15,10 @@ import java.util.Optional;
 import static com.exrates.inout.util.RequestUtils.extractUserId;
 import static com.exrates.inout.util.RequestUtils.extractUserRole;
 
-@RestController("/api")
+@RestController
 @RequiredArgsConstructor
-public class ApiController {
+@RequestMapping("/api")
+public class InputApiController {
 
     private final InputOutputService inputOutputService;
     private final RefillService refillService;

@@ -25,11 +25,7 @@ spring:
     url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
     baseline-on-migrate: true
     validate-on-migrate: false
-  rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
-    port: 5672
+
 #slave:
 #  datasource:
 #    hikari:

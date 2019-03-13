@@ -5,11 +5,13 @@ import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.main.Commission;
 import com.exrates.inout.domain.main.Transaction;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
+@EqualsAndHashCode
 public class WalletOperationData implements Serializable {
 
     private OperationType operationType;
@@ -22,7 +24,6 @@ public class WalletOperationData implements Serializable {
     private Integer sourceId;
     private Transaction transaction;
     private String description;
-    private Integer currencyId;
 
     /**/
     public enum BalanceType {

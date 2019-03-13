@@ -243,7 +243,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void checkDestinationTag(Integer merchantId, String destinationTag) {
+    public void checkDestinationTag(Integer merchantId, String destinationTag) throws CheckDestinationTagException {
         IMerchantService merchantService = merchantServiceContext.getMerchantService(merchantId);
         if (merchantService instanceof IWithdrawable && ((IWithdrawable) merchantService).additionalTagForWithdrawAddressIsUsed()) {
             ((IWithdrawable) merchantService).checkDestinationTag(destinationTag);

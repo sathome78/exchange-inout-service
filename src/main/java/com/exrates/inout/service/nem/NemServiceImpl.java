@@ -357,7 +357,7 @@ public class NemServiceImpl implements NemService {
 
     /*message must be not more than 512 bytes*/
     @Override
-    public void checkDestinationTag(String destinationTag) {
+    public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
         try {
             if (destinationTag.getBytes("UTF-8").length > 512) {
                 throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, this.additionalWithdrawFieldName());

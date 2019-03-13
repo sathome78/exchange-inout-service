@@ -5,6 +5,7 @@ import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.RefillRequestDao;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserRole;
@@ -13,19 +14,14 @@ import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.domain.main.User;
 import com.exrates.inout.domain.main.Wallet;
-import com.exrates.inout.dto.TestUser;
-import com.exrates.inout.properties.SsmProperties;
 import com.exrates.inout.service.RefillService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -42,18 +38,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
-public class ApiControllerTest extends InoutTestApplication {
+public class InputApiControllerTest extends InoutTestApplication {
 
     @Autowired
     private MockMvc mvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private SsmProperties ssmProperties;
-    @Autowired
-    private TokenInterceptor tokenInterceptor;
     @Autowired
     private RefillRequestDao refillRequestDao;
     @Autowired
@@ -75,7 +65,7 @@ public class ApiControllerTest extends InoutTestApplication {
         Wallet wallet = new Wallet(aunitCurrency.getId(), new User(testUser.getId()), null);
         Mockito.when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(wallet);
 
-        String result = mvc.perform(post("/prepareCreditsOperation")
+        String result = mvc.perform(post("/api/prepareCreditsOperation")
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", userRole)
@@ -102,7 +92,7 @@ public class ApiControllerTest extends InoutTestApplication {
         TestUser testUser = new TestUser(100500, "email");
         UserRole userRole = UserRole.USER;
 
-        String result = mvc.perform(get("/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
+        String result = mvc.perform(get("/api/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", userRole)
@@ -124,7 +114,7 @@ public class ApiControllerTest extends InoutTestApplication {
 
         storeRefillRequest(testUser, address);
 
-        response = performGetAddressMyMerchantIdAndCurrencyIdAndUserId(testUser, aunitCurrency.getId(), aunitMerchant.getId());
+        response = objectMapper.readValue(performGetAddressMyMerchantIdAndCurrencyIdAndUserId(testUser, aunitCurrency.getId(), aunitMerchant.getId()), String.class);
         assertEquals(address, response);
     }
 
@@ -142,7 +132,7 @@ public class ApiControllerTest extends InoutTestApplication {
     }
 
     private String performGetAddressMyMerchantIdAndCurrencyIdAndUserId(TestUser testUser, int currencyId, int merchantId) throws Exception {
-        return mvc.perform(get("/getAddressByMerchantIdAndCurrencyIdAndUserId"
+        return mvc.perform(get("/api/getAddressByMerchantIdAndCurrencyIdAndUserId"
                 + "?currency_id=" + currencyId
                 + "&merchant_id=" + merchantId)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
@@ -175,7 +165,7 @@ public class ApiControllerTest extends InoutTestApplication {
         request.setGenerateNewAddress(generateNewAddress);
         request.setLocale(new Locale(locale));
 
-        String response = mvc.perform(post("/createRefillRequest")
+        String response = mvc.perform(post("/api/createRefillRequest")
                 .content(objectMapper.writeValueAsString(request))
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())

@@ -1,38 +1,53 @@
 package com.exrates.inout;
 
+import com.exrates.inout.configuration.RabbitConfig;
+import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.UserDao;
+import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.UserStatus;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.User;
-import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.service.*;
+import com.exrates.inout.service.impl.RabbitService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 
 @SpringBootTest(classes = {InoutApplication.class, InoutTestConfig.class})
 @RunWith(SpringRunner.class)
-public class InoutTestApplication {
+@AutoConfigureMockMvc
+public abstract class InoutTestApplication {
 
     private static int id = 0;
 
+    @Autowired
+    protected MockMvc mvc;
     @Autowired
     protected UserDao userDao;
     @Autowired
     protected MerchantService merchantService;
     @Autowired
     protected CurrencyService currencyService;
-
+    @Autowired
+    protected TokenInterceptor tokenInterceptor;
+    @Autowired
+    protected ObjectMapper objectMapper;
     @Autowired
     @Qualifier("masterTemplate")
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -45,6 +60,18 @@ public class InoutTestApplication {
 
     @MockBean
     private GtagService gtagService;
+
+    @MockBean
+    protected RabbitService rabbitService;
+
+    @MockBean
+    private RabbitConfig rabbitConfig;
+
+    @SpyBean
+    private RabbitTemplate rabbitTemplate;
+
+    @MockBean
+    private RabbitAdmin rabbitAdmin;
 
     @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverClassName;

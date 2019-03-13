@@ -8,7 +8,7 @@ import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
-import com.exrates.inout.dto.WalletInnerTransferDto;
+import com.exrates.inout.domain.dto.WalletInnerTransferDto;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.EndpointProperties;
 import com.exrates.inout.service.*;

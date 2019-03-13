@@ -108,7 +108,7 @@ public class RefillServiceImpl implements RefillService {
     @Autowired
     private InputOutputService inputOutputService;
 
-    private final RabbitServiceImpl rabbitService;
+    private final RabbitService rabbitService;
 
     @Override
     public Map<String, String> callRefillIRefillable(RefillRequestCreateDto request) {
@@ -621,11 +621,10 @@ public class RefillServiceImpl implements RefillService {
             walletOperationData.setCommissionAmount(commission);
             walletOperationData.setSourceType(TransactionSourceType.REFILL);
             walletOperationData.setSourceId(refillRequest.getId());
-            walletOperationData.setCurrencyId(refillRequest.getCurrencyId()); //TODO for what???
             String description = transactionDescription.get(currentStatus, action);
             walletOperationData.setDescription(description);
 
-            rabbitService.sendAcceptRefillEvent(walletOperationData);
+            rabbitService.sendAcceptRefillEvent(new WalletOperationMsDto(walletOperationData, refillRequest.getCurrencyId()));
             profileData.setTime3();
             return refillRequest;
         } finally {

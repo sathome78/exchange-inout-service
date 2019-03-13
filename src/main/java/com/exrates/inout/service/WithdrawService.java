@@ -7,6 +7,7 @@ import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,5 +81,5 @@ public interface WithdrawService {
     @Transactional(readOnly = true)
     List<WithdrawRequestFlatDto> getRequestsByMerchantIdAndStatus(int merchantId, List<Integer> statuses);
 
-    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole);
+    WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole) throws CheckDestinationTagException;
 }

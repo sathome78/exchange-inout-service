@@ -5,6 +5,7 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.controller.WithdrawRequestController;
 import com.exrates.inout.dao.WithdrawRequestDao;
 import com.exrates.inout.domain.dto.CommissionDataDto;
+import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
 import com.exrates.inout.domain.dto.WithdrawRequestParamsDto;
 import com.exrates.inout.domain.enums.OperationType;
@@ -12,15 +13,12 @@ import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.Wallet;
-import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.service.CommissionService;
-import com.exrates.inout.service.WalletService;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -44,11 +42,8 @@ public class WithdrawTest extends InoutTestApplication {
     @Autowired
     private WithdrawRequestDao withdrawRequestDao;
 
-    @MockBean
-    private WalletService walletService;
-
     @Test
-    public void withdraw(){
+    public void withdraw() throws Exception {
         final String DESTINATION_ADDRESS = "destination address";
         final BigDecimal amountToWithdraw = new BigDecimal("10");
 

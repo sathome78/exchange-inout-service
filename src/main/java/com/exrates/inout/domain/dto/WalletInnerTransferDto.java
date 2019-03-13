@@ -1,4 +1,4 @@
-package com.exrates.inout.dto;
+package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import lombok.Builder;

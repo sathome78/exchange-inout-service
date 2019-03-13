@@ -13,6 +13,7 @@ import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
+import lombok.Data;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import java.util.Random;
 @Log4j2(topic = "casinocoin_log")
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")
+@Data
 public class CasinoCoinServiceImpl implements CasinoCoinService {
 
     private static final String DESTINATION_TAG_ERR_MSG = "message.casinocoin.tagError";
@@ -170,7 +172,7 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
 
     /*must bee only 32 bit number = 0 - 4294967295*/
     @Override
-    public void checkDestinationTag(String destinationTag) {
+    public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
         if (!(org.apache.commons.lang.math.NumberUtils.isDigits(destinationTag)
                 && Long.valueOf(destinationTag) <= 4294967295L)) {
             throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());

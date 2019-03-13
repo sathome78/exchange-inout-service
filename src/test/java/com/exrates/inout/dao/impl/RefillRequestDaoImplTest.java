@@ -4,7 +4,7 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.dao.RefillRequestDao;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.dto.TestUser;
+import com.exrates.inout.domain.dto.TestUser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 @Getter
 public class TokenInterceptor extends HandlerInterceptorAdapter {
     private final String AUTH_TOKEN_VALUE;
-    private final String AUTH_TOKEN_NAME = "AUTH_TOKEN_NAME";
+    private final String AUTH_TOKEN_NAME = "AUTH_TOKEN";
 
     public TokenInterceptor(SSMGetter ssmGetter, SsmProperties ssmProperties) {
         this.AUTH_TOKEN_VALUE = ssmGetter.lookup(ssmProperties.getPath());

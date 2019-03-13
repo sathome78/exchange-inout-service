@@ -61,7 +61,7 @@ public class WithdrawRequestController {
     public Map<String, String> createWithdrawalRequest(
             @RequestBody WithdrawRequestParamsDto requestParamsDto,
             Principal principal, HttpServletRequest request,
-            Locale locale) {
+            Locale locale) throws Exception {
         WithdrawRequestCreateDto withdrawRequestCreateDto = withdrawService.prepareWithdrawRequest(requestParamsDto, userService.getIdByEmail(principal.getName()), locale, extractUserRole(request));
         return withdrawService.createWithdrawalRequest(withdrawRequestCreateDto, locale);
     }
@@ -107,7 +107,7 @@ public class WithdrawRequestController {
             HttpServletRequest request,
             @RequestParam("amount") BigDecimal amount,
             @RequestParam("currency") Integer currencyId, @RequestParam("merchant") Integer merchantId,
-            @RequestParam(value = "memo", required = false) String memo, Principal principal, Locale locale) {
+            @RequestParam(value = "memo", required = false) String memo, Principal principal, Locale locale) throws CheckDestinationTagException {
         Integer userId = userService.getIdByEmail(principal.getName());
         if (!StringUtils.isEmpty(memo)) {
             merchantService.checkDestinationTag(merchantId, memo);

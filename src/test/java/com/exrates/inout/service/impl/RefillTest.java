@@ -4,12 +4,13 @@ import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.TestUser;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
-import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.bitshares.aunit.AunitServiceImpl;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 
 public class RefillTest extends InoutTestApplication {
@@ -33,7 +35,7 @@ public class RefillTest extends InoutTestApplication {
     private AunitServiceImpl aunitService;
 
     @Test
-    public void createRefillRequestAddress() throws RefillRequestAppropriateNotFoundException {
+    public void fullRefillTest() throws RefillRequestAppropriateNotFoundException {
         TestUser testUser = registerNewUser();
         Integer walletId = 1;
         int commissionId = 15;
@@ -59,7 +61,7 @@ public class RefillTest extends InoutTestApplication {
 
 
         Map<String, Object> refillRequest = refillService.createRefillRequest(request);
-        String address = (String) ((Map)refillRequest.get("params")).get("address");
+        String address = (String) ((Map) refillRequest.get("params")).get("address");
         assert address.length() > 0;
 
         Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), testUser.getId());
@@ -89,8 +91,9 @@ public class RefillTest extends InoutTestApplication {
         RefillRequestFlatDto flatDto = flatOptional.get();
 
         assertTrue(compareObjects(amount, flatDto.getAmount()));
-    }
 
+        Mockito.verify(rabbitService, Mockito.times(1)).sendAcceptRefillEvent(any());
+    }
 
 
 

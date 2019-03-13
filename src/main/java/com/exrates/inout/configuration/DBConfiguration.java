@@ -42,7 +42,7 @@ public class DBConfiguration {
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(getPassword(ssmPath));
-        hikariConfig.setMaximumPoolSize(5);
+        hikariConfig.setMaximumPoolSize(1); //TODO
         return new HikariDataSource(hikariConfig);
     }
 
@@ -53,7 +53,7 @@ public class DBConfiguration {
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(getPassword(ssmPath));
-        hikariConfig.setMaximumPoolSize(5);
+        hikariConfig.setMaximumPoolSize(1); //TODO
         hikariConfig.setReadOnly(true);
         return new HikariDataSource(hikariConfig);
     }
