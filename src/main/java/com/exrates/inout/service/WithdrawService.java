@@ -53,7 +53,7 @@ public interface WithdrawService {
 
     Map<String, String> correctAmountAndCalculateCommissionPreliminarily(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, String destinationTag, UserRole userRole);
 
-    boolean checkOutputRequestsLimit(int merchantId, int email);
+    boolean checkOutputRequestsLimit(int currencyId, int userId, UserRole userRole);
 
     List<Integer> getWithdrawalStatistic(String startDate, String endDate);
 

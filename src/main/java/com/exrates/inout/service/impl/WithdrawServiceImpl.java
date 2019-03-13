@@ -603,8 +603,8 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOutputRequestsLimit(int merchantId, int userId) {
-        return withdrawRequestDao.checkOutputRequests(merchantId, userId);
+    public boolean checkOutputRequestsLimit(int currencyId, int userId, UserRole userRole) {
+        return withdrawRequestDao.checkOutputRequests(currencyId, userId, userRole);
     }
 
     @Transactional(readOnly = true)
@@ -644,7 +644,7 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Override
     public WithdrawRequestCreateDto prepareWithdrawRequest(WithdrawRequestParamsDto requestParamsDto, int userId, Locale locale, UserRole userRole) throws CheckDestinationTagException {
-        if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId)) {
+        if (!checkOutputRequestsLimit(requestParamsDto.getCurrency(), userId, userRole)) {
             throw new RequestLimitExceededException(messageSource.getMessage("merchants.OutputRequestsLimit", null, locale));
         }
         if (!StringUtils.isEmpty(requestParamsDto.getDestinationTag())) {

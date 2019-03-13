@@ -1,16 +1,20 @@
 package com.exrates.inout.controller;
 
+import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.WithdrawService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.Map;
+
+import static com.exrates.inout.util.RequestUtils.*;
 
 @RestController
 @RequestMapping("/api")
@@ -18,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class WithdrawApiController {
 
     private final MerchantService merchantService;
+    private final WithdrawService withdrawService;
 
     @GetMapping("/checkDestinationTag")
     public Object checkDestinationTag(HttpServletResponse response,
@@ -30,5 +35,15 @@ public class WithdrawApiController {
             response.setStatus(400);
             return e;
         }
+    }
+
+    @GetMapping("/checkOutputRequestsLimit")
+    public boolean checkOutputRequestsLimit(HttpServletRequest request, @RequestParam("merchant_id") int merchantId){
+        return withdrawService.checkOutputRequestsLimit(merchantId, extractUserId(request), extractUserRole(request));
+    }
+
+    @PostMapping("/withdraw/request/create")
+    public Map<String, String> createWithdrawalRequest(HttpServletRequest request, @RequestBody WithdrawRequestCreateDto dto){
+        return withdrawService.createWithdrawalRequest(dto, extractUserLocale(request));
     }
 }

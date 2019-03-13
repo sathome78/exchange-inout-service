@@ -1,7 +1,6 @@
 package com.exrates.inout.controller;
 
 import com.exrates.inout.InoutTestApplication;
-import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.RefillRequestDao;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -87,7 +86,7 @@ public class InputApiControllerTest extends InoutTestApplication {
     }
 
 
-    @Test
+    @Test //TODO test case of false response
     public void checkInputRequestsLimit() throws Exception {
         TestUser testUser = new TestUser(100500, "email");
         UserRole userRole = UserRole.USER;
