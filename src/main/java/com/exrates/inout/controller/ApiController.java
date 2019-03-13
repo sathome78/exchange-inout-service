@@ -1,5 +1,6 @@
 package com.exrates.inout.controller;
 
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.service.InputOutputService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.exrates.inout.util.RequestUtils.extractUserId;
@@ -35,5 +37,10 @@ public class ApiController {
                                                                          @RequestParam("currency_id") int currencyId,
                                                                          @RequestParam("merchant_id") int merchant_id){
         return refillService.getAddressByMerchantIdAndCurrencyIdAndUserId(merchant_id, currencyId, extractUserId(request));
+    }
+
+    @PostMapping("/createRefillRequest")
+    public Map<String, Object> createRefillRequest(@RequestBody RefillRequestCreateDto request){
+        return refillService.createRefillRequest(request);
     }
 }

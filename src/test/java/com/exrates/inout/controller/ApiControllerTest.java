@@ -3,6 +3,7 @@ package com.exrates.inout.controller;
 import com.exrates.inout.InoutTestApplication;
 import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.RefillRequestDao;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
@@ -14,8 +15,10 @@ import com.exrates.inout.domain.main.User;
 import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.dto.TestUser;
 import com.exrates.inout.properties.SsmProperties;
+import com.exrates.inout.service.RefillService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -26,9 +29,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Optional;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
+import static io.netty.handler.codec.http.HttpHeaderValues.APPLICATION_JSON;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -50,6 +56,8 @@ public class ApiControllerTest extends InoutTestApplication {
     private TokenInterceptor tokenInterceptor;
     @Autowired
     private RefillRequestDao refillRequestDao;
+    @Autowired
+    private RefillService refillService;
 
     @Test
     public void prepareCreditsOperation() throws Exception {
@@ -140,5 +148,52 @@ public class ApiControllerTest extends InoutTestApplication {
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", testUser.getRole())).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void createRefillRequest() throws Exception {
+        TestUser testUser = registerNewUser();
+        Integer walletId = 1;
+        int commissionId = 15;
+        String merchantDescription = "Aunit Coin";
+        String serviceBeanName = "aunitServiceImpl";
+        boolean generateNewAddress = true;
+        String locale = "en";
+
+        RefillRequestCreateDto request = new RefillRequestCreateDto();
+        request.setUserId(testUser.getId());
+        request.setUserEmail(testUser.getEmail());
+        request.setUserWalletId(walletId);
+        request.setCurrencyId(aunitCurrency.getId());
+        request.setMerchantId(aunitMerchant.getId());
+        request.setCurrencyName(aunitCurrency.getName());
+        request.setCommission(BigDecimal.ZERO);
+        request.setCommissionId(commissionId);
+        request.setMerchantDescription(merchantDescription);
+        request.setServiceBeanName(serviceBeanName);
+        request.setStatus(RefillStatusEnum.CREATED_USER);
+        request.setGenerateNewAddress(generateNewAddress);
+        request.setLocale(new Locale(locale));
+
+        String response = mvc.perform(post("/createRefillRequest")
+                .content(objectMapper.writeValueAsString(request))
+                .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
+                .header("user_id", testUser.getId())
+                .header("user_role", testUser.getRole())
+                .header("Content-Type", APPLICATION_JSON)
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        String address = new JSONObject(response).getJSONObject("params").getString("address");
+        assert address.length() > 0;
+
+        Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), testUser.getId());
+        assertTrue(refillRequestFlatDtoOptional.isPresent());
+
+        RefillRequestAddressDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
+        assertEquals(address, refillRequestFlatDto.getAddress());
+        assertEquals(testUser.getId(), refillRequestFlatDto.getUserId());
+        assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
+        assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
+
     }
 }
