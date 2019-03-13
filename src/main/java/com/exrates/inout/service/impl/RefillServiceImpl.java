@@ -621,7 +621,7 @@ public class RefillServiceImpl implements RefillService {
             walletOperationData.setCommissionAmount(commission);
             walletOperationData.setSourceType(TransactionSourceType.REFILL);
             walletOperationData.setSourceId(refillRequest.getId());
-            walletOperationData.setCurrencyId(refillRequest.getCurrencyId());
+            walletOperationData.setCurrencyId(refillRequest.getCurrencyId()); //TODO for what???
             String description = transactionDescription.get(currentStatus, action);
             walletOperationData.setDescription(description);
 
