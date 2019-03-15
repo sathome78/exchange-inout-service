@@ -3,6 +3,7 @@ package com.exrates.inout.service;
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
@@ -14,6 +15,8 @@ import java.util.*;
 
 
 public interface MerchantService {
+
+    List<Merchant> findAllByCurrency(Currency currency);
 
     List<Merchant> findAll();
 

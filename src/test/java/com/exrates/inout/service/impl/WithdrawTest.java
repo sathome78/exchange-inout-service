@@ -13,12 +13,23 @@ import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.User;
 import com.exrates.inout.domain.main.Wallet;
+import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import com.exrates.inout.service.CommissionService;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -84,4 +95,23 @@ public class WithdrawTest extends InoutTestApplication {
         assertEquals(DESTINATION_ADDRESS, withdrawRequest.getWallet());
     }
 
+    @Test
+    public void headersTest(){
+        HttpClientBuilder b = HttpClientBuilder.create();
+        Header header = new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        List<Header> headers = Lists.newArrayList(header);
+        b.setDefaultHeaders(headers);
+        HttpClient client = b.build();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new RestResponseErrorHandler());
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(client);
+        requestFactory.setConnectionRequestTimeout(25000);
+        requestFactory.setReadTimeout(25000);
+        restTemplate.setRequestFactory(requestFactory);
+
+        String forObject = restTemplate.getForObject("http://demo6144193.mockable.io/testHeaders", String.class);
+        System.out.println(forObject);
+    }
 }

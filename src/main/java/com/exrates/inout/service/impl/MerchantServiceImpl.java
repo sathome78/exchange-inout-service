@@ -5,6 +5,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.MerchantProcessType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.UserCommentTopicEnum;
+import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.*;
@@ -67,6 +68,12 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     @Qualifier("bitcoinServiceImpl")
     private BitcoinService bitcoinService;
+
+    @Override
+    public List<Merchant> findAllByCurrency(Currency currency) {
+        return merchantDao.findAllByCurrency(currency.getId());
+    }
+
 
     @Override
     public List<Merchant> findAll() {
