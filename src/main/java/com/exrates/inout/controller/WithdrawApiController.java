@@ -1,9 +1,15 @@
 package com.exrates.inout.controller;
 
+import com.exrates.inout.domain.dto.CommissionDataDto;
+import com.exrates.inout.domain.dto.NormalizeAmountDto;
 import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawableDataDto;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.service.IWithdrawable;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.WithdrawService;
+import com.exrates.inout.service.aidos.AdkService;
+import com.exrates.inout.service.impl.MerchantServiceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +23,13 @@ import java.util.Map;
 import static com.exrates.inout.util.RequestUtils.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/withdraw")
 @RequiredArgsConstructor
 public class WithdrawApiController {
 
     private final MerchantService merchantService;
     private final WithdrawService withdrawService;
+    private final MerchantServiceContext serviceContext;
 
     @GetMapping("/checkDestinationTag")
     public Object checkDestinationTag(HttpServletResponse response,
@@ -42,8 +49,17 @@ public class WithdrawApiController {
         return withdrawService.checkOutputRequestsLimit(merchantId, extractUserId(request), extractUserRole(request));
     }
 
-    @PostMapping("/withdraw/request/create")
+    @PostMapping("/request/create")
     public Map<String, String> createWithdrawalRequest(HttpServletRequest request, @RequestBody WithdrawRequestCreateDto dto){
         return withdrawService.createWithdrawalRequest(dto, extractUserLocale(request));
+    }
+
+    @GetMapping("/getAdditionalServiceData/merchantId")
+    public WithdrawableDataDto getAdditionalServiceData(@PathVariable("merchantId") Integer merchantId){
+        IWithdrawable withdrawable = (IWithdrawable) serviceContext.getMerchantService(merchantId);
+        return WithdrawableDataDto.builder()
+                .additionalTagForWithdrawAddressIsUsed(withdrawable.additionalTagForWithdrawAddressIsUsed())
+                .additionalWithdrawFieldName(withdrawable.additionalWithdrawFieldName())
+                .build();
     }
 }
