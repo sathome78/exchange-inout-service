@@ -57,9 +57,9 @@ public class WithdrawApiController {
     @GetMapping("/getAdditionalServiceData/merchantId")
     public WithdrawableDataDto getAdditionalServiceData(@PathVariable("merchantId") Integer merchantId){
         IWithdrawable withdrawable = (IWithdrawable) serviceContext.getMerchantService(merchantId);
-        return WithdrawableDataDto.builder()
-                .additionalTagForWithdrawAddressIsUsed(withdrawable.additionalTagForWithdrawAddressIsUsed())
-                .additionalWithdrawFieldName(withdrawable.additionalWithdrawFieldName())
-                .build();
+        WithdrawableDataDto dto = new WithdrawableDataDto();
+        dto.setAdditionalTagForWithdrawAddressIsUsed(withdrawable.additionalTagForWithdrawAddressIsUsed());
+        dto.setAdditionalWithdrawFieldName(withdrawable.additionalWithdrawFieldName());
+        return dto;
     }
 }
