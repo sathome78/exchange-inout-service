@@ -3,12 +3,16 @@ package com.exrates.inout.configuration;
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.QiwiProperty;
+import com.google.api.client.util.Lists;
+import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -19,6 +23,7 @@ import org.zeromq.ZMQ;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import java.util.List;
 import java.util.Locale;
 
 @Configuration

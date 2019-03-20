@@ -2,8 +2,10 @@ package com.exrates.inout.service.btc;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.domain.main.PagingData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
@@ -640,6 +642,22 @@ public class BitcoinServiceImpl implements BitcoinService {
     @Override
     public Long getLastBlockTime() throws CommunicationException, BitcoindException {
         return bitcoinWalletService.getLastBlockTime();
+    }
+
+    @Override
+    public DataTable<List<BtcTransactionHistoryDto>> listTransactions(Map<String, String> tableParams){
+        Integer start = Integer.parseInt(tableParams.getOrDefault("start", "0"));
+        Integer length = Integer.parseInt(tableParams.getOrDefault("length", "10"));
+        String searchValue = tableParams.get("search[value]");
+
+        PagingData<List<BtcTransactionHistoryDto>> searchResult = bitcoinWalletService.listTransaction(start, length, searchValue);
+
+        DataTable<List<BtcTransactionHistoryDto>> output = new DataTable<>();
+        output.setData(searchResult.getData());
+        output.setRecordsTotal(searchResult.getTotal());
+        output.setRecordsFiltered(searchResult.getFiltered());
+
+        return output;
     }
 
     @PreDestroy
