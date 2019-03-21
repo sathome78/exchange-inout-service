@@ -24,21 +24,6 @@ import java.util.concurrent.*;
 
 import static java.util.Objects.nonNull;
 
-//exrates.model.Email;
-//exrates.model.Merchant;
-//exrates.model.dto.*;
-//exrates.model.dto.merchants.waves.WavesPayment;
-//exrates.model.dto.merchants.waves.WavesTransaction;
-//exrates.service.*;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.exception.UnknownAssetIdException;
-//exrates.service.exception.WavesPaymentProcessingException;
-//exrates.service.exception.WavesRestException;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-//exrates.service.exception.invoice.InvalidAccountException;
-//exrates.service.exception.invoice.MerchantException;
-//exrates.service.util.ParamMapUtils;
-//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {

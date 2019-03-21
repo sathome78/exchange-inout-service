@@ -6,21 +6,21 @@ import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/merchant")
+@RequestMapping(value = "/api/merchant")
 @RequiredArgsConstructor
 public class MerchantApiController {
 
     private final MerchantServiceContext serviceContext;
     private final RefillService refillService;
 
-    @GetMapping("/getAdditionalRefillFieldName/{merchantId}")
+    @GetMapping(value = "/getAdditionalRefillFieldName/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAdditionalRefillFieldName(@PathVariable("merchantId") String merchantId) {
         IRefillable refillable = (IRefillable) (serviceContext.getMerchantService(merchantId));
         if (refillable.additionalFieldForRefillIsUsed()) {
@@ -29,7 +29,7 @@ public class MerchantApiController {
         return null;
     }
 
-    @GetMapping("/getMinConfirmationsRefill/{merchantId}")
+    @GetMapping(value = "/getMinConfirmationsRefill/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Integer getMinConfirmationsRefill(@PathVariable("merchantId") String merchantId) {
         IRefillable merchant = (IRefillable) serviceContext
                 .getMerchantService(merchantId);
@@ -37,12 +37,12 @@ public class MerchantApiController {
 
     }
 
-    @PostMapping("/retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies")
+    @PostMapping(value = "/retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<MerchantCurrency> retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(@RequestBody List<MerchantCurrency> merchantCurrencies, @RequestParam("userEmail") String userEmail){
         return refillService.retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(merchantCurrencies, userEmail);
     }
 
-    @PostMapping("/callRefillIRefillable")
+    @PostMapping(value = "/callRefillIRefillable", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, String> callRefillIRefillable(@RequestBody RefillRequestCreateDto request) {
         return refillService.callRefillIRefillable(request);
     }
