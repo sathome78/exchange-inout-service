@@ -217,7 +217,7 @@ public class RefillServiceImpl implements RefillService {
             e.setAddress(refillRequestDao.findLastValidAddressByMerchantIdAndCurrencyIdAndUserId(e.getMerchantId(), e.getCurrencyId(), userId).orElse(""));
             /**/
             //TODO: Temporary fix
-            if (e.getMerchantId() == merchantService.findByName("EDC").getId()) {
+            if (e.getMerchantId() == merchantService.findByName("EDR").getId()) {
                 e.setAddress("");
             }
             IRefillable merchantService = (IRefillable) merchantServiceContext.getMerchantService(e.getMerchantId());
