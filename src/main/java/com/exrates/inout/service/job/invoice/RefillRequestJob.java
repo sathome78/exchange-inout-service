@@ -49,28 +49,29 @@ public class RefillRequestJob {
      * Because blocknotify doesn't work correctly (!!! need to check node config and node config properties !!!)
      * During the check processBtcPayment is executed, which create refill request and refill user wallet.
      */
-    @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
-        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI"};
+        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD"};
         for (String coin : merchantNames) {
             try {
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
             } catch (Exception e) {
-                //log.error(e);
+                if(coin.equals("KOD"))
+                e.printStackTrace();
             }
         }
 
     }
 
-    @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
     public void refillPaymentsForNonSupportedCoins() {
-        try {
             String[] merchantNames = new String[]{"Q", "DIME"};
             for (String merchantName : merchantNames) {
-                BitcoinService service = getBitcoinServiceByMerchantName(merchantName);
-                List<BtcTransactionHistoryDto> transactions = service.listAllTransactions();
+                try {
+                    BitcoinService service = getBitcoinServiceByMerchantName(merchantName);
+                    List<BtcTransactionHistoryDto> transactions = service.listAllTransactions();
 
                 for (BtcTransactionHistoryDto transaction : transactions) {
                     if (transaction.getConfirmations() >= service.minConfirmationsRefill()) {
@@ -80,11 +81,11 @@ public class RefillRequestJob {
                         forceRefill(merchantName, params);
                     }
                 }
-
+                } catch (Exception e) {
+                    log.error(e);
+                }
             }
-        } catch (Exception e) {
-            //log.error(e);
-        }
+
     }
 
     private void forceRefill(String merchantName, Map<String, String> params) {

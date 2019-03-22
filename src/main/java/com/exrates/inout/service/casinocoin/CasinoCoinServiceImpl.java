@@ -7,7 +7,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.MerchantInternalException;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.exceptions.NotImplementedMethod;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -102,7 +102,7 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
-        throw new NotImplimentedMethod("CasinoCoin | Not implimented method");
+        throw new NotImplementedMethod("CasinoCoin | Not implimented method");
     }
 
     /*generate 9 digits(Unsigned Integer) for identifying payment */

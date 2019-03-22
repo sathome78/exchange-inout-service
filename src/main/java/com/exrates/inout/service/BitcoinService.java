@@ -4,7 +4,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.event.BtcBlockEvent;
 import com.exrates.inout.event.BtcWalletEvent;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.exceptions.NotImplementedMethod;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import org.springframework.context.event.EventListener;
@@ -96,6 +96,6 @@ public interface BitcoinService extends IRefillable, IWithdrawable {
   boolean getSubtractFeeFromAmount();
 
   default DataTable<List<BtcTransactionHistoryDto>> listTransactions(Map<String, String> tableParams) throws BitcoindException, CommunicationException {
-    throw new NotImplimentedMethod("");
+    throw new NotImplementedMethod("");
   };
 }
