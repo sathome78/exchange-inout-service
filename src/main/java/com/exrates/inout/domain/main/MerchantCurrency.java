@@ -2,10 +2,7 @@ package com.exrates.inout.domain.main;
 
 import com.exrates.inout.util.BigDecimalToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor
 public class MerchantCurrency {
     private int merchantId;
     private int currencyId;

@@ -75,8 +75,8 @@ public class WithdrawRequestJob {
 
   @PostConstruct
   private void initSchedule() {
-    scheduler.scheduleAtFixedRate(this::setInPostingStatus, 3, 1, TimeUnit.MINUTES);
-    scheduler.scheduleAtFixedRate(this::postWithdraw, 3, 1, TimeUnit.MINUTES);
+    scheduler.scheduleAtFixedRate(this::setInPostingStatus, 0, 1, TimeUnit.MINUTES); //TODO 0 to 3
+    scheduler.scheduleAtFixedRate(this::postWithdraw, 0, 1, TimeUnit.MINUTES);  //TODO 0 to 3
   }
 
   // @Scheduled(initialDelay = 1000, fixedDelay = 1000 * 60 * 1)
@@ -103,6 +103,11 @@ public class WithdrawRequestJob {
       }
       List<WithdrawRequestPostDto> withdrawForPostingList = withdrawService.dirtyReadForPostByStatusList(candidate.get(0));
       for (WithdrawRequestPostDto withdrawRequest : withdrawForPostingList) {
+        if(withdrawRequest.getCurrencyName().equals("KOD")){
+          System.out.println("KOD WITHDRAWWWWWWWWWWW!!!");
+        }
+        withdrawRequest.setUserRole(userService.getUserRoleFromDB(withdrawRequest.getUserId()));
+
         try {
           log.info("before autoPostWithdrawalRequest()");
           withdrawService.autoPostWithdrawalRequest(withdrawRequest);
