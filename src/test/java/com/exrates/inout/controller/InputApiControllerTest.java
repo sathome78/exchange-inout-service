@@ -91,6 +91,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         UserRole userRole = UserRole.USER;
 
         String result = mvc.perform(get("/api/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", userRole)
@@ -130,9 +131,10 @@ public class InputApiControllerTest extends InoutTestApplication {
     }
 
     private String performGetAddressMyMerchantIdAndCurrencyIdAndUserId(User testUser, int currencyId, int merchantId) throws Exception {
-        return mvc.perform(get("/api/getAddressByMerchantIdAndCurrencyIdAndUserId"
-                + "?currency_id=" + currencyId
-                + "&merchant_id=" + merchantId)
+        return mvc.perform(get("/api/getAddressByMerchantIdAndCurrencyIdAndUserId")
+                .param("currency_id", String.valueOf(currencyId))
+                .param("merchant_id", String.valueOf(merchantId))
+                .header("Content-Type", APPLICATION_JSON)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", testUser.getRole())).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();

@@ -39,13 +39,13 @@ public class WithdrawApiControllerTest extends InoutTestApplication {
     @Test
     public void checkDestinationTag() throws Exception {
         int merchantId = ((CasinoCoinServiceImpl) casinoCoinService).getMerchant().getId();
-        mvc.perform(get("/api/withdraw/checkDestinationTag")
+        mvc.perform(get("/api/merchant/checkDestinationTag")
             .param("merchant_id", String.valueOf(merchantId))
             .param("memo", "123")
             .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE()))
                 .andExpect(status().isOk());
 
-        String contentAsString = mvc.perform(get("/api/withdraw/checkDestinationTag")
+        String contentAsString = mvc.perform(get("/api/merchant/checkDestinationTag")
                 .param("merchant_id", String.valueOf(merchantId))
                 .param("memo", "aaa")
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE()))
@@ -62,6 +62,7 @@ public class WithdrawApiControllerTest extends InoutTestApplication {
         int currencyId = 525;
 
         String result = mvc.perform(get("/api/withdraw/checkOutputRequestsLimit" + "?merchant_id=" + currencyId)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
                 .header("user_id", testUser.getId())
                 .header("user_role", userRole)

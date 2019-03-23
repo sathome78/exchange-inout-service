@@ -6,6 +6,7 @@ import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.service.InputOutputService;
 import com.exrates.inout.service.RefillService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ import static com.exrates.inout.util.RequestUtils.extractUserRole;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class InputApiController {
 
     private final InputOutputService inputOutputService;

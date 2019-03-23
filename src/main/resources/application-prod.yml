@@ -2768,19 +2768,19 @@ payment-system-merchants:
     url: https://wallet.advcash.com/sci/
     accountId: exratesnew@gmail.com
     payeeName: Exrates
-    paymentSuccess: http://127.0.0.1:8080/merchants/advcash/payment/success
-    paymentFailure: http://127.0.0.1:8080/merchants/advcash/payment/failure
-    paymentStatus: http://127.0.0.1:8080/merchants/advcash/payment/status
+    paymentSuccess: https://exrates.me/merchants/advcash/payment/success
+    paymentFailure: https://exrates.me/merchants//advcash/payment/failure
+    paymentStatus: https://exrates.me/merchants//advcash/payment/status
     USDAccount: U143527856819
     EURAccount: E971693091461
     payeePassword: s3Jb8$P69o
-    ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60; 193.93.79.99;
+    ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;193.93.79.99;
   interkassa:
     url: https://sci.interkassa.com/
-    checkoutId: 57163a9b3d1eafe27b8b456a
-    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
-    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
-    secretKey: 7pKC765ZsUGGHQIN
+    checkoutId: 5bf2ca393c1eaf6b098b456a
+    statustUrl: https://exrates.me/merchants/interkassa/payment/status
+    successtUrl: https://exrates.me/merchants/interkassa/payment/success
+    secretKey: lVf3A5Nc0JPLYJkf
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
