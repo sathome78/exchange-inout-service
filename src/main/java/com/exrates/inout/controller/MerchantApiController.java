@@ -29,7 +29,12 @@ public class MerchantApiController {
     private final AdvcashService advcashService;
     private final EDCService edcService;
     private final InterkassaService interkassaService;
-    private NixMoneyService nixmoney;
+    private final NixMoneyService nixmoney;
+    private final OkPayService okPayService;
+    private final PayeerService payeerService;
+    private final PerfectMoneyService perfectMoneyService;
+    private final Privat24Service privat24Service;
+
 
     @GetMapping(value = "/getAdditionalRefillFieldName/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAdditionalRefillFieldName(@PathVariable("merchantId") int merchantId) {
@@ -95,5 +100,25 @@ public class MerchantApiController {
     @PostMapping("/nixmoney/processPayment")
     public void nixmoneyProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         nixmoney.processPayment(params);
+    }
+
+    @PostMapping("/okpay/processPayment")
+    public void okpayProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        okPayService.processPayment(params);
+    }
+
+    @PostMapping("/payeer/processPayment")
+    public void payeerProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        payeerService.processPayment(params);
+    }
+
+    @PostMapping("/perfectMoney/processPayment")
+    public void perfectMoneyProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        perfectMoneyService.processPayment(params);
+    }
+
+    @PostMapping("/privat24/confirmPayment")
+    public void perfectMoneyProcessPayment(@RequestBody Map<String, String> params, @RequestParam("signature") String signature, @RequestParam("payment") String payment) throws RefillRequestAppropriateNotFoundException {
+        privat24Service.confirmPayment(params, signature, payment);
     }
 }
