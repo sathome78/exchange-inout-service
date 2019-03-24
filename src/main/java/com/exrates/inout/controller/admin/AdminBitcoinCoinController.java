@@ -27,7 +27,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/admin/bitcoinWallet/{merchantName}")
+@RequestMapping("/2a8fy7b07dxe44/bitcoinWallet/{merchantName}")
 public class AdminBitcoinCoinController {
 
     @Autowired
