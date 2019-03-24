@@ -8,26 +8,27 @@ import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.IMerchantService;
 import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/2a8fy7b07dxe44/bitcoinWallet/{merchantName}")
+@RequestMapping(value = "/2a8fy7b07dxe44/bitcoinWallet/{merchantName}", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 public class AdminBitcoinCoinController {
 
     @Autowired
@@ -48,7 +49,7 @@ public class AdminBitcoinCoinController {
         return getBitcoinServiceByMerchantName(merchantName).listTransactions(tableParams);
     }
 
-    @RequestMapping(value = "/walletInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/getWalletInfo", method = RequestMethod.GET)
     @ResponseBody
     public BtcWalletInfoDto getWalletInfo(@PathVariable String merchantName) {
         return getBitcoinServiceByMerchantName(merchantName).getWalletInfo();
@@ -84,17 +85,13 @@ public class AdminBitcoinCoinController {
         getBitcoinServiceByMerchantName(merchantName).submitWalletPassword(password);
     }
 
-    @RequestMapping(value = "/sendToMany", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/sendToMany", method = RequestMethod.POST, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public BtcAdminPaymentResponseDto sendToMany(@PathVariable String merchantName, @RequestBody List<BtcWalletPaymentItemDto> payments) {
-        BitcoinService walletService = getBitcoinServiceByMerchantName(merchantName);
-        BtcAdminPaymentResponseDto responseDto = new BtcAdminPaymentResponseDto();
-        responseDto.setResults(walletService.sendToMany(payments));
-        responseDto.setNewBalance(walletService.getWalletInfo().getBalance());
-        return responseDto;
+    public List<BtcPaymentResultDetailedDto> sendToMany(@PathVariable String merchantName, @RequestBody List<BtcWalletPaymentItemDto> payments) {
+        return getBitcoinServiceByMerchantName(merchantName).sendToMany(payments);
     }
 
-    @RequestMapping(value = "/transaction/details", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/transaction/details", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Map<String, RefillRequestBtcInfoDto> getTransactionDetails(@PathVariable String merchantName,
                                                                       @RequestParam("currency") String currencyName,
@@ -117,7 +114,7 @@ public class AdminBitcoinCoinController {
 
     @RequestMapping(value = "/checkPayments", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+            produces = APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public void checkPayments(@PathVariable String merchantName,
                               @RequestParam(required = false) String blockhash) {
@@ -141,7 +138,7 @@ public class AdminBitcoinCoinController {
     }
 
     //TODO
-    @RequestMapping(value = "/prepareRawTx", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/prepareRawTx", method = RequestMethod.POST, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public BtcAdminPreparedTxDto prepareRawTransactions(@PathVariable String merchantName,
                                                         @RequestBody List<BtcWalletPaymentItemDto> payments,
@@ -168,8 +165,8 @@ public class AdminBitcoinCoinController {
     }
 
     //TODO
-    @RequestMapping(value = "/sendRawTx", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/sendRawTx", method = RequestMethod.POST, consumes = APPLICATION_JSON_UTF8_VALUE,
+            produces = APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public BtcAdminPaymentResponseDto sendRawTransactions(@PathVariable String merchantName,
                                                           HttpServletRequest request) {

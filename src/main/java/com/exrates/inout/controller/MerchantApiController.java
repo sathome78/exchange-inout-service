@@ -12,7 +12,7 @@ import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;tat
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
