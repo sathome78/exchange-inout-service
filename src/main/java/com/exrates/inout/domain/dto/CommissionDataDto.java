@@ -3,11 +3,13 @@ package com.exrates.inout.domain.dto;
 import com.exrates.inout.domain.main.Commission;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommissionDataDto {
     private BigDecimal amount;
 

@@ -1,8 +1,10 @@
 package com.exrates.inout.domain.main;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class MerchantImage {
     private int Id;
     private int merchantId;

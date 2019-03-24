@@ -43,7 +43,7 @@ public class CreaServiceImpl extends BitsharesServiceImpl {
 
             endpoint.sendText(getLastIrreversibleBlock.toString());
         } catch (Exception e){
-            log.error(e);
+//            log.error(e);
         }
     }
 

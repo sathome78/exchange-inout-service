@@ -8,14 +8,21 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.service.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;tat
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
 @RestController
-@RequestMapping("/api/merchant")
+@RequestMapping(value = "/api/merchant", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 @RequiredArgsConstructor
 public class MerchantApiController {
 
@@ -40,21 +47,80 @@ public class MerchantApiController {
         return null;
     }
 
-    @GetMapping("/getMinConfirmationsRefill/{merchantId}")
-    public Integer getMinConfirmationsRefill(@PathVariable("merchantId") String merchantId) {
+    @GetMapping(value = "/getMinConfirmationsRefill/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Integer getMinConfirmationsRefill(@PathVariable("merchantId") int merchantId) {
         IRefillable merchant = (IRefillable) serviceContext
                 .getMerchantService(merchantId);
         return merchant.minConfirmationsRefill();
-
     }
 
-    @PostMapping("/retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies")
-    public List<MerchantCurrency> retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(@RequestBody List<MerchantCurrency> merchantCurrencies, @RequestParam("userEmail") String userEmail){
+    @PostMapping(value = "/retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<MerchantCurrency> retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(@RequestBody List<MerchantCurrency> merchantCurrencies, @RequestParam("userEmail") String userEmail) {
         return refillService.retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(merchantCurrencies, userEmail);
     }
 
-    @PostMapping("/callRefillIRefillable")
+    @PostMapping(value = "/callRefillIRefillable", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, String> callRefillIRefillable(@RequestBody RefillRequestCreateDto request) {
         return refillService.callRefillIRefillable(request);
+    }
+
+    @GetMapping("/checkDestinationTag")
+    public Object checkDestinationTag(HttpServletResponse response,
+                                      @RequestParam("merchant_id") int merchant_id,
+                                      @RequestParam("memo") String memo) {
+        try {
+            merchantService.checkDestinationTag(merchant_id, memo);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (CheckDestinationTagException e) {
+            response.setStatus(400);
+            return e;
+        }
+    }
+
+    @GetMapping("/isValidDestinationAddress")
+    public Object isValidDestinationAddress(
+            @RequestParam("merchantId") int merchantId,
+            @RequestParam("address") String address) {
+        return merchantService.isValidDestinationAddress(merchantId, address);
+    }
+
+    @PostMapping("/advcash/processPayment")
+    public void advcashProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        advcashService.processPayment(params);
+    }
+
+    @PostMapping("/edc/processPayment")
+    public void edcProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        edcService.processPayment(params);
+    }
+
+    @PostMapping("/intercassa/processPayment")
+    public void intercassaProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        interkassaService.processPayment(params);
+    }
+
+    @PostMapping("/nixmoney/processPayment")
+    public void nixmoneyProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        nixmoney.processPayment(params);
+    }
+
+    @PostMapping("/okpay/processPayment")
+    public void okpayProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        okPayService.processPayment(params);
+    }
+
+    @PostMapping("/payeer/processPayment")
+    public void payeerProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        payeerService.processPayment(params);
+    }
+
+    @PostMapping("/perfectMoney/processPayment")
+    public void perfectMoneyProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        perfectMoneyService.processPayment(params);
+    }
+
+    @PostMapping("/privat24/confirmPayment")
+    public void perfectMoneyProcessPayment(@RequestBody Map<String, String> params, @RequestParam("signature") String signature, @RequestParam("payment") String payment) throws RefillRequestAppropriateNotFoundException {
+        privat24Service.confirmPayment(params, signature, payment);
     }
 }

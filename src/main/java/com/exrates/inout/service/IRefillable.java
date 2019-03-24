@@ -1,7 +1,7 @@
 package com.exrates.inout.service;
 
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.exceptions.NotImplementedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
@@ -43,11 +43,11 @@ public interface IRefillable extends IMerchantService{
     }
 
     default long getBlocksCount() throws BitcoindException, CommunicationException {
-        throw new NotImplimentedMethod("Not implemented yet");
+        throw new NotImplementedMethod("Not implemented yet");
     }
 
     default Long getLastBlockTime() throws BitcoindException, CommunicationException, BitcoindException, CommunicationException, BitcoindException {
-        throw new NotImplimentedMethod("Not implemented yet");
+        throw new NotImplementedMethod("Not implemented yet");
     }
 
 }

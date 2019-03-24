@@ -1,6 +1,7 @@
 package com.exrates.inout.configuration;
 
 
+import com.exrates.inout.service.impl.NamedParameterJdbcTemplateWrapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.exrates.SSMGetter;
@@ -64,13 +65,13 @@ public class DBConfiguration {
     @DependsOn("masterHikariDataSource")
     @Bean(name = "masterTemplate")
     public NamedParameterJdbcTemplate masterNamedParameterJdbcTemplate(@Qualifier("masterHikariDataSource") DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
+        return new NamedParameterJdbcTemplateWrapper(dataSource);
     }
 
     @DependsOn("slaveHikariDataSource")
     @Bean(name = "slaveTemplate")
     public NamedParameterJdbcTemplate slaveNamedParameterJdbcTemplate(@Qualifier("slaveHikariDataSource") DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
+        return new NamedParameterJdbcTemplateWrapper(dataSource);
     }
 
     @Primary
