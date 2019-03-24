@@ -1,4 +1,6 @@
 spring:
+  server:
+    port: 8090
   profiles:
     active: dev
   application:
@@ -19,7 +21,6 @@ spring:
   redis:
     host: 172.10.10.236
     port: 6379
-
 #slave:
 #  datasource:
 #    hikari:
