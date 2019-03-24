@@ -1,11 +1,18 @@
 package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.OperationType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
-@Data
+/**
+ * @author ValkSam
+ */
+@Getter
+@Setter
+@ToString
 public class RefillRequestParamsDto {
     private OperationType operationType;
     private Integer currency;
@@ -20,6 +27,7 @@ public class RefillRequestParamsDto {
     private String merchantRequestSign;
     private String address;
     private Boolean generateNewAddress;
+    private String childMerchant;
 
     public RefillRequestParamsDto(RefillRequestManualDto refillDto) {
         this.operationType = refillDto.getOperationType();

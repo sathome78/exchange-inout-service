@@ -48,6 +48,12 @@ public class AdminBitcoinCoinController {
         return getBitcoinServiceByMerchantName(merchantName).listTransactions(tableParams);
     }
 
+    @RequestMapping(value = "/walletInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public BtcWalletInfoDto getWalletInfo(@PathVariable String merchantName) {
+        return getBitcoinServiceByMerchantName(merchantName).getWalletInfo();
+    }
+
     @RequestMapping(value = "/estimatedFee", method = RequestMethod.GET)
     @ResponseBody
     public String getEstimatedFee(@PathVariable String merchantName) {
@@ -64,6 +70,12 @@ public class AdminBitcoinCoinController {
     @ResponseBody
     public void setFee(@PathVariable String merchantName, @RequestParam BigDecimal fee) {
         getBitcoinServiceByMerchantName(merchantName).setTxFee(fee);
+    }
+
+    @RequestMapping(value = "/isRawTxEnabled", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean isRawTxEnabled(@PathVariable String merchantName) {
+        return getBitcoinServiceByMerchantName(merchantName).isRawTxEnabled();
     }
 
     @RequestMapping(value = "/unlock", method = RequestMethod.POST)
@@ -179,7 +191,7 @@ public class AdminBitcoinCoinController {
         return responseDto;
     }
 
-    @RequestMapping(value = "/2a8fy7b07dxe44/bitcoinWallet/listWallets", method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/2a8fy7b07dxe44/bitcoinWallet/listWallets", method = GET)
     @ResponseBody
     public List<CoreWalletDto> listCoreWallets(HttpServletRequest request) {
         throw new RuntimeException("Implemented in monolit. For future.");

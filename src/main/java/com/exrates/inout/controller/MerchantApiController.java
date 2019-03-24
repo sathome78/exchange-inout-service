@@ -2,14 +2,17 @@ package com.exrates.inout.controller;
 
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.main.MerchantCurrency;
+import com.exrates.inout.service.IRefillable;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.impl.MerchantServiceContext;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.impl.MerchantServiceContext;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity;tat
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +37,6 @@ public class MerchantApiController {
     private final PayeerService payeerService;
     private final PerfectMoneyService perfectMoneyService;
     private final Privat24Service privat24Service;
-
 
     @GetMapping(value = "/getAdditionalRefillFieldName/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAdditionalRefillFieldName(@PathVariable("merchantId") int merchantId) {
