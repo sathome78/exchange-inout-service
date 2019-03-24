@@ -1,6 +1,7 @@
 package com.exrates.inout.service;
 
 import com.exrates.inout.domain.dto.MyInputOutputHistoryDto;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.CreditsOperation;
@@ -18,5 +19,5 @@ public interface InputOutputService {
 
     List<Map<String, Object>> generateAndGetButtonsSet(InvoiceStatus status, InvoiceOperationPermission permittedOperation, boolean authorisedUserIsHolder, Locale locale);
 
-    Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userEmail, Locale locale);
+    Optional<CreditsOperation> prepareCreditsOperation(Payment payment, int userId, UserRole userRole);
 }

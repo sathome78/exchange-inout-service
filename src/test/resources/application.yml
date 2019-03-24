@@ -22,14 +22,11 @@ spring:
     locations: classpath:db/migration
     user: root
     password: root
-    url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
     baseline-on-migrate: true
     validate-on-migrate: false
-  rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
-    port: 5672
+
 #slave:
 #  datasource:
 #    hikari:
@@ -38,6 +35,10 @@ spring:
 #      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
 #      connection-test-query: SELECT 1 FROM DUAL
 #      driver-class-name: com.mysql.jdbc.Driver
+ssm:
+  mode: dev
+  path: /exrates/auth-service/test/pass.token
+
 
 endpoints:
   stock: http://localhost:8079/

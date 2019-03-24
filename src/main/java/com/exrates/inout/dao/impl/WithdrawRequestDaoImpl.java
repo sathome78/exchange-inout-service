@@ -1,19 +1,14 @@
 package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.WithdrawRequestDao;
-import com.exrates.inout.domain.dto.WithdrawFilterData;
-import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
-import com.exrates.inout.domain.dto.WithdrawRequestFlatAdditionalDataDto;
-import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
-import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
-import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +22,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
@@ -329,20 +319,19 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
     }
 
     @Override
-    public boolean checkOutputRequests(int currencyId, int userId) {
-        throw new NotImplementedException("");
-//        String sql = "SELECT " +
-//                " (SELECT COUNT(*) FROM WITHDRAW_REQUEST REQUEST " +
-//                " WHERE REQUEST.user_id = :user_id and REQUEST.currency_id = :currency_id " + //TODO inout test
-//                " and DATE(REQUEST.date_creation) = CURDATE()) <  " +
-//                " " +
-//                "(SELECT CURRENCY_LIMIT.max_daily_request FROM CURRENCY_LIMIT  " +
-//                " JOIN USER ON (USER.roleid = CURRENCY_LIMIT.user_role_id)" + //TODO take user role id
-//                " WHERE USER.email = :email AND operation_type_id = 2 AND currency_id = :currency_id) ;";
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("currency_id", currencyId);
-//        params.put("user_id", userId);
-//        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
+    public boolean checkOutputRequests(int currencyId, int userId, UserRole userRole) {
+        String sql = "SELECT " +
+                " (SELECT COUNT(*) FROM WITHDRAW_REQUEST REQUEST " +
+                " WHERE REQUEST.user_id = :user_id and REQUEST.currency_id = :currency_id " +
+                " and DATE(REQUEST.date_creation) = CURDATE()) <  " +
+                " " +
+                "(SELECT CURRENCY_LIMIT.max_daily_request FROM CURRENCY_LIMIT  " +
+                " WHERE CURRENCY_LIMIT.user_role_id = :user_role_id AND operation_type_id = 2 AND currency_id = :currency_id) ;";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("currency_id", currencyId);
+        params.put("user_id", userId);
+        params.put("user_role_id", userRole.getRole());
+        return jdbcTemplate.queryForObject(sql, params, Integer.class) == 1;
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
 import com.exrates.inout.service.bitshares.BitsharesService;
-import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
+import com.exrates.inout.service.bitshares.crea.CreaServiceImpl;
 import com.exrates.inout.service.btc.BitcoinServiceImpl;
 import com.exrates.inout.service.ethereum.EthTokenService;
 import com.exrates.inout.service.ethereum.EthTokenServiceImpl;
@@ -28,7 +28,6 @@ import com.exrates.inout.service.nem.XemMosaicService;
 import com.exrates.inout.service.nem.XemMosaicServiceImpl;
 import com.exrates.inout.service.neo.NeoService;
 import com.exrates.inout.service.neo.NeoServiceImpl;
-import com.exrates.inout.service.ppy.PPYServiceImpl;
 import com.exrates.inout.service.qtum.QtumTokenServiceImpl;
 import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.tron.TronTrc10Token;
@@ -1072,17 +1071,6 @@ public class CryptocurrencyConfig {
         return new TronTrc10Token("BTT", "BTT", 6, "1002000", "31303032303030", "1002000");
     }
 
-//    //Bitshares
-//    @Bean(name = "ppyServiceImpl")
-//    public BitsharesService bitsharesService(){
-//        return new PPYServiceImpl("PPY", "PPY", "merchants/ppy.properties", 6);
-//    }
-//
-//    @Bean(name = "aunitServiceImpl")
-//    public BitsharesService aunitServiceImpl(){
-//        return new BitsharesServiceImpl("AUNIT", "AUNIT", "merchants/aunit.properties", 5){};
-//    }
-
     //Qtum tokens:
     @Bean(name = "spcServiceImpl")
     public QtumTokenServiceImpl spcService() {
@@ -1177,5 +1165,11 @@ public class CryptocurrencyConfig {
     @Bean("vexaniumContract")
     public AchainContract achainContractService() {
         return new AchainContract("ACT9XnhX5FtQqGFAa3KgrgkPCCEDPmuzgtSx", "VEX", "VEX", "Vexanium_Token");
+    }
+
+    //Bithsares
+    @Bean(name = "creaServiceImpl")
+    public BitsharesService bitsharesService(){
+        return new CreaServiceImpl("CREA", "CREA", "merchants/crea.properties", 6, 3);
     }
 }

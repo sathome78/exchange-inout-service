@@ -5,7 +5,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
+import com.exrates.inout.exceptions.NotImplementedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.service.CurrencyService;
@@ -257,7 +257,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        throw new NotImplimentedMethod("for " + params);
+        throw new NotImplementedMethod("for " + params);
     }
 
     private void checkConnection() {

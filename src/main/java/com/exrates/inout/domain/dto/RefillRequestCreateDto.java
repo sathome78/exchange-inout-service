@@ -2,15 +2,20 @@ package com.exrates.inout.domain.dto;
 
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
-
-@Data
+/**
+ * @author ValkSam
+ */
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class RefillRequestCreateDto {
     private Integer id;
@@ -23,6 +28,7 @@ public class RefillRequestCreateDto {
     private BigDecimal commission;
     private Integer commissionId;
     private Integer merchantId;
+    private Integer merchantTransactionId;
     private String merchantDescription;
     private String serviceBeanName;
     private Integer refillOperationCountLimitForUserPerDay;
@@ -32,6 +38,7 @@ public class RefillRequestCreateDto {
     private String privKey;
     private String pubKey;
     private String brainPrivKey;
+    private String childMerchant;
     private Boolean generateNewAddress;
     private Boolean generateAdditionalRefillAddressAvailable;
     private Boolean needToCreateRefillRequestRecord;
@@ -57,6 +64,7 @@ public class RefillRequestCreateDto {
         this.pubKey = null;
         this.brainPrivKey = null;
         this.generateNewAddress = paramsDto.getGenerateNewAddress();
+        this.childMerchant = paramsDto.getChildMerchant();
         /**/
         this.userId = creditsOperation.getUser().getId();
         this.userEmail = creditsOperation.getUser().getEmail();

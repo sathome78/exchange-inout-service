@@ -5,6 +5,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
@@ -84,13 +85,13 @@ public interface RefillService {
 
     List<InvoiceBank> findBanksForCurrency(Integer currencyId);
 
-    Map<String, String> correctAmountAndCalculateCommission(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale);
+    Map<String, String> correctAmountAndCalculateCommission(Integer userId, BigDecimal amount, Integer currencyId, Integer merchantId, Locale locale, UserRole userRole);
 
     Integer clearExpiredInvoices() throws Exception;
 
     DataTable<List<RefillRequestsAdminTableDto>> getRefillRequestByStatusList(List<Integer> requestStatus, DataTableParams dataTableParams, RefillFilterData refillFilterData, String authorizedUserEmail, Locale locale);
 
-    boolean checkInputRequestsLimit(int currencyId, String email);
+    boolean checkInputRequestsLimit(int currencyId, UserRole userRole, int userId);
 
     void takeInWorkRefillRequest(int requestId, Integer requesterAdminId);
 

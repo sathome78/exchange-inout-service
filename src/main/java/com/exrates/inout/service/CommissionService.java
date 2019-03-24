@@ -20,9 +20,9 @@ public interface CommissionService {
 
     BigDecimal getMinFixedCommission(Integer currencyId, Integer merchantId);
 
-    Map<String, String> computeCommissionAndMapAllToString(Integer userId, BigDecimal amount, OperationType operationType, Integer currencyId, Integer merchantId, Locale locale, String destinationTag);
+    Map<String, String> computeCommissionAndMapAllToString(Integer userId, BigDecimal amount, OperationType operationType, Integer currencyId, Integer merchantId, Locale locale, String destinationTag, UserRole userRole);
 
-    CommissionDataDto normalizeAmountAndCalculateCommission(Integer userId, BigDecimal amount, OperationType type, Integer currencyId, Integer merchantId, String destinationTag);
+    CommissionDataDto normalizeAmountAndCalculateCommission(Integer userId, BigDecimal amount, OperationType type, Integer currencyId, Integer merchantId, String destinationTag, UserRole userRole);
 
     BigDecimal calculateCommissionForRefillAmount(BigDecimal amount, Integer commissionId);
 

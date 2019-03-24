@@ -2,13 +2,13 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.WalletDao;
 import com.exrates.inout.domain.dto.TransferDto;
+import com.exrates.inout.domain.dto.WalletInnerTransferDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
-import com.exrates.inout.dto.WalletInnerTransferDto;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.EndpointProperties;
 import com.exrates.inout.service.*;
@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -196,9 +195,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletTransferStatus walletBalanceChange(final WalletOperationData walletOperationData) {
-        throw new NotImplementedException();
+        return walletDao.walletBalanceChange(walletOperationData);
     }
-
 
     private void changeWalletActiveBalance(BigDecimal amount, Wallet wallet, OperationType operationType,
                                            TransactionSourceType transactionSourceType) {

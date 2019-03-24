@@ -14,6 +14,7 @@ public class Payment {
     private String destinationTag;
     private String recipient;
     private OperationType operationType;
+    private User userRecipient;
 
     public Payment(OperationType operationType) {
         this.operationType = operationType;

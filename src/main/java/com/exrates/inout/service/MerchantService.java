@@ -3,8 +3,10 @@ package com.exrates.inout.service;
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.OperationType;
+import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
 import lombok.SneakyThrows;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import java.util.*;
 
 
 public interface MerchantService {
+
+    List<Merchant> findAllByCurrency(Currency currency);
 
     List<Merchant> findAll();
 
@@ -53,7 +57,7 @@ public interface MerchantService {
                                                            String currency,
                                                            String merchant);
 
-    void checkDestinationTag(Integer merchantId, String memo);
+    void checkDestinationTag(Integer merchantId, String memo) throws CheckDestinationTagException;
 
     boolean isValidDestinationAddress(Integer merchantId, String address);
 

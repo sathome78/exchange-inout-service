@@ -10,6 +10,7 @@ import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.VoucherFilterData;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -291,12 +292,12 @@ public class TransferServiceImpl implements TransferService {
             BigDecimal amount,
             Integer currencyId,
             Integer merchantId,
-            Locale locale) {
+            Locale locale, UserRole userRole) {
         OperationType operationType = USER_TRANSFER;
         BigDecimal addition = currencyService.computeRandomizedAddition(currencyId, operationType);
         amount = amount.add(addition);
         merchantService.checkAmountForMinSum(merchantId, currencyId, amount);
-        Map<String, String> result = commissionService.computeCommissionAndMapAllToString(userId, amount, operationType, currencyId, merchantId, locale, null);
+        Map<String, String> result = commissionService.computeCommissionAndMapAllToString(userId, amount, operationType, currencyId, merchantId, locale, null, userRole);
         result.put("addition", addition.toString());
         return result;
     }

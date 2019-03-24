@@ -1,12 +1,8 @@
 package com.exrates.inout.dao;
 
-import com.exrates.inout.domain.dto.WithdrawFilterData;
-import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
-import com.exrates.inout.domain.dto.WithdrawRequestFlatAdditionalDataDto;
-import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
-import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
-import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
@@ -41,7 +37,7 @@ public interface WithdrawRequestDao {
 
     List<ClientBank> findClientBanksForCurrency(Integer currencyId);
 
-    boolean checkOutputRequests(int currencyId, int email);
+    boolean checkOutputRequests(int currencyId, int email, UserRole userRole);
 
     Optional<Integer> findUserIdById(Integer requestId);
 

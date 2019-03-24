@@ -2,6 +2,7 @@ package com.exrates.inout.service;
 
 
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.exceptions.CheckDestinationTagException;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -27,7 +28,7 @@ public interface IWithdrawable extends IMerchantService {
         return BigDecimal.ZERO;
     }
 
-    default void checkDestinationTag(String destinationTag) {}
+    default void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {}
 
     default boolean comissionDependsOnDestinationTag() {
         return false;

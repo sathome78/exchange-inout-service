@@ -19,7 +19,6 @@ spring:
   redis:
     host: 172.10.10.236
     port: 6379
-
 #slave:
 #  datasource:
 #    hikari:
