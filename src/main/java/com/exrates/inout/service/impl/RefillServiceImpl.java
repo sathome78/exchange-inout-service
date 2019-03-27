@@ -236,6 +236,11 @@ public class RefillServiceImpl implements RefillService {
     }
 
     @Override
+    public Integer createRefillRequestByFact(RefillRequestAcceptDto request, int userId, int commissionId, RefillStatusEnum statusEnum) {
+        return refillRequestDao.autoCreate(request, userId, commissionId, statusEnum).orElse(0);
+    }
+
+    @Override
     @Transactional
     public Integer createRefillRequestByFact(RefillRequestAcceptDto requestAcceptDto) {
         log.debug("Creating request by fact: " + requestAcceptDto);

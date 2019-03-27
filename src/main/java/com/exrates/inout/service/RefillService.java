@@ -6,6 +6,7 @@ import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.UserRole;
+import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.InvoiceBank;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.domain.main.RefillRequestAddressShortDto;
@@ -33,6 +34,8 @@ public interface RefillService {
     Integer getMerchantIdByAddressAndCurrencyAndUser(String address, Integer currencyId, Integer userId);
 
     List<MerchantCurrency> retrieveAddressAndAdditionalParamsForRefillForMerchantCurrencies(List<MerchantCurrency> merchantCurrencies, String userEmail);
+
+    Integer createRefillRequestByFact(RefillRequestAcceptDto request, int userId, int commissionId, RefillStatusEnum statusEnum);
 
     Integer createRefillRequestByFact(RefillRequestAcceptDto request);
 

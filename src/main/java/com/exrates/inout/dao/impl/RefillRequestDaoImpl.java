@@ -1340,5 +1340,27 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, refillRequestAddressRowMapper);
     }
+
+    @Override
+    public Optional<Integer> autoCreate(RefillRequestAcceptDto request, int userId, int commissionId, RefillStatusEnum statusEnum) {
+        final String sql = "INSERT INTO REFILL_REQUEST " +
+                " (amount, status_id, currency_id, user_id, commission_id, merchant_id, " +
+                "  date_creation, status_modification_date, merchant_transaction_id) " +
+                " VALUES " +
+                " (:amount, :status_id, :currency_id, :user_id, :commission_id, :merchant_id, " +
+                " NOW(), NOW())";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("amount", request.getAmount())
+                .addValue("status_id", statusEnum.getCode())
+                .addValue("currency_id", request.getCurrencyId())
+                .addValue("user_id", userId)
+                .addValue("commission_id", commissionId)
+                .addValue("merchant_id", request.getMerchantId())
+                .addValue("merchant_transaction_id", request.getMerchantTransactionId());
+        namedParameterJdbcTemplate.update(sql, params, keyHolder);
+        return  Optional.of((int) keyHolder.getKey().longValue());
+    }
+
 }
 
