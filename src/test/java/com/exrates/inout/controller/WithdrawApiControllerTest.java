@@ -42,12 +42,14 @@ public class WithdrawApiControllerTest extends InoutTestApplication {
         mvc.perform(get("/api/merchant/checkDestinationTag")
             .param("merchant_id", String.valueOf(merchantId))
             .param("memo", "123")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE()))
                 .andExpect(status().isOk());
 
         String contentAsString = mvc.perform(get("/api/merchant/checkDestinationTag")
                 .param("merchant_id", String.valueOf(merchantId))
                 .param("memo", "aaa")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE()))
                 .andExpect(status().isBadRequest()).andReturn().getResponse().getContentAsString();
 

@@ -4,6 +4,7 @@ package com.exrates.inout.domain.enums;
 import com.exrates.inout.exceptions.UnsupportedProcessTypeException;
 
 import java.util.Arrays;
+import java.util.List;
 
 public enum MerchantProcessType {
     MERCHANT, CRYPTO, INVOICE, TRANSFER;
@@ -16,6 +17,22 @@ public enum MerchantProcessType {
 
     @Override
     public String toString() {
-        return "MerchantProcessType " + this.name();
+        return this.name();
+    }
+
+    public static List<MerchantProcessType> getAllCoinsTypes() {
+        return Arrays.asList(MerchantProcessType.MERCHANT, MerchantProcessType.INVOICE, MerchantProcessType.CRYPTO);
+    }
+
+    public static CurrencyProcessType toCurrencyProcessType(MerchantProcessType type) {
+        switch (type) {
+            case CRYPTO:
+                return CurrencyProcessType.CRYPTO;
+            case MERCHANT:
+            case INVOICE:
+                return CurrencyProcessType.FIAT;
+            default:
+                throw new UnsupportedProcessTypeException(type.toString());
+        }
     }
 }

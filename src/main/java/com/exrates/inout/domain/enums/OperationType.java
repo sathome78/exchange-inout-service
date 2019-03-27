@@ -9,8 +9,9 @@ import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
 import static com.exrates.inout.domain.enums.TransactionSourceType.WITHDRAW;
 
 public enum OperationType {
-    INPUT(1, REFILL) {{
-        currencyForAddRandomValueToAmount.put(10, new AdditionalRandomAmountParam() {{
+    INPUT(1, REFILL){{
+        /*Addition of three digits is required for IDR input*/
+        currencyForAddRandomValueToAmount.put(10, new AdditionalRandomAmountParam(){{
             currencyName = "IDR";
             lowBound = 100;
             highBound = 999;
@@ -30,10 +31,12 @@ public enum OperationType {
         public double lowBound;
         public double highBound;
 
+        @Override
         public boolean equals(Object currencyName) {
-            return this.currencyName.equals((String) currencyName);
+            return this.currencyName.equals((String)currencyName);
         }
 
+        @Override
         public int hashCode() {
             return currencyName != null ? currencyName.hashCode() : 0;
         }
@@ -48,33 +51,26 @@ public enum OperationType {
     OperationType(int type) {
         this.type = type;
     }
-
     OperationType(int type, TransactionSourceType transactionSourceType) {
         this.type = type;
         this.transactionSourceType = transactionSourceType;
     }
 
-    public Optional<AdditionalRandomAmountParam> getRandomAmountParam(Integer currencyId) {
+    public Optional<AdditionalRandomAmountParam> getRandomAmountParam(Integer currencyId){
         return Optional.ofNullable(currencyForAddRandomValueToAmount.get(currencyId));
     }
 
-    public int getType() {
-        return type;
+    public Optional<AdditionalRandomAmountParam> getRandomAmountParam(String currencyName){
+        return currencyForAddRandomValueToAmount.values().stream()
+                .filter(e->e.equals(currencyName))
+                .findAny();
     }
 
-    public TransactionSourceType getTransactionSourceType() {
-        return transactionSourceType;
-    }
-
-    public static OperationType convert(int id) {
-        return Arrays.stream(OperationType.class.getEnumConstants())
-                .filter(e -> e.type == id)
-                .findAny()
-                .orElseThrow(() -> new UnsupportedOperationTypeException(id));
-    }
-
-    public String toString(MessageSource messageSource, Locale locale) {
-        return messageSource.getMessage("operationtype." + this.name(), null, locale);
+    public static List<OperationType> getInputOutputOperationsList(){
+        return new ArrayList<OperationType>(){{
+            add(INPUT);
+            add(OUTPUT);
+        }};
     }
 
     public static OperationType getOpposite(OperationType ot) {
@@ -90,5 +86,31 @@ public enum OperationType {
             default:
                 return ot;
         }
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public TransactionSourceType getTransactionSourceType() {
+        return transactionSourceType;
+    }
+
+    public static OperationType convert(int id) {
+        return Arrays.stream(OperationType.values())
+                .filter(operationType -> operationType.type == id)
+                .findAny()
+                .orElseThrow(() -> new UnsupportedOperationTypeException(id));
+    }
+
+    public static OperationType of(String value) {
+        return Arrays.stream(OperationType.values())
+                .filter(operationType -> operationType.name().equals(value))
+                .findAny()
+                .orElseThrow(() -> new UnsupportedOperationTypeException("Not supported booking status: " + value));
+    }
+
+    public String toString(MessageSource messageSource, Locale locale) {
+        return messageSource.getMessage("operationtype." + this.name(), null, locale);
     }
 }
