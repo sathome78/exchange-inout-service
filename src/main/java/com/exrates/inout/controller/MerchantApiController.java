@@ -1,23 +1,43 @@
 package com.exrates.inout.controller;
 
+import com.exrates.inout.domain.dto.QuberaRequestDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.MerchantCurrency;
-import com.exrates.inout.service.IRefillable;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.impl.MerchantServiceContext;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.AdvcashService;
+import com.exrates.inout.service.EDCService;
+import com.exrates.inout.service.IRefillable;
+import com.exrates.inout.service.InterkassaService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NixMoneyService;
+import com.exrates.inout.service.OkPayService;
+import com.exrates.inout.service.PayeerService;
+import com.exrates.inout.service.PerfectMoneyService;
+import com.exrates.inout.service.Privat24Service;
+import com.exrates.inout.service.QuberaService;
+import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.YandexKassaService;
+import com.exrates.inout.service.YandexMoneyService;
+import com.exrates.inout.service.impl.MerchantServiceContext;
+import com.yandex.money.api.methods.RequestPayment;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -37,6 +57,9 @@ public class MerchantApiController {
     private final PayeerService payeerService;
     private final PerfectMoneyService perfectMoneyService;
     private final Privat24Service privat24Service;
+    private final QuberaService quberaService;
+    private final YandexMoneyService yandexMoneyService;
+    private final YandexKassaService yandexKassaService;
 
     @GetMapping(value = "/getAdditionalRefillFieldName/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAdditionalRefillFieldName(@PathVariable("merchantId") int merchantId) {
@@ -123,4 +146,38 @@ public class MerchantApiController {
     public void perfectMoneyProcessPayment(@RequestBody Map<String, String> params, @RequestParam("signature") String signature, @RequestParam("payment") String payment) throws RefillRequestAppropriateNotFoundException {
         privat24Service.confirmPayment(params, signature, payment);
     }
+
+
+    @PostMapping("/qubera/processPayment")
+    public void quberaProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        quberaService.processPayment(params);
+    }
+
+    @PostMapping("/yamoney/getTemporaryAuthCode")
+    public Boolean quberaLogResponse(@RequestBody QuberaRequestDto requestDto) {
+        return quberaService.logResponse(requestDto);
+    }
+
+    //TODO ya kassa
+
+    @GetMapping("/yamoney/getTemporaryAuthCode")
+    public String yamoneyGetTemporaryAuthCode() {
+        return yandexMoneyService.getTemporaryAuthCode();
+    }
+
+    @GetMapping("/yamoney/getAccessToken")
+    public Optional<String> yamoneyGetAccessToken(@RequestParam("code") String code) {
+        return yandexMoneyService.getAccessToken(code);
+    }
+
+    @PostMapping("/yamoney/requestPayment")
+    public Optional<RequestPayment> yamoneyRequestPayment(@RequestParam("token") String token, @RequestBody CreditsOperation creditsOperation) {
+        return yandexMoneyService.requestPayment(token, creditsOperation);
+    }
+
+    @PostMapping("/yakassa/confirmPayment")
+    public boolean yamoneyRequestPayment(@RequestBody Map<String, String> params) {
+        return yandexKassaService.confirmPayment(params);
+    }
+
 }
