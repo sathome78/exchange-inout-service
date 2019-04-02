@@ -17,8 +17,8 @@ spring:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236
-    port: 6379
+    host: 172.50.50.100
+    port: 6380
 
 eureka:
   client:
