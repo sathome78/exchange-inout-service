@@ -158,8 +158,6 @@ public class MerchantApiController {
         return quberaService.logResponse(requestDto);
     }
 
-    //TODO ya kassa
-
     @GetMapping("/yamoney/getTemporaryAuthCode")
     public String yamoneyGetTemporaryAuthCode() {
         return yandexMoneyService.getTemporaryAuthCode();
