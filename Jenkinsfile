@@ -6,10 +6,10 @@ pipeline {
       agent any
       steps {
         sh 'mvn clean install'
-        sh 'docker build --build-arg ENVIRONMENT -t exrates/exrates-inout-service:$ENVIRONMENT .'
+        sh 'docker build --build-arg ENVIRONMENT -t exrates/exrates-inout-service:$ENVIRONMENT'
       }
     } 
-    stage('Docker pull') {
+    stage('Docker push') {
       agent any
       steps {
         sh 'docker tag exrates/exrates-inout-service:$ENVIRONMENT 172.50.50.7:5000/inout-service:$ENVIRONMENT'
