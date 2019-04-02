@@ -1,14 +1,12 @@
 spring:
-  profiles:
-    active: dev
   application:
     admin:
       enabled: true
     name: input-output-service
   datasource:
     hikari:
-      ssm-path: vLHjSkPJjB6JLVcA
       username: root
+      password: vLHjSkPJjB6JLVcA
       jdbc-url: jdbc:mysql://localhost:3306/stage?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
