@@ -42,11 +42,12 @@ public class AdkServiceImpl implements AdkService {
 
     private final AidosNodeService aidosNodeService;
     private final MessageSource messageSource;
-    private final MerchantService merchantService;
     private final CurrencyService currencyService;
     private final RefillService refillService;
     private final GtagService gtagService;
     private final WithdrawUtils withdrawUtils;
+    @Autowired
+    private MerchantService merchantService;
 
     public static final String CURRENCY_NAME = "ADK";
     public static final String MERCHANT_NAME = "ADK";
@@ -59,14 +60,12 @@ public class AdkServiceImpl implements AdkService {
     @Autowired
     public AdkServiceImpl(AidosNodeService aidosNodeService,
                           MessageSource messageSource,
-                          MerchantService merchantService,
                           CurrencyService currencyService,
                           RefillService refillService,
                           GtagService gtagService,
                           WithdrawUtils withdrawUtils) {
         this.aidosNodeService = aidosNodeService;
         this.messageSource = messageSource;
-        this.merchantService = merchantService;
         this.currencyService = currencyService;
         this.refillService = refillService;
         this.gtagService = gtagService;
