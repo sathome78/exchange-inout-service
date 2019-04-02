@@ -6,7 +6,7 @@ pipeline {
       agent any
       steps {
         sh 'mvn clean install'
-        sh 'docker build --build-arg ENVIRONMENT -t exrates/exrates-inout-service:$ENVIRONMENT'
+        sh 'docker build --build-arg ENVIRONMENT -t exrates/exrates-inout-service:$ENVIRONMENT .'
       }
     } 
     stage('Docker push') {
