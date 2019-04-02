@@ -383,6 +383,11 @@
             <artifactId>ssm-integration</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.yandex.money.api</groupId>
+            <artifactId>yandex-money-sdk-java</artifactId>
+            <version>5.0.8</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -432,9 +437,9 @@
 
     <repositories>
         <repository>
-            <id>btcd-cli4j-inner</id>
-            <name>btcd-cli4j Inner Repo</name>
-            <url>file:///${project.basedir}/libs</url>
+            <id>ProjectRepo</id>
+            <name>ProjectRepo</name>
+            <url>file://${project.basedir}/libs</url>
         </repository>
         <repository>
             <id>jvnet-nexus-staging</id>

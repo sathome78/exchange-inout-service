@@ -12,6 +12,7 @@ import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
 import com.google.common.base.Preconditions;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -38,14 +39,19 @@ import static java.util.stream.Collectors.toList;
 @Log4j2(topic = "adk_log")
 @PropertySource("classpath:/merchants/adk.properties")
 @Service
+@RequiredArgsConstructor
 public class AdkServiceImpl implements AdkService {
 
     private final AidosNodeService aidosNodeService;
     private final MessageSource messageSource;
-    private final CurrencyService currencyService;
-    private final RefillService refillService;
-    private final GtagService gtagService;
-    private final WithdrawUtils withdrawUtils;
+    @Autowired
+    private CurrencyService currencyService;
+    @Autowired
+    private RefillService refillService;
+    @Autowired
+    private GtagService gtagService;
+    @Autowired
+    private WithdrawUtils withdrawUtils;
     @Autowired
     private MerchantService merchantService;
 
@@ -56,21 +62,6 @@ public class AdkServiceImpl implements AdkService {
     private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
     private static final Object SEND_MONITOR = new Object();
     private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
-
-    @Autowired
-    public AdkServiceImpl(AidosNodeService aidosNodeService,
-                          MessageSource messageSource,
-                          CurrencyService currencyService,
-                          RefillService refillService,
-                          GtagService gtagService,
-                          WithdrawUtils withdrawUtils) {
-        this.aidosNodeService = aidosNodeService;
-        this.messageSource = messageSource;
-        this.currencyService = currencyService;
-        this.refillService = refillService;
-        this.gtagService = gtagService;
-        this.withdrawUtils = withdrawUtils;
-    }
 
     @PostConstruct
     private void inti() {
