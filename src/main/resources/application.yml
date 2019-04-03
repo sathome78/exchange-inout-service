@@ -9,7 +9,8 @@ spring:
     hikari:
       ssm-path: vLHjSkPJjB6JLVcA
       username: root
-      jdbc-url: jdbc:mysql://localhost:3306/stage?useSSL=false
+      password: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:

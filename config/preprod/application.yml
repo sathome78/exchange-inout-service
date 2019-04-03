@@ -1,25 +1,39 @@
 spring:
   profiles:
-    active: preprod
+    active: dev
   application:
     admin:
       enabled: true
     name: input-output-service
   datasource:
     hikari:
-      #      change bd username and ssm path
-      ssm-path: /exrates/core-service/preprod/mysql.token
-      username: coreapiuser
-      jdbc-url: jdbc:mysql://prodex-replicatest.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/birzha?useSSL=false
+      username: exdevdb
+      password: KQmK82dd
+      jdbc-url: jdbc:mysql://exdbdev.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/dbdev2?useUnicode=true&characterEncoding=UTF-8&useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236
+    host: 172.50.50.100
     port: 6379
+#  flyway:
+#    locations: classpath:db/migration
+#    user: root
+#    password: root
+#    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+#    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+#    baseline-on-migrate: false
+#    validate-on-migrate: false
+  rabbitmq:
+    username: angulardemoaccess
+    password: angulardemoaccess
+    host: 172.31.14.1
+    port: 5672
 
+server:
+  port: 8080
 #slave:
 #  datasource:
 #    hikari:
@@ -28,11 +42,14 @@ spring:
 #      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
 #      connection-test-query: SELECT 1 FROM DUAL
 #      driver-class-name: com.mysql.jdbc.Driver
+ssm:
+  mode: dev
+  path: /exrates/auth-service/test/pass.token
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://172.50.50.245:8092/eureka}
+      defaultZone: ${EUREKA_URI:http://172.50.50.245:8090/eureka}
     should-unregister-on-shutdown: true
     registry-fetch-interval-seconds: 5
   instance:
@@ -53,11 +70,11 @@ management:
 
 mail:
   mail_support:
-    host: exrates.top
-    port: 25
+    host: smtp.gmail.com
+    port: 587
     protocol: smtp
-    user: mail@exrates.top
-    password: R37yt7gEft
+    user: exrates.dev@gmail.com
+    password: setarxe123
   mail_mandrill:
     host: smtp.mandrillapp.com
     port: 587
@@ -65,14 +82,19 @@ mail:
     user: Currency
     password: PsQhkDq7dB8Zn3qAserRTw
   mail_info:
-    host: exrates.top
-    port: 25
+    host: smtp.gmail.com
+    port: 587
     protocol: smtp
-    user: no-reply@exrates.top
-    password: E3ZW3397dV
+    user: exrates.dev@gmail.com
+    password: setarxe123
     allowedOnly: true
-    allowedEmails: dju_m@ukr.net,mdovgodko@gmail.com,avto12@i.ua,alisatesting@gmail.com,natalitesting@gmail.com,iamlukashenko@gmail.com,sold0767@gmail.com,yagi7337@gmail.com,katrinaedinar@gmail.com,ekaterinahvorostina@gmail.com,maxim.peresadko@upholding.biz,krmelnik@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
+    allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
+
+
+endpoints:
+  stock: http://localhost:8079/
+  inoutPrefix: /inout
 
 telegram:
   bot:
@@ -118,14 +140,14 @@ invoice:
   accountCNY: 110923954410401
   accountIDR: 3600851194
   accountTHB: 015-1-65751-6
-
+# 5760 = 96 hours * 60 minutes
 btcInvoice:
-  invoiceTimeOutIntervalMinutes: 60
+  invoiceTimeOutIntervalMinutes: 500
   blockNotifyUsers: true
 
 withdraw:
-  rejectErrorTimeout: 5
-  walletNotifyEmails: iamlukashenko@gmail.com,sold0767@gmail.com
+  rejectErrorTimeout: 3
+  walletNotifyEmails: wayfarer2006@ukr.net
 
 bitcoin-coins:
   btc:
@@ -137,20 +159,22 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin/btc_backup/
+    backup-folder: ${user.home}\\btc_backup\\
+    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 18332
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      #      rpc-user:
+      #      rpc-password:
       http-auth-schema: Basic
       notification-alert-port: 5158
       notification-block-port: 5159
       notification-wallet-port: 5160
+  #      notification-instant-send-port:
   ltc:
     merchant-name: Litecoin
     currency-name: LTC
@@ -160,12 +184,12 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.litecoin-data/ltc_backup/
+    backup-folder: ${user.home}\\ltc_backup\\
     wallet-password: pass123
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 19332
@@ -175,6 +199,7 @@ bitcoin-coins:
       notification-alert-port: 5258
       notification-block-port: 5259
       notification-wallet-port: 5260
+  #      notification-instant-send-port:
   dash:
     merchant-name: Dash
     currency-name: DASH
@@ -184,14 +209,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin/dash_backup/
+    backup-folder: ${user.home}\\dash_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: true
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 19998
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -209,14 +234,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /opt/atbcoin/.atbcoin/backup/
+    backup-folder: ${user.home}\\atb_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: 163.172.53.240
       rpc-port: 28332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -224,31 +249,6 @@ bitcoin-coins:
       notification-alert-port: 5458
       notification-block-port: 5459
       notification-wallet-port: 5460
-      notification-instant-send-port: 5461
-  bch:
-    merchant-name: Bitcoin Cash
-    currency-name: BCH
-    min-confirmations: 12
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.bitcoin_cash/bch_backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 38332
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5558
-      notification-block-port: 5559
-      notification-wallet-port: 5560
   doge:
     merchant-name: Dogecoin
     currency-name: DOGE
@@ -258,12 +258,12 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.dogecoin/doge_backup/
+    backup-folder: ${user.home}\\doge_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 44555
@@ -273,6 +273,7 @@ bitcoin-coins:
       notification-alert-port: 5658
       notification-block-port: 5659
       notification-wallet-port: 5660
+  #      notification-instant-send-port:
   btg:
     merchant-name: BTG
     currency-name: BTG
@@ -287,7 +288,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 127.0.0.1
       rpc-port: 18444
@@ -297,6 +298,7 @@ bitcoin-coins:
       notification-alert-port: 5758
       notification-block-port: 5759
       notification-wallet-port: 5760
+  #      notification-instant-send-port:
   zec:
     merchant-name: Zcash
     currency-name: ZEC
@@ -311,9 +313,9 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 163.172.53.240
       rpc-port: 28234
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -321,6 +323,7 @@ bitcoin-coins:
       notification-alert-port: 25458
       notification-block-port: 25459
       notification-wallet-port: 25460
+  #      notification-instant-send-port:
   b2x:
     merchant-name: B2X
     currency-name: B2X
@@ -330,14 +333,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin_cash/b2x_backup/
+    backup-folder: ${user.home}\\b2x_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 18552
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -345,6 +348,7 @@ bitcoin-coins:
       notification-alert-port: 5858
       notification-block-port: 5859
       notification-wallet-port: 5860
+  #      notification-instant-send-port:
   bcd:
     merchant-name: BCD
     currency-name: BCD
@@ -359,7 +363,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 7116
@@ -369,6 +373,7 @@ bitcoin-coins:
       notification-alert-port: 35458
       notification-block-port: 35459
       notification-wallet-port: 35460
+  #      notification-instant-send-port:
   plc:
     merchant-name: PLC
     currency-name: PLC
@@ -378,14 +383,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.platincoin/plc_backup/
+    backup-folder: ${user.home}\\plc_backup\\
     wallet-password: a9qW7VEsE89XGGR4KV4ynsKuQ8hF5AZj
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ec2-18-216-0-44.us-east-2.compute.amazonaws.com
       rpc-port: 11982
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -393,6 +398,7 @@ bitcoin-coins:
       notification-alert-port: 6658
       notification-block-port: 6659
       notification-wallet-port: 6660
+  #      notification-instant-send-port:
   bcx:
     merchant-name: BCX
     currency-name: BCX
@@ -402,21 +408,22 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin_x/bcx_backup/
+    backup-folder: ${user.home}\\b2x_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 19005
+      rpc-host: 127.0.0.1
+      rpc-port: 19004
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 6158
       notification-block-port: 6159
       notification-wallet-port: 6160
+  #      notification-instant-send-port:
   bci:
     merchant-name: BCI
     currency-name: BCI
@@ -427,20 +434,21 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.bitcoin_i/bci_backup/
-    wallet-password: dZP?c7-{67zGSAKD=7fQ
+    wallet-password: UhcX4rh9uHjGhmPNnH4s5QMBZdYgp34G
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 8331
+      rpc-port: 38980
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 6858
-      notification-block-port: 6859
-      notification-wallet-port: 6860
+      notification-alert-port: 8330
+      notification-block-port: 8332
+      notification-wallet-port: 8333
+  #      notification-instant-send-port:
   occ:
     merchant-name: OCC
     currency-name: OCC
@@ -450,14 +458,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.octoin/occ_backup/
+    backup-folder: ${user.home}\\occ_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 38562
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -465,6 +473,7 @@ bitcoin-coins:
       notification-alert-port: 6258
       notification-block-port: 6259
       notification-wallet-port: 6260
+  #      notification-instant-send-port:
   btcz:
     merchant-name: BTCZ
     currency-name: BTCZ
@@ -474,21 +483,22 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoinz/btcz_backup/
+    backup-folder: ${user.home}\\btcz_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 11979
+      rpc-host: 192.168.0.109
+      rpc-port: 1979
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 6358
       notification-block-port: 6359
       notification-wallet-port: 6360
+  #      notification-instant-send-port:
   lcc:
     merchant-name: LCC
     currency-name: LCC
@@ -498,14 +508,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.litecoincash/lcc_backup/
+    backup-folder: ${user.home}\\lcc_backup\\
     wallet-password: pass123
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 11980
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -513,6 +523,7 @@ bitcoin-coins:
       notification-alert-port: 6458
       notification-block-port: 6459
       notification-wallet-port: 6460
+  #      notification-instant-send-port:
   bca:
     merchant-name: BitcoinAtom
     currency-name: BCA
@@ -522,21 +533,22 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin_atom/bca_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 17332
+      rpc-host: 127.0.0.1
+      rpc-port: 17443
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 6558
       notification-block-port: 6559
       notification-wallet-port: 6560
+  #      notification-instant-send-port:
   btcp:
     merchant-name: BTCP
     currency-name: BTCP
@@ -546,14 +558,14 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitcoin_private/btcp_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 17932
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -561,6 +573,7 @@ bitcoin-coins:
       notification-alert-port: 6658
       notification-block-port: 6659
       notification-wallet-port: 6660
+  #      notification-instant-send-port:
   szc:
     merchant-name: SZC
     currency-name: SZC
@@ -570,21 +583,22 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.shopzcoin/szc_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
-      rpc-port: 4525
+      rpc-host: 127.0.0.1
+      rpc-port: 14525
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 6968
-      notification-block-port: 6969
-      notification-wallet-port: 6970
+      notification-alert-port: 6958
+      notification-block-port: 6959
+      notification-wallet-port: 6960
+  #      notification-instant-send-port:
   btx:
     merchant-name: BTX
     currency-name: BTX
@@ -595,19 +609,21 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.bitcore/btx_backup/
+    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 11981
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 6758
-      notification-block-port: 6759
-      notification-wallet-port: 6760
+      notification-alert-port: 6768
+      notification-block-port: 6769
+      notification-wallet-port: 6770
+  #      notification-instant-send-port:
   xbd:
     merchant-name: BitDollar
     currency-name: XBD
@@ -617,14 +633,14 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.bitdollar/xbd_backup/
+    backup-folder: ${user.home}\\xbd_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 18227
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -632,6 +648,7 @@ bitcoin-coins:
       notification-alert-port: 7058
       notification-block-port: 7059
       notification-wallet-port: 7060
+  #      notification-instant-send-port:
   beet:
     merchant-name: BEET
     currency-name: BEET
@@ -641,12 +658,12 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.beetlecoin/beet_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 47620
@@ -656,6 +673,7 @@ bitcoin-coins:
       notification-alert-port: 7868
       notification-block-port: 7869
       notification-wallet-port: 7870
+  #      notification-instant-send-port:
   nyc:
     merchant-name: NYC
     currency-name: NYC
@@ -665,21 +683,22 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.nycoin/nyc_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 18823
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 7768
       notification-block-port: 7769
       notification-wallet-port: 7770
+  #      notification-instant-send-port:
   ptc:
     merchant-name: Perfectcoin
     currency-name: PTC
@@ -694,7 +713,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 16001
@@ -704,6 +723,7 @@ bitcoin-coins:
       notification-alert-port: 8891
       notification-block-port: 8892
       notification-wallet-port: 8893
+  #      notification-instant-send-port:
   fgc:
     merchant-name: FGC
     currency-name: FGC
@@ -713,14 +733,14 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.fantasygold/fgc_backup/
+    backup-folder: ${user.home}\\fgc_backup\\
     wallet-password: pass123
     node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: true
+      zmq-enabled: true
+      support-instant-send: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 57814
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -743,7 +763,7 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19105
@@ -753,6 +773,7 @@ bitcoin-coins:
       notification-alert-port: 7568
       notification-block-port: 7569
       notification-wallet-port: 7570
+  #      notification-instant-send-port:
   breco:
     merchant-name: BRECO
     currency-name: BRECO
@@ -762,21 +783,22 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: true
-    backup-folder: /data/.bitcoinreco/breco_backup/
+    backup-folder: ${user.home}\\bca_backup\\
     wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 6522
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 8981
       notification-block-port: 8982
       notification-wallet-port: 8983
+  #      notification-instant-send-port:
   fto:
     merchant-name: FTO
     currency-name: FTO
@@ -786,17 +808,17 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.futurocoin/fto_backup/
-    wallet-password: pass123
+    backup-folder: ${user.home}\\fto_backup\\
+    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: true
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 9008
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 25658
       notification-block-port: 25659
@@ -816,7 +838,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19001
@@ -826,6 +848,7 @@ bitcoin-coins:
       notification-alert-port: 9991
       notification-block-port: 9992
       notification-wallet-port: 9993
+  #      notification-instant-send-port:
   eql:
     merchant-name: EQL
     currency-name: EQL
@@ -840,9 +863,9 @@ bitcoin-coins:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-14-115.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 10306
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -850,6 +873,7 @@ bitcoin-coins:
       notification-alert-port: 25758
       notification-block-port: 25759
       notification-wallet-port: 25760
+  #      notification-instant-send-port:
   lbtc:
     merchant-name: LBTC
     currency-name: LBTC
@@ -864,16 +888,17 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-31-3-255.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 9332
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 7168
       notification-block-port: 7169
       notification-wallet-port: 7170
+  #      notification-instant-send-port:
   brb:
     merchant-name: BRB
     currency-name: BRB
@@ -883,20 +908,22 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.breakbits/brb_backup/
+    backup-folder: ${user.home}\\bca_backup\\
+    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-10-13-59.us-east-2.compute.internal
-      rpc-port: 39186
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-host: 127.0.0.1
+      rpc-port: 6522
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
       notification-alert-port: 25858
       notification-block-port: 25859
       notification-wallet-port: 25860
+  #      notification-instant-send-port:
   riz:
     merchant-name: RIZ
     currency-name: RIZ
@@ -907,12 +934,13 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.rizwave/riz_backup/
+    #    wallet-password:
     node:
-      zmq-enabled: true
-      support-instant-send: true
-      enabled: true
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: false
       rpc-protocol: http
-      rpc-host: ip-172-10-13-39.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 27198
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -931,10 +959,11 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.sic/bca_backup/
+    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 172.31.0.50
       rpc-port: 16715
@@ -944,6 +973,7 @@ bitcoin-coins:
       notification-alert-port: 10100
       notification-block-port: 10101
       notification-wallet-port: 10102
+  #      notification-instant-send-port:
   clx:
     merchant-name: CLX
     currency-name: CLX
@@ -958,7 +988,7 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 172.10.13.196
       rpc-port: 25572
@@ -968,6 +998,7 @@ bitcoin-coins:
       notification-alert-port: 10001
       notification-block-port: 10002
       notification-wallet-port: 10003
+  #      notification-instant-send-port:
   qrk:
     merchant-name: QRK
     currency-name: QRK
@@ -982,9 +1013,9 @@ bitcoin-coins:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
-      rpc-host: 172.10.13.231
+      rpc-host: 172.31.3.116
       rpc-port: 10007
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -992,6 +1023,7 @@ bitcoin-coins:
       notification-alert-port: 10004
       notification-block-port: 10005
       notification-wallet-port: 10006
+  #      notification-instant-send-port:
   cmk:
     merchant-name: CMK
     currency-name: CMK
@@ -1002,10 +1034,11 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.cmk/cmk_backup/
+    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 172.31.11.23
       rpc-port: 1777
@@ -1015,6 +1048,7 @@ bitcoin-coins:
       notification-alert-port: 10202
       notification-block-port: 10200
       notification-wallet-port: 10201
+  #      notification-instant-send-port:
   mbc:
     merchant-name: MBC
     currency-name: MBC
@@ -1025,6 +1059,7 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.mbc/mbc_backup/
+    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1038,6 +1073,7 @@ bitcoin-coins:
       notification-alert-port: 10600
       notification-block-port: 10601
       notification-wallet-port: 10602
+  #      notification-instant-send-port:
   ddx:
     merchant-name: DDX
     currency-name: DDX
@@ -1048,6 +1084,7 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.ddx/ddx_backup/
+    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1061,6 +1098,7 @@ bitcoin-coins:
       notification-alert-port: 10700
       notification-block-port: 10701
       notification-wallet-port: 10702
+  #      notification-instant-send-port:
   lpc:
     merchant-name: LPC
     currency-name: LPC
@@ -1071,10 +1109,11 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.lpc/backups/
+    #    wallet-password:
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 172.10.13.78
       rpc-port: 11004
@@ -1084,6 +1123,7 @@ bitcoin-coins:
       notification-alert-port: 11000
       notification-block-port: 11001
       notification-wallet-port: 11002
+  #      notification-instant-send-port:
   xfc:
     merchant-name: XFC
     currency-name: XFC
@@ -1094,17 +1134,21 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/backup/
+    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: true
+      enabled: false
       rpc-protocol: http
       rpc-host: 172.10.13.163
       rpc-port: 7268
+      #      rpc-user: multichainrpc
+      #      rpc-password:
       http-auth-schema: Basic
       notification-alert-port: 12000
       notification-block-port: 12001
       notification-wallet-port: 12002
+  #      notification-instant-send-port:
   toa:
     merchant-name: TOA
     currency-name: TOA
@@ -1129,6 +1173,7 @@ bitcoin-coins:
       notification-alert-port: 10500
       notification-block-port: 10501
       notification-wallet-port: 105002
+  #      notification-instant-send-port:
   cryp:
     merchant-name: CRYP
     currency-name: CRYP
@@ -1150,104 +1195,302 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-block-port: 10900
-      notification-wallet-port: 10901
-  nsr:
-    merchant-name: NuShares
-    currency-name: NSR
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.nubits/nsr_backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 14001
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 7771
-      notification-block-port: 7772
-      notification-wallet-port: 7773
-  aml:
-    merchant-name: AML
-    currency-name: ABTC
+      notification-alert-port: 10900
+      notification-block-port: 10901
+      notification-wallet-port: 10902
+  CBC:
+      merchant-name: CBC
+      currency-name: CBC
+      min-confirmations: 20
+      block-target-for-fee: 20
+      raw-tx-enabled: false
+      support-subtract-fee: false
+      support-wallet-notifications: true
+      support-reference-line: false
+      backup-folder: /data/.cbc/cbc_backup/
+      wallet-password: pass123
+      node:
+        zmq-enabled: false
+        support-instant-send: false
+        enabled: true
+        rpc-protocol: http
+        rpc-host: 172.31.9.105
+        rpc-port: 11103
+        rpc-user: devprod
+        rpc-password: pass123
+        http-auth-schema: Basic
+        notification-alert-port: 11100
+        notification-block-port: 11101
+        notification-wallet-port: 11102
+  ABBC:
+      merchant-name: ABBC
+      currency-name: ABBC
+      min-confirmations: 20
+      block-target-for-fee: 20
+      raw-tx-enabled: false
+      support-subtract-fee: false
+      support-wallet-notifications: true
+      support-reference-line: false
+      backup-folder: /data/.abbc/abbc_backup/
+      wallet-password: pass123
+      node:
+        zmq-enabled: false
+        support-instant-send: false
+        enabled: true
+        rpc-protocol: http
+        rpc-host: 172.31.6.243
+        rpc-port: 11203
+        rpc-user: devprod
+        rpc-password: pass123
+        http-auth-schema: Basic
+        notification-alert-port: 11200
+        notification-block-port: 11201
+        notification-wallet-port: 11202
+  Q:
+      merchant-name: Q
+      currency-name: Q
+      min-confirmations: 20
+      block-target-for-fee: 20
+      raw-tx-enabled: false
+      support-subtract-fee: true
+      support-wallet-notifications: true
+      support-reference-line: false
+      backup-folder: /data/backup/
+      wallet-password: pass123
+      node:
+        zmq-enabled: false
+        support-instant-send: false
+        enabled: true
+        rpc-protocol: http
+        rpc-host: 172.31.4.136
+        rpc-port: 8333
+        rpc-user: devprod
+        rpc-password: pass123
+        http-auth-schema: Basic
+        notification-alert-port: 10900
+        notification-block-port: 10001
+        notification-wallet-port: 10002
+  DIME:
+    merchant-name: DIME
+    currency-name: DIME
     min-confirmations: 20
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\aml_backup\\
-    wallet-password: UhcX4rh9uHjGhmPNnH4s5QMBZdYgp34G
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.4.13
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 11301
+      notification-wallet-port: 11302
+  BSV:
+    merchant-name: BSV
+    currency-name: BSV
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 8999
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-host: 172.31.37.34
+      rpc-port: 11500
+      rpc-user: devprod
+      rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 7258
-      notification-block-port: 7259
-      notification-wallet-port: 7260
-  bbx:
-    merchant-name: BBX
-    currency-name: BBX
+      notification-alert-port: 10900
+      notification-block-port: 11501
+      notification-wallet-port: 11502
+  BCH:
+    merchant-name: BCH
+    currency-name: BCH
     min-confirmations: 20
     block-target-for-fee: 20
     raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bbcc_backup\\
-    wallet-password: a9qW7VEsE89XGGR4KV4ynsKuQ8hF5AZj
+    backup-folder: /data/backup
+    wallet-password: pass123
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 12083
+      rpc-host: 172.31.6.204
+      rpc-port: 38889
       rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 6778
-      notification-block-port: 6779
-      notification-wallet-port: 6780
-  hsr:
-    merchant-name: HSR
-    currency-name: HSR
+      notification-alert-port: 10900
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  CTX:
+    merchant-name: CTX
+    currency-name: CTX
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.11.120
+      rpc-port: 8332
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 11801
+      notification-wallet-port: 11802
+  RIME:
+    merchant-name: RIME
+    currency-name: RIME
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.7.89
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  EXO:
+    merchant-name: EXO
+    currency-name: EXO
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.43.239
+      rpc-port: 8332
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 11901
+      notification-wallet-port: 11902
+  GRS:
+    merchant-name: GRS
+    currency-name: GRS
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.9.230
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  KOD:
+    merchant-name: KOD
+    currency-name: KOD
+    min-confirmations: 1
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    wallet-password: pass123
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.10.13.117
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
+      http-auth-schema: Basic
+      notification-alert-port: 10900
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  DIVI:
+    merchant-name: DIVI
+    currency-name: DIVI
     min-confirmations: 20
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.hcash/hcash_backup
-    wallet-password: tMVPjT6DaumNaMYAc9sehc2p2jt6VrFzsaN2
+    backup-folder: /data/backup
+    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
-      rpc-port: 12183
+      rpc-host: 172.31.4.60
+      rpc-port: 8090
       rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 6788
-      notification-block-port: 6789
-      notification-wallet-port: 6790
+      notification-alert-port: 10900
+      notification-block-port: 12001
+      notification-wallet-port: 12002
+
+
+
+
+
 
 ethereum-coins:
   eth:
@@ -1256,26 +1499,54 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: http://18.216.0.44:8545
-      destination-dir: //data//ethereum//keystore//
+      #      url-our-node:
+      url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
+      #      url: http://18.216.0.44:8545
+      #      url: http://18.216.0.44:8549
+      #      url: http://13.59.242.131:8545
+      #      url: http://13.59.242.131:8549
+      destination-dir: D:\\Ethereum1\\Original\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
+      #      main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
       transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
       transfer-acc-privat-key: 78180378588292946369072654859668816086445717220539896029516054714478935781278
       transfer-acc-public-key: 1425913302398861939078339181395283390436141003096815016453538908192640696056254429740883940954808439783149865751992200750059751882787467546927733789459983
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_log
+  #Test
+  #  eth:
+  #    merchant-name: Ethereum
+  #    currency-name: ETH
+  #    min-confirmations: 12
+  #    node:
+  #      currency: Ethereum
+  #      url-our-node:
+  #      url: http://52.208.46.161:8546
+  #      destination-dir: D:\\Ethereum1\\Original\\testnet\\keystore\\
+  #      password: 061372f91f949effb934abadff5f0636de09113d
+  #      main-address: 0xa8522390c0Ae551028fbfb5ef97A1aF13F5492a8
+  #      transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
+  #      transfer-acc-privat-key: 74199533323615390595446811567054381692532959393563993073409395447229707848705
+  #      transfer-acc-public-key: 13119590832013525280742184238702178365489504100104976407042930393855053495689192423115970974319645018672313443483886856541705435663423306545046973102286102
+  #      min-sum-on-account: 0
+  #      min-balance-for-transfer: 0.0031
+  #      log: ethereum_log
   etc:
     merchant-name: Ethereum Classic
     currency-name: ETC
     min-confirmations: 12
     node:
       currency: Ethereum Classic
+      #      url-our-node:
       url: http://localhost:8101
-      destination-dir: //data//ethereum_classic//keystore//
+      destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_classic_log
@@ -1285,10 +1556,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: EtherZero
+      #      url-our-node:
       url: http://18.216.0.44:8102
-      destination-dir: //data//etherzero//keystore//
+      destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0.01
       min-balance-for-transfer: 0.02
       log: etherzero_log
@@ -1298,10 +1573,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: CLO
-      url: http://localhost:8104
-      destination-dir: //data//callisto//keystore//
+      #      url-our-node:
+      url: http://13.59.242.131:8104
+      destination-dir: D:\\Ethereum1\\callisto\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1311,10 +1590,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      url: http://localhost:8105
-      destination-dir: //data//bitcoiin2g//keystore//
+      #      url-our-node:
+      url: http://13.59.242.131:8105
+      destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
@@ -1324,10 +1607,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: GOL
+      #      url-our-node:
       url: http://172.31.7.222:8106
-      destination-dir: //data//goldiam//keystore//
+      destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
@@ -1337,10 +1624,14 @@ ethereum-coins:
     min-confirmations: 0
     node:
       currency: CNET
+      #      url-our-node:
       url: http://172.31.4.189:8107
-      destination-dir: //data//contractnet//keystore//
+      destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: contractnet_log
@@ -1350,10 +1641,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: NTY
+      #      url-our-node:
       url: http://172.31.1.74:8108
-      destination-dir: //data//nexty//keystore//
+      destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: nexty_log
@@ -1363,10 +1658,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Etherinc
+      #      url-our-node: http://13.59.242.131:9545
       url: https://api.einc.io/jsonrpc/mainnet
       destination-dir: D:\\Ethereum1\\Etherinc\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x8B4Fa8D92d2F7A41F80033521aD6fc1fBcB1d5A7
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.01
       log: etherinc_log
@@ -1617,6 +1916,588 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  INK:
+    merchant-name: Ink
+    currency-name: INK
+    contract: 0xf4c90e18727c5c76499ea6369c856a6d61d3e92e
+    isERC20: false
+    unit: GWEI
+    min-wallet-balance: 0
+  RTH:
+    merchant-name: RTH
+    currency-name: RTH
+    contract: 0x3fd8f39a962efda04956981c31ab89fab5fb8bc8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SPD:
+    merchant-name: SPD
+    currency-name: SPD
+    contract: 0x1dea979ae76f26071870f824088da78979eb91c8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MTC:
+    merchant-name: MTC
+    currency-name: MTC
+    contract: 0x905e337c6c8645263d3521205aa37bf4d034e745
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ARN:
+    merchant-name: ARN
+    currency-name: ARN
+    contract: 0xba5f11b16b155792cf3b2e6880e8706859a8aeb6
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  HST:
+    merchant-name: HST
+    currency-name: HST
+    contract: 0x554c20b7c486beee439277b4540a434566dc4c02
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  DTRC:
+    merchant-name: DTRC
+    currency-name: DTRC
+    contract: 0xc20464e0c373486d2b3335576e83a218b1618a5e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CEEK:
+    merchant-name: CEEK
+    currency-name: CEEK
+    contract: 0xb056c38f6b7dc4064367403e26424cd2c60655e1
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ANY:
+    merchant-name: ANY
+    currency-name: ANY
+    contract: 0xdf67cf04f1f268e431bfecf2c76843afb8e536c1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  TGAME:
+    merchant-name: TGAME
+    currency-name: TGAME
+    contract: 0xf8e06e4e4a80287fdca5b02dccecaa9d0954840f
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MTL:
+    merchant-name: MTL
+    currency-name: MTL
+    contract: 0xf433089366899d83a9f26a773d59ec7ecf30355e
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  LEDU:
+    merchant-name: LEDU
+    currency-name: LEDU
+    contract: 0x5b26c5d0772e5bbac8b3182ae9a13f9bb2d03765
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  ADB:
+    merchant-name: ADB
+    currency-name: ADB
+    contract: 0x2baac9330cf9ac479d819195794d79ad0c7616e3
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CEDEX:
+    merchant-name: CEDEX
+    currency-name: CEDEX
+    contract: 0xf4065e4477e91c177ded71a7a6fb5ee07dc46bc9
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GST:
+    merchant-name: GST
+    currency-name: GST
+    contract: 0x67a9099f0008c35c61c00042cd9fb03684451097
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SAT:
+    merchant-name: SAT
+    currency-name: SAT
+    contract: 0xc56b13ebbcffa67cfb7979b900b736b3fb480d78
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  CHE:
+    merchant-name: CHE
+    currency-name: CHE
+    contract: 0x632f62fcf63cb56380ffd27d63afcf5f1349f73f
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  DACC:
+    merchant-name: DACC
+    currency-name: DACC
+    contract: 0xf8c595d070d104377f58715ce2e6c93e49a87f3c
+    isERC20: false
+    unit: MWEI
+    min-wallet-balance: 0
+  ENGT:
+    merchant-name: ENGT
+    currency-name: ENGT
+    contract: 0x5dbac24e98e2a4f43adc0dc82af403fca063ce2c
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TAVITT:
+    merchant-name: TAVITT
+    currency-name: TAVITT
+    contract: 0xdd690d8824c00c84d64606ffb12640e932c1af56
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  UMT:
+    merchant-name: UMT
+    currency-name: UMT
+    contract: 0xc6be00f7ed386015a3c751d38c126c62f231138d
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MASP:
+    merchant-name: MASP
+    currency-name: MASP
+    contract: 0xce958ecf2c752c74973e89674faa30404b15a498
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  SKILL:
+    merchant-name: SKILL
+    currency-name: SKILL
+    contract: 0x417d6feeae8b2fcb73d14d64be7f192e49431978
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  STOR:
+    merchant-name: STOR
+    currency-name: STOR
+    contract: 0xa3ceac0aac5c5d868973e546ce4731ba90e873c2
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  QUINT:
+    merchant-name: QUiNT
+    currency-name: QUiNT
+    contract: 0x45b73654e464945a268032cdcb8d551fe8b733ca
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TTC:
+    merchant-name: TTC
+    currency-name: TTC
+    contract: 0x53e28b07e0795869b727ee4d585b3c025b016952
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BFG:
+    merchant-name: BFG
+    currency-name: BFG
+    contract: 0x2ee3b3804f695355ddc4f8e1c54654416d7ee95a
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  JET:
+    merchant-name: JET
+    currency-name: JET
+    contract: 0x8727c112c712c4a03371ac87a74dd6ab104af768
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PAT:
+    merchant-name: PAT
+    currency-name: PAT
+    contract: 0xf3b3cad094b89392fce5fafd40bc03b80f2bc624
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  EMTV:
+    merchant-name: eMTV
+    currency-name: eMTV
+    contract: 0x07a7ed332c595b53a317afcee50733af571475e7
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  KWATT:
+    merchant-name: KWATT
+    currency-name: KWATT
+    contract: 0x241ba672574a78a3a604cdd0a94429a73a84a324
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TUSD:
+    merchant-name: TUSD
+    currency-name: TUSD
+    contract: 0x0000000000085d4780b73119b644ae5ecd22b376
+    isERC20: false
+    unit: WEI
+    min-wallet-balance: 0
+  FPWR:
+    merchant-name: FPWR
+    currency-name: FPWR
+    contract: 0xdd92e60563250012ee1c4cb4b26810c45a0591da
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  CRBT:
+    merchant-name: CRBT
+    currency-name: CRBT
+    contract: 0x2cf618c19041d9db330d8222b860a624021f30fb
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HIVE:
+    merchant-name: HIVE
+    currency-name: HIVE
+    contract: 0x895f5d0b8456b980786656a33f21642807d1471c
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  CMIT:
+    merchant-name: CMIT
+    currency-name: CMIT
+    contract: 0xe11609b9a51caf7d32a55896386ac52ed90e66f1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  HDR:
+    merchant-name: HDR
+    currency-name: HDR
+    contract: 0x52494fbffe10f8c29411521040ae8618c334981e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RAC:
+    merchant-name: RAC
+    currency-name: RAC
+    contract: 0x342ba159f988f24f0b033f3cc5232377ee500543
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  IQN:
+    merchant-name: IQN
+    currency-name: IQN
+    contract: 0x0db8d8b76bc361bacbb72e2c491e06085a97ab31
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GEX:
+    merchant-name: GEX
+    currency-name: GEX
+    contract: 0xdac15794f0fadfdcf3a93aeaabdc7cac19066724
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  IXE:
+    merchant-name: IXE
+    currency-name: IXE
+    contract: 0x7a07e1a0c2514d51132183ecfea2a880ec3b7648
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  NER:
+    merchant-name: NER
+    currency-name: NER
+    contract: 0xee5dfb5ddd54ea2fb93b796a8a1b83c3fe38e0e6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PHI:
+    merchant-name: PHI
+    currency-name: PHI
+    contract: 0x13c2fab6354d3790d8ece4f0f1a3280b4a25ad96
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RET:
+    merchant-name: RET
+    currency-name: RET
+    contract: 0xd7394087e1dbbe477fe4f1cf373b9ac9459565ff
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  MFTU:
+    merchant-name: MFTU
+    currency-name: MFTU
+    contract: 0x05d412ce18f24040bb3fa45cf2c69e506586d8e8
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  GIGC:
+    merchant-name: GIGC
+    currency-name: GIGC
+    contract: 0xbf8aa0617df5c542f533b0e95fe2f877906ac327
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  SWM:
+    merchant-name: SWM
+    currency-name: SWM
+    contract: 0x9e88613418cf03dca54d6a2cf6ad934a78c7a17a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TIC:
+    merchant-name: TIC
+    currency-name: TIC
+    contract: 0x72430a612adc007c50e3b6946dbb1bb0fd3101d1
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  BNC:
+    merchant-name: BNC
+    currency-name: BNC
+    contract: 0xef51c9377feb29856e61625caf9390bd0b67ea18
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  WTL:
+    merchant-name: WTL
+    currency-name: WTL
+    contract: 0x9a0587eae7ef64b2b38a10442a44cfa43edd7d2a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  UDOO:
+    merchant-name: uDOO
+    currency-name: uDOO
+    contract: 0x0df721639ca2f7ff0e1f618b918a65ffb199ac4e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  XAU:
+    merchant-name: XAU
+    currency-name: XAU
+    contract: 0xadf07ae026c660968223f9f376a928523f248b69
+    isERC20: false
+    unit: TWINKY
+    min-wallet-balance: 0
+  USDC:
+    merchant-name: USDC
+    currency-name: USDC
+    contract: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    isERC20: false
+    unit: MWEI
+    min-wallet-balance: 0
+  TTP:
+    merchant-name: TTP
+    currency-name: TTP
+    contract: 0x38f22479795a1a51ccd1e5a41f09c7525fb27318
+    isERC20: false
+    unit: FINNEY
+    min-wallet-balance: 0
+  MGX:
+    merchant-name: MGX
+    currency-name: MGX
+    contract: 0xc79d440551a03f84f863b1f259f135794c8a7190
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  VAI:
+    merchant-name: VAI
+    currency-name: VAI
+    contract: 0xd4078bdb652610ad5383a747d130cbe905911102
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  UNC:
+    merchant-name: UNC
+    currency-name: UNC
+    contract: 0x882fbbe226f293037fa5c06459b1f4e871b70e94
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MODL:
+    merchant-name: MODL
+    currency-name: MODL
+    contract: 0x2dc059881eef90b12e4d770364f4b14af82c5b9c
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ECTE:
+    merchant-name: ECTE
+    currency-name: ECTE
+    contract: 0xe9fa21e671bcfb04e6868784b89c19d5aa2424ea
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  S4F:
+    merchant-name: S4F
+    currency-name: S4F
+    contract: 0xaec7d1069e3a914a3eb50f0bfb1796751f2ce48a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MNC:
+    merchant-name: MNC
+    currency-name: MNC
+    contract: 0x9f0f1be08591ab7d990faf910b38ed5d60e4d5bf
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  TCAT:
+    merchant-name: TCAT
+    currency-name: TCAT
+    contract: 0xaff84e86d72edb971341a6a66eb2da209446fa14
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HT:
+    merchant-name: HT
+    currency-name: HT
+    contract: 0x6f259637dcd74c767781e37bc6133cd6a68aa161
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  EDT:
+    merchant-name: EDT
+    currency-name: EDT
+    contract: 0x3766a0d0c661094c02d5f11c74f2aa92228b1548
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  POA:
+    merchant-name: POA
+    currency-name: POA
+    contract: 0x6758b7d441a9739b98552b373703d8d3d14f9e62
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MCO:
+    merchant-name: MCO
+    currency-name: MCO
+    contract: 0xb63b606ac810a52cca15e44bb630fd42d8d1d83d
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  ZIL:
+    merchant-name: ZIL
+    currency-name: ZIL
+    contract: 0x05f4a42e251f2d52b8ed15e9fedaacfcef1fad27
+    isERC20: false
+    unit: SZABO
+    min-wallet-balance: 0
+  MANA:
+    merchant-name: MANA
+    currency-name: MANA
+    contract: 0x0f5d2fb29fb7d3cfee444a200298f468908cc942
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  WABI:
+    merchant-name: WaBi
+    currency-name: WaBi
+    contract: 0x286bda1413a2df81731d4930ce2f862a35a609fe
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  NPXS:
+    merchant-name: NPXS
+    currency-name: NPXS
+    contract: 0xa15c7ebe1f07caf6bff097d8a589fb8ac49ae5b3
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  QKC:
+    merchant-name: QKC
+    currency-name: QKC
+    contract: 0xea26c4ac16d4a5a106820bc8aee85fd0b7b2b664
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HOT:
+    merchant-name: HOT
+    currency-name: HOT
+    contract: 0x6c6ee5e31d828de241282b9606c8e98ea48526e2
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ZRX:
+    merchant-name: ZRX
+    currency-name: ZRX
+    contract: 0xe41d2489571d322189246dafa5ebde1f4699f498
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BAT:
+    merchant-name: BAT
+    currency-name: BAT
+    contract: 0x0d8775f648430679a709e98d2b0cb6250d2887ef
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RDN:
+    merchant-name: RDN
+    currency-name: RDN
+    contract: 0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  HNI:
+    merchant-name: HNI
+    currency-name: HNI
+    contract: 0xd6cb175719365a2ea630f266c53ddfbe4e468e25
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ELT:
+    merchant-name: ELT
+    currency-name: ELT
+    contract: 0x45d0bdfdfbfd62e14b64b0ea67dc6eac75f95d4d
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  REN:
+    merchant-name: REN
+    currency-name: REN
+    contract: 0x408e41876cccdc0f92210600ef50372656052a38
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  MET:
+    merchant-name: MET
+    currency-name: MET
+    contract: 0xa3d58c4e56fedcae3a7c43a725aee9a71f0ece4e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  PLTC:
+    merchant-name: PLTC
+    currency-name: PLTC
+    contract: 0x0c6e8a8358cbde54f8e4cd7f07d5ac38aec8c5a4
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  VRBS:
+    merchant-name: VRBS
+    currency-name: VRBS
+    contract: 0x0e08b02d89ca66cf157c6658c02933ef0bc38cb6
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ZUBE:
+    merchant-name: ZUBE
+    currency-name: ZUBE
+    contract: 0xc5e017450346e4f9a2e477519d65affcfc90586a
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ELC:
+    merchant-name: ELC
+    currency-name: ELC
+    contract: 0x2ab2ffaa942851922a50fd640893f5c42b82474e
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+
 
 lisk-coins:
   lisk:
@@ -1646,8 +2527,8 @@ lisk-coins:
     node:
       host: http://51.254.246.147
       port: 8198
-      address: 2153431705828817770
-      secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
+      address: 9638796769033749229
+      secret: actress december enable fetch carry benefit nice also culture pilot subway slow
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
@@ -1656,7 +2537,7 @@ lisk-coins:
   rise:
     merchant-name: RiseVision
     currency-name: RISE
-    min-confirmations: 300
+    min-confirmations: 30
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
@@ -1666,7 +2547,7 @@ lisk-coins:
       address: 13036025167539692296R
       secret:
       tx-sort-prefix:
-      tx-query-limit: 1000
+      tx-query-limit: 10000
       tx-count-node-type: STRING
       port-get-account: 18111
       port-send-tx: 6990
@@ -1678,7 +2559,7 @@ lisk-coins:
     create-tx-endpoint: /devnet/transaction
     broadcast-tx-endpoint: /devnet/broadcast
     node:
-      host: http://ip-172-31-30-170.us-east-2.compute.internal
+      host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
       port: 4002
       address: DPYyyrKsaiWEgjmHxxTJBMi7zahaAsmxa8
       secret: local repair certain naive antique orient infant dry wealth city remove verb
@@ -1694,29 +2575,29 @@ waves-coins:
     currency-name: WAVES
     min-confirmations: 5
     node:
-      host: http://ip-172-31-30-170.us-east-2.compute.internal
+      host: http://ip-172-31-14-168.us-east-2.compute.internal
       port: 6869
-      api-key: ridethewaves!
-      main-account: 3N8DRLQKAc9arr6q5G9AagYUExXLhDJeGH3
-      process-delay: 1
-      fee-account: 3MxE9izMhKiD3ANksRpvKfzPkjQ6F7ER1R7
-      notify-email: mdovgodko@gmail.com
+      api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
+      main-account: 3PNu2t61vQFw9fDT8B9h881H4AtBejnN7mV
+      process-delay: 30
+      fee-account: 3PGYEbabkisSxzaZBzQHromYimsnpgQoy8k
+      notify-email: mikita.malykov@gmail.com
       token-ids:
-        GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
+        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
   lunes:
     merchant-name: LUNES
     currency-name: LUNES
     min-confirmations: 5
     node:
-      host: http://ip-172-31-30-170.us-east-2.compute.internal
+      host: http://ip-172-31-14-169.us-east-2.compute.internal
       port: 6869
       api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
-      main-account: 385Gg9Bp7JAwtDRpi5aHTwup6cbYoYwNP1v
-      process-delay: 1
-      fee-account: 37tDKNXJ2u9Jt5d3AYSeSYv35Ay7qa6xXxk
-      notify-email: mdovgodko@gmail.com
+      main-account: 381jSB8nr9J41hsNMtvgSv7TgaYuf5ZtKJ2
+      process-delay: 30
+      fee-account: 37ysJEA9BYh64tke3szshnvAEUk5sMHFKgV
+      notify-email: mikita.malykov@gmail.com
       token-ids:
-        GameX: 3wUfc4mWYtLTDgYwHiEYBJBbU75aqH8wjUnsQu8gsHin
+        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
 
 neo-coins:
   neo:
@@ -1724,7 +2605,7 @@ neo-coins:
     currency-name: NEO
     min-confirmations: 10
     endpoint: http://172.31.30.170:20332
-    address: AUToaKW3EiE818oHXEi8XaNq2qtb8VhTbx
+    address: AMF4Yqv1PMry2BDc9ELttPsMsohaw2D3fT
   kaze:
     merchant-name: KAZE
     currency-name: KAZE
@@ -1755,7 +2636,7 @@ monero-coins:
       port: 18082
       login: monero_rpc
       password: asdfretrgh2423534wrf
-      mode: main
+      mode: test
       log: monero_log
   dit:
     merchant-name: DIT
@@ -1767,7 +2648,7 @@ monero-coins:
       port: 18085
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: main
+      mode: test
       log: ditcoin_log
   sumo:
     merchant-name: SUMO
@@ -1775,16 +2656,16 @@ monero-coins:
     min-confirmations: 10
     decimals: 9
     node:
-      host: 172.31.6.102
+      host: 127.0.0.1
       port: 18087
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: main
+      mode: test
       log: sumokoin_log
 
 xem-coins:
   dim:
-    merchant-mame: DimCoin
+    merchant-name: DimCoin
     currency-name: DIM
     name-space-id: dim
     name: coin
@@ -1793,7 +2674,7 @@ xem-coins:
     levy-fee: 10
     supply: 9000000000
   npxs:
-    merchant-mame: NPXSXEM
+    merchant-name: NPXSXEM
     currency-name: NPXSXEM
     name-space-id: pundix
     name: npxs
@@ -1801,6 +2682,35 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 9000000000
+  DIM_EUR:
+    merchant-name: DIM.EUR
+    currency-name: DIM.EUR
+    name-space-id: dim
+    name: eur
+    decimals: 100
+    divisibility: 2
+    levy-fee: 10
+    supply: 81000000000
+  DIM_USD:
+    merchant-name: DIM.USD
+    currency-name: DIM.USD
+    name-space-id: dim
+    name: usd
+    decimals: 100
+    divisibility: 2
+    levy-fee: 10
+    supply: 81000000000
+  DIGIC:
+    merchant-name: DIGIT
+    currency-name: DIGIT
+    name-space-id: digit
+    name: coin
+    decimals: 1000000
+    divisibility: 6
+    levy-fee: 10
+    supply: 8999999999
+
+
 
 stellar-coins:
   slt:
@@ -1821,18 +2731,19 @@ stellar-coins:
 
 other-coins:
   qtum:
+    #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
     endpoint: http://127.0.0.1:38891
     user: wayfarer88
     password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-    min-confirmations: 20
+    min-confirmations: 2
     min-transfer-amount: 1
     main-address-for-transfer: QjMsJWZSQJgvAuq2Zmiq8KnrnrNJofD9d7
     wallet-password: jet2103
     backup-folder: /data/.qtum/qtum_backup/
   achain:
-    url: http://172.31.14.101:8078/rpc
+    url: http://127.0.0.1:8078/rpc
     rpc-user: admin:123456
-    main-address: ACT2Jqvi9mJUfbJNvtmxpK8jmaZZNBtK9Spj
+    main-address: ACT54nD2uNstDg3AYfGJJ9g8ZxiC4RPs7EAG
     account-name: newone
   adk:
     rpc-host: http://172.10.13.150:16322
@@ -1850,37 +2761,46 @@ other-coins:
     pk-path: /opt/aunit/pk.properies
   edc:
     token: 0190804484737779216097337067072357
-    main-account: exrates-in
-    hook: http://exrates.tech/merchants/edc/payment/received
+    main-account: ajet2103
+    #    hook: http://91.142.174.34:9000/merchants/edc/payment/received
+    #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
+    hook: http://193.93.79.99:9000/merchants/edc/payment/received
     history: https://receive.edinarcoin.com/history/
     blockchain-host-fast: http://localhost:8091
     blockchain-host-delayed: http://localhost:8092
     account-registrar: exrates-currency-exchange
     account-referrer: exrates-currency-exchange
+    #      account-main: output-exrates
     account-main: ajet2103
+    #      account-private-key: 5K2wx88VrN6M2vkg4DGLhehJZ98fT7JfUcT5ECZbd3L3puhbPWF
     account-private-key: 5J3BM7vgXuxzwJrLK6rhx9umzZQbezS17h7ApwAiPJ55Lz3LtYt
   iota:
     protocol: http
-    host: 163.172.77.155
+    host: ec2-18-191-212-3.us-east-2.compute.amazonaws.com
     port: 14265
     seed: DQWNLPIJHNFNFTHNWNVCXZPIJJASBERYTTBNCMNNDLKSMNXBGWOURBCSSSDMHGBALUIOERHSXMNCHFBKS
     message: CREATEADDRESS
     tag: EXRATES99999999999999999999
-    mode: test
+    mode: main
   decred:
-    rpc-user: JtI32IbdL9k6KFD95t0l/deQvZg=
-    rps-password: YxMwHd2rAKpyELiu9B4iRF2L6rs=
-    server-ws-url: ws://172.31.0.148:9109/ws
-    host: 172.10.13.82
+    rpc-user: Maks1
+    rps-password: HL4/aPb39FjIDDDULO+pTXa7WfyrndSy1
+    server-ws-url: ws://localhost:9109/ws
+    host: localhost
     port: 9111
-    cert-path: /opt/ca.crt
+    cert-path: D:/work/ca.crt
   nem:
     ncc-server-url: http://127.0.0.1:8989
+    #    nis-server-url-receive-test: http://104.128.226.60:7890
     nis-server-url-receive: http://37.235.49.90:7890
     nis-server-url-send: http://127.0.0.1:7890
+    #    transaction-version-test: 2
     transaction-version: 1
+    #    private-key-test: 765b9ef2829ee9c5810b3e59148a15779b059175dd920ab91f859b855afb0eee
+    #    public-key-test: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    #    address-test: TBXU7F3WQJQQRPWJ53UJUYI6IJL2A34YESG7FVA5
     private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
-    public-key: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
   ripple:
     rippled-rpc-url: https://api.altnet.rippletest.net:51234
@@ -1888,10 +2808,10 @@ other-coins:
     account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
     account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
   stellar:
-    horizon-url-1: https://horizon-testnet.stellar.org/
-    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
-    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
-    mode-1: TEST
+    #    horizon-url-1: https://horizon-testnet.stellar.org/
+    #    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
+    #    account-seed-1: SCXWUNGFPW7GMDZNGBC3J23OMBEO445AFRRXSBOG6J634RREFEQHM66N
+    #    mode-1: TEST
     horizon-url: https://horizon.stellar.org:443
     account-name: GBPIO53XH7LUFCLWVQEAPF6XRL5R3LJE77LQX77HRZIDFCR5LQMFVEER
     account-seed: SCEEBOQXMZHYBQSOEK3YZAKVZA6O5UCJRKYCZW2FK6VGN42KV76RZH3I
@@ -1924,9 +2844,9 @@ payment-system-merchants:
     url: https://wallet.advcash.com/sci/
     accountId: exratesnew@gmail.com
     payeeName: Exrates
-    paymentSuccess: http://dev.exrates.tech/merchants/advcash/payment/success
-    paymentFailure: http://dev.exrates.tech/merchants/advcash/payment/failure
-    paymentStatus: http://dev.exrates.tech/merchants/advcash/payment/status
+    paymentSuccess: http://127.0.0.1:8080/merchants/advcash/payment/success
+    paymentFailure: http://127.0.0.1:8080/merchants/advcash/payment/failure
+    paymentStatus: http://127.0.0.1:8080/merchants/advcash/payment/status
     USDAccount: U143527856819
     EURAccount: E971693091461
     payeePassword: s3Jb8$P69o
@@ -1934,24 +2854,27 @@ payment-system-merchants:
   interkassa:
     url: https://sci.interkassa.com/
     checkoutId: 57163a9b3d1eafe27b8b456a
-    statustUrl: http://dev.exrates.tech/merchants/interkassa/payment/status
-    successtUrl: http://dev.exrates.tech/merchants/interkassa/payment/success
+    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
+    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
     secretKey: 7pKC765ZsUGGHQIN
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
     private-key: nlLYBhaRNVrOY19fJsi1ft6CVs4uhED2PsJVsyF7
+    #public-key: i83629365623
+    #private-key: YC54FZIoeWmpBK8Te0ezQErBmMtYwWQbn2qaddUH
     apiVersion: 3
     action: pay
   nixmoney:
+    #url: https://www.dev.nixmoney.com/merchant.jsp
     url: https://www.nixmoney.com/merchant.jsp
     payeeAccountUSD: U61028316566147
     payeeAccountEUR: E77102839294634
     payeePassword: yT$8SNU99$Wr
     payeeName: Exrates
-    paymentUrl: http://dev.exrates.tech/merchants/nixmoney/payment/success
-    noPaymentUrl: http://dev.exrates.tech/merchants/nixmoney/payment/failure
-    statustUrl: http://dev.exrates.tech/merchants/nixmoney/payment/status
+    paymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/success
+    noPaymentUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/failure
+    statustUrl: http://193.93.79.99:9000/merchants/nixmoney/payment/status
   okpay:
     receiver: OK220857576
     receiver-email: merchant@exrates.me
@@ -1969,9 +2892,9 @@ payment-system-merchants:
     accountId: S404847
     accountPass: 66RwHvFG
     payeeName: Exrates
-    paymentSuccess: http://dev.exrates.tech/merchants/perfectmoney/payment/success
-    paymentFailure: http://dev.exrates.tech/merchants/perfectmoney/payment/failure
-    paymentStatus: http://dev.exrates.tech/merchants/perfectmoney/payment/status
+    paymentSuccess: http://193.93.79.99:9000/merchants/perfectmoney/payment/success
+    paymentFailure: http://193.93.79.99:9000/merchants/perfectmoney/payment/failure
+    paymentStatus: http://193.93.79.99:9000/merchants/perfectmoney/payment/status
     USDAccount: U16666480
     EURAccount: E15714655
     alternatePassphrase: 17T92E7OUsrEPkcqnnATClUnH
@@ -1982,21 +2905,30 @@ payment-system-merchants:
     details: Exrates input
     ext_details: Exrates input transaction
     pay-way: privat24
-    return-url: http://dev.exrates.tech/merchants/privat24/payment/success
-    server-url: http://dev.exrates.tech/merchants/privat24/payment/status
+    return-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/success
+    server-url: http://ajet.teremki.kiev.ua/merchants/privat24/payment/status
     password: w52CH6HGOiNv3u2Q0L66HEA5OTim574W
   yandexkassa:
     shopId: 51644
     scid: 49019
-    shopSuccessURL: https://dev.exrates.tech/merchants/yandex_kassa/payment/success
+    shopSuccessURL: http://127.0.0.1:9000/merchants/yandex_kassa/payment/success
     paymentType: PC
     key: 4aL0IrvNCKmX3RMU6m1AzVbTxpKHxb1lTW5cObkxdv3pCkuWOyoBlYS
     password: 777Sifama07
   yandexmoney:
     clientId: B9F1C9CADAB7FA6E12033551F482BD188A98081E60A733D6654C3B2EE8684CF7
     token: 410013968070382.E3A5AFAD10AD08A5F4667FA711E5CDFCF88D09AA47BA8A8D0E497D3CCF9C21032F3C0957C06EB4EE354A7447B64F13DF98280D7AA4EFF4CB0A0E9885DC1167178DB706D4BABF45468C59F7919813B8C115B1AA9E0E3D0AD0F10A97334C63B0D76E065A2C7D134720344B4D19339CA098E9A73FC47F9FD894E6F661C1F0E4FA8F
-    redirectURI: http://dev.exrates.tech/merchants/yandexmoney/token/access
-    apiRedirectURI: http://dev.exrates.tech/merchants/yandexmoney/token/access?mobile=true
+    redirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access
+    apiRedirectURI: http://127.0.0.1:8080/merchants/yandexmoney/token/access?mobile=true
     responseType: code
     mediaType: application/x-www-form-urlencoded
     companyWalletId: 410013968070382
+  qiwi:
+    clientId: AcOjrtX4almBGId8
+    clientSecret: KTx6Tco4oOFc8g0S8HqtP376XPSQSG
+    productionUrl: https://api.adgroup.finance
+    developmentUrl: http://18.185.170.86
+    accountAddress: 79048535193
+    accountPin: ZIz1WJqo
+    transactionStartedPosition: 0
+    transactionLimit: 100

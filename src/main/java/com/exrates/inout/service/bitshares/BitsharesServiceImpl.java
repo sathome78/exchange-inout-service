@@ -77,7 +77,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     protected volatile RemoteEndpoint.Basic endpoint;
     protected final String lastIrreversebleBlockParam = "last_irreversible_block_num";
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private long SCANING_INITIAL_DELAY;
 
     public BitsharesServiceImpl(String merchantName, String currencyName, String propertySource, long SCANING_INITIAL_DELAY, int decimal) {
         this.merchantName = merchantName;
@@ -90,7 +89,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             mainAddress = props.getProperty("mainAddress");
             mainAddressId = props.getProperty("mainAddressId");
             wsUrl = props.getProperty("wsUrl");
-            this.SCANING_INITIAL_DELAY = SCANING_INITIAL_DELAY;
+            scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
         } catch (IOException e){
             log.error(e);
         }
@@ -99,10 +98,9 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @PostConstruct
     public void setUp() {
         try {
+            privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
             currency = currencyService.findByName(currencyName);
             merchant = merchantService.findByName(merchantName);
-            privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
-            scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
             if(merchantSpecParam == null){
                 log.error("Can not find merchant spec param with merchantId = " + merchant.getId() + " and param name = " + lastIrreversebleBlockParam + ", using default value = 0");
@@ -351,7 +349,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             else if (isIrreversibleBlockInfo(msg)) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+//            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
