@@ -29,6 +29,7 @@
         <bitcoinj.version>0.14.3</bitcoinj.version>
         <log4j2.version>2.1</log4j2.version>
         <docker.image.prefix>input-output</docker.image.prefix>
+        <aws-java-sdk.version>1.11.433</aws-java-sdk.version>
     </properties>
 
     <dependencies>
@@ -388,6 +389,17 @@
             <artifactId>yandex-money-sdk-java</artifactId>
             <version>5.0.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>${aws-java-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-ssm</artifactId>
+            <version>${aws-java-sdk.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
