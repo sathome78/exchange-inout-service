@@ -18,7 +18,6 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 
     public TokenInterceptor(SSMGetter ssmGetter, SsmProperties ssmProperties) {
         this.AUTH_TOKEN_VALUE = ssmGetter.lookup(ssmProperties.getPath());
-        System.out.println("TODO delete this. AUTH_TOKEN_VALUE = " + AUTH_TOKEN_VALUE);
     }
 
     @Override
@@ -26,6 +25,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         String token = request.getHeader(AUTH_TOKEN_NAME);
         if(token == null || !token.equals(AUTH_TOKEN_VALUE)) {
             response.setStatus(403);
+            System.out.println("Token was " + token + ", expected " + AUTH_TOKEN_VALUE);
             response.getWriter().write("Incorrect token");
             return false;
         }
