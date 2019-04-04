@@ -18,6 +18,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 
     public TokenInterceptor(SSMGetter ssmGetter, SsmProperties ssmProperties) {
         this.AUTH_TOKEN_VALUE = ssmGetter.lookup(ssmProperties.getPath());
+        System.out.println("TODO delete this. AUTH_TOKEN_VALUE = " + AUTH_TOKEN_VALUE);
     }
 
     @Override
