@@ -43,7 +43,7 @@ server:
 #      connection-test-query: SELECT 1 FROM DUAL
 #      driver-class-name: com.mysql.jdbc.Driver
 ssm:
-  mode: dev
+  mode: test
   path: /exrates/auth-service/test/pass.token
 
 eureka:
