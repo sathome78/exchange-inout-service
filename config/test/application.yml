@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: test
   application:
     admin:
       enabled: true
@@ -43,7 +43,7 @@ server:
 #      connection-test-query: SELECT 1 FROM DUAL
 #      driver-class-name: com.mysql.jdbc.Driver
 ssm:
-  mode: test
+  mode: dev
   path: /exrates/auth-service/test/pass.token
 
 eureka:

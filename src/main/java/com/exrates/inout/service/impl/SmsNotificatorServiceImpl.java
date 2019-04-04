@@ -40,8 +40,9 @@ import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 @Component
 public class SmsNotificatorServiceImpl implements NotificatorService, Subscribable {
 
+    @Autowired
+    private NotificatorsService notificatorsService;
     private final UserService userService;
-    private final NotificatorsService notificatorsService;
     private final WalletService walletService;
     private final CurrencyService currencyService;
     private final SmsSubscriptionDao subscriptionDao;
@@ -52,9 +53,8 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
     private static final String SENDER = "Exrates";
 
     @Autowired
-    public SmsNotificatorServiceImpl(UserService userService, NotificatorsService notificatorsService, WalletService walletService, CurrencyService currencyService, SmsSubscriptionDao subscriptionDao, EpochtaApi smsService, CompanyWalletService companyWalletService) {
+    public SmsNotificatorServiceImpl(UserService userService, WalletService walletService, CurrencyService currencyService, SmsSubscriptionDao subscriptionDao, EpochtaApi smsService, CompanyWalletService companyWalletService) {
         this.userService = userService;
-        this.notificatorsService = notificatorsService;
         this.walletService = walletService;
         this.currencyService = currencyService;
         this.subscriptionDao = subscriptionDao;
