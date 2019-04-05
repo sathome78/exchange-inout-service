@@ -1,7 +1,7 @@
 package com.exrates.inout.domain.dto;
 
 import lombok.Getter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 public abstract class RequestWithRemarkAbstractDto {

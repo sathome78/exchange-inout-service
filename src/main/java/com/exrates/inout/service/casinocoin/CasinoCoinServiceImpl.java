@@ -173,7 +173,7 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
     /*must bee only 32 bit number = 0 - 4294967295*/
     @Override
     public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
-        if (!(org.apache.commons.lang.math.NumberUtils.isDigits(destinationTag)
+        if (!(org.apache.commons.lang3.math.NumberUtils.isDigits(destinationTag)
                 && Long.valueOf(destinationTag) <= 4294967295L)) {
             throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());
         }

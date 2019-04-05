@@ -3,7 +3,7 @@ package com.exrates.inout.util;
 
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.exceptions.BigDecimalParseException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

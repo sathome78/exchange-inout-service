@@ -20,7 +20,7 @@ import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

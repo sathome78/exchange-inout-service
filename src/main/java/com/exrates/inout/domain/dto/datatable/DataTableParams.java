@@ -2,7 +2,7 @@ package com.exrates.inout.domain.dto.datatable;
 
 import com.exrates.inout.exceptions.IllegalColumnNameException;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;

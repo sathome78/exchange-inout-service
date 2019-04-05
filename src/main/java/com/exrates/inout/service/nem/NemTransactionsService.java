@@ -6,7 +6,7 @@ import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
 import com.exrates.inout.util.BigDecimalProcessing;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.nem.core.crypto.PrivateKey;
 import org.nem.core.messages.PlainMessage;

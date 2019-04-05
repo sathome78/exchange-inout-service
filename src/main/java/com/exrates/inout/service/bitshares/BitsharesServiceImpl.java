@@ -14,7 +14,7 @@ import com.exrates.inout.util.WithdrawUtils;
 import com.google.common.hash.Hashing;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,7 +1,7 @@
 package com.exrates.inout.util;
 
 import com.exrates.inout.exceptions.MissingBodyParamException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Base64;
 import java.util.Map;

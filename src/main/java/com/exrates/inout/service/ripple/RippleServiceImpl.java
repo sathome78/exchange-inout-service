@@ -15,6 +15,7 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -25,7 +26,11 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 
 //exrates.model.Merchant;
@@ -203,7 +208,7 @@ public class RippleServiceImpl implements RippleService {
     /*must bee only 32 bit number = 0 - 4294967295*/
     @Override
     public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
-        if (!(org.apache.commons.lang.math.NumberUtils.isDigits(destinationTag)
+        if (!(NumberUtils.isDigits(destinationTag)
                 && Long.valueOf(destinationTag) <= 4294967295L)) {
             throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());
         }

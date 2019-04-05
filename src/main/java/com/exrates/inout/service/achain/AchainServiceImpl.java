@@ -11,7 +11,7 @@ import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;

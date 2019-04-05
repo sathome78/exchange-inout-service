@@ -19,7 +19,7 @@ import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
 import com.neemre.btcdcli4j.core.domain.*;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
