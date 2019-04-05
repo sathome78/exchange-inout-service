@@ -98,7 +98,9 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @PostConstruct
     public void setUp() {
         try {
+            System.out.println("Try to extract private key bitshares");
             privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
+            System.out.println("private key ok");
             currency = currencyService.findByName(currencyName);
             merchant = merchantService.findByName(merchantName);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
