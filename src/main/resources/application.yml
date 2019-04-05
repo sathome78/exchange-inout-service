@@ -1460,7 +1460,7 @@ bitcoin-coins:
       enabled: true
       rpc-protocol: http
       rpc-host: 172.10.13.117
-      rpc-port: 8090
+      rpc-port: 8089
       rpc-user: devprod
       rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
       http-auth-schema: Basic

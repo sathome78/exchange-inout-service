@@ -1296,7 +1296,7 @@ bitcoin-coins:
       enabled: true
       rpc-protocol: http
       rpc-host: 172.31.15.47
-      rpc-port: 8090
+      rpc-port: 8089
       rpc-user: null
       rpc-password: null
       http-auth-schema: Basic
