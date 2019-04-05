@@ -1,7 +1,6 @@
 package com.exrates.inout;
 
 import com.exrates.inout.configuration.RabbitConfig;
-import com.exrates.inout.controller.interceptor.TokenInterceptor;
 import com.exrates.inout.dao.UserDao;
 import com.exrates.inout.domain.enums.UserStatus;
 import com.exrates.inout.domain.main.Currency;
@@ -43,8 +42,6 @@ public abstract class InoutTestApplication {
     protected MerchantService merchantService;
     @Autowired
     protected CurrencyService currencyService;
-    @Autowired
-    protected TokenInterceptor tokenInterceptor;
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
