@@ -97,7 +97,7 @@ mail:
 
 
 endpoints:
-  stock: http://localhost:8079/
+  stock: http://qa1.exrates.tech
   inoutPrefix: /inout
 
 telegram:

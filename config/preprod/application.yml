@@ -97,7 +97,7 @@ mail:
 
 
 endpoints:
-  stock: http://localhost:8079/
+  stock: http://preprod.exapp/
   inoutPrefix: /inout
 
 telegram:
