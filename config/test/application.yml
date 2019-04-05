@@ -32,6 +32,10 @@ spring:
     host: 172.31.14.1
     port: 5672
 
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
 server:
   port: 8080
 #slave:

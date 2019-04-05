@@ -30,6 +30,13 @@ spring:
     password: angulardemoaccess
     host: 172.31.14.1
     port: 5672
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 #slave:
 #  datasource:
 #    hikari:
