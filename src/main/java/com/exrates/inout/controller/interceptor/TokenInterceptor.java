@@ -22,13 +22,14 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        String token = request.getHeader(AUTH_TOKEN_NAME);
-        if(token == null || !token.equals(AUTH_TOKEN_VALUE)) {
-            response.setStatus(403);
-            System.out.println("Token was " + token + ", expected " + AUTH_TOKEN_VALUE);
-            response.getWriter().write("Incorrect token");
-            return false;
-        }
-        else return true;
+//        String token = request.getHeader(AUTH_TOKEN_NAME);
+//        if(token == null || !token.equals(AUTH_TOKEN_VALUE)) {
+//            response.setStatus(403);
+//            System.out.println("Token was " + token + ", expected " + AUTH_TOKEN_VALUE);
+//            response.getWriter().write("Incorrect token");
+//            return false;
+//        }
+//        else
+        return true;
     }
 }
