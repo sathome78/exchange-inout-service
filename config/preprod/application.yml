@@ -97,7 +97,7 @@ mail:
 
 
 endpoints:
-  stock: http://preprod.exapp/
+  stock:
   inoutPrefix: /inout
 
 telegram:

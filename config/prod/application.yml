@@ -96,7 +96,7 @@ mail:
 
 
 endpoints:
-  stock: https://exrates.me/
+  stock:
   inoutPrefix: /inout
 
 telegram:

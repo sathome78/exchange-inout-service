@@ -98,7 +98,7 @@ mail:
 
 
 endpoints:
-  stock: http://localhost:8079/
+  stock: http://172.10.11.122:8080/
   inoutPrefix: /inout
 
 telegram:
