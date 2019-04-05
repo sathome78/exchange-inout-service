@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-
-docker build -t input-output-service .
-
-docker run -p 80:8080 input-output-service
+git pull
+mvn clean install
+docker build --build-arg ENVIRONMENT=test -t exrates/exrates-inout-service:test .
