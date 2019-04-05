@@ -210,7 +210,7 @@ public class EthTokenServiceImpl implements EthTokenService {
     @Override
     public void checkTransaction(BigInteger txBlock) {
         if (!currentBlockNumber.equals(txBlock)) {
-            log.debug(merchant.getName() + " Current block number: " + txBlock.toString());
+            //log.debug(merchant.getName() + " Current block number: " + txBlock.toString());
 
             List<RefillRequestFlatDto> providedTransactions = new ArrayList<RefillRequestFlatDto>();
             pendingTransactions.forEach(pendingTransaction ->

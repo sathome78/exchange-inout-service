@@ -352,7 +352,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 }
 
                 if (!currentBlockNumber.equals(ethBlock.getBlockNumber())) {
-                    log.info(merchantName + " Current block number: " + ethBlock.getBlockNumber());
+                    //log.info(merchantName + " Current block number: " + ethBlock.getBlockNumber());
 
                     try {
                         if (!String.valueOf(counter[0]).equals(web3j.ethGetBlockTransactionCountByHash(currentHash[0]).send().getTransactionCount().toString())) {
