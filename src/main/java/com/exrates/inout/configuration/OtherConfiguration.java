@@ -1,5 +1,6 @@
 package com.exrates.inout.configuration;
 
+import com.exrates.inout.configuration.ext.LogableErrorHandler;
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.QiwiProperty;
@@ -35,7 +36,7 @@ public class OtherConfiguration {
 
     @Bean
     @Primary
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplate(LogableErrorHandler errorHandler) {
         HttpClientBuilder b = HttpClientBuilder.create();
         HttpClient client = b.build();
         RestTemplate restTemplate = new RestTemplate();
@@ -45,6 +46,7 @@ public class OtherConfiguration {
         requestFactory.setHttpClient(client);
         requestFactory.setConnectionRequestTimeout(5*1000);
         requestFactory.setReadTimeout(25000);
+        restTemplate.setErrorHandler(errorHandler);
         restTemplate.setRequestFactory(requestFactory);
         return new RestTemplate();
     }
