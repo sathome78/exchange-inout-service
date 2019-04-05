@@ -23,7 +23,7 @@ public class LogginAspect {
 
     @AfterReturning(value = "pointCatRestController()", returning = "retVal")
     public void logAroundGetEmployee(Object retVal) {
-        System.out.println("Response: " + retVal);
+        System.out.println("\nResponse: " + retVal + "\n");
     }
 
 }
