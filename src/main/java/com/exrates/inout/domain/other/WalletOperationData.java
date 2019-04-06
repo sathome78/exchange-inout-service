@@ -6,12 +6,14 @@ import com.exrates.inout.domain.main.Commission;
 import com.exrates.inout.domain.main.Transaction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @EqualsAndHashCode
+@ToString
 public class WalletOperationData implements Serializable {
 
     private OperationType operationType;
