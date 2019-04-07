@@ -3,10 +3,16 @@ package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.UserDao;
 import com.exrates.inout.domain.dto.UpdateUserDto;
-import com.exrates.inout.domain.enums.*;
+import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
+import com.exrates.inout.domain.enums.NotificationTypeEnum;
+import com.exrates.inout.domain.enums.TokenType;
+import com.exrates.inout.domain.enums.UserCommentTopicEnum;
+import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationDirection;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
+import com.exrates.inout.domain.main.Comment;
 import com.exrates.inout.domain.main.Email;
+import com.exrates.inout.domain.main.NotificationEvent;
 import com.exrates.inout.domain.main.NotificationsUserSetting;
 import com.exrates.inout.domain.main.TemporalToken;
 import com.exrates.inout.domain.main.User;
@@ -27,7 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -244,9 +254,30 @@ public class UserServiceImpl implements UserService {
         return new Locale(lang);
     }
 
+    @Override
     public boolean addUserComment(UserCommentTopicEnum topic, String newComment, String email, boolean sendMessage) {
-        throw new NotImplementedException();
 
+        User user = findByEmail(email);
+        User creator;
+        Comment comment = new Comment();
+        comment.setMessageSent(sendMessage);
+        comment.setUser(user);
+        comment.setComment(newComment);
+        comment.setUserCommentTopic(topic);
+        try {
+            creator = findByEmail(email); //TODO for now we`re using user email as creator email
+            comment.setCreator(creator);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        boolean success = userDao.addUserComment(comment);
+
+        if (comment.isMessageSent()) {
+            notificationService.notifyUser(user.getId(), NotificationEvent.ADMIN, "admin.subjectCommentTitle",
+                    "admin.subjectCommentMessage", new Object[]{": " + newComment});
+        }
+
+        return success;
     }
 
     public UserRole getUserRoleFromSecurityContext() {
