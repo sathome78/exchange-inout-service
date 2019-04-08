@@ -1251,3 +1251,55 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2019-02-26 19:44:16
+
+-- auto-generated definition
+DROP TABLE IF EXISTS `USER_COMMENT_TOPIC`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `USER_COMMENT_TOPIC` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                                    `topic` varchar(50) NOT NULL,
+                                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `USER_COMMENT_TOPIC`
+--
+
+/*!40000 ALTER TABLE `USER_COMMENT_TOPIC` DISABLE KEYS */;
+INSERT INTO `USER_COMMENT_TOPIC` VALUES (1,'GENERAL'),(2,'REFILL_DECLINE'),(3,'REFILL_CURRENCY_WARNING'),(4,'WITHDRAW_DECLINE'),(5,'WITHDRAW_POSTED'),(6,'WITHDRAW_CURRENCY_WARNING'),(7,'REFILL_ACCEPTED'),(8,'TRANSFER_CURRENCY_WARNING'),(10,'REFILL_MERCHANT_WARNING'),(11,'WITHDRAW_MERCHANT_WARNING');
+/*!40000 ALTER TABLE `USER_COMMENT_TOPIC` ENABLE KEYS */;
+
+
+-- auto-generated definition
+create table USER_COMMENT
+(
+  id              int(40) auto_increment,
+  user_id         int(40)                              not null,
+  users_comment   varchar(400)                         not null,
+  user_creator_id int(40)                              not null,
+  creation_time   timestamp  default CURRENT_TIMESTAMP null,
+  edit_time       timestamp  default CURRENT_TIMESTAMP null,
+  message_sent    tinyint(1) default 0                 null,
+  topic_id        int                                  null,
+  constraint id_UNIQUE
+    unique (id),
+  constraint FK_user_comment_user_comment_topic
+    foreign key (topic_id) references USER_COMMENT_TOPIC (id),
+  constraint fk_COMMENT_USER
+    foreign key (user_id) references USER (id),
+  constraint fk_COMMENT_USER_CREATOR
+    foreign key (user_creator_id) references USER (id)
+)
+  charset = utf8;
+
+create index fk_COMMENT_USER_CREATOR_idx
+  on USER_COMMENT (user_creator_id);
+
+create index fk_COMMENT_USER_idx
+  on USER_COMMENT (user_id);
+
+alter table USER_COMMENT
+  add primary key (id);
+

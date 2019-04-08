@@ -5,11 +5,14 @@ import com.exrates.inout.domain.dto.WalletOperationMsDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class RabbitServiceImpl implements RabbitService {
 
     private static final String REFILL_ROUTE = "refill";
@@ -25,9 +28,10 @@ public class RabbitServiceImpl implements RabbitService {
     @Override
     public void sendAcceptRefillEvent(WalletOperationMsDto dto) {
         try {
+            log.info("sendAcceptRefillEvent(): " + dto);
             rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName, REFILL_ROUTE, toJson(dto));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(ExceptionUtils.getStackTrace(e));
         }
     }
 

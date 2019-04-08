@@ -1,4 +1,4 @@
-package resources;
+package generator;
 
 import com.exrates.inout.service.ethereum.ExConvert;
 import org.junit.Test;

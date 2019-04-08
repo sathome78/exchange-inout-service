@@ -1,15 +1,17 @@
 package com.exrates.inout.controller.interceptor;
 
 import com.exrates.inout.properties.SsmProperties;
+import lombok.Getter;
 import me.exrates.SSMGetter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//@Component
-//@Getter
+@Component
+@Getter
 public class TokenInterceptor extends HandlerInterceptorAdapter {
     private final String AUTH_TOKEN_VALUE;
     private final String AUTH_TOKEN_NAME = "AUTH_TOKEN";
