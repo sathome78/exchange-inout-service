@@ -1134,10 +1134,10 @@ public class CryptocurrencyConfig {
     }
 
     @Bean(name = "digicServiceImpl")
-    public XemMosaicService digicService() {
-        return createXemMosaicService(ccp.getXemCoins().getDIGIC());
+    public XemMosaicService digicService() { return createXemMosaicService(ccp.getXemCoins().getDIGIC()); }
 
-    }
+    @Bean(name = "darcServiceImpl")
+    public XemMosaicService darcService() { return createXemMosaicService(ccp.getXemCoins().getDARC()); }
 
     private XemMosaicService createXemMosaicService(XemProperty property) {
         return new XemMosaicServiceImpl(property);

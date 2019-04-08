@@ -2640,8 +2640,16 @@ xem-coins:
     divisibility: 6
     levy-fee: 10
     supply: 8999999999
+  DARC:
+    merchant-name: DARC
+    currency-name: DARC
+    name-space-id: darc_totalsupply
+    name: darc
+    decimals: 1000000
+    divisibility: 6
+    levy-fee: 0
+    supply: 1000000000
 
-    
 
 stellar-coins:
   slt:
