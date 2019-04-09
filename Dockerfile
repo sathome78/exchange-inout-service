@@ -8,6 +8,7 @@ COPY ./target/input-output-service.jar ${APP_PATH}/input-output-service.jar
 COPY ./target/config/${ENVIRONMENT}/application.yml ${APP_PATH}/application.yml
 ARG CONFIG_FILE_PATH="-Dspring.config.location="${ENVIRONMENT}"/application.yml"
 
+ADD . /opt/properties
 WORKDIR ${APP_PATH}
 
 EXPOSE 8080
