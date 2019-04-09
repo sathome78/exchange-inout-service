@@ -9,7 +9,7 @@ COPY ./target/config/${ENVIRONMENT}/application.yml ${APP_PATH}/application.yml
 ARG CONFIG_FILE_PATH="-Dspring.config.location="${ENVIRONMENT}"/application.yml"
 
 WORKDIR ${APP_PATH}
-VOLUME /opt/properties
+ADD opt/properties /opt/properties
 
 
 EXPOSE 8080

@@ -6,6 +6,9 @@ pipeline {
       agent any
       steps {
         sh 'mvn clean install'
+        sh 'mkdir opt'
+        sh 'mkdir properties'
+        sh 'cp -r /opt/properties/ ./opt/properties'
         sh 'docker build --build-arg ENVIRONMENT -t exrates/exrates-inout-service:$ENVIRONMENT .'
       }
     } 

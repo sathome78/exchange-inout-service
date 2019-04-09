@@ -2661,7 +2661,7 @@ stellar-coins:
     merchant-name: SLT
     currency-name: SLT
     asset-name: SLT
-    emmitent-account: GC7Q4726KHPFK3LNMCSYJZ3YT7A2BFMGKEQYRLLTA2TSODUK3HBK2MOB
+    emmitent-account: GCKA6K5PCQ6PNF5RQBF7PQDJWRHO6UOGFMRLK3DYHDOI244V47XKQ4GP
   tern:
     merchant-name: TERN
     currency-name: TERN
@@ -2672,7 +2672,7 @@ stellar-coins:
     currency-name: VNT
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
-
+#дошёл сюда
 other-coins:
   qtum:
     #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
