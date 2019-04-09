@@ -2459,7 +2459,7 @@ lisk-coins:
       host: http://54.37.87.6
       port: 8198
       address: 10751039947056279805
-      secret: #TODO look why null
+      secret:
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
@@ -2508,9 +2508,9 @@ waves-coins:
   waves:
     merchant-name: Waves
     currency-name: WAVES
-    min-confirmations: 5
+    min-confirmations: 20
     node:
-      host: http://ip-172-31-14-168.us-east-2.compute.internal
+      host: http://172.31.9.171
       port: 6869
       api-key: N95kjMmDx8CS4HsURmzZr3mN3bpf6zKjWQqG
       main-account: 3PNu2t61vQFw9fDT8B9h881H4AtBejnN7mV
@@ -2523,7 +2523,7 @@ waves-coins:
   lunes:
     merchant-name: LUNES
     currency-name: LUNES
-    min-confirmations: 5
+    min-confirmations: 20
     node:
       host: http://ip-172-31-14-169.us-east-2.compute.internal
       port: 6869
