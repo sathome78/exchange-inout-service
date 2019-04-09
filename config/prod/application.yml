@@ -2515,6 +2515,7 @@ waves-coins:
       notify-email: mikita.malykov@gmail.com
       token-ids:
         GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
+        RBC: AQWjZbz7mgW8AJwcdrdWF3ijTB4WFV1hWqH1866BkafD
   lunes:
     merchant-name: LUNES
     currency-name: LUNES
