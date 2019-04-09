@@ -7,7 +7,7 @@ spring:
     name: input-output-service
   datasource:
     hikari:
-      ssm-path: vLHjSkPJjB6JLVcA
+      ssm-path: vLHjSkPJjB6JLVcA #TODO make lookup password from ssm for prod profile
       username: root
       jdbc-url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
@@ -16,12 +16,12 @@ spring:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236
+    host: 172.10.10.236 #
     port: 6379
   flyway:
     locations: classpath:db/migration
     user: root
-    password: root
+    password: root #TODO prod
     url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
     baseline-on-migrate: true
     validate-on-migrate: false
@@ -96,15 +96,15 @@ mail:
 
 
 endpoints:
-  stock:
+  stock: #TODO prod
   inoutPrefix: /inout
 
 telegram:
   bot:
-    url: https://t.me/exrates_local_test_bot
-    key: 467357916:AAFNnf9iLW3cVSRA_EPwiuU74KYgjKo-VDc
-    username: exrates_local_test_bot
-    name: exrates_local_test
+    url: https://t.me/exrates_me_bot
+    key: 471353387:AAGWDWPIHKMDv6T4TDu7avsDN9H02qhwxzQ
+    username: exrates_me_bot
+    name: exrates
 
 epochta:
   URL: http://api.atompark.com/members/sms/xml.php
@@ -126,14 +126,14 @@ upload:
 ban:
   short:
     attempts:
-      num: 3
-      period: 60
-    time: 60
+      num: 5
+      period: 300
+    time: 1800
   long:
     attempts:
-      num: 6
-      period: 3000
-    time: 300
+      num: 10
+      period: 86400
+    time: 86400
 
 # jobs
 # 4320 = 72 hours * 60 minutes
@@ -2434,20 +2434,20 @@ lisk-coins:
   lisk:
     merchant-name: Lisk
     currency-name: LSK
-    min-confirmations: 30
+    min-confirmations: 300
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://testnet.lisk.io
-      port: 7000
-      address: 2153431705828817770L
-      secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
+      host: http://ip-172-31-14-168.us-east-2.compute.internal
+      port: 8000
+      address: 11069838797124010917L
+      secret:
       tx-sort-prefix:
       tx-query-limit: 1000
       tx-count-node-type: STRING
-      port-get-account: 7000
-      port-send-tx: 7000
+      port-get-account: 8000
+      port-send-tx: 8000
   btw:
     merchant-name: BitcoinWhite
     currency-name: BTW
@@ -2456,10 +2456,10 @@ lisk-coins:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://51.254.246.147
+      host: http://54.37.87.6
       port: 8198
-      address: 9638796769033749229
-      secret: actress december enable fetch carry benefit nice also culture pilot subway slow
+      address: 10751039947056279805
+      secret: #TODO look why null
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
@@ -2468,14 +2468,14 @@ lisk-coins:
   rise:
     merchant-name: RiseVision
     currency-name: RISE
-    min-confirmations: 30
+    min-confirmations: 100
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://ip-172-31-30-170.us-east-2.compute.internal
+      host: http://ip-172-31-12-45.us-east-2.compute.internal
       port: 5555
-      address: 13036025167539692296R
+      address: 5465983647188469549R
       secret:
       tx-sort-prefix:
       tx-query-limit: 10000
@@ -2485,20 +2485,24 @@ lisk-coins:
   ark:
     merchant-name: Ark
     currency-name: ARK
-    min-confirmations: 30
-    create-account-endpoint: /devnet/account
-    create-tx-endpoint: /devnet/transaction
-    broadcast-tx-endpoint: /devnet/broadcast
+    min-confirmations: 51
+    create-account-endpoint:
+    create-tx-endpoint:
+    broadcast-tx-endpoint:
+    arcNode:
+      arkCreateAccountEndpoint: /mainnet/account
+      arkCreateTxEndpoint: /mainnet/transaction
+      arkBroadcastTxEndpoint: /mainnet/broadcast
     node:
-      host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
-      port: 4002
-      address: DPYyyrKsaiWEgjmHxxTJBMi7zahaAsmxa8
-      secret: local repair certain naive antique orient infant dry wealth city remove verb
+      host: http://ip-172-31-11-244.us-east-2.compute.internal
+      port: 4001
+      address: AcC1JPU9zWPHfCCpRjNPyvhYpMJYxaCkKj
+      secret:
       tx-sort-prefix:
       tx-query-limit: 50
       tx-count-node-type: STRING
-      port-get-account: 4000
-      port-send-tx: 4000
+      port-get-account: 4012
+      port-send-tx: 4012
 
 waves-coins:
   waves:
