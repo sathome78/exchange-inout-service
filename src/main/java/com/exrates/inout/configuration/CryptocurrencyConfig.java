@@ -5,7 +5,16 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
 import com.exrates.inout.domain.neo.NeoAsset;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
-import com.exrates.inout.properties.models.*;
+import com.exrates.inout.properties.models.BitcoinProperty;
+import com.exrates.inout.properties.models.EthereumProperty;
+import com.exrates.inout.properties.models.EthereumTokenProperty;
+import com.exrates.inout.properties.models.LiskProperty;
+import com.exrates.inout.properties.models.MoneroProperty;
+import com.exrates.inout.properties.models.NeoProperty;
+import com.exrates.inout.properties.models.QtumProperty;
+import com.exrates.inout.properties.models.StellarProperty;
+import com.exrates.inout.properties.models.WavesProperty;
+import com.exrates.inout.properties.models.XemProperty;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -19,8 +28,14 @@ import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
 import com.exrates.inout.service.impl.CurrencyServiceImpl;
 import com.exrates.inout.service.impl.MerchantServiceImpl;
+import com.exrates.inout.service.lisk.ArkRpcClient;
+import com.exrates.inout.service.lisk.ArkSpecialMethodServiceImpl;
 import com.exrates.inout.service.lisk.LiskRestClient;
 import com.exrates.inout.service.lisk.LiskRestClientImpl;
+import com.exrates.inout.service.lisk.LiskService;
+import com.exrates.inout.service.lisk.LiskServiceImpl;
+import com.exrates.inout.service.lisk.LiskSpecialMethodService;
+import com.exrates.inout.service.lisk.LiskSpecialMethodServiceImpl;
 import com.exrates.inout.service.monero.MoneroService;
 import com.exrates.inout.service.monero.MoneroServiceImpl;
 import com.exrates.inout.service.monero.hcxp.HCXPServiceImpl;
@@ -980,34 +995,30 @@ public class CryptocurrencyConfig {
         return new EthTokenServiceImpl(property);
     }
 
-    // LISK-like cryptos
-//    @Bean(name = "liskServiceImpl") впадло, позже сделать todo
-//    public LiskService liskService() {
-//        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "btwServiceImpl")
-//    public LiskService btwService() {
-//        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "riseServiceImpl")
-//    public LiskService riseService() {
-//        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "arkServiceImpl")
-//    public LiskService arkService() {
-//        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk()));
-//    }
-//
-//    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
-//        return LiskServiceImpl.builder()
-//                .property(property)
-//                .liskRestClient(liskRestClient())
-//                .liskSpecialMethodService(liskSpecialMethodService)
-//                .build();
-//    }
+//     LISK-like cryptos
+    @Bean(name = "liskServiceImpl")
+    public LiskService liskService() {
+        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "btwServiceImpl")
+    public LiskService btwService() {
+        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "riseServiceImpl")
+    public LiskService riseService() {
+        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "arkServiceImpl")
+    public LiskService arkService(ArkRpcClient arkRpcClient) {
+        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk().getArcNode(), arkRpcClient));
+    }
+
+    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
+        return new LiskServiceImpl(liskRestClient(), liskSpecialMethodService, property.getMerchantName(), property.getCurrencyName(), property);
+    }
 
     @Bean
     @Scope("prototype")

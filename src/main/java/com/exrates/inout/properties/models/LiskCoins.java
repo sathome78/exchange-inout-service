@@ -10,5 +10,5 @@ public class LiskCoins {
     private LiskProperty lisk;
     private LiskProperty btw;
     private LiskProperty rise;
-    private LiskProperty ark;
+    private ArkProperty ark;
 }

@@ -7,7 +7,11 @@ import com.exrates.inout.domain.enums.UserStatus;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.User;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.NotificationService;
+import com.exrates.inout.service.WalletService;
 import com.exrates.inout.service.impl.RabbitService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -26,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.Collections;
 
 @SpringBootTest(classes = {InoutApplication.class, InoutTestConfig.class})
 @RunWith(SpringRunner.class)
@@ -82,11 +86,12 @@ public abstract class InoutTestApplication {
 
     @Before
     public void clean(){
-        jdbcTemplate.update("DELETE FROM WITHDRAW_REQUEST WHERE 1", new HashMap<>());
-        jdbcTemplate.update("DELETE FROM REFILL_REQUEST_CONFIRMATION WHERE 1", new HashMap<>());
-        jdbcTemplate.update("DELETE FROM REFILL_REQUEST WHERE 1", new HashMap<>());
-        jdbcTemplate.update("DELETE FROM REFILL_REQUEST_ADDRESS WHERE 1", new HashMap<>());
-        jdbcTemplate.update("DELETE FROM USER WHERE 1", new HashMap<>());
+        jdbcTemplate.update("DELETE FROM WITHDRAW_REQUEST WHERE 1", Collections.emptyMap());
+        jdbcTemplate.update("DELETE FROM REFILL_REQUEST_CONFIRMATION WHERE 1", Collections.emptyMap());
+        jdbcTemplate.update("DELETE FROM REFILL_REQUEST WHERE 1", Collections.emptyMap());
+        jdbcTemplate.update("DELETE FROM REFILL_REQUEST_ADDRESS WHERE 1", Collections.emptyMap());
+        jdbcTemplate.update("DELETE FROM USER_COMMENT WHERE 1", Collections.emptyMap());
+        jdbcTemplate.update("DELETE FROM USER WHERE 1", Collections.emptyMap());
 
         aunitMerchant = merchantService.findByName("AUNIT");
         aunitCurrency = currencyService.findByName("AUNIT");

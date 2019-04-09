@@ -1,6 +1,11 @@
 package com.exrates.inout.service.lisk;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.RefillRequestSetConfirmationsNumberDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskTransaction;
 import com.exrates.inout.domain.main.Currency;
@@ -8,6 +13,8 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.LiskCreateAddressException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.models.LiskNode;
+import com.exrates.inout.properties.models.LiskProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -16,7 +23,6 @@ import com.exrates.inout.util.ParamMapUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import com.mysql.jdbc.StringUtils;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +30,18 @@ import org.springframework.context.MessageSource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//exrates.model.Merchant;
-//exrates.model.dto.*;
-//exrates.model.dto.merchants.lisk.LiskAccount;
-//exrates.model.dto.merchants.lisk.LiskTransaction;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.LiskCreateAddressException;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.ParamMapUtils;
-//exrates.service.util.WithdrawUtils;
 
 @Log4j2(topic = "lisk_log")
 public class LiskServiceImpl implements LiskService {
@@ -70,7 +67,7 @@ public class LiskServiceImpl implements LiskService {
 
     private final String merchantName;
     private final String currencyName;
-    private String propertySource;
+    private LiskNode liskNodeProperties;
     private String mainAddress;
     private String mainSecret;
     private Integer minConfirmations;
@@ -78,27 +75,20 @@ public class LiskServiceImpl implements LiskService {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 
-    public LiskServiceImpl(LiskRestClient liskRestClient, LiskSpecialMethodService liskSpecialMethodService, String merchantName, String currencyName, String propertySource) {
+    public LiskServiceImpl(LiskRestClient liskRestClient, LiskSpecialMethodService liskSpecialMethodService, String merchantName, String currencyName, LiskProperty liskProperty) {
         this.liskRestClient = liskRestClient;
         this.liskSpecialMethodService = liskSpecialMethodService;
         this.merchantName = merchantName;
         this.currencyName = currencyName;
-        this.propertySource = propertySource;
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.mainAddress = props.getProperty("lisk.main.address");
-            this.mainSecret = props.getProperty("lisk.main.secret");
-            this.minConfirmations = Integer.parseInt(props.getProperty("lisk.min.confirmations"));
-
-        } catch (IOException e) {
-            //log.error(e);
-        }
+        this.liskNodeProperties = liskProperty.getNode();
+        this.mainAddress = liskProperty.getNode().getAddress();
+        this.mainSecret = liskProperty.getNode().getSecret();
+        this.minConfirmations = liskProperty.getMinConfirmations();
     }
 
     @PostConstruct
     private void init() {
-        liskRestClient.initClient(propertySource);
+        liskRestClient.initClient(liskNodeProperties);
         scheduler.scheduleAtFixedRate(this::processTransactionsForKnownAddresses, 3L, 30L, TimeUnit.MINUTES);
     }
 

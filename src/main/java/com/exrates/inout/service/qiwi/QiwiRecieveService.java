@@ -2,6 +2,7 @@ package com.exrates.inout.service.qiwi;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Service
 @Log4j2(topic = "Qiwi")
+@Profile("!dev")
 public class QiwiRecieveService {
 
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
