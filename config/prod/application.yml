@@ -2539,15 +2539,15 @@ neo-coins:
   neo:
     merchant-name: NEO
     currency-name: NEO
-    min-confirmations: 10
-    endpoint: http://172.31.30.170:20332
-    address: AMF4Yqv1PMry2BDc9ELttPsMsohaw2D3fT
+    min-confirmations: 30
+    endpoint: http://172.31.24.184:10332
+    address: AMPdomKtoMYwZuM6HGTJ3xsHUx1wZoFiXw
   kaze:
     merchant-name: KAZE
     currency-name: KAZE
     min-confirmations: 20
-    endpoint: http://172.10.13.14:22886
-    address: KLw65ptKp4GLk39sZsoKUkYzzaGZnDFtRa
+    endpoint: http://172.31.5.145:22886
+    address: KUZvEUUMdsKzNtDr8SCELFJvmNktqisfc3
 
 qtum-coins:
   spc:
@@ -2565,38 +2565,38 @@ monero-coins:
   xmr:
     merchant-name: Monero
     currency-name: XMR
-    min-confirmations: 10
+    min-confirmations: 20
     decimals: 12
     node:
-      host: 127.0.0.1
+      host: ip-172-31-14-168.us-east-2.compute.internal
       port: 18082
       login: monero_rpc
       password: asdfretrgh2423534wrf
-      mode: test
+      mode: main
       log: monero_log
   dit:
     merchant-name: DIT
     currency-name: DIT
-    min-confirmations: 10
+    min-confirmations: 20
     decimals: 8
     node:
-      host: ec2-18-221-189-33.us-east-2.compute.amazonaws.com
+      host: 172.31.14.116
       port: 18085
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: test
+      mode: main
       log: ditcoin_log
   sumo:
     merchant-name: SUMO
     currency-name: SUMO
-    min-confirmations: 10
+    min-confirmations: 20
     decimals: 9
     node:
-      host: 127.0.0.1
+      host: 172.31.6.102
       port: 18087
       login: monero_rpc
       password: jhkasdfu75tghs
-      mode: test
+      mode: main
       log: sumokoin_log
 
 xem-coins:
