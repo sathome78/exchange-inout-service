@@ -81,9 +81,9 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
         try {
             if (msg.contains("last_irreversible_block_num")) setIrreversableBlock(msg);
             else if (msg.contains("previous")) processIrreversebleBlock(msg);
-            else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
+            //else //log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            //log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
