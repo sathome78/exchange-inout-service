@@ -15,6 +15,7 @@ import com.exrates.inout.domain.main.Wallet;
 import com.exrates.inout.service.RefillService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -29,8 +30,7 @@ import java.util.Optional;
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static io.netty.handler.codec.http.HttpHeaderValues.APPLICATION_JSON;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,41 +49,60 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test
     public void prepareCreditsOperation() throws Exception {
+        PrepareCreditsOperationTestDto dto = prepareDto();
+        assertResultIsValid(dto, execute(dto));
+    }
 
-        double amountForRefill = 1;
-        OperationType operationType = INPUT;
+    private PrepareCreditsOperationTestDto prepareDto() {
+        PrepareCreditsOperationTestDto dto = new PrepareCreditsOperationTestDto();
+        dto.setAmountForRefill(1);
+        dto.setOperationType(INPUT);
+        dto.setUserRole(UserRole.USER);
+        dto.setTestUser(new User(100500, "email"));
+        dto.setWallet(prepareWallet(dto.getTestUser()));
+        return dto;
+    }
+
+    private Wallet prepareWallet(User testUser) {
+        Wallet wallet = new Wallet(aunitCurrency.getId(), new User(testUser.getId()), null);
+        Mockito.when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(wallet);
+        return wallet;
+    }
+
+    private void assertResultIsValid(PrepareCreditsOperationTestDto dto, CreditsOperation creditsOperation) {
+        assertNotNull(creditsOperation);
+
+        assertEquals(dto.getTestUser().getId(), creditsOperation.getUser().getId());
+        assertEquals(dto.getUserRole(), creditsOperation.getUser().getRole());
+        assertEquals(dto.getWallet(), creditsOperation.getWallet());
+        assertEquals(aunitCurrency, creditsOperation.getCurrency());
+        assertEquals(aunitMerchant, creditsOperation.getMerchant());
+        assertEquals(new BigDecimal(dto.getAmountForRefill()), creditsOperation.getAmount());
+        assertEquals(dto.getOperationType(), creditsOperation.getOperationType());
+        assertEquals(TransactionSourceType.REFILL, creditsOperation.getTransactionSourceType());
+    }
+
+    private CreditsOperation execute(PrepareCreditsOperationTestDto dto) throws Exception {
+        Payment payment = preparePayment(dto.getAmountForRefill(), dto.getOperationType());
+
+
+        String result = mvc.perform(post("/api/prepareCreditsOperation")
+                .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
+                .header("user_id", dto.getTestUser().getId())
+                .header("user_role", dto.getUserRole())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payment))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(result, CreditsOperation.class);
+    }
+
+    private Payment preparePayment(double amountForRefill, OperationType operationType) {
         Payment payment = new Payment(operationType);
         payment.setCurrency(aunitCurrency.getId());
         payment.setMerchant(aunitMerchant.getId());
         payment.setSum(amountForRefill);
-
-        User testUser = new User(100500, "email");
-        UserRole userRole = UserRole.USER;
-
-        Wallet wallet = new Wallet(aunitCurrency.getId(), new User(testUser.getId()), null);
-        Mockito.when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(wallet);
-
-        String result = mvc.perform(post("/api/prepareCreditsOperation")
-                .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
-                .header("user_id", testUser.getId())
-                .header("user_role", userRole)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payment))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        Optional<CreditsOperation> creditsOperationOptional = objectMapper.readValue(result, new TypeReference<Optional<CreditsOperation>>(){{}});
-        assert creditsOperationOptional.isPresent();
-
-        CreditsOperation creditsOperation = creditsOperationOptional.get();
-        assertEquals((int)testUser.getId(), creditsOperation.getUser().getId());
-        assertEquals(userRole, creditsOperation.getUser().getRole());
-        assertEquals(wallet, creditsOperation.getWallet());
-        assertEquals(aunitCurrency, creditsOperation.getCurrency());
-        assertEquals(aunitMerchant, creditsOperation.getMerchant());
-        assertEquals(new BigDecimal(amountForRefill), creditsOperation.getAmount());
-        assertEquals(operationType, creditsOperation.getOperationType());
-        assertEquals(TransactionSourceType.REFILL, creditsOperation.getTransactionSourceType());
+        return payment;
     }
-
 
     @Test //TODO test case of false response
     public void checkInputRequestsLimit() throws Exception {
@@ -186,4 +205,14 @@ public class InputApiControllerTest extends InoutTestApplication {
         assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
 
     }
+
+    @Data
+    private class PrepareCreditsOperationTestDto {
+        private double amountForRefill;
+        private OperationType operationType;
+        private UserRole userRole;
+        private User testUser;
+        private Wallet wallet;
+    }
+
 }

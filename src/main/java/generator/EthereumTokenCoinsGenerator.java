@@ -1,6 +1,7 @@
 package generator;
 
 import com.exrates.inout.service.ethereum.ExConvert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 public class EthereumTokenCoinsGenerator {
 
     @Test
+    @Ignore
     public void test() throws IOException {
         File input = new File("src/test/resources/input.txt");
         File output = new File("src/test/resources/output.txt");

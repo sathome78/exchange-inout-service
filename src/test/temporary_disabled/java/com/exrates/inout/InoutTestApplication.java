@@ -16,6 +16,7 @@ import com.exrates.inout.service.impl.RabbitService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public abstract class InoutTestApplication {
     protected MerchantService merchantService;
     @Autowired
     protected CurrencyService currencyService;
-    @Autowired
+    @MockBean
     protected TokenInterceptor tokenInterceptor;
     @Autowired
     protected ObjectMapper objectMapper;
@@ -78,6 +79,7 @@ public abstract class InoutTestApplication {
 
     @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverClassName;
+
     @Value("${spring.datasource.hikari.jdbc-url}")
     private String jdbcUrl;
 
@@ -86,6 +88,7 @@ public abstract class InoutTestApplication {
 
     @Before
     public void clean(){
+        System.out.println("clean");
         jdbcTemplate.update("DELETE FROM WITHDRAW_REQUEST WHERE 1", Collections.emptyMap());
         jdbcTemplate.update("DELETE FROM REFILL_REQUEST_CONFIRMATION WHERE 1", Collections.emptyMap());
         jdbcTemplate.update("DELETE FROM REFILL_REQUEST WHERE 1", Collections.emptyMap());
@@ -96,6 +99,8 @@ public abstract class InoutTestApplication {
         aunitMerchant = merchantService.findByName("AUNIT");
         aunitCurrency = currencyService.findByName("AUNIT");
 
+        Mockito.when(tokenInterceptor.getAUTH_TOKEN_NAME()).thenReturn("mock");
+        Mockito.when(tokenInterceptor.getAUTH_TOKEN_VALUE()).thenReturn("mock");
     }
 
     protected User registerNewUser(){
