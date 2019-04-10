@@ -49,11 +49,12 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test
     public void prepareCreditsOperation() throws Exception {
-        PrepareCreditsOperationTestDto dto = prepareDto();
-        assertResultIsValid(dto, execute(dto));
+        PrepareCreditsOperationTestDto dto = preparePCODto();
+        CreditsOperation result = execute(dto);
+        assertResultIsValid(dto, result);
     }
 
-    private PrepareCreditsOperationTestDto prepareDto() {
+    private PrepareCreditsOperationTestDto preparePCODto() {
         PrepareCreditsOperationTestDto dto = new PrepareCreditsOperationTestDto();
         dto.setAmountForRefill(1);
         dto.setOperationType(INPUT);
@@ -104,20 +105,20 @@ public class InputApiControllerTest extends InoutTestApplication {
         return payment;
     }
 
-    @Test //TODO test case of false response
+    @Test
     public void checkInputRequestsLimit() throws Exception {
         User testUser = new User(100500, "email");
-        UserRole userRole = UserRole.USER;
-
-        String result = mvc.perform(get("/api/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
-                .header("user_id", testUser.getId())
-                .header("user_role", userRole)
-        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
+        String result = execute(testUser);
         assert Boolean.valueOf(result);
+    }
 
+    private String execute(User testUser) throws Exception {
+        return mvc.perform(get("/api/checkInputRequestsLimit" + "?currency_id=" + aunitCurrency.getId())
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
+                    .header("user_id", testUser.getId())
+                    .header("user_role", UserRole.USER)
+            ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
@@ -161,49 +162,63 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     @Test
     public void createRefillRequest() throws Exception {
-        User testUser = registerNewUser();
-        Integer walletId = 1;
-        int commissionId = 15;
-        String merchantDescription = "Aunit Coin";
-        String serviceBeanName = "aunitServiceImpl";
-        boolean generateNewAddress = true;
-        String locale = "en";
+        CreateRefillRequestTestDto dto = prepareCRRDto();
+        String response = executeCRR(dto);
+        validateResult(dto, response);
 
-        RefillRequestCreateDto request = new RefillRequestCreateDto();
-        request.setUserId(testUser.getId());
-        request.setUserEmail(testUser.getEmail());
-        request.setUserWalletId(walletId);
-        request.setCurrencyId(aunitCurrency.getId());
-        request.setMerchantId(aunitMerchant.getId());
-        request.setCurrencyName(aunitCurrency.getName());
-        request.setCommission(BigDecimal.ZERO);
-        request.setCommissionId(commissionId);
-        request.setMerchantDescription(merchantDescription);
-        request.setServiceBeanName(serviceBeanName);
-        request.setStatus(RefillStatusEnum.CREATED_USER);
-        request.setGenerateNewAddress(generateNewAddress);
-        request.setLocale(new Locale(locale));
+    }
 
-        String response = mvc.perform(post("/api/createRefillRequest")
-                .content(objectMapper.writeValueAsString(request))
-                .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
-                .header("user_id", testUser.getId())
-                .header("user_role", testUser.getRole())
-                .header("Content-Type", APPLICATION_JSON)
-        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
+    private void validateResult(CreateRefillRequestTestDto dto, String response) {
         String address = new JSONObject(response).getJSONObject("params").getString("address");
         assert address.length() > 0;
 
-        Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), testUser.getId());
+        Optional<RefillRequestAddressDto> refillRequestFlatDtoOptional = refillService.getByAddressAndMerchantIdAndCurrencyIdAndUserId(address, aunitMerchant.getId(), aunitCurrency.getId(), dto.getTestUser().getId());
         assertTrue(refillRequestFlatDtoOptional.isPresent());
 
         RefillRequestAddressDto refillRequestFlatDto = refillRequestFlatDtoOptional.get();
         assertEquals(address, refillRequestFlatDto.getAddress());
-        assertEquals(testUser.getId(), (int)refillRequestFlatDto.getUserId());
+        assertEquals(dto.getTestUser().getId(), (int)refillRequestFlatDto.getUserId());
         assertEquals(aunitCurrency.getId(), (long) refillRequestFlatDto.getCurrencyId());
         assertEquals(aunitMerchant.getId(), (long) refillRequestFlatDto.getMerchantId());
+    }
 
+    private String executeCRR(CreateRefillRequestTestDto dto) throws Exception {
+        return mvc.perform(post("/api/createRefillRequest")
+                    .content(objectMapper.writeValueAsString(dto.getRefillRequestCreateDto()))
+                    .header(tokenInterceptor.getAUTH_TOKEN_NAME(), tokenInterceptor.getAUTH_TOKEN_VALUE())
+                    .header("user_id", dto.getTestUser().getId())
+                    .header("user_role", dto.getTestUser().getRole())
+                    .header("Content-Type", APPLICATION_JSON)
+            ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+    }
+
+    private CreateRefillRequestTestDto prepareCRRDto() {
+        CreateRefillRequestTestDto dto = new CreateRefillRequestTestDto();
+        dto.setTestUser(registerNewUser());
+        dto.setWalletId(1);
+        dto.setCommissionId(15);
+        dto.setMerchantDescription("Aunit Coin");
+        dto.setServiceBeanName("aunitServiceImpl");
+        dto.setGenerateNewAddress(true);
+        dto.setLocale("en");
+
+        RefillRequestCreateDto request = new RefillRequestCreateDto();
+        request.setUserId(dto.getTestUser().getId());
+        request.setUserEmail(dto.getTestUser().getEmail());
+        request.setUserWalletId(dto.getWalletId());
+        request.setCurrencyId(aunitCurrency.getId());
+        request.setMerchantId(aunitMerchant.getId());
+        request.setCurrencyName(aunitCurrency.getName());
+        request.setCommission(BigDecimal.ZERO);
+        request.setCommissionId(dto.getCommissionId());
+        request.setMerchantDescription(dto.getMerchantDescription());
+        request.setServiceBeanName(dto.getServiceBeanName());
+        request.setStatus(RefillStatusEnum.CREATED_USER);
+        request.setGenerateNewAddress(dto.isGenerateNewAddress());
+        request.setLocale(new Locale(dto.getLocale()));
+
+        dto.setRefillRequestCreateDto(request);
+        return dto;
     }
 
     @Data
@@ -215,4 +230,16 @@ public class InputApiControllerTest extends InoutTestApplication {
         private Wallet wallet;
     }
 
+    @Data
+    private class CreateRefillRequestTestDto {
+        private User testUser;
+        private Integer walletId;
+        private int commissionId;
+        private String merchantDescription;
+        private String serviceBeanName;
+        private boolean generateNewAddress;
+        private String locale;
+        private RefillRequestCreateDto refillRequestCreateDto;
+
+    }
 }
