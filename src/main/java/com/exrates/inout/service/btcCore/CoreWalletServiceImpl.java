@@ -1,6 +1,15 @@
 package com.exrates.inout.service.btcCore;
 
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.BtcBlockDto;
+import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDto;
+import com.exrates.inout.domain.dto.BtcPreparedTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
+import com.exrates.inout.domain.dto.BtcTxOutputDto;
+import com.exrates.inout.domain.dto.BtcTxPaymentDto;
+import com.exrates.inout.domain.dto.BtcWalletInfoDto;
+import com.exrates.inout.domain.dto.TxReceivedByAddressFlatDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.main.PagingData;
 import com.exrates.inout.exceptions.BitcoinCoreException;
@@ -17,10 +26,18 @@ import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
-import com.neemre.btcdcli4j.core.domain.*;
+import com.neemre.btcdcli4j.core.domain.Address;
+import com.neemre.btcdcli4j.core.domain.Block;
+import com.neemre.btcdcli4j.core.domain.FundingResult;
+import com.neemre.btcdcli4j.core.domain.OutputOverview;
+import com.neemre.btcdcli4j.core.domain.RawTransactionOverview;
+import com.neemre.btcdcli4j.core.domain.SignatureResult;
+import com.neemre.btcdcli4j.core.domain.SinceBlock;
+import com.neemre.btcdcli4j.core.domain.SmartFee;
+import com.neemre.btcdcli4j.core.domain.Transaction;
+import com.neemre.btcdcli4j.core.domain.WalletInfo;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -38,8 +55,20 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -118,11 +147,11 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         try {
             keyPoolSize = btcdClient.getInfo().getKeypoolSize();
         } catch (BitcoindException | CommunicationException e) {
-            //log.error(e);
+            log.error(e);
             try {
                 keyPoolSize = btcdClient.getWalletInfo().getKeypoolSize();
             } catch (BitcoindException | CommunicationException e2) {
-                //log.error(e2);
+                log.error(e2);
                 throw new BitcoinCoreException("Cannot generate new address!");
             }
         }
