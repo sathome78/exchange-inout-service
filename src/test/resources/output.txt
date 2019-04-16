@@ -48,3 +48,73 @@
        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());    
     }
 
+  TTT:
+    merchant-name: TTT
+    currency-name: TTT
+    contract: 0x317572aabc73d59fc55f923750d1c51680fd28b4
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  REB:
+    merchant-name: REB
+    currency-name: REB
+    contract: 0x61383ac89988b498df5363050ff07fe5c52ecdda
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  RVC:
+    merchant-name: RVC
+    currency-name: RVC
+    contract: 0xa3ebd756729904ba2a39289751d96d9b2eac793b
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BIO:
+    merchant-name: BIO
+    currency-name: BIO
+    contract: 0xf18432ef894ef4b2a5726f933718f5a8cf9ff831
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  VRA:
+    merchant-name: VRA
+    currency-name: VRA
+    contract: 0xdf1d6405df92d981a2fb3ce68f6a03bac6c0e41f
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  KAT:
+    merchant-name: KAT
+    currency-name: KAT
+    contract: 0xa858bc1b71a895ee83b92f149616f9b3f6afa0fb
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  ETA:
+    merchant-name: ETA
+    currency-name: ETA
+    contract: 0x9195e00402abe385f2d00a32af40b271f2e87925
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  BRC:
+    merchant-name: BRC
+    currency-name: BRC
+    contract: 0x21ab6c9fac80c59d401b37cb43f81ea9dde7fe34
+    isERC20: false
+    unit: AIWEI
+    min-wallet-balance: 0
+  GNY:
+    merchant-name: GNY
+    currency-name: GNY
+    contract: 0x247551f2eb3362e222c742e9c788b8957d9bc87e
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  NOVA:
+    merchant-name: NOVA
+    currency-name: NOVA
+    contract: 0x72fbc0fc1446f5accc1b083f0852a7ef70a8ec9f
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0

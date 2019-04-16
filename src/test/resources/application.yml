@@ -2553,7 +2553,6 @@ ethereum-token-coins:
     unit: ETHER
     min-wallet-balance: 0
 
-
 lisk-coins:
   lisk:
     merchant-name: Lisk

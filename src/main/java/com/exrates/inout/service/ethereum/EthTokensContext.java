@@ -1,6 +1,7 @@
 package com.exrates.inout.service.ethereum;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,17 @@ public class EthTokensContext {
     @PostConstruct
     private void init() {
         merchantServiceMap.forEach((k, v) -> {
-            merchantMapByCurrencies.put(v.currencyId(), v);
-            v.getContractAddress().forEach((address) -> {
-                contractAddressByCurrencies.put(address, v.currencyId());
-            });
+            fillContractAddressMap(v);
         });
+    }
+
+    private void fillContractAddressMap(EthTokenService v) {
+        try {
+            merchantMapByCurrencies.put(v.currencyId(), v);
+            v.getContractAddress().forEach((address) -> contractAddressByCurrencies.put(address, v.currencyId()));
+        } catch (Exception e){
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
     }
 
     public EthTokenService getByCurrencyId(int currencyId) {

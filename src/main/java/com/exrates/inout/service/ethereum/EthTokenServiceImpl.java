@@ -15,6 +15,7 @@ import com.exrates.inout.service.ethereum.ethTokensWrappers.ethTokenERC20;
 import com.exrates.inout.service.ethereum.ethTokensWrappers.ethTokenNotERC20;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -126,22 +127,26 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     @PostConstruct
     public void init() {
-        merchant = merchantService.findByName(merchantName);
-        currency = currencyService.findByName(currencyName);
+        try {
+            merchant = merchantService.findByName(merchantName);
+            currency = currencyService.findByName(currencyName);
 
-        currentBlockNumber = new BigInteger("0");
-        pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
-        this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
+            currentBlockNumber = new BigInteger("0");
+            pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
+            this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
 
-        scheduler.scheduleWithFixedDelay(new Runnable() {
-            public void run() {
-                try {
-                    transferFundsToMainAccount();
-                } catch (Exception e) {
-                    ////log.error(e);
+            scheduler.scheduleWithFixedDelay(new Runnable() {
+                public void run() {
+                    try {
+                        transferFundsToMainAccount();
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
                 }
-            }
-        }, 3, 10, TimeUnit.MINUTES);
+            }, 3, 10, TimeUnit.MINUTES);
+        } catch (Exception e){
+            log.error(merchantName + " not started, cause: \n" + ExceptionUtils.getStackTrace(e));
+        }
     }
 
     @Override

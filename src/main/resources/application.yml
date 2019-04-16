@@ -35,7 +35,7 @@ spring:
 
 logging:
   level:
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    ROOT: DEBUG
 
 server:
   port: 8090
