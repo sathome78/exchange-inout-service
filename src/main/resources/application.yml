@@ -155,81 +155,6 @@ withdraw:
   walletNotifyEmails: wayfarer2006@ukr.net
 
 bitcoin-coins:
-  btc:
-    merchant-name: Bitcoin
-    currency-name: BTC
-    min-confirmations: 4
-    block-target-for-fee: 15
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\btc_backup\\
-    #    wallet-password:
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 18332
-      #      rpc-user:
-      #      rpc-password:
-      http-auth-schema: Basic
-      notification-alert-port: 5158
-      notification-block-port: 5159
-      notification-wallet-port: 5160
-  #      notification-instant-send-port:
-  ltc:
-    merchant-name: Litecoin
-    currency-name: LTC
-    min-confirmations: 12
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\ltc_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 19332
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5258
-      notification-block-port: 5259
-      notification-wallet-port: 5260
-  #      notification-instant-send-port:
-  dash:
-    merchant-name: Dash
-    currency-name: DASH
-    min-confirmations: 12
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\dash_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: true
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 19998
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5358
-      notification-block-port: 5359
-      notification-wallet-port: 5360
-      notification-instant-send-port: 5361
   atb:
     merchant-name: ATB
     currency-name: ATB
@@ -239,721 +164,733 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\atb_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.atbcoin/atb_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 163.172.53.240
+      rpc-host: 172.31.10.114
       rpc-port: 28332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 5458
+      notification-alert-port: 11
       notification-block-port: 5459
       notification-wallet-port: 5460
-  doge:
-    merchant-name: Dogecoin
-    currency-name: DOGE
-    min-confirmations: 12
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\doge_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 44555
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5658
-      notification-block-port: 5659
-      notification-wallet-port: 5660
-  #      notification-instant-send-port:
-  btg:
-    merchant-name: BTG
-    currency-name: BTG
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\btg_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 18444
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5758
-      notification-block-port: 5759
-      notification-wallet-port: 5760
-  #      notification-instant-send-port:
-  zec:
-    merchant-name: Zcash
-    currency-name: ZEC
-    min-confirmations: 12
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\zec_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 163.172.53.240
-      rpc-port: 28234
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 25458
-      notification-block-port: 25459
-      notification-wallet-port: 25460
-  #      notification-instant-send-port:
-  b2x:
-    merchant-name: B2X
-    currency-name: B2X
-    min-confirmations: 4
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\b2x_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 18552
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 5858
-      notification-block-port: 5859
-      notification-wallet-port: 5860
-  #      notification-instant-send-port:
-  bcd:
-    merchant-name: BCD
-    currency-name: BCD
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.bcd/bcd_backup/
-    wallet-password: MxQR8wTcEuuNJdFzxGKz9MDcjawg_Y5N66uIHELS5JY=
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
-      rpc-port: 7116
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 35458
-      notification-block-port: 35459
-      notification-wallet-port: 35460
-  #      notification-instant-send-port:
-  plc:
-    merchant-name: PLC
-    currency-name: PLC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\plc_backup\\
-    wallet-password: a9qW7VEsE89XGGR4KV4ynsKuQ8hF5AZj
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ec2-18-216-0-44.us-east-2.compute.amazonaws.com
-      rpc-port: 11982
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 6658
-      notification-block-port: 6659
-      notification-wallet-port: 6660
-  #      notification-instant-send-port:
-  bcx:
-    merchant-name: BCX
-    currency-name: BCX
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\b2x_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 19004
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 6158
-      notification-block-port: 6159
-      notification-wallet-port: 6160
-  #      notification-instant-send-port:
-  bci:
-    merchant-name: BCI
-    currency-name: BCI
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.bitcoin_i/bci_backup/
-    wallet-password: UhcX4rh9uHjGhmPNnH4s5QMBZdYgp34G
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
-      rpc-port: 38980
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 8330
-      notification-block-port: 8332
-      notification-wallet-port: 8333
-  #      notification-instant-send-port:
-  occ:
-    merchant-name: OCC
-    currency-name: OCC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\occ_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 38562
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 6258
-      notification-block-port: 6259
-      notification-wallet-port: 6260
-  #      notification-instant-send-port:
-  btcz:
-    merchant-name: BTCZ
-    currency-name: BTCZ
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\btcz_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 192.168.0.109
-      rpc-port: 1979
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 6358
-      notification-block-port: 6359
-      notification-wallet-port: 6360
-  #      notification-instant-send-port:
   lcc:
     merchant-name: LCC
     currency-name: LCC
-    min-confirmations: 20
+    min-confirmations: 2000
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\lcc_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 11980
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 6458
-      notification-block-port: 6459
-      notification-wallet-port: 6460
-  #      notification-instant-send-port:
-  bca:
-    merchant-name: BitcoinAtom
-    currency-name: BCA
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.litecoincash/lcc_backup/
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 17443
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-host: 172.31.1.10
+      rpc-port: 11980
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 6558
-      notification-block-port: 6559
-      notification-wallet-port: 6560
-  #      notification-instant-send-port:
-  btcp:
-    merchant-name: BTCP
-    currency-name: BTCP
+      notification-alert-port: 11
+      notification-block-port: 6469
+      notification-wallet-port: 6470
+  fgc:
+    merchant-name: FGC
+    currency-name: FGC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.fantasygold/fgc_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 57814
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 25559
+      notification-wallet-port: 25560
+  owc:
+    merchant-name: OWC
+    currency-name: OWC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.12.22
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 12101
+      notification-wallet-port: 12102
+  bcd:
+    merchant-name: BCD
+    currency-name: BCD
     min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.bitcoindiamond/bcd_backup/
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 17932
+      rpc-host: 172.31.8.5
+      rpc-port: 7116
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 6658
-      notification-block-port: 6659
-      notification-wallet-port: 6660
-  #      notification-instant-send-port:
-  szc:
-    merchant-name: SZC
-    currency-name: SZC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 14525
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 6958
-      notification-block-port: 6959
-      notification-wallet-port: 6960
-  #      notification-instant-send-port:
-  btx:
-    merchant-name: BTX
-    currency-name: BTX
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.bitcore/btx_backup/
-    #    wallet-password:
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
-      rpc-port: 11981
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 6768
-      notification-block-port: 6769
-      notification-wallet-port: 6770
-  #      notification-instant-send-port:
-  xbd:
-    merchant-name: BitDollar
-    currency-name: XBD
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\xbd_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 18227
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 7058
-      notification-block-port: 7059
-      notification-wallet-port: 7060
-  #      notification-instant-send-port:
-  beet:
-    merchant-name: BEET
-    currency-name: BEET
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
-      rpc-port: 47620
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 7868
-      notification-block-port: 7869
-      notification-wallet-port: 7870
-  #      notification-instant-send-port:
-  nyc:
-    merchant-name: NYC
-    currency-name: NYC
-    min-confirmations: 20
+      notification-alert-port: 11
+      notification-block-port: 35459
+      notification-wallet-port: 35460
+  btcz:
+    merchant-name: BTCZ
+    currency-name: BTCZ
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.bitcoinz/btcz_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 18823
+      rpc-host: 172.31.10.247
+      rpc-port: 11979
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6369
+      notification-wallet-port: 6370
+  grs:
+    merchant-name: GRS
+    currency-name: GRS
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.9.230
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  bci:
+    merchant-name: BCI
+    currency-name: BCI
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_i/bci_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.14.111
+      rpc-port: 8331
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 7768
-      notification-block-port: 7769
-      notification-wallet-port: 7770
-  #      notification-instant-send-port:
+      notification-alert-port: 11
+      notification-block-port: 6859
+      notification-wallet-port: 6860
   ptc:
     merchant-name: Perfectcoin
     currency-name: PTC
-    min-confirmations: 20
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.perfectcoin_new/ptc_backup/
-    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 16001
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 8891
+      notification-alert-port: 11
       notification-block-port: 8892
       notification-wallet-port: 8893
-  #      notification-instant-send-port:
-  fgc:
-    merchant-name: FGC
-    currency-name: FGC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\fgc_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: true
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 57814
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 25558
-      notification-block-port: 25559
-      notification-wallet-port: 25560
-      notification-instant-send-port: 25561
-  bcl:
-    merchant-name: BitcoinClean
-    currency-name: BCL
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.bitcoin_clean/bcl_backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
-      rpc-port: 19105
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 7568
-      notification-block-port: 7569
-      notification-wallet-port: 7570
-  #      notification-instant-send-port:
-  breco:
-    merchant-name: BRECO
-    currency-name: BRECO
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: true
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 6522
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 8981
-      notification-block-port: 8982
-      notification-wallet-port: 8983
-  #      notification-instant-send-port:
-  fto:
-    merchant-name: FTO
-    currency-name: FTO
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: ${user.home}\\fto_backup\\
-    #    wallet-password:
-    node:
-      zmq-enabled: false
-      support-instant-send: true
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 9008
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
-      http-auth-schema: Basic
-      notification-alert-port: 25658
-      notification-block-port: 25659
-      notification-wallet-port: 25660
-      notification-instant-send-port: 25661
   sabr:
     merchant-name: SABR
     currency-name: SABR
-    min-confirmations: 20
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.sabr/sabr_backup/
-    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19001
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 9991
+      notification-alert-port: 11
       notification-block-port: 9992
       notification-wallet-port: 9993
-  #      notification-instant-send-port:
-  eql:
-    merchant-name: EQL
-    currency-name: EQL
-    min-confirmations: 20
+  cmk:
+    merchant-name: CMK
+    currency-name: CMK
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.equalizer/eql_backup/
-    wallet-password: pass123
+    backup-folder: /data/.cmk/cmk_backup/
     node:
       zmq-enabled: true
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 10306
+      rpc-host: 172.31.11.23
+      rpc-port: 1777
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10200
+      notification-wallet-port: 10201
+  xfc:
+    merchant-name: XFC
+    currency-name: XFC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.13.54
+      rpc-port: 7268
+      rpc-user: multichainrpc
+      rpc-password: 9rNG3fPuDhTVniaAHopu98aHebcwacWCZ7EJJHUTzaoi
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 12001
+      notification-wallet-port: 12002
+  rime:
+    merchant-name: RIME
+    currency-name: RIME
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: true
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.7.89
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  wolf:
+    merchant-name: WOLF
+    currency-name: WOLF
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.10.13.195
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  bch:
+    merchant-name: BCH
+    currency-name: BCH
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.6.204
+      rpc-port: 38889
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  breco:
+    merchant-name: BRECO
+    currency-name: BRECO
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoinreco/breco_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
+      rpc-port: 6522
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 25758
-      notification-block-port: 25759
-      notification-wallet-port: 25760
-  #      notification-instant-send-port:
+      notification-alert-port: 11
+      notification-block-port: 8982
+      notification-wallet-port: 8983
+  lpc:
+    merchant-name: LPC
+    currency-name: LPC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.lpc/backups/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.12.117
+      rpc-port: 11004
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 11001
+      notification-wallet-port: 11002
   lbtc:
     merchant-name: LBTC
     currency-name: LBTC
-    min-confirmations: 20
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.lbtc/lbtc_backup/
-    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
+      rpc-host: ip-172-31-3-255.us-east-2.compute.internal
       rpc-port: 9332
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 7168
+      notification-alert-port: 11
       notification-block-port: 7169
       notification-wallet-port: 7170
-  #      notification-instant-send-port:
-  brb:
-    merchant-name: BRB
-    currency-name: BRB
-    min-confirmations: 20
+  ddx:
+    merchant-name: DDX
+    currency-name: DDX
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.ddx/ddx_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.1.150
+      rpc-port: 10703
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10701
+      notification-wallet-port: 10702
+  b2x:
+    merchant-name: B2X
+    currency-name: B2X
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.b2x/b2x_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 38552
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5869
+      notification-wallet-port: 5870
+  bsv:
+    merchant-name: BSV
+    currency-name: BSV
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.37.34
+      rpc-port: 11500
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 11501
+      notification-wallet-port: 11502
+  toa:
+    merchant-name: TOA
+    currency-name: TOA
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: ${user.home}\\bca_backup\\
-    wallet-password: pass123
+    backup-folder: /data/.toa/backup/
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 6522
-      rpc-user: wayfarer88
-      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      rpc-host: 172.31.11.233
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 25858
+      notification-alert-port: 11
+      notification-block-port: 10501
+      notification-wallet-port: 10502
+  q:
+    merchant-name: Q
+    currency-name: Q
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.4.136
+      rpc-port: 8333
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10001
+      notification-wallet-port: 10002
+  ltc:
+    merchant-name: Litecoin
+    currency-name: LTC
+    min-confirmations: 12
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.litecoin/ltc_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.8.143
+      rpc-port: 9332
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5269
+      notification-wallet-port: 5270
+  brb:
+    merchant-name: BRB
+    currency-name: BRB
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.breakbits/brb_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-10-199.us-east-2.compute.internal
+      rpc-port: 39186
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
       notification-block-port: 25859
       notification-wallet-port: 25860
-  #      notification-instant-send-port:
-  riz:
-    merchant-name: RIZ
-    currency-name: RIZ
+  eql:
+    merchant-name: EQL
+    currency-name: EQL
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.equalizer/eql_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-115.us-east-2.compute.internal
+      rpc-port: 10306
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 25759
+      notification-wallet-port: 25760
+  btc:
+    merchant-name: Bitcoin
+    currency-name: BTC
+    min-confirmations: 4
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin/btc_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 8332
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5169
+      notification-wallet-port: 5170
+  cbc:
+    merchant-name: CBC
+    currency-name: CBC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.cbc/cbc_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.9.105
+      rpc-port: 11103
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 11101
+      notification-wallet-port: 11102
+  mbc:
+    merchant-name: MBC
+    currency-name: MBC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.mbc/mbc_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.7.254
+      rpc-port: 10603
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10601
+      notification-wallet-port: 10602
+  doge:
+    merchant-name: Dogecoin
+    currency-name: DOGE
     min-confirmations: 20
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.rizwave/riz_backup/
-    #    wallet-password:
+    backup-folder: /data/.dogecoin/doge_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 127.0.0.1
-      rpc-port: 27198
+      rpc-host: 172.31.8.235
+      rpc-port: 22555
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 25958
-      notification-block-port: 25959
-      notification-wallet-port: 25960
-      notification-instant-send-port: 25961
+      notification-alert-port: 11
+      notification-block-port: 5669
+      notification-wallet-port: 5670
+  bca:
+    merchant-name: BitcoinAtom
+    currency-name: BCA
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_atom/bca_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.11.169
+      rpc-port: 7332
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6569
+      notification-wallet-port: 6570
+  ctx:
+    merchant-name: CTX
+    currency-name: CTX
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.11.120
+      rpc-port: 8332
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 11801
+      notification-wallet-port: 11802
   sic:
     merchant-name: SIC
     currency-name: SIC
@@ -964,438 +901,89 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/.sic/bca_backup/
-    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
       rpc-host: 172.31.0.50
       rpc-port: 16715
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 10100
+      notification-alert-port: 11
       notification-block-port: 10101
       notification-wallet-port: 10102
-  #      notification-instant-send-port:
-  clx:
-    merchant-name: CLX
-    currency-name: CLX
-    min-confirmations: 20
+  xbd:
+    merchant-name: BitDollar
+    currency-name: XBD
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.cryptolux/clx_backup/
-    wallet-password: pass123
+    backup-folder: /data/.bitdollar/xbd_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 172.10.13.196
-      rpc-port: 25572
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 10001
-      notification-block-port: 10002
-      notification-wallet-port: 10003
-  #      notification-instant-send-port:
-  qrk:
-    merchant-name: QRK
-    currency-name: QRK
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.quark/clx_backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 172.31.3.116
-      rpc-port: 10007
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
-      http-auth-schema: Basic
-      notification-alert-port: 10004
-      notification-block-port: 10005
-      notification-wallet-port: 10006
-  #      notification-instant-send-port:
-  cmk:
-    merchant-name: CMK
-    currency-name: CMK
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.cmk/cmk_backup/
-    #    wallet-password:
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 172.31.11.23
-      rpc-port: 1777
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10202
-      notification-block-port: 10200
-      notification-wallet-port: 10201
-  #      notification-instant-send-port:
-  mbc:
-    merchant-name: MBC
-    currency-name: MBC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.mbc/mbc_backup/
-    #    wallet-password:
-    node:
-      zmq-enabled: true
-      support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.10.13.203
-      rpc-port: 10603
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 8227
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 10600
-      notification-block-port: 10601
-      notification-wallet-port: 10602
-  #      notification-instant-send-port:
-  ddx:
-    merchant-name: DDX
-    currency-name: DDX
-    min-confirmations: 4
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.ddx/ddx_backup/
-    #    wallet-password:
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.10.13.217
-      rpc-port: 10703
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10700
-      notification-block-port: 10701
-      notification-wallet-port: 10702
-  #      notification-instant-send-port:
-  lpc:
-    merchant-name: LPC
-    currency-name: LPC
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.lpc/backups/
-    #    wallet-password:
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: 172.10.13.78
-      rpc-port: 11004
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 11000
-      notification-block-port: 11001
-      notification-wallet-port: 11002
-  #      notification-instant-send-port:
-  xfc:
-    merchant-name: XFC
-    currency-name: XFC
-    min-confirmations: 20
+      notification-alert-port: 11
+      notification-block-port: 7069
+      notification-wallet-port: 7070
+  divi:
+    merchant-name: DIVI
+    currency-name: DIVI
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/backup/
-    #    wallet-password:
     node:
       zmq-enabled: false
       support-instant-send: false
-      enabled: false
+      enabled: true
       rpc-protocol: http
-      rpc-host: 172.10.13.163
-      rpc-port: 7268
-      #      rpc-user: multichainrpc
-      #      rpc-password:
+      rpc-host: 172.31.4.60
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
       http-auth-schema: Basic
-      notification-alert-port: 12000
+      notification-alert-port: 11
       notification-block-port: 12001
       notification-wallet-port: 12002
-  #      notification-instant-send-port:
-  toa:
-    merchant-name: TOA
-    currency-name: TOA
-    min-confirmations: 20
+  abbc:
+    merchant-name: ABBC
+    currency-name: ABBC
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/.toa/backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: false
-      support-instant-send: false
-      enabled: false
-      rpc-protocol: http
-      rpc-host: localhost
-      rpc-port: 8090
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10500
-      notification-block-port: 10501
-      notification-wallet-port: 105002
-  #      notification-instant-send-port:
-  cryp:
-    merchant-name: CRYP
-    currency-name: CRYP
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/.crypticcoin/backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: ec2-18-224-58-1.us-east-2.compute.amazonaws.com
-      rpc-port: 8090
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 10901
-      notification-wallet-port: 10902
-  CBC:
-      merchant-name: CBC
-      currency-name: CBC
-      min-confirmations: 20
-      block-target-for-fee: 20
-      raw-tx-enabled: false
-      support-subtract-fee: false
-      support-wallet-notifications: true
-      support-reference-line: false
-      backup-folder: /data/.cbc/cbc_backup/
-      wallet-password: pass123
-      node:
-        zmq-enabled: false
-        support-instant-send: false
-        enabled: true
-        rpc-protocol: http
-        rpc-host: 172.31.9.105
-        rpc-port: 11103
-        rpc-user: devprod
-        rpc-password: pass123
-        http-auth-schema: Basic
-        notification-alert-port: 11100
-        notification-block-port: 11101
-        notification-wallet-port: 11102
-  ABBC:
-      merchant-name: ABBC
-      currency-name: ABBC
-      min-confirmations: 20
-      block-target-for-fee: 20
-      raw-tx-enabled: false
-      support-subtract-fee: false
-      support-wallet-notifications: true
-      support-reference-line: false
-      backup-folder: /data/.abbc/abbc_backup/
-      wallet-password: pass123
-      node:
-        zmq-enabled: false
-        support-instant-send: false
-        enabled: true
-        rpc-protocol: http
-        rpc-host: 172.31.6.243
-        rpc-port: 11203
-        rpc-user: devprod
-        rpc-password: pass123
-        http-auth-schema: Basic
-        notification-alert-port: 11200
-        notification-block-port: 11201
-        notification-wallet-port: 11202
-  Q:
-      merchant-name: Q
-      currency-name: Q
-      min-confirmations: 20
-      block-target-for-fee: 20
-      raw-tx-enabled: false
-      support-subtract-fee: true
-      support-wallet-notifications: true
-      support-reference-line: false
-      backup-folder: /data/backup/
-      wallet-password: pass123
-      node:
-        zmq-enabled: false
-        support-instant-send: false
-        enabled: true
-        rpc-protocol: http
-        rpc-host: 172.31.4.136
-        rpc-port: 8333
-        rpc-user: devprod
-        rpc-password: pass123
-        http-auth-schema: Basic
-        notification-alert-port: 10900
-        notification-block-port: 10001
-        notification-wallet-port: 10002
-  DIME:
-    merchant-name: DIME
-    currency-name: DIME
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
+    backup-folder: /data/.abbc/abbc_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.4.13
-      rpc-port: 8090
+      rpc-host: 172.31.6.243
+      rpc-port: 11203
       rpc-user: devprod
-      rpc-password: pass123
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 11301
-      notification-wallet-port: 11302
-  BSV:
-    merchant-name: BSV
-    currency-name: BSV
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup/
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.31.37.34
-      rpc-port: 11500
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 11501
-      notification-wallet-port: 11502
-  BCH:
-    merchant-name: BCH
-    currency-name: BCH
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.31.6.204
-      rpc-port: 38889
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 5580
-      notification-wallet-port: 5581
-  CTX:
-    merchant-name: CTX
-    currency-name: CTX
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.31.11.120
-      rpc-port: 8332
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 11801
-      notification-wallet-port: 11802
-  RIME:
-    merchant-name: RIME
-    currency-name: RIME
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: true
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.31.7.89
-      rpc-port: 8090
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 5580
-      notification-wallet-port: 5581
-  EXO:
+      notification-alert-port: 11
+      notification-block-port: 11201
+      notification-wallet-port: 11202
+  exo:
     merchant-name: EXO
     currency-name: EXO
     min-confirmations: 20
@@ -1404,8 +992,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
+    backup-folder: /data/backup/
     node:
       zmq-enabled: true
       support-instant-send: false
@@ -1413,88 +1000,449 @@ bitcoin-coins:
       rpc-protocol: http
       rpc-host: 172.31.43.239
       rpc-port: 8332
-      rpc-user: devprod
-      rpc-password: pass123
+      rpc-user: null
+      rpc-password: null
       http-auth-schema: Basic
-      notification-alert-port: 10900
+      notification-alert-port: 11
       notification-block-port: 11901
       notification-wallet-port: 11902
-  GRS:
-    merchant-name: GRS
-    currency-name: GRS
-    min-confirmations: 20
+  bcl:
+    merchant-name: BitcoinClean
+    currency-name: BCL
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_clean/bcl_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 19105
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 7569
+      notification-wallet-port: 7570
+  qrk:
+    merchant-name: QRK
+    currency-name: QRK
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.quark/clx_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.3.116
+      rpc-port: 10007
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10005
+      notification-wallet-port: 10006
+  beet:
+    merchant-name: BEET
+    currency-name: BEET
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.beetlecoin/beet_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
+      rpc-port: 47620
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 7869
+      notification-wallet-port: 7870
+  dime:
+    merchant-name: DIME
+    currency-name: DIME
+    min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
     backup-folder: /data/backup
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.31.9.230
-      rpc-port: 8090
-      rpc-user: devprod
-      rpc-password: pass123
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 5580
-      notification-wallet-port: 5581
-  KOD:
-    merchant-name: KOD
-    currency-name: KOD
-    min-confirmations: 1
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
-    node:
-      zmq-enabled: true
-      support-instant-send: false
-      enabled: true
-      rpc-protocol: http
-      rpc-host: 172.10.13.117
-      rpc-port: 8089
-      rpc-user: devprod
-      rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
-      http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 5580
-      notification-wallet-port: 5581
-  DIVI:
-    merchant-name: DIVI
-    currency-name: DIVI
-    min-confirmations: 20
-    block-target-for-fee: 20
-    raw-tx-enabled: false
-    support-subtract-fee: false
-    support-wallet-notifications: true
-    support-reference-line: false
-    backup-folder: /data/backup
-    wallet-password: pass123
     node:
       zmq-enabled: false
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.4.60
+      rpc-host: 172.31.4.13
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 11301
+      notification-wallet-port: 11302
+  fto:
+    merchant-name: FTO
+    currency-name: FTO
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.futurocoin/fto_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: true
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
+      rpc-port: 9008
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 25659
+      notification-wallet-port: 25660
+  clx:
+    merchant-name: CLX
+    currency-name: CLX
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.cryptolux/clx_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.31.16
+      rpc-port: 25572
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 10002
+      notification-wallet-port: 10003
+  zec:
+    merchant-name: Zcash
+    currency-name: ZEC
+    min-confirmations: 20
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: ${user.home}\zec_backup\
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.4.126
+      rpc-port: 28234
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 25459
+      notification-wallet-port: 25460
+  plc:
+    merchant-name: PLC
+    currency-name: PLC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.platincoin/plc_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 11982
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6659
+      notification-wallet-port: 6660
+  dash:
+    merchant-name: Dash
+    currency-name: DASH
+    min-confirmations: 12
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.dash/dash_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: true
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.9.239
+      rpc-port: 9998
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5369
+      notification-wallet-port: 5370
+  riz:
+    merchant-name: RIZ
+    currency-name: RIZ
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.rizwave/riz_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: true
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-6-221.us-east-2.compute.internal
+      rpc-port: 27198
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 25959
+      notification-wallet-port: 25960
+  nyc:
+    merchant-name: NYC
+    currency-name: NYC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.nycoin/nyc_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 18823
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 7769
+      notification-wallet-port: 7770
+  btg:
+    merchant-name: BTG
+    currency-name: BTG
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_gold/btg_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.11.202
+      rpc-port: 38444
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5769
+      notification-wallet-port: 5770
+  szc:
+    merchant-name: SZC
+    currency-name: SZC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.shopzcoin/szc_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-5-128.us-east-2.compute.internal
+      rpc-port: 4525
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6969
+      notification-wallet-port: 6970
+  bcx:
+    merchant-name: BCX
+    currency-name: BCX
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_x/bcx_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 9004
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6169
+      notification-wallet-port: 6170
+  kod:
+    merchant-name: KOD
+    currency-name: KOD
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.15.47
+      rpc-port: 8090
+      rpc-user: null
+      rpc-password: null
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 5580
+      notification-wallet-port: 5581
+  btx:
+    merchant-name: BTX
+    currency-name: BTX
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcore/btx_backup/
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.3.23
+      rpc-port: 11981
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6769
+      notification-wallet-port: 6770
+  occ:
+    merchant-name: OCC
+    currency-name: OCC
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.octoin/occ_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-port: 38562
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6269
+      notification-wallet-port: 6270
+  cryp:
+    merchant-name: CRYP
+    currency-name: CRYP
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.crypticcoin/backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.39.168
       rpc-port: 8090
       rpc-user: devprod
-      rpc-password: pass123
+      rpc-password: Jppeu3tMTjZtElthVYRkcuJMAgWsnozrAjeVxuDzMCGuM7tD9n
       http-auth-schema: Basic
-      notification-alert-port: 10900
-      notification-block-port: 12001
-      notification-wallet-port: 12002
-
-
-
-
+      notification-alert-port: 11
+      notification-block-port: 10900
+      notification-wallet-port: 10901
+  btcp:
+    merchant-name: BTCP
+    currency-name: BTCP
+    min-confirmations: 40
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/.bitcoin_private/btcp_backup/
+    node:
+      zmq-enabled: true
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.31.0.117
+      rpc-port: 7932
+      rpc-user: devprod
+      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 6669
+      notification-wallet-port: 6670
 
 
 ethereum-coins:
