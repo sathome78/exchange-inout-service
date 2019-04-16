@@ -254,6 +254,7 @@ public class BitcoinServiceImpl implements BitcoinService {
     private String address() {
         boolean isFreshAddress = false;
         System.out.println("begin generate address");
+        System.out.println(node.toString());
         String address = bitcoinWalletService.getNewAddress(getCoreWalletPassword());
         System.out.println("end generate address " + address);
         Currency currency = currencyService.findByName(currencyName);
