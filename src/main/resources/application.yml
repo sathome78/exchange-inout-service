@@ -33,9 +33,9 @@ spring:
     host: 172.31.14.1
     port: 5672
 
-logging:
-  level:
-    ROOT: DEBUG
+#logging:
+#  level:
+#    ROOT: DEBUG
 
 server:
   port: 8090
