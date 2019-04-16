@@ -990,6 +990,56 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getELC());
     }
 
+    @Bean(name = "tttServiceImpl")
+    public EthTokenService tttService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTTT());
+    }
+
+    @Bean(name = "rebServiceImpl")
+    public EthTokenService rebService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getREB());
+    }
+
+    @Bean(name = "rvcServiceImpl")
+    public EthTokenService rvcService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVC());
+    }
+
+    @Bean(name = "bioServiceImpl")
+    public EthTokenService bioService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBIO());
+    }
+
+    @Bean(name = "vraServiceImpl")
+    public EthTokenService vraService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVRA());
+    }
+
+    @Bean(name = "katServiceImpl")
+    public EthTokenService katService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getKAT());
+    }
+
+    @Bean(name = "etaServiceImpl")
+    public EthTokenService etaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getETA());
+    }
+
+    @Bean(name = "brcServiceImpl")
+    public EthTokenService brcService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBRC());
+    }
+
+    @Bean(name = "gnyServiceImpl")
+    public EthTokenService gnyService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGNY());
+    }
+
+    @Bean(name = "novaServiceImpl")
+    public EthTokenService novaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());
+    }
+
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         return new EthTokenServiceImpl(property);

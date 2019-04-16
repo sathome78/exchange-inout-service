@@ -1,3 +1,5 @@
+package generator;
+
 import com.exrates.inout.service.ethereum.ExConvert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +9,6 @@ import org.web3j.utils.Files;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 public class TokenBeanGenerator {

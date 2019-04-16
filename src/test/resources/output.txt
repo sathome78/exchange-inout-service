@@ -1,83 +1,50 @@
-    private EthereumTokenProperty INK;
-    private EthereumTokenProperty RTH;
-    private EthereumTokenProperty SPD;
-    private EthereumTokenProperty MTC;
-    private EthereumTokenProperty ARN;
-    private EthereumTokenProperty HST;
-    private EthereumTokenProperty DTRC;
-    private EthereumTokenProperty CEEK;
-    private EthereumTokenProperty ANY;
-    private EthereumTokenProperty TGAME;
-    private EthereumTokenProperty MTL;
-    private EthereumTokenProperty LEDU;
-    private EthereumTokenProperty ADB;
-    private EthereumTokenProperty CEDEX;
-    private EthereumTokenProperty GST;
-    private EthereumTokenProperty SAT;
-    private EthereumTokenProperty CHE;
-    private EthereumTokenProperty DACC;
-    private EthereumTokenProperty ENGT;
-    private EthereumTokenProperty TAVITT;
-    private EthereumTokenProperty UMT;
-    private EthereumTokenProperty MASP;
-    private EthereumTokenProperty SKILL;
-    private EthereumTokenProperty STOR;
-    private EthereumTokenProperty QUINT;
-    private EthereumTokenProperty TTC;
-    private EthereumTokenProperty BFG;
-    private EthereumTokenProperty JET;
-    private EthereumTokenProperty PAT;
-    private EthereumTokenProperty EMTV;
-    private EthereumTokenProperty KWATT;
-    private EthereumTokenProperty TUSD;
-    private EthereumTokenProperty FPWR;
-    private EthereumTokenProperty CRBT;
-    private EthereumTokenProperty HIVE;
-    private EthereumTokenProperty CMIT;
-    private EthereumTokenProperty HDR;
-    private EthereumTokenProperty RAC;
-    private EthereumTokenProperty IQN;
-    private EthereumTokenProperty GEX;
-    private EthereumTokenProperty IXE;
-    private EthereumTokenProperty NER;
-    private EthereumTokenProperty PHI;
-    private EthereumTokenProperty RET;
-    private EthereumTokenProperty MFTU;
-    private EthereumTokenProperty GIGC;
-    private EthereumTokenProperty SWM;
-    private EthereumTokenProperty TIC;
-    private EthereumTokenProperty BNC;
-    private EthereumTokenProperty WTL;
-    private EthereumTokenProperty UDOO;
-    private EthereumTokenProperty XAU;
-    private EthereumTokenProperty USDC;
-    private EthereumTokenProperty TTP;
-    private EthereumTokenProperty MGX;
-    private EthereumTokenProperty VAI;
-    private EthereumTokenProperty UNC;
-    private EthereumTokenProperty MODL;
-    private EthereumTokenProperty ECTE;
-    private EthereumTokenProperty S4F;
-    private EthereumTokenProperty MNC;
-    private EthereumTokenProperty TCAT;
-    private EthereumTokenProperty HT;
-    private EthereumTokenProperty EDT;
-    private EthereumTokenProperty POA;
-    private EthereumTokenProperty MCO;
-    private EthereumTokenProperty ZIL;
-    private EthereumTokenProperty MANA;
-    private EthereumTokenProperty WABI;
-    private EthereumTokenProperty NPXS;
-    private EthereumTokenProperty QKC;
-    private EthereumTokenProperty HOT;
-    private EthereumTokenProperty ZRX;
-    private EthereumTokenProperty BAT;
-    private EthereumTokenProperty RDN;
-    private EthereumTokenProperty HNI;
-    private EthereumTokenProperty ELT;
-    private EthereumTokenProperty REN;
-    private EthereumTokenProperty MET;
-    private EthereumTokenProperty PLTC;
-    private EthereumTokenProperty VRBS;
-    private EthereumTokenProperty ZUBE;
-    private EthereumTokenProperty ELC;
+    @Bean(name = "tttServiceImpl")
+    public EthTokenService tttService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getTTT());    
+    }
+
+    @Bean(name = "rebServiceImpl")
+    public EthTokenService rebService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getREB());    
+    }
+
+    @Bean(name = "rvcServiceImpl")
+    public EthTokenService rvcService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVC());    
+    }
+
+    @Bean(name = "bioServiceImpl")
+    public EthTokenService bioService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getBIO());    
+    }
+
+    @Bean(name = "vraServiceImpl")
+    public EthTokenService vraService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getVRA());    
+    }
+
+    @Bean(name = "katServiceImpl")
+    public EthTokenService katService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getKAT());    
+    }
+
+    @Bean(name = "etaServiceImpl")
+    public EthTokenService etaService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getETA());    
+    }
+
+    @Bean(name = "brcServiceImpl")
+    public EthTokenService brcService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getBRC());    
+    }
+
+    @Bean(name = "gnyServiceImpl")
+    public EthTokenService gnyService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getGNY());    
+    }
+
+    @Bean(name = "novaServiceImpl")
+    public EthTokenService novaService() {
+       return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());    
+    }
+

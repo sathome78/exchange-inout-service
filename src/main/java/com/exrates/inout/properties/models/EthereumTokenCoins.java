@@ -125,5 +125,15 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty VRBS;
     private EthereumTokenProperty ZUBE;
     private EthereumTokenProperty ELC;
+    private EthereumTokenProperty TTT;
+    private EthereumTokenProperty REB;
+    private EthereumTokenProperty RVC;
+    private EthereumTokenProperty BIO;
+    private EthereumTokenProperty VRA;
+    private EthereumTokenProperty KAT;
+    private EthereumTokenProperty ETA;
+    private EthereumTokenProperty BRC;
+    private EthereumTokenProperty GNY;
+    private EthereumTokenProperty NOVA;
 
 }

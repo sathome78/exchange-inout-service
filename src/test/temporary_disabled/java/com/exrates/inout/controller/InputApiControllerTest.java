@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +31,7 @@ import static io.netty.handler.codec.http.HttpHeaderValues.APPLICATION_JSON;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +52,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         PrepareCreditsOperationTestDto dto = preparePCODto();
         CreditsOperation result = execute(dto);
         assertResultIsValid(dto, result);
+
     }
 
     private PrepareCreditsOperationTestDto preparePCODto() {
@@ -66,7 +67,7 @@ public class InputApiControllerTest extends InoutTestApplication {
 
     private Wallet prepareWallet(User testUser) {
         Wallet wallet = new Wallet(aunitCurrency.getId(), new User(testUser.getId()), null);
-        Mockito.when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(wallet);
+        when(walletService.findByUserAndCurrency(anyInt(), anyInt())).thenReturn(wallet);
         return wallet;
     }
 
@@ -110,6 +111,7 @@ public class InputApiControllerTest extends InoutTestApplication {
         User testUser = new User(100500, "email");
         String result = execute(testUser);
         assert Boolean.valueOf(result);
+
     }
 
     private String execute(User testUser) throws Exception {
@@ -242,4 +244,5 @@ public class InputApiControllerTest extends InoutTestApplication {
         private RefillRequestCreateDto refillRequestCreateDto;
 
     }
+
 }
