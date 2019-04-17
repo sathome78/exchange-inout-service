@@ -7,9 +7,10 @@ spring:
     name: input-output-service
   datasource:
     hikari:
-      username: exdevdb
-      password: KQmK82dd
-      jdbc-url: jdbc:mysql://exdbdev.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/dbdev2?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      ssm-path: vLHjSkPJjB6JLVcA
+      username: root
+      password: root
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
@@ -18,26 +19,26 @@ spring:
   redis:
     host: 172.10.10.236
     port: 6379
-#  flyway:
-#    locations: classpath:db/migration
-#    user: root
-#    password: root
-#    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
-#    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
-#    baseline-on-migrate: false
-#    validate-on-migrate: false
+  #  flyway:
+  #    locations: classpath:db/migration
+  #    user: root
+  #    password: root
+  #    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+  #    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+  #    baseline-on-migrate: false
+  #    validate-on-migrate: false
   rabbitmq:
     username: angulardemoaccess
     password: angulardemoaccess
     host: 172.31.14.1
     port: 5672
 
-logging:
-  level:
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+#logging:
+#  level:
+#    ROOT: DEBUG
 
 server:
-  port: 8080
+  port: 8090
 #slave:
 #  datasource:
 #    hikari:
@@ -97,7 +98,7 @@ mail:
 
 
 endpoints:
-  stock: http://localhost:8079/
+  stock: http://172.10.11.122:8080/
   inoutPrefix: /inout
 
 telegram:
@@ -2577,9 +2578,13 @@ lisk-coins:
     merchant-name: Ark
     currency-name: ARK
     min-confirmations: 30
-    create-account-endpoint: /devnet/account
-    create-tx-endpoint: /devnet/transaction
-    broadcast-tx-endpoint: /devnet/broadcast
+    create-account-endpoint:
+    create-tx-endpoint:
+    broadcast-tx-endpoint:
+    arcNode:
+      arkCreateAccountEndpoint: /mainnet/account
+      arkCreateTxEndpoint: /mainnet/transaction
+      arkBroadcastTxEndpoint: /mainnet/broadcast
     node:
       host: http://ec2-13-59-242-131.us-east-2.compute.amazonaws.com
       port: 4002
@@ -2606,7 +2611,6 @@ waves-coins:
       notify-email: mikita.malykov@gmail.com
       token-ids:
         GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
-        RBC: AQWjZbz7mgW8AJwcdrdWF3ijTB4WFV1hWqH1866BkafD
   lunes:
     merchant-name: LUNES
     currency-name: LUNES

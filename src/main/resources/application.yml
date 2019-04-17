@@ -19,37 +19,22 @@ spring:
   redis:
     host: 172.10.10.236
     port: 6379
-#  flyway:
-#    locations: classpath:db/migration
-#    user: root
-#    password: root
-#    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
-#    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
-#    baseline-on-migrate: false
-#    validate-on-migrate: false
-  rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
-    port: 5672
+  flyway:
+    locations: classpath:db/migration
+    user: root
+    password: root
+    url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+    baseline-on-migrate: true
+    validate-on-migrate: false
 
-#logging:
-#  level:
-#    ROOT: DEBUG
-
-server:
-  port: 8090
-#slave:
-#  datasource:
-#    hikari:
-#      password: root
-#      username: root
-#      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-#      connection-test-query: SELECT 1 FROM DUAL
-#      driver-class-name: com.mysql.jdbc.Driver
 ssm:
   mode: dev
   path: /exrates/auth-service/test/pass.token
+
+
+endpoints:
+  stock: http://localhost:8079/
+  inoutPrefix: /inout
 
 eureka:
   client:
@@ -95,11 +80,6 @@ mail:
     allowedOnly: true
     allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
-
-
-endpoints:
-  stock: http://172.10.11.122:8080/
-  inoutPrefix: /inout
 
 telegram:
   bot:
@@ -1445,6 +1425,7 @@ bitcoin-coins:
       notification-wallet-port: 6670
 
 
+
 ethereum-coins:
   eth:
     merchant-name: Ethereum
@@ -1452,40 +1433,16 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      #      url-our-node:
-      url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
-      #      url: http://18.216.0.44:8545
-      #      url: http://18.216.0.44:8549
-      #      url: http://13.59.242.131:8545
-      #      url: http://13.59.242.131:8549
-      destination-dir: D:\\Ethereum1\\Original\\keystore\\
+      url: http://172.10.13.51:8549
+      destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
-      #      main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
       transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
       transfer-acc-privat-key: 78180378588292946369072654859668816086445717220539896029516054714478935781278
       transfer-acc-public-key: 1425913302398861939078339181395283390436141003096815016453538908192640696056254429740883940954808439783149865751992200750059751882787467546927733789459983
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_log
-  #Test
-  #  eth:
-  #    merchant-name: Ethereum
-  #    currency-name: ETH
-  #    min-confirmations: 12
-  #    node:
-  #      currency: Ethereum
-  #      url-our-node:
-  #      url: http://52.208.46.161:8546
-  #      destination-dir: D:\\Ethereum1\\Original\\testnet\\keystore\\
-  #      password: 061372f91f949effb934abadff5f0636de09113d
-  #      main-address: 0xa8522390c0Ae551028fbfb5ef97A1aF13F5492a8
-  #      transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
-  #      transfer-acc-privat-key: 74199533323615390595446811567054381692532959393563993073409395447229707848705
-  #      transfer-acc-public-key: 13119590832013525280742184238702178365489504100104976407042930393855053495689192423115970974319645018672313443483886856541705435663423306545046973102286102
-  #      min-sum-on-account: 0
-  #      min-balance-for-transfer: 0.0031
-  #      log: ethereum_log
   etc:
     merchant-name: Ethereum Classic
     currency-name: ETC
@@ -2521,7 +2478,6 @@ ethereum-token-coins:
     unit: ETHER
     min-wallet-balance: 0
 
-
 lisk-coins:
   lisk:
     merchant-name: Lisk
@@ -2745,7 +2701,7 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 1000000000
-    
+
 
 stellar-coins:
   slt:
