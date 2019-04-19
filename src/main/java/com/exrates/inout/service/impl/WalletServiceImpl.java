@@ -36,7 +36,7 @@ import java.util.Locale;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.math.BigDecimal.ZERO;
 
-@Log4j2
+//@Log4j2
 @Service
 @Transactional
 @RequiredArgsConstructor

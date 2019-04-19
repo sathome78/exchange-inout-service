@@ -9,7 +9,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 @Component
-@Log4j2(topic = "inout")
+//@Log4j2(topic = "inout")
 public class LogableErrorHandler implements ResponseErrorHandler {
     @Override
     public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {

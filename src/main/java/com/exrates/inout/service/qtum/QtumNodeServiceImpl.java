@@ -24,7 +24,7 @@ import java.util.*;
 //exrates.service.exception.QtumApiException;
 
 @Service
-@Log4j2(topic = "qtum_log")
+//@Log4j2(topic = "qtum_log")
 @PropertySource("classpath:/merchants/qtum.properties")
 public class QtumNodeServiceImpl implements QtumNodeService {
 

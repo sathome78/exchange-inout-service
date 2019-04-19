@@ -17,7 +17,7 @@ import java.util.Optional;
 //exrates.model.dto.merchants.neo.*;
 //exrates.service.exception.NeoApiException;
 
-@Log4j2(topic = "neo_log")
+//@Log4j2(topic = "neo_log")
 public class NeoNodeServiceImpl implements NeoNodeService {
 
 

@@ -37,7 +37,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 @PropertySource(value = {"classpath:/job.properties"})
 public class BitcoinServiceImpl implements BitcoinService {
 

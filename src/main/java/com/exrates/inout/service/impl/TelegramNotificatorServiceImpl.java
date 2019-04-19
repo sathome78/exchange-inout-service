@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component("telegramNotificatorServiceImpl")
 public class TelegramNotificatorServiceImpl implements NotificatorService, Subscribable {
 

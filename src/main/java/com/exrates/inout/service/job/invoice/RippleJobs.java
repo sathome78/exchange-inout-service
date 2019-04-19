@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
  */
 
 @Service
-@Log4j2
+//@Log4j2
 public class RippleJobs {
 
     @Autowired

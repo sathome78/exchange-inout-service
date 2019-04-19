@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @PropertySource("classpath:/merchants/tron.properties")
 @Service
 public class TronTransactionsServiceImpl implements TronTransactionsService {

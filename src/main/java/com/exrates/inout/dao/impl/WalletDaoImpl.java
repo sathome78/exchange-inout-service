@@ -43,7 +43,7 @@ import java.util.Map;
 import static com.exrates.inout.domain.enums.OperationType.SELL;
 
 @Repository
-@Log4j2
+//@Log4j2
 public class WalletDaoImpl implements WalletDao {
 
     @Autowired

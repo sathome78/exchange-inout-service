@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
-@Log4j2
+//@Log4j2
 @Data
 public class RefsListContainer {
 

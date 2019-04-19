@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Maks on 19.09.2017.
  */
-@Log4j2(topic = "eth_tokens_log")
+//@Log4j2(topic = "eth_tokens_log")
 @Service
 public class EthTokenServiceImpl implements EthTokenService {
 

@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 
-@Log4j2
+//@Log4j2
 @Component
 public class EpochtaApi {
 

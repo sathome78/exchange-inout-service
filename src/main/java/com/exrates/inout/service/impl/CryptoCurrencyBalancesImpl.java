@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
+//@Log4j2
 @Service
 public class CryptoCurrencyBalancesImpl implements CryptoCurrencyBalances {
 

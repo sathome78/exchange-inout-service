@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2(topic = "edc_log")
+//@Log4j2(topic = "edc_log")
 @Service
 @PropertySource({"classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceImpl implements EDCService {

@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 
 //exrates.service.handler.RestResponseErrorHandler;
 
-@Log4j2(topic = "omni_log")
+//@Log4j2(topic = "omni_log")
 @Service
 @PropertySource("classpath:/merchants/omni.properties")
 public class OmniNodeServiceImpl implements OmniNodeService {

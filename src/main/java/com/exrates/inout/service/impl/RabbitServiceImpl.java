@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+//@Log4j2
 public class RabbitServiceImpl implements RabbitService {
 
     private static final String REFILL_ROUTE = "refill";

@@ -26,7 +26,7 @@ import java.util.Map;
  * Created by ValkSam
  */
 @Service
-@Log4j2
+//@Log4j2
 public class RefillRequestJob {
 
     @Autowired

@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by maks on 20.04.2017.
  */
 @Repository
-@Log4j2
+//@Log4j2
 public class StopOrderDaoImpl implements StopOrderDao {
 
     @Autowired

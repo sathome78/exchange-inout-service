@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Repository
-@Log4j2
+//@Log4j2
 public class QuberaDaoImpl implements QuberaDao {
 
     private final NamedParameterJdbcTemplate masterJdbcTemplate;

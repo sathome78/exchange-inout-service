@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 //exrates.service.vo.ProfileData;
 
-@Log4j2(topic = "qtum_log")
+//@Log4j2(topic = "qtum_log")
 @PropertySource("classpath:/merchants/qtum.properties")
 public class QtumTokenServiceImpl implements QtumTokenService {
 

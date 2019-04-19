@@ -31,7 +31,7 @@ import static com.exrates.inout.service.lisk.LiskRestUtils.*;
 
 //.exrates.service.lisk.LiskRestUtils.*;
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 public class LiskRestClientImpl implements LiskRestClient {
 
     @Autowired

@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class BtcdZMQDaemonImpl implements BtcDaemon{
 
 

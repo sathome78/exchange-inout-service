@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")
 public class CasinoCoinTransactionServiceImpl implements CasinoCoinTransactionService {

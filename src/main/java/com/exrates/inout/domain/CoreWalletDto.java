@@ -9,7 +9,7 @@ import org.springframework.context.NoSuchMessageException;
 import java.util.Locale;
 
 @Data
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class CoreWalletDto {
     private int id;
     private int merchantId;

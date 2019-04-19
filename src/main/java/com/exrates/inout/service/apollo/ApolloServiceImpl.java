@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
-@Log4j2(topic = "apollo")
+//@Log4j2(topic = "apollo")
 @PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloServiceImpl implements ApolloService {

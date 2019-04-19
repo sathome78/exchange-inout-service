@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 //exrates.service.util.WithdrawUtils;
 //exrates.service.vo.ProfileData;
 
-@Log4j2(topic = "qtum_log")
+//@Log4j2(topic = "qtum_log")
 @Service("qtumServiceImpl")
 @PropertySource("classpath:/merchants/qtum.properties")
 public class QtumServiceImpl implements QtumService {

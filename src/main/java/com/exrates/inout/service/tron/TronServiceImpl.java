@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 //exrates.service.util.WithdrawUtils;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 public class TronServiceImpl implements TronService {
 

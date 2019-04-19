@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2(topic = "adk_log")
+//@Log4j2(topic = "adk_log")
 @Service
 public class AdkTransactionsServiceImpl implements TransactionsCheckService {
 

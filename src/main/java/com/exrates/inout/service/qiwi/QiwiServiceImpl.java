@@ -13,7 +13,7 @@ import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -39,7 +39,7 @@ import java.util.Map;
 //exrates.service.RefillService;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
-@Log4j2(topic = "Qiwi")
+//@Log4j2(topic = "Qiwi")
 @Service
 @PropertySource("classpath:/merchants/qiwi.properties")
 @Profile("!dev")
@@ -48,7 +48,7 @@ public class QiwiServiceImpl implements QiwiService {
     private final static String MERCHANT_NAME = "QIWI";
     private final static String CURRENCY_NAME = "RUB";
 
-    private static final Logger logger = org.apache.log4j.LogManager.getLogger(QiwiServiceImpl.class);
+    private static final Logger logger = org.apache.logging.log4j.LogManager.getLogger(QiwiServiceImpl.class);
 
     @Autowired
     private MerchantService merchantService;

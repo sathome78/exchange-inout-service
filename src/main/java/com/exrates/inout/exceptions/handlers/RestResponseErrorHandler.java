@@ -8,7 +8,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 
-@Log4j2
+//@Log4j2
 public class RestResponseErrorHandler implements ResponseErrorHandler {
 
     public void handleError(ClientHttpResponse response) throws IOException {

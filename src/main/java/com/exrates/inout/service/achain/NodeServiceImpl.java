@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 
 @PropertySource("classpath:/merchants/achain.properties")
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Component
 public class NodeServiceImpl implements NodeService {
 

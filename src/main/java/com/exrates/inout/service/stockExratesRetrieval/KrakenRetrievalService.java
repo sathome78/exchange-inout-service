@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * Created by OLEG on 14.12.2016.
  */
-@Log4j2(topic = "tracker")
+//@Log4j2(topic = "tracker")
 @Service(value = "Kraken")
 public class KrakenRetrievalService implements StockExrateRetrievalService {
 

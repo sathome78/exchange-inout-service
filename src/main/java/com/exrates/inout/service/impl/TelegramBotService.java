@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class TelegramBotService extends TelegramLongPollingBot {
 

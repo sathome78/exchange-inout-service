@@ -48,7 +48,7 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.POST_
  * Created by ValkSam
  */
 @Service
-@Log4j2(topic = "job")
+//@Log4j2(topic = "job")
 @PropertySource(value = {"classpath:/job.properties"})
 public class WithdrawRequestJob {
 

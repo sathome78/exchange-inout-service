@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 //exrates.model.StockExchange;
 //exrates.model.StockExchangeStats;
 
-@Log4j2(topic = "tracker")
+//@Log4j2(topic = "tracker")
 @Service
 public class ExchangeResponseProcessingServiceImpl implements ExchangeResponseProcessingService {
 

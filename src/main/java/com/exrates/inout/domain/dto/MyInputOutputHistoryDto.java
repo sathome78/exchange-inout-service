@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.*;
 
-@Log4j2
+//@Log4j2
 @Getter
 @Setter
 @ToString

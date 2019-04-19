@@ -49,7 +49,7 @@ import java.util.Map;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 //exrates.service.util.WithdrawUtils;
 
-@Log4j2(topic = "omni_log")
+//@Log4j2(topic = "omni_log")
 @Service
 public class OmniServiceImpl implements OmniService {
 

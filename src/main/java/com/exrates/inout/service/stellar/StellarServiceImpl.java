@@ -57,7 +57,7 @@ import java.util.Optional;
 /**
  * Created by maks on 06.06.2017.
  */
-@Log4j2(topic = "stellar_log")
+//@Log4j2(topic = "stellar_log")
 @Service
 @PropertySource("classpath:/merchants/stellar.properties")
 public class StellarServiceImpl implements StellarService {

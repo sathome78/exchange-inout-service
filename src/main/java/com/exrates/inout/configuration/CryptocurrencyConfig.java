@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Log4j2(topic = "config")
+//@Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
 

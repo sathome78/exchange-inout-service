@@ -19,7 +19,7 @@ import java.net.URI;
 //exrates.model.dto.TronNewAddressDto;
 //exrates.model.dto.TronTransferDto;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 @PropertySource("classpath:/merchants/tron.properties")
 public class TronNodeServiceImpl implements TronNodeService {

@@ -16,7 +16,7 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @ClientEndpoint
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")

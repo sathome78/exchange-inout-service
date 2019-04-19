@@ -26,7 +26,7 @@ import java.util.Properties;
 
 @Service
 @PropertySource("classpath:/merchants/advcashmoney.properties")
-@Log4j2
+//@Log4j2
 public class AdvcashServiceImpl implements AdvcashService {
 
     private @Value("${advcash.url}")

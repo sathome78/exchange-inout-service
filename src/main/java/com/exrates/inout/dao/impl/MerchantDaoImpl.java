@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Log4j2
+//@Log4j2
 @Repository
 public class MerchantDaoImpl implements MerchantDao {
 

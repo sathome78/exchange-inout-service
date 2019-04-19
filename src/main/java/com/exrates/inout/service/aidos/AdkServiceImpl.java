@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 
-@Log4j2(topic = "adk_log")
+//@Log4j2(topic = "adk_log")
 @PropertySource("classpath:/merchants/adk.properties")
 @Service
 @RequiredArgsConstructor

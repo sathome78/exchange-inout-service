@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-@Log4j2
+//@Log4j2
 @Service
 public class UserOperationServiceImpl implements UserOperationService {
 

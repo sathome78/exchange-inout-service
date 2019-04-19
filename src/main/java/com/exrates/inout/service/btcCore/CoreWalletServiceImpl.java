@@ -79,7 +79,7 @@ import static java.util.Objects.nonNull;
  */
 @Component
 @Scope("prototype")
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class CoreWalletServiceImpl implements CoreWalletService {
   
   private static final int KEY_POOL_LOW_THRESHOLD = 10;

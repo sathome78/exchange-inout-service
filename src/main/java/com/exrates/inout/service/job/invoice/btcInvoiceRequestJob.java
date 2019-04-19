@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @PropertySource(value = {"classpath:/job.properties"})
-@Log4j2(topic = "job")
+//@Log4j2(topic = "job")
 @EnableAutoConfiguration
 public class btcInvoiceRequestJob {
 

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Service("gtagService")
 @PropertySource(value = "classpath:/analytics.properties")
-@Log4j2
+//@Log4j2
 public class GtagServiceImpl implements GtagService {
 
     @Value("${google.analytics.host}")

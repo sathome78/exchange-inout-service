@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 //exrates.model.dto.TronReceivedTransactionDto;
 //exrates.model.dto.TronTransactionTypeEnum;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 public class TronReceiveServiceImpl {
 

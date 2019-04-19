@@ -11,7 +11,7 @@ import com.neemre.btcdcli4j.daemon.event.WalletListener;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class BtcHttpDaemonImpl implements BtcDaemon {
 
     private BtcdClient btcdClient;

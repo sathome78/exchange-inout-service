@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Created by OLEG on 15.12.2016.
  */
-@Log4j2(topic = "tracker")
+//@Log4j2(topic = "tracker")
 @Service(value = "xBTCe")
 public class XBTCeRetrievalService implements StockExrateRetrievalService {
 

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class NotificationMessageServiceImpl implements NotificationMessageService {
 

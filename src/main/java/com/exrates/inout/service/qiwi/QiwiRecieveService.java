@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Service
-@Log4j2(topic = "Qiwi")
+//@Log4j2(topic = "Qiwi")
 @Profile("!dev")
 public class QiwiRecieveService {
 

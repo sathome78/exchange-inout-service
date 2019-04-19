@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class TxsScanerImpl implements BlocksScaner {
 

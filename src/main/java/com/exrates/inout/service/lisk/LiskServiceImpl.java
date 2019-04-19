@@ -43,7 +43,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 public class LiskServiceImpl implements LiskService {
 
     private final BigDecimal DEFAULT_LSK_TX_FEE = BigDecimal.valueOf(0.1);

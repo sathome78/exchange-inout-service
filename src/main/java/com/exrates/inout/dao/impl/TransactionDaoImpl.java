@@ -39,7 +39,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-@Log4j2
+//@Log4j2
 @Repository
 public class TransactionDaoImpl implements TransactionDao {
 

@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by maks on 21.07.2017.
  */
-@Log4j2(topic = "nem_log")
+//@Log4j2(topic = "nem_log")
 @Service
 @PropertySource("classpath:/merchants/nem.properties")
 public class NemRecieveTransactionsService {

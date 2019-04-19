@@ -46,7 +46,7 @@ import java.util.*;
 /**
  * Created by maks on 18.07.2017.
  */
-@Log4j2(topic = "nem_log")
+//@Log4j2(topic = "nem_log")
 @Service
 @PropertySource("classpath:/merchants/nem.properties")
 public class NemServiceImpl implements NemService {

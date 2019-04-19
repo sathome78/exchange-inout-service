@@ -20,7 +20,7 @@ import java.util.Collections;
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractObjectFromResponse;
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 @Service
 @Scope("prototype")
 public class ArkRpcClientImpl implements ArkRpcClient {

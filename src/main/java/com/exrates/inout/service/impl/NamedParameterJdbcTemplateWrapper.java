@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Log4j2(topic = "jdbc_logger")
+//@Log4j2(topic = "jdbc_logger")
 public class NamedParameterJdbcTemplateWrapper extends NamedParameterJdbcTemplate {
 
     public NamedParameterJdbcTemplateWrapper(DataSource dataSource) {

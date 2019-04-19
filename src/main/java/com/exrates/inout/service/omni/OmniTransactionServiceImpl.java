@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 
 @PropertySource("classpath:/merchants/omni.properties")
-@Log4j2(topic = "omni_log")
+//@Log4j2(topic = "omni_log")
 @Service
 public class OmniTransactionServiceImpl implements OmniTransactionService {
 

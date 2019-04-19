@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Maks on 24.01.2018.
  */
-@Log4j2
+//@Log4j2
 @Component
 public class EthTokensContext {
 

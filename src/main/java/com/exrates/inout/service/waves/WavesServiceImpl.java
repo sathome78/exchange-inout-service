@@ -25,7 +25,7 @@ import java.util.concurrent.*;
 import static java.util.Objects.nonNull;
 
 
-@Log4j2(topic = "waves_log")
+//@Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {
 
     @Autowired

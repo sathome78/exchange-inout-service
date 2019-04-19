@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import static com.exrates.inout.domain.enums.ActionType.SUBTRACT;
 import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 
-@Log4j2
+//@Log4j2
 @Service
 public class CompanyWalletServiceImpl implements CompanyWalletService {
 

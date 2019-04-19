@@ -27,7 +27,7 @@ import java.util.List;
 //exrates.model.dto.qiwi.response.QiwiResponseTransaction;
 
 @Service
-@Log4j2(topic = "Qiwi")
+//@Log4j2(topic = "Qiwi")
 @PropertySource("classpath:/merchants/qiwi.properties")
 @Profile("!dev")
 public class QiwiExternalServiceImpl implements QiwiExternalService{

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "adk_log")
+//@Log4j2(topic = "adk_log")
 @Service
 @PropertySource("classpath:/merchants/adk.properties")
 public class AidosNodeServiceImpl implements AidosNodeService {

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Log4j2
+//@Log4j2
 @RequiredArgsConstructor
 public class SSMConfiguration {
 
@@ -32,4 +32,5 @@ public class SSMConfiguration {
             return "FBSOcGiKC73j2FM";
         }
     }
+
 }

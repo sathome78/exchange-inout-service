@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Log4j2
+//@Log4j2
 public class DataTableParams {
 
     private final String SEARCH_VALUE_KEY = "search_value";

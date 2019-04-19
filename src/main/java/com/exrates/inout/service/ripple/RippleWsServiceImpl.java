@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @ClientEndpoint
 @Service
 @PropertySource("classpath:/merchants/ripple.properties")

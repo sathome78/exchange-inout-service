@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
 
-@Log4j2
+//@Log4j2
 public enum WithdrawStatusEnum implements InvoiceStatus {
     CREATED_USER(1) {
         @Override

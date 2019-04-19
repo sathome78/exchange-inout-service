@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 //exrates.model.dto.merchants.waves.WavesTransaction;
 //exrates.service.exception.WavesRestException;
 
-@Log4j2(topic = "waves_log")
+//@Log4j2(topic = "waves_log")
 @Service
 @Scope("prototype")
 public class WavesRestClientImpl implements WavesRestClient {

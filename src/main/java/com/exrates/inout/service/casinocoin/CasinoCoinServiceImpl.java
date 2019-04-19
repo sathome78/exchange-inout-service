@@ -45,7 +45,7 @@ import java.util.Random;
 //exrates.service.util.WithdrawUtils;
 
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")
 @Data

@@ -9,13 +9,19 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestFakePaymentReceivedException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.AlgorithmService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.PayeerService;
+import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -31,7 +37,7 @@ public class PayeerServiceImpl implements PayeerService {
   private @Value("${payeer.m_key}") String m_key;
 
 
-  private static final Logger logger = org.apache.log4j.LogManager.getLogger("merchant");
+  private static final Logger logger = LogManager.getLogger("merchant");
 
   @Autowired
   private AlgorithmService algorithmService;

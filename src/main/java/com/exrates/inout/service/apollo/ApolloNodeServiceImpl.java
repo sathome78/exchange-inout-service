@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 
-@Log4j2(topic = "apollo")
+//@Log4j2(topic = "apollo")
 @PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloNodeServiceImpl implements ApolloNodeService {
