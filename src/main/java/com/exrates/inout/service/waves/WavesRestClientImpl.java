@@ -1,4 +1,7 @@
 package com.exrates.inout.service.waves;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.waves.WavesAddress;
 import com.exrates.inout.domain.waves.WavesPayment;
@@ -34,6 +37,9 @@ import java.util.stream.Collectors;
 @Service
 @Scope("prototype")
 public class WavesRestClientImpl implements WavesRestClient {
+
+   private static final Logger log = LogManager.getLogger("waves_log");
+
 
     @Autowired
     private RestTemplate restTemplate;

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.SmsSubscriptionDao;
 import com.exrates.inout.domain.dto.SmsSubscriptionDto;
@@ -39,6 +42,9 @@ import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 //@Log4j2(topic = "message_notify")
 @Component
 public class SmsNotificatorServiceImpl implements NotificatorService, Subscribable {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     @Autowired
     private NotificatorsService notificatorsService;

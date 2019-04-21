@@ -29,6 +29,9 @@
 //////@Log4j2
 //@Service("secureServiceImpl")
 //public class SecureServiceImpl implements SecureService {
+
+//   private static final Logger log = LogManager.getLogger(SecureServiceImpl.class);
+
 //    private @Value("${session.checkPinParam}") String checkPinParam;
 //    private @Value("${session.authenticationParamName}") String authenticationParamName;
 //    private @Value("${session.passwordParam}") String passwordParam;

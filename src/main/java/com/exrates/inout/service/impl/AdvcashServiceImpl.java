@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.dao.RefillRequestDao;
@@ -28,6 +31,9 @@ import java.util.Properties;
 @PropertySource("classpath:/merchants/advcashmoney.properties")
 //@Log4j2
 public class AdvcashServiceImpl implements AdvcashService {
+
+   private static final Logger log = LogManager.getLogger(AdvcashServiceImpl.class);
+
 
     private @Value("${advcash.url}")
     String url;

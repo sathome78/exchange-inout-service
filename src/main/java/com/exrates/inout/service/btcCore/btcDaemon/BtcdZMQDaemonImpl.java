@@ -1,4 +1,7 @@
 package com.exrates.inout.service.btcCore.btcDaemon;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.BitcoinCoreException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
@@ -23,6 +26,9 @@ import java.util.regex.Pattern;
 
 //@Log4j2(topic = "bitcoin_core")
 public class BtcdZMQDaemonImpl implements BtcDaemon{
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
 
 
     private volatile boolean isActive = false;

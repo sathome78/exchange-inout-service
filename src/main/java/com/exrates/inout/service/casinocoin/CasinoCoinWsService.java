@@ -1,4 +1,7 @@
 package com.exrates.inout.service.casinocoin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -21,6 +24,9 @@ import java.net.URI;
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")
 public class CasinoCoinWsService {
+
+   private static final Logger log = LogManager.getLogger("casinocoin_log");
+
 
     private static final String SUBSCRIBE_COMAND_ID = "watch main account transactions";
     private static final String GET_TX_COMMAND_ID = "get transaction";

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.btcCore;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.BtcBlockDto;
 import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
@@ -81,6 +84,9 @@ import static java.util.Objects.nonNull;
 @Scope("prototype")
 //@Log4j2(topic = "bitcoin_core")
 public class CoreWalletServiceImpl implements CoreWalletService {
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
   
   private static final int KEY_POOL_LOW_THRESHOLD = 10;
   private static final int MIN_CONFIRMATIONS_FOR_SPENDING = 3;

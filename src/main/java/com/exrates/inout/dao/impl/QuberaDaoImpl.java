@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.QuberaDao;
 import com.exrates.inout.domain.dto.QuberaRequestDto;
@@ -19,6 +22,9 @@ import java.util.Map;
 @Repository
 //@Log4j2
 public class QuberaDaoImpl implements QuberaDao {
+
+   private static final Logger log = LogManager.getLogger(QuberaDaoImpl.class);
+
 
     private final NamedParameterJdbcTemplate masterJdbcTemplate;
     private final NamedParameterJdbcTemplate slaveJdbcTemplate;

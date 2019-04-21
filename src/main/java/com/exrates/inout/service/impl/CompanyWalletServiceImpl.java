@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.CompanyWalletDao;
 import com.exrates.inout.domain.main.CompanyWallet;
@@ -23,6 +26,9 @@ import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 //@Log4j2
 @Service
 public class CompanyWalletServiceImpl implements CompanyWalletService {
+
+   private static final Logger log = LogManager.getLogger(CompanyWalletServiceImpl.class);
+
 
     private static final Logger logger = LogManager.getLogger(CompanyWalletServiceImpl.class);
     @Autowired

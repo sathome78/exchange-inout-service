@@ -1,4 +1,7 @@
 package com.exrates.inout.service.qiwi;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -44,6 +47,9 @@ import java.util.Map;
 @PropertySource("classpath:/merchants/qiwi.properties")
 @Profile("!dev")
 public class QiwiServiceImpl implements QiwiService {
+
+   private static final Logger log = LogManager.getLogger("Qiwi");
+
 
     private final static String MERCHANT_NAME = "QIWI";
     private final static String CURRENCY_NAME = "RUB";

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.neo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.*;
@@ -36,6 +39,9 @@ import java.util.stream.Stream;
 //@Log4j2(topic = "neo_log")
 @PropertySource("classpath:/merchants/neo.properties")
 public class NeoServiceImpl implements NeoService {
+
+   private static final Logger log = LogManager.getLogger("neo_log");
+
 
     private static final String NEO_SPEC_PARAM_NAME = "LastRecievedBlock";
 

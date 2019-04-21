@@ -1,4 +1,7 @@
 package com.exrates.inout.service.omni;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -52,6 +55,9 @@ import java.util.Map;
 //@Log4j2(topic = "omni_log")
 @Service
 public class OmniServiceImpl implements OmniService {
+
+   private static final Logger log = LogManager.getLogger("omni_log");
+
 
     private final WithdrawUtils withdrawUtils;
     private final OmniNodeService omniNodeService;

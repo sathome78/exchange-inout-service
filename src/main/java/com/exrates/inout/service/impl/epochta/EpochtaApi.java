@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl.epochta;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +25,9 @@ import java.util.Map;
 //@Log4j2
 @Component
 public class EpochtaApi {
+
+   private static final Logger log = LogManager.getLogger(EpochtaApi.class);
+
 
     private RequestBuilder reqBuilder;
     @Value("${epochta.login}")

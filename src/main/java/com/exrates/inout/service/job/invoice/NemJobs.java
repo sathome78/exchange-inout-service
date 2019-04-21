@@ -1,4 +1,7 @@
 package com.exrates.inout.service.job.invoice;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
@@ -30,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 //@Log4j2(topic = "nem_log")
 @Service
 public class NemJobs {
+
+   private static final Logger log = LogManager.getLogger("nem_log");
+
 
     @Autowired
     private WithdrawService withdrawService;

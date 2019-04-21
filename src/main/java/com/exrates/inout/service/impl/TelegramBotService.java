@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
 import com.exrates.inout.domain.main.TelegramSubscription;
@@ -24,6 +27,9 @@ import java.util.stream.Stream;
 //@Log4j2(topic = "message_notify")
 @Component
 public class TelegramBotService extends TelegramLongPollingBot {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     @Qualifier("telegramNotificatorServiceImpl")
     @Autowired

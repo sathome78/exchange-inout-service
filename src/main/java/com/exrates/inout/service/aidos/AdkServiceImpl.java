@@ -1,4 +1,7 @@
 package com.exrates.inout.service.aidos;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
@@ -41,6 +44,9 @@ import static java.util.stream.Collectors.toList;
 @Service
 @RequiredArgsConstructor
 public class AdkServiceImpl implements AdkService {
+
+   private static final Logger log = LogManager.getLogger("adk_log");
+
 
     private final AidosNodeService aidosNodeService;
     private final MessageSource messageSource;

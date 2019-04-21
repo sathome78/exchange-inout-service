@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpStatus;
@@ -23,6 +26,9 @@ import java.util.Random;
 //@Log4j2(topic = "achain")
 @Service
 public class SDKHttpClient {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
 
     private CloseableHttpClient httpclient;

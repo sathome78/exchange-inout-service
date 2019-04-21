@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ripple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -53,6 +56,9 @@ import java.util.Random;
 @Service
 @PropertySource("classpath:/merchants/ripple.properties")
 public class RippleServiceImpl implements RippleService {
+
+   private static final Logger log = LogManager.getLogger("ripple_log");
+
 
     private @Value("${ripple.account.address}")
     String systemAddress;

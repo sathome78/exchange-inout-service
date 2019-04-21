@@ -1,4 +1,7 @@
 package com.exrates.inout.service.stellar;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -28,6 +31,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 @PropertySource("classpath:/merchants/stellar.properties")
 public class StellarReceivePaymentsService {
+
+   private static final Logger log = LogManager.getLogger("stellar_log");
+
 
     @Autowired
     private StellarService stellarService;

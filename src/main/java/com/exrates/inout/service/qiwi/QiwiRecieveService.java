@@ -1,4 +1,7 @@
 package com.exrates.inout.service.qiwi;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,9 @@ import java.util.concurrent.ScheduledExecutorService;
 //@Log4j2(topic = "Qiwi")
 @Profile("!dev")
 public class QiwiRecieveService {
+
+   private static final Logger log = LogManager.getLogger("Qiwi");
+
 
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 

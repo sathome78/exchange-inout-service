@@ -1,4 +1,7 @@
 package com.exrates.inout.configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.properties.SsmProperties;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
 //@Log4j2
 @RequiredArgsConstructor
 public class SSMConfiguration {
+
+   private static final Logger log = LogManager.getLogger(SSMConfiguration.class);
+
 
     private final SsmProperties ssmProperties;
 

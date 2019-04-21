@@ -1,4 +1,7 @@
 package com.exrates.inout.exceptions.handlers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.util.RestUtil;
@@ -10,6 +13,9 @@ import java.io.IOException;
 
 //@Log4j2
 public class RestResponseErrorHandler implements ResponseErrorHandler {
+
+   private static final Logger log = LogManager.getLogger(RestResponseErrorHandler.class);
+
 
     public void handleError(ClientHttpResponse response) throws IOException {
         log.error("Response error: {} {}", response.getStatusCode(), response.getBody());

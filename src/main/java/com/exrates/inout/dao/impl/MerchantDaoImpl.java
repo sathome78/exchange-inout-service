@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantDao;
 import com.exrates.inout.domain.CoreWalletDto;
@@ -39,6 +42,9 @@ import java.util.Optional;
 //@Log4j2
 @Repository
 public class MerchantDaoImpl implements MerchantDao {
+
+   private static final Logger log = LogManager.getLogger(MerchantDaoImpl.class);
+
 
     @Autowired
     @Qualifier(value = "masterTemplate")

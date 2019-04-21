@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.TelegramSubscriptionDao;
 import com.exrates.inout.domain.enums.NotificationTypeEnum;
@@ -20,6 +23,9 @@ import java.util.Optional;
 //@Log4j2(topic = "message_notify")
 @Component("telegramNotificatorServiceImpl")
 public class TelegramNotificatorServiceImpl implements NotificatorService, Subscribable {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     @Autowired
     private TelegramSubscriptionDao subscribtionDao;

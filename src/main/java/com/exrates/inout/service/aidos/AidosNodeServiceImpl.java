@@ -1,4 +1,7 @@
 package com.exrates.inout.service.aidos;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.domain.dto.BtcTransactionDto;
@@ -28,6 +31,9 @@ import java.util.stream.Collectors;
 @Service
 @PropertySource("classpath:/merchants/adk.properties")
 public class AidosNodeServiceImpl implements AidosNodeService {
+
+   private static final Logger log = LogManager.getLogger("adk_log");
+
 
     private @Value("${node.adk.rpc.host}")String nodeHost;
     private @Value("${node.adk.rpc.user}")String rpcUser;

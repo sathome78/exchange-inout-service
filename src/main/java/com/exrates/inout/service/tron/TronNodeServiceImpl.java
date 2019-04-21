@@ -1,4 +1,7 @@
 package com.exrates.inout.service.tron;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.TronNewAddressDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
@@ -23,6 +26,9 @@ import java.net.URI;
 @Service
 @PropertySource("classpath:/merchants/tron.properties")
 public class TronNodeServiceImpl implements TronNodeService {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     private final RestTemplate restTemplate;
 

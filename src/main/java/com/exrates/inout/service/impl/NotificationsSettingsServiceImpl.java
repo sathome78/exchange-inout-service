@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.NotificationUserSettingsDao;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
@@ -11,6 +14,9 @@ import org.springframework.stereotype.Component;
 //@Log4j2(topic = "message_notify")
 @Component
 public class NotificationsSettingsServiceImpl implements NotificationsSettingsService {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     private final NotificationUserSettingsDao settingsDao;
 

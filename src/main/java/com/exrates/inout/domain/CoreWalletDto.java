@@ -1,4 +1,7 @@
 package com.exrates.inout.domain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -11,6 +14,9 @@ import java.util.Locale;
 @Data
 //@Log4j2(topic = "bitcoin_core")
 public class CoreWalletDto {
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
     private int id;
     private int merchantId;
     private int currencyId;

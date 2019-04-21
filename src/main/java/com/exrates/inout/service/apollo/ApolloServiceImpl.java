@@ -1,4 +1,7 @@
 package com.exrates.inout.service.apollo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
@@ -30,6 +33,9 @@ import java.util.Optional;
 @PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloServiceImpl implements ApolloService {
+
+   private static final Logger log = LogManager.getLogger("apollo");
+
 
     private @Value("${apollo.url}")
     String SEVER_URL;

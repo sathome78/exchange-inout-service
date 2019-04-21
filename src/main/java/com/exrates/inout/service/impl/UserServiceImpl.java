@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.dao.UserDao;
@@ -44,6 +47,9 @@ import java.util.stream.Stream;
 //@Log4j2
 @Service
 public class UserServiceImpl implements UserService {
+
+   private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
+
 
     private final UserDao userDao;
 

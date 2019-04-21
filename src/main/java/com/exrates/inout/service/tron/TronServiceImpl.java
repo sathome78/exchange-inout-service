@@ -1,4 +1,7 @@
 package com.exrates.inout.service.tron;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
@@ -34,6 +37,9 @@ import java.util.stream.Collectors;
 //@Log4j2(topic = "tron")
 @Service
 public class TronServiceImpl implements TronService {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     private final static String CURRENCY_NAME = "TRX";
     private final static String MERCHANT_NAME = "TRX";

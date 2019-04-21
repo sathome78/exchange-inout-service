@@ -1,4 +1,7 @@
 package com.exrates.inout.service.tron;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestFlatDto;
@@ -38,6 +41,9 @@ import java.util.stream.StreamSupport;
 @PropertySource("classpath:/merchants/tron.properties")
 @Service
 public class TronTransactionsServiceImpl implements TronTransactionsService {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     @Autowired
     public TronTransactionsServiceImpl(TronNodeService tronNodeService, TronService tronService, RefillService refillService, TronTokenContext tronTokenContext) {

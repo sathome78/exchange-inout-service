@@ -1,4 +1,7 @@
 package com.exrates.inout.service.neo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.neo.*;
 import com.exrates.inout.exceptions.NeoApiException;
@@ -19,6 +22,9 @@ import java.util.Optional;
 
 //@Log4j2(topic = "neo_log")
 public class NeoNodeServiceImpl implements NeoNodeService {
+
+   private static final Logger log = LogManager.getLogger("neo_log");
+
 
 
     private String endpoint;

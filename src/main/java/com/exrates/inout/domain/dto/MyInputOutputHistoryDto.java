@@ -1,4 +1,7 @@
 package com.exrates.inout.domain.dto;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -23,6 +26,9 @@ import static com.exrates.inout.domain.enums.TransactionSourceType.*;
 @Setter
 @ToString
 public class MyInputOutputHistoryDto extends OnlineTableDto {
+
+   private static final Logger log = LogManager.getLogger(MyInputOutputHistoryDto.class);
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime datetime;
     private String currencyName;

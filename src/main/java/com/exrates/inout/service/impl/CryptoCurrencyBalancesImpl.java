@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.service.BitcoinService;
@@ -15,6 +18,9 @@ import java.util.Map;
 //@Log4j2
 @Service
 public class CryptoCurrencyBalancesImpl implements CryptoCurrencyBalances {
+
+   private static final Logger log = LogManager.getLogger(CryptoCurrencyBalancesImpl.class);
+
 
     @Autowired
     Map<String, BitcoinService> bitcoinServiceMap;

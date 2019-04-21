@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.EDCAccountDao;
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
@@ -38,6 +41,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 @PropertySource({"classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceImpl implements EDCService {
+
+   private static final Logger log = LogManager.getLogger("edc_log");
+
 
     private @Value("${edcmerchant.token}")
     String token;

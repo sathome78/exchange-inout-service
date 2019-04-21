@@ -1,4 +1,7 @@
 package com.exrates.inout.service.lisk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -45,6 +48,9 @@ import java.util.concurrent.TimeUnit;
 
 //@Log4j2(topic = "lisk_log")
 public class LiskServiceImpl implements LiskService {
+
+   private static final Logger log = LogManager.getLogger("lisk_log");
+
 
     private final BigDecimal DEFAULT_LSK_TX_FEE = BigDecimal.valueOf(0.1);
 

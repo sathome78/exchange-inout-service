@@ -1,4 +1,7 @@
 package com.exrates.inout.configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
@@ -61,6 +64,9 @@ import java.util.Map;
 //@Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
+
+   private static final Logger log = LogManager.getLogger("config");
+
 
     @Autowired
     private CryptoCurrencyProperties ccp;

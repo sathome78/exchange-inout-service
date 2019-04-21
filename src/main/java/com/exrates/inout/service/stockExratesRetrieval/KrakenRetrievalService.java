@@ -1,4 +1,7 @@
 package com.exrates.inout.service.stockExratesRetrieval;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.StockExchange;
 import com.exrates.inout.domain.dto.StockExchangeStats;
@@ -39,6 +42,9 @@ import java.util.Map;
 //@Log4j2(topic = "tracker")
 @Service(value = "Kraken")
 public class KrakenRetrievalService implements StockExrateRetrievalService {
+
+   private static final Logger log = LogManager.getLogger("tracker");
+
 
     private ObjectMapper objectMapper = new ObjectMapper();
 

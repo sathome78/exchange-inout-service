@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ripple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RippleAccount;
 import com.exrates.inout.domain.dto.RippleTransaction;
@@ -27,6 +30,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @PropertySource("classpath:/merchants/ripple.properties")
 public class RippledNodeServiceImpl implements RippledNodeService {
+
+   private static final Logger log = LogManager.getLogger("ripple_log");
+
 
     @Autowired
     private RestTemplate restTemplate;

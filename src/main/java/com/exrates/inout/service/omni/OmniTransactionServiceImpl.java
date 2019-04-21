@@ -1,4 +1,7 @@
 package com.exrates.inout.service.omni;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.*;
@@ -38,6 +41,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 //@Log4j2(topic = "omni_log")
 @Service
 public class OmniTransactionServiceImpl implements OmniTransactionService {
+
+   private static final Logger log = LogManager.getLogger("omni_log");
+
 
     private final MerchantSpecParamsDao specParamsDao;
     private final OmniNodeService omniNodeService;

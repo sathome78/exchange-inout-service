@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.StopOrderDao;
 import com.exrates.inout.domain.StopOrder;
@@ -21,6 +24,9 @@ import java.util.Map;
 @Repository
 //@Log4j2
 public class StopOrderDaoImpl implements StopOrderDao {
+
+   private static final Logger log = LogManager.getLogger(StopOrderDaoImpl.class);
+
 
     @Autowired
     @Qualifier(value = "masterTemplate")

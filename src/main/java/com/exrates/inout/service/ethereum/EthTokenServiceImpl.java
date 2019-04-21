@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ethereum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
@@ -54,6 +57,9 @@ import java.util.concurrent.TimeUnit;
 //@Log4j2(topic = "eth_tokens_log")
 @Service
 public class EthTokenServiceImpl implements EthTokenService {
+
+   private static final Logger log = LogManager.getLogger("eth_tokens_log");
+
 
     private Merchant merchant;
     private Currency currency;

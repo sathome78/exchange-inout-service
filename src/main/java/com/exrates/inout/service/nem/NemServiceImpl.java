@@ -1,4 +1,7 @@
 package com.exrates.inout.service.nem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.*;
@@ -50,6 +53,9 @@ import java.util.*;
 @Service
 @PropertySource("classpath:/merchants/nem.properties")
 public class NemServiceImpl implements NemService {
+
+   private static final Logger log = LogManager.getLogger("nem_log");
+
 
     @Autowired
     private NemTransactionsService nemTransactionsService;

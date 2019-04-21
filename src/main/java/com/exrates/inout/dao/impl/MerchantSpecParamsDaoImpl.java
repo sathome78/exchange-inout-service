@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -16,6 +19,9 @@ import java.util.Map;
 //@Log4j2
 @Repository
 public class MerchantSpecParamsDaoImpl implements MerchantSpecParamsDao {
+
+   private static final Logger log = LogManager.getLogger(MerchantSpecParamsDaoImpl.class);
+
 
     @Autowired
     @Qualifier(value = "masterTemplate")

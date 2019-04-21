@@ -1,4 +1,7 @@
 package com.exrates.inout.service.nem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.util.RestUtil;
@@ -31,6 +34,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @PropertySource("classpath:/merchants/nem.properties")
 public class NemNodeService {
+
+   private static final Logger log = LogManager.getLogger("nem_log");
+
 
     private @Value("${ncc.server.url}")String nccServer;
     private @Value("${nis.server.url.receive}")String nisServerRecieve;

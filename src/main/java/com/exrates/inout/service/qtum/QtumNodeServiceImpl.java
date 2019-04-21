@@ -1,4 +1,7 @@
 package com.exrates.inout.service.qtum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.domain.qtum.*;
@@ -27,6 +30,9 @@ import java.util.*;
 //@Log4j2(topic = "qtum_log")
 @PropertySource("classpath:/merchants/qtum.properties")
 public class QtumNodeServiceImpl implements QtumNodeService {
+
+   private static final Logger log = LogManager.getLogger("qtum_log");
+
 
     @Autowired
     private RestTemplate restTemplate;

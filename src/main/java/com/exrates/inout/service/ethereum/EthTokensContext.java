@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ethereum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -15,6 +18,9 @@ import java.util.Map;
 //@Log4j2
 @Component
 public class EthTokensContext {
+
+   private static final Logger log = LogManager.getLogger(EthTokensContext.class);
+
 
     @Autowired
     Map<String, EthTokenService> merchantServiceMap;
