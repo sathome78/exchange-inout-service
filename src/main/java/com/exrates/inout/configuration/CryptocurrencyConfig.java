@@ -1,8 +1,4 @@
 package com.exrates.inout.configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
@@ -51,7 +47,8 @@ import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.tron.TronTrc10Token;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -359,6 +356,12 @@ public class CryptocurrencyConfig {
     @Bean(name = "wolfServiceImpl")
     public BitcoinService wolfServiceImpl() {
         return createBitcoinService(ccp.getBitcoinCoins().getWolf());
+    }
+
+
+    @Bean(name = "tslServiceImpl")
+    public BitcoinService tslServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getTsl());
     }
 
     private BitcoinService createBitcoinService(BitcoinProperty property) {

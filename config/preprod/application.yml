@@ -1442,6 +1442,29 @@ bitcoin-coins:
       notification-alert-port: 11
       notification-block-port: 6669
       notification-wallet-port: 6670
+  tsl:
+    merchant-name: TSL
+    currency-name: TSL
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: false
+    support-wallet-notifications: true
+    support-reference-line: false
+    backup-folder: /data/backup
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.10.13.6
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 12201
+      notification-wallet-port: 12202
 
 
 ethereum-coins:

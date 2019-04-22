@@ -63,4 +63,5 @@ public class BitcoinCoins {
     private BitcoinProperty divi;
     private BitcoinProperty owc;
     private BitcoinProperty wolf;
+    private BitcoinProperty tsl;
 }
