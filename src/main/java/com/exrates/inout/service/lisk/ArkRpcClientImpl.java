@@ -1,4 +1,7 @@
 package com.exrates.inout.service.lisk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.lisk.ArkOpenAccountDto;
 import com.exrates.inout.domain.lisk.ArkSendTxDto;
@@ -20,10 +23,13 @@ import java.util.Collections;
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractObjectFromResponse;
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 @Service
 @Scope("prototype")
 public class ArkRpcClientImpl implements ArkRpcClient {
+
+   private static final Logger log = LogManager.getLogger("lisk_log");
+
     @Autowired
     private RestTemplate restTemplate;
 

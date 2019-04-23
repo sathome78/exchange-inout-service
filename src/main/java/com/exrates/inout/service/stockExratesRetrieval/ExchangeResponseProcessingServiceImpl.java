@@ -1,4 +1,7 @@
 package com.exrates.inout.service.stockExratesRetrieval;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.StockExchange;
 import com.exrates.inout.domain.dto.StockExchangeStats;
@@ -22,9 +25,12 @@ import java.util.function.BiFunction;
 //exrates.model.StockExchange;
 //exrates.model.StockExchangeStats;
 
-@Log4j2(topic = "tracker")
+//@Log4j2(topic = "tracker")
 @Service
 public class ExchangeResponseProcessingServiceImpl implements ExchangeResponseProcessingService {
+
+   private static final Logger log = LogManager.getLogger("tracker");
+
 
     @Autowired
     private RestTemplate restTemplate;

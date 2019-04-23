@@ -1,4 +1,7 @@
 package com.exrates.inout.service.qtum;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
@@ -49,10 +52,13 @@ import java.util.stream.Collectors;
 //exrates.service.util.WithdrawUtils;
 //exrates.service.vo.ProfileData;
 
-@Log4j2(topic = "qtum_log")
+//@Log4j2(topic = "qtum_log")
 @Service("qtumServiceImpl")
 @PropertySource("classpath:/merchants/qtum.properties")
 public class QtumServiceImpl implements QtumService {
+
+   private static final Logger log = LogManager.getLogger("qtum_log");
+
 
     private @Value("${qtum.min.confirmations}")
     Integer minConfirmations;

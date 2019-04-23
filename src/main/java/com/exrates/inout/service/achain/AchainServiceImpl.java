@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -36,9 +39,12 @@ import java.util.Map;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class AchainServiceImpl implements AchainService {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
     private final BigDecimal ACT_COMISSION = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
     private final BigDecimal TOKENS_COMISSION = new BigDecimal(0.1).setScale(2, RoundingMode.HALF_UP);

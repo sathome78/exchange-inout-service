@@ -1,4 +1,7 @@
 package com.exrates.inout.service.job.invoice;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
@@ -48,9 +51,12 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.POST_
  * Created by ValkSam
  */
 @Service
-@Log4j2(topic = "job")
+//@Log4j2(topic = "job")
 @PropertySource(value = {"classpath:/job.properties"})
 public class WithdrawRequestJob {
+
+   private static final Logger log = LogManager.getLogger("job");
+
 
 
   @Value("${withdraw.rejectErrorTimeout}")

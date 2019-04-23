@@ -1,4 +1,7 @@
 package com.exrates.inout.service.waves;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
@@ -25,8 +28,11 @@ import java.util.concurrent.*;
 import static java.util.Objects.nonNull;
 
 
-@Log4j2(topic = "waves_log")
+//@Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {
+
+   private static final Logger log = LogManager.getLogger("waves_log");
+
 
     @Autowired
     private WavesRestClient restClient;

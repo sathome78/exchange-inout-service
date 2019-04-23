@@ -1,4 +1,7 @@
 package com.exrates.inout.service.btc;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.*;
@@ -37,9 +40,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 @PropertySource(value = {"classpath:/job.properties"})
 public class BitcoinServiceImpl implements BitcoinService {
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
 
     @Value("${btcInvoice.blockNotifyUsers}")
     private Boolean BLOCK_NOTIFYING;

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.NotificatorPriceDao;
 import com.exrates.inout.dao.NotificatorsDao;
@@ -13,9 +16,12 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Service
 public class NotificatorsServiceImpl implements NotificatorsService {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     @Autowired
     private NotificatorsDao notificatorsDao;

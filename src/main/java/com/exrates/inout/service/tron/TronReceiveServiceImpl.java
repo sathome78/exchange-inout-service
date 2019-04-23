@@ -1,4 +1,7 @@
 package com.exrates.inout.service.tron;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
@@ -28,9 +31,12 @@ import java.util.concurrent.TimeUnit;
 //exrates.model.dto.TronReceivedTransactionDto;
 //exrates.model.dto.TronTransactionTypeEnum;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 public class TronReceiveServiceImpl {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     private final TronNodeService nodeService;
     private final TronServiceImpl tronService;

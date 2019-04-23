@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ripple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.service.MerchantService;
@@ -27,11 +30,14 @@ import java.util.Optional;
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @ClientEndpoint
 @Service
 @PropertySource("classpath:/merchants/ripple.properties")
 public class RippleWsServiceImpl {
+
+   private static final Logger log = LogManager.getLogger("ripple_log");
+
 
     private @Value("${ripple.rippled.ws}") String wsUrl;
     private @Value("${ripple.account.address}") String address;

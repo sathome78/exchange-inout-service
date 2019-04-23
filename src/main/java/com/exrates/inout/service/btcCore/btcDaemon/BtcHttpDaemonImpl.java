@@ -1,4 +1,7 @@
 package com.exrates.inout.service.btcCore.btcDaemon;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.domain.Block;
@@ -11,8 +14,11 @@ import com.neemre.btcdcli4j.daemon.event.WalletListener;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class BtcHttpDaemonImpl implements BtcDaemon {
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
 
     private BtcdClient btcdClient;
 

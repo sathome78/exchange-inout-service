@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.CommissionDao;
 import com.exrates.inout.dao.CurrencyDao;
@@ -43,8 +46,11 @@ import java.util.Map;
 import static com.exrates.inout.domain.enums.OperationType.SELL;
 
 @Repository
-@Log4j2
+//@Log4j2
 public class WalletDaoImpl implements WalletDao {
+
+   private static final Logger log = LogManager.getLogger(WalletDaoImpl.class);
+
 
     @Autowired
     private CommissionDao commissionDao;

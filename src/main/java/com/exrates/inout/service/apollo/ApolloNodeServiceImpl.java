@@ -1,4 +1,7 @@
 package com.exrates.inout.service.apollo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import lombok.extern.log4j.Log4j2;
@@ -15,10 +18,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 
-@Log4j2(topic = "apollo")
+//@Log4j2(topic = "apollo")
 @PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloNodeServiceImpl implements ApolloNodeService {
+
+   private static final Logger log = LogManager.getLogger("apollo");
+
 
     private @Value("${apollo.url}")String SEVER_URL;
 

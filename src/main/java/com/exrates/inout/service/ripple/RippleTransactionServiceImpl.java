@@ -1,4 +1,7 @@
 package com.exrates.inout.service.ripple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RippleAccount;
 import com.exrates.inout.domain.dto.RippleTransaction;
@@ -28,10 +31,13 @@ import java.util.Map;
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @Service
 @PropertySource("classpath:/merchants/ripple.properties")
 public class RippleTransactionServiceImpl implements RippleTransactionService {
+
+   private static final Logger log = LogManager.getLogger("ripple_log");
+
 
     @Autowired
     private RippledNodeService rippledNodeService;

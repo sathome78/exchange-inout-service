@@ -1,4 +1,7 @@
 package com.exrates.inout.service.component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.constants.Constants;
 import com.exrates.inout.domain.dto.AccountQuberaRequestDto;
@@ -20,10 +23,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-@Log4j2
+//@Log4j2
 @Component
 @PropertySource("classpath:/merchants/qubera.properties")
 public class KycHttpClient {
+
+   private static final Logger log = LogManager.getLogger(KycHttpClient.class);
+
 
     private @Value("${qubera.kyc.url}") String uriApi;
     private @Value("${qubera.kyc.apiKey}") String apiKey;

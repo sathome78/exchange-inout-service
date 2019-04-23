@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.EDCAccountDao;
 import com.exrates.inout.domain.main.EDCAccount;
@@ -38,10 +41,13 @@ import java.util.regex.Pattern;
 /**
  * @author Denis Savin (pilgrimm333@gmail.com)
  */
-@Log4j2(topic = "edc_log")
+//@Log4j2(topic = "edc_log")
 @Service
 @PropertySource({"classpath:/merchants/edc_cli_wallet.properties", "classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceNodeImpl implements EDCServiceNode {
+
+   private static final Logger log = LogManager.getLogger("edc_log");
+
 
   private @Value("${edcmerchant.token}") String token;
   private @Value("${edcmerchant.main_account}") String main_account;

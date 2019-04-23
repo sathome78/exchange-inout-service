@@ -1,4 +1,7 @@
 package com.exrates.inout.service.lisk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskOpenAccountDto;
@@ -31,8 +34,11 @@ import static com.exrates.inout.service.lisk.LiskRestUtils.*;
 
 //.exrates.service.lisk.LiskRestUtils.*;
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 public class LiskRestClientImpl implements LiskRestClient {
+
+   private static final Logger log = LogManager.getLogger("lisk_log");
+
 
     @Autowired
     private RestTemplate restTemplate;

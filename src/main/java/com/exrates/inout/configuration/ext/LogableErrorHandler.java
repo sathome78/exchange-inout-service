@@ -1,7 +1,7 @@
 package com.exrates.inout.configuration.ext;
-
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -9,8 +9,11 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 @Component
-@Log4j2(topic = "inout")
+//@Log4j2(topic = "inout")
 public class LogableErrorHandler implements ResponseErrorHandler {
+
+   private static final Logger log = LogManager.getLogger("inout");
+
     @Override
     public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
         return clientHttpResponse.getStatusCode().value() != 200;

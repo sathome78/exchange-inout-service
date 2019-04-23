@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.configuration.RabbitConfig;
 import com.exrates.inout.domain.dto.WalletOperationMsDto;
@@ -12,8 +15,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+//@Log4j2
 public class RabbitServiceImpl implements RabbitService {
+
+   private static final Logger log = LogManager.getLogger(RabbitServiceImpl.class);
+
 
     private static final String REFILL_ROUTE = "refill";
     private final RabbitTemplate rabbitTemplate;

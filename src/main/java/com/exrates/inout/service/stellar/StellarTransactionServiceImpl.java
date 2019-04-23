@@ -1,4 +1,7 @@
 package com.exrates.inout.service.stellar;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.StellarNetworkModeEnum;
@@ -33,10 +36,13 @@ import java.util.Map;
 /**
  * Created by maks on 11.06.2017.
  */
-@Log4j2(topic = "stellar_log")
+//@Log4j2(topic = "stellar_log")
 @Service
 @PropertySource("classpath:/merchants/stellar.properties")
 public class StellarTransactionServiceImpl implements StellarTransactionService {
+
+   private static final Logger log = LogManager.getLogger("stellar_log");
+
 
     private static final BigDecimal XLM_MIN_BALANCE = new BigDecimal(21);
     private @Value("${stellar.mode}") String MODE;

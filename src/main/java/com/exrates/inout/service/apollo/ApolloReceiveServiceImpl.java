@@ -1,4 +1,7 @@
 package com.exrates.inout.service.apollo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -24,10 +27,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2(topic = "apollo")
+//@Log4j2(topic = "apollo")
 @PropertySource("classpath:/merchants/apollo.properties")
 @Component
 public class ApolloReceiveServiceImpl {
+
+   private static final Logger log = LogManager.getLogger("apollo");
+
 
 
     private @Value("${apollo.main_address}")String MAIN_ADDRESS;

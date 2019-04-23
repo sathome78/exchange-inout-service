@@ -1,17 +1,30 @@
 package com.exrates.inout.domain.enums.invoice;
 
 
-import com.exrates.inout.exceptions.*;
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.exceptions.InvoiceActionIsProhibitedForCurrencyPermissionOperationException;
+import com.exrates.inout.exceptions.InvoiceActionIsProhibitedForNotHolderException;
+import com.exrates.inout.exceptions.UnsupportedInvoiceStatusForActionException;
+import com.exrates.inout.exceptions.UnsupportedWithdrawRequestStatusIdException;
+import com.exrates.inout.exceptions.UnsupportedWithdrawRequestStatusNameException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.*;
 
-@Log4j2
+//@Log4j2
 public enum WithdrawStatusEnum implements InvoiceStatus {
+
+
     CREATED_USER(1) {
         @Override
         public void initSchema(Map<InvoiceActionTypeEnum, InvoiceStatus> schemaMap) {
@@ -116,6 +129,7 @@ public enum WithdrawStatusEnum implements InvoiceStatus {
     };
 
     final private Map<InvoiceActionTypeEnum, InvoiceStatus> schemaMap = new HashMap<>();
+    private static final Logger log = LogManager.getLogger(WithdrawStatusEnum.class);
 
     @Override
     public InvoiceStatus nextState(InvoiceActionTypeEnum action) {

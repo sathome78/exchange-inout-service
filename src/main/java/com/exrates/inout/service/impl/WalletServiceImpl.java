@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.WalletDao;
 import com.exrates.inout.domain.dto.TransferDto;
@@ -36,11 +39,14 @@ import java.util.Locale;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.math.BigDecimal.ZERO;
 
-@Log4j2
+//@Log4j2
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
+
+   private static final Logger log = LogManager.getLogger(WalletServiceImpl.class);
+
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 

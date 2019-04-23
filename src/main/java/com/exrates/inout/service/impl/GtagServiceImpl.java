@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.api.ExchangeApi;
@@ -19,8 +22,11 @@ import java.util.UUID;
 
 @Service("gtagService")
 @PropertySource(value = "classpath:/analytics.properties")
-@Log4j2
+//@Log4j2
 public class GtagServiceImpl implements GtagService {
+
+   private static final Logger log = LogManager.getLogger(GtagServiceImpl.class);
+
 
     @Value("${google.analytics.host}")
     private String googleAnalyticsHost;

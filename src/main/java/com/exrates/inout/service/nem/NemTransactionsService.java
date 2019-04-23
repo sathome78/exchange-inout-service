@@ -1,4 +1,7 @@
 package com.exrates.inout.service.nem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.ActionType;
@@ -37,10 +40,13 @@ import java.util.HashMap;
 /**
  * Created by maks on 18.07.2017.
  */
-@Log4j2(topic = "nem_log")
+//@Log4j2(topic = "nem_log")
 @Service
 @PropertySource("classpath:/merchants/nem.properties")
 public class NemTransactionsService {
+
+   private static final Logger log = LogManager.getLogger("nem_log");
+
 
     private @Value("${nem.transaction.version}")Integer version;
 

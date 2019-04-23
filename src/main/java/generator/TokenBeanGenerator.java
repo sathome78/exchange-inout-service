@@ -1,6 +1,7 @@
 package generator;
 
 import com.exrates.inout.service.ethereum.ExConvert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -11,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @RunWith(SpringRunner.class)
+@Ignore
 public class TokenBeanGenerator {
 
     @Test

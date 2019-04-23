@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -27,9 +30,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class TxsScanerImpl implements BlocksScaner {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
     private final NodeService nodeService;
     private final AchainTokenContext tokenContext;

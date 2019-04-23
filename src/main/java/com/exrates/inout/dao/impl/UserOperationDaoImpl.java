@@ -1,9 +1,11 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.UserOperationDao;
 import com.exrates.inout.domain.dto.UserOperationAuthorityOption;
 import com.exrates.inout.domain.enums.UserOperationAuthority;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Log4j
+//@Log4j
 @Repository
 public class UserOperationDaoImpl implements UserOperationDao {
+
+   private static final Logger log = LogManager.getLogger(UserOperationDaoImpl.class);
+
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

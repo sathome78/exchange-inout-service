@@ -1,4 +1,7 @@
 package com.exrates.inout.service.job.invoice;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
 import com.exrates.inout.service.BitcoinService;
@@ -26,8 +29,11 @@ import java.util.Map;
  * Created by ValkSam
  */
 @Service
-@Log4j2
+//@Log4j2
 public class RefillRequestJob {
+
+   private static final Logger log = LogManager.getLogger(RefillRequestJob.class);
+
 
     @Autowired
     RefillService refillService;
@@ -53,7 +59,7 @@ public class RefillRequestJob {
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
-        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD"};
+        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL"};
         for (String coin : merchantNames) {
             try {
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);

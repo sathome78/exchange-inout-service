@@ -1,4 +1,7 @@
 package com.exrates.inout.service.casinocoin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -45,11 +48,14 @@ import java.util.Random;
 //exrates.service.util.WithdrawUtils;
 
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @Service
 @PropertySource("classpath:/merchants/casinocoin.properties")
 @Data
 public class CasinoCoinServiceImpl implements CasinoCoinService {
+
+   private static final Logger log = LogManager.getLogger("casinocoin_log");
+
 
     private static final String DESTINATION_TAG_ERR_MSG = "message.casinocoin.tagError";
 

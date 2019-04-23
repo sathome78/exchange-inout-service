@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Log4j2
+@Log4j2(topic = "aunit")
 @RequiredArgsConstructor
 public class SSMConfiguration {
 
@@ -17,6 +17,8 @@ public class SSMConfiguration {
 
     @Bean
     public SSMGetter ssmGetter() {
+        System.out.println("SSMGetter posted smth into log file");
+        log.info("ебать я даун");
         if(ssmProperties.getMode().equals("dev")) return new MockSSM();
 
         return new SSMGetterImpl();
@@ -32,4 +34,5 @@ public class SSMConfiguration {
             return "FBSOcGiKC73j2FM";
         }
     }
+
 }

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -13,9 +16,12 @@ import org.springframework.stereotype.Component;
  */
 
 @PropertySource("classpath:/merchants/achain.properties")
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Component
 public class NodeServiceImpl implements NodeService {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
     private final SDKHttpClient httpClient;
 

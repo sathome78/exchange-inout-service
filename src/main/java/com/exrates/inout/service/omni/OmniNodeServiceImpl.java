@@ -1,4 +1,7 @@
 package com.exrates.inout.service.omni;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import lombok.extern.log4j.Log4j2;
@@ -18,10 +21,13 @@ import java.net.URISyntaxException;
 
 //exrates.service.handler.RestResponseErrorHandler;
 
-@Log4j2(topic = "omni_log")
+//@Log4j2(topic = "omni_log")
 @Service
 @PropertySource("classpath:/merchants/omni.properties")
 public class OmniNodeServiceImpl implements OmniNodeService {
+
+   private static final Logger log = LogManager.getLogger("omni_log");
+
 
     private @Value("${node.omni.rpc.host}")String nodeHost;
     private @Value("${node.omni.rpc.user}")String rpcUser;
