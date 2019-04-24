@@ -1,40 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- For assistance related to logback-translator or configurations  -->
-<!-- files in general, please contact the logback user mailing list -->
-<!-- at http://www.qos.ch/mailman/listinfo/logback-user             -->
-<!--                                                                -->
-<!-- For professional support please see                            -->
-<!--    http://www.qos.ch/shop/products/professionalSupport         -->
-<!--                                                                -->
 <configuration>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [${HOSTNAME}] [%thread] %level %logger{36}@%method:%line - %msg%n</pattern>
-        </encoder>
+  <appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
+      <destination>172.10.12.132:5072</destination>
 
-    </appender>
+      <!-- encoder is required -->
+      <encoder class="net.logstash.logback.encoder.LogstashAccessEncoder" />
+  </appender>
 
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/data/logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>100</maxHistory>
-        </rollingPolicy>
-
-        <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [${HOSTNAME}] [%thread] %level %logger{36}@%method:%line - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <logger name="org.springframework" level="INFO"/>
-    <logger name="org.hibernate" level="INFO" />
-
-    <logger name="org.apache.commons" level="ERROR"/>
-    <logger name="org.apache.velocity" level="ERROR"/>
-    <logger name="org.apache.tiles" level="ERROR"/>
-    <logger name="org.apache.catalina" level="INFO"/>
-
-    <root level="INFO">
-        <appender-ref ref="console"/>
-        <appender-ref ref="file"/>
-    </root>
+  <appender-ref ref="stash" />
+</configuration>
