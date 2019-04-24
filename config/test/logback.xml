@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
-      <destination>172.10.12.132:4560</destination>
-<encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
-  </appender>
-  <include resource="org/springframework/boot/logging/logback/base.xml"/>
-  <root level="INFO">
-    <!--<appender-ref ref="LOGSTASH" />-->
-    <appender-ref ref="CONSOLE" />
-  </root>
-</configuration>
+<Configuration>
+  <Appenders>
+     <Socket name="Socket" host="172.10.12.132" port="4560">
+       <JsonLayout compact="true" eventEol="true" />
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Socket"/>
+    </Root>
+  </Loggers>
+</Configuration>
