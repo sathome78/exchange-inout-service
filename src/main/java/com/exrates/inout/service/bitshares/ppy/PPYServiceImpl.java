@@ -91,7 +91,6 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
     private void setIrreversableBlock(String msg) {
         JSONObject message = new JSONObject(msg);
         int blockNumber = message.getJSONArray("params").getJSONArray(1).getJSONArray(0).getJSONObject(0).getInt(lastIrreversebleBlockParam);
-        System.out.println("New block PPY : " + blockNumber);
         synchronized (this) {
             if (blockNumber > lastIrreversibleBlockValue) {
                 for (; lastIrreversibleBlockValue <= blockNumber; lastIrreversibleBlockValue++) {
