@@ -11,7 +11,7 @@ COPY ./target/input-output-service.jar ${APP_PATH}/input-output-service.jar
 COPY ./target/config/${ENVIRONMENT}/logback.xml ${APP_PATH}/logback.xml
 COPY ./target/config/${ENVIRONMENT}/application.yml ${APP_PATH}/application.yml
 ARG CONFIG_FILE_PATH="-Dspring.config.location="${ENVIRONMENT}"/application.yml"
-ARG LOGBACK_CONFIG_PATH="-Dlogging.config=/input-output-service/logback.xml"
+ARG LOGBACK_CONFIG_PATH="-Dlogging.config=/logback.xml"
 
 WORKDIR ${APP_PATH}
 VOLUME /opt/properties
