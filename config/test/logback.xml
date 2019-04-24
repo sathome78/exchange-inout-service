@@ -2,10 +2,11 @@
 <configuration>
   <appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
       <destination>172.10.12.132:4560</destination>
-
-      <!-- encoder is required -->
-      <encoder class="net.logstash.logback.encoder.LogstashAccessEncoder" />
+<encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
   </appender>
-
-  <appender-ref ref="stash" />
+  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+  <root level="INFO">
+    <!--<appender-ref ref="LOGSTASH" />-->
+    <appender-ref ref="CONSOLE" />
+  </root>
 </configuration>
