@@ -1469,7 +1469,7 @@ ethereum-coins:
   eth:
     merchant-name: Ethereum
     currency-name: ETH
-    min-confirmations: 12
+    min-confirmations: 15
     node:
       currency: Ethereum
       url: http://172.31.43.173:8549/
@@ -1482,72 +1482,43 @@ ethereum-coins:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_log
-  #Test
-  #  eth:
-  #    merchant-name: Ethereum
-  #    currency-name: ETH
-  #    min-confirmations: 12
-  #    node:
-  #      currency: Ethereum
-  #      url-our-node:
-  #      url: http://52.208.46.161:8546
-  #      destination-dir: D:\\Ethereum1\\Original\\testnet\\keystore\\
-  #      password: 061372f91f949effb934abadff5f0636de09113d
-  #      main-address: 0xa8522390c0Ae551028fbfb5ef97A1aF13F5492a8
-  #      transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
-  #      transfer-acc-privat-key: 74199533323615390595446811567054381692532959393563993073409395447229707848705
-  #      transfer-acc-public-key: 13119590832013525280742184238702178365489504100104976407042930393855053495689192423115970974319645018672313443483886856541705435663423306545046973102286102
-  #      min-sum-on-account: 0
-  #      min-balance-for-transfer: 0.0031
-  #      log: ethereum_log
   etc:
     merchant-name: Ethereum Classic
     currency-name: ETC
-    min-confirmations: 12
+    min-confirmations: 400
     node:
       currency: Ethereum Classic
       #      url-our-node:
-      url: http://localhost:8101
-      destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
+      url: http://ip-172-31-14-168.us-east-2.compute.internal:8101
+      destination-dir: //data//ethereum_classic//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0x6cF080280A37efF8f163F004B9da6962764368a0
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_classic_log
   etz:
     merchant-name: EtherZero
     currency-name: ETZ
-    min-confirmations: 12
+    min-confirmations: 40
     node:
       currency: EtherZero
-      #      url-our-node:
-      url: http://18.216.0.44:8102
-      destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
+      url: http://172.31.22.163:8102
+      destination-dir: //data//etherzero//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0x67d982400c4655448ee0cdfe9974c4d60a1e9a3a
       min-sum-on-account: 0.01
       min-balance-for-transfer: 0.02
       log: etherzero_log
   clo:
     merchant-name: CLO
     currency-name: CLO
-    min-confirmations: 12
+    min-confirmations: 40
     node:
       currency: CLO
-      #      url-our-node:
-      url: http://13.59.242.131:8104
-      destination-dir: D:\\Ethereum1\\callisto\\keystore\\
+      url: http://172.31.14.168:8104
+      destination-dir: //data//callisto//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0x3362d2b0d8b85Ea88e377bBbF97A7ff37C297449
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1557,82 +1528,62 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      #      url-our-node:
-      url: http://13.59.242.131:8105
-      destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
+      url: http://172.31.14.169:8105
+      destination-dir: //data//bitcoiin2g//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0x419dba705b62ca9e6b3916b94afd526d9cd1dfd9
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
   gol:
     merchant-name: GOL
     currency-name: GOL
-    min-confirmations: 12
+    min-confirmations: 40
     node:
       currency: GOL
-      #      url-our-node:
       url: http://172.31.7.222:8106
-      destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
+      destination-dir: //data//goldiam//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0xba6212d87da71305f63307e4f2ad6296e2424495
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
   cnet:
     merchant-name: CNET
     currency-name: CNET
-    min-confirmations: 0
+    min-confirmations: 110
     node:
       currency: CNET
-      #      url-our-node:
       url: http://172.31.4.189:8107
-      destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
+      destination-dir: //data//contractnet//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0xef15032e7dc8f4e337732e3086504ed9124f82aa
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: contractnet_log
   nty:
     merchant-name: NTY
     currency-name: NTY
-    min-confirmations: 12
+    min-confirmations: 40
     node:
       currency: NTY
-      #      url-our-node:
       url: http://172.31.1.74:8108
-      destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
+      destination-dir: //data//nexty//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0xe6ef3c94a2fbdec42a07d5ff5d72e8549c4c880a
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: nexty_log
   eti:
     merchant-name: ETI
     currency-name: ETI
-    min-confirmations: 12
+    min-confirmations: 50
     node:
       currency: Etherinc
-      #      url-our-node: http://13.59.242.131:9545
       url: https://api.einc.io/jsonrpc/mainnet
-      destination-dir: D:\\Ethereum1\\Etherinc\\mainnet\\keystore\\
+      destination-dir: //data//etherinc//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
-      main-address: 0x8B4Fa8D92d2F7A41F80033521aD6fc1fBcB1d5A7
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
+      main-address: 0x2901d94cbd4aea467880e220E28168B15179526f
       min-sum-on-account: 0
       min-balance-for-transfer: 0.01
       log: etherinc_log

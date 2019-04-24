@@ -48,8 +48,6 @@ public class RabbitServiceImpl implements RabbitService {
 
     @PostConstruct
     public void test(){
-        sendAcceptRefillEvent(new WalletOperationMsDto(null, 25));
-        sendAcceptRefillEvent(new WalletOperationMsDto(null, 25));
-        sendAcceptRefillEvent(new WalletOperationMsDto(null, 25));
+        rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName,REFILL_QUEUE, new String("Zalupa"));
     }
 }
