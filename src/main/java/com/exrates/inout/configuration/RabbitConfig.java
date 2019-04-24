@@ -17,7 +17,7 @@ public class RabbitConfig  {
 
 
     @Bean
-    Queue queue() {
+    Queue refillQueue() {
         return new Queue(REFILL_QUEUE, true);
     }
 
@@ -27,8 +27,8 @@ public class RabbitConfig  {
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(REFILL_QUEUE);
+    Binding binding() {
+        return BindingBuilder.bind(refillQueue()).to(exchange()).with(REFILL_QUEUE);
     }
 
     @Bean
