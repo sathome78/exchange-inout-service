@@ -7,7 +7,7 @@
     <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <param name="Encoding" value="UTF-8"/>
         <remoteHost>172.10.12.132</remoteHost>
-        <port>5000</port>
+        <port>5072</port>
         <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"test-inout-service":"${applicationName}"}</customFields>
