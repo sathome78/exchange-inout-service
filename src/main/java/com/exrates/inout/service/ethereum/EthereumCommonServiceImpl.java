@@ -430,6 +430,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         try {
 
             File destination = new File(destinationDir);
+            System.out.println("Trying to create " + destinationDir + " folders: " + destination.mkdirs());
             log.debug(merchantName + " " + destinationDir);
 
             String fileName = "";
