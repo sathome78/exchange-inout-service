@@ -114,7 +114,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         try {
             System.out.println("Try to extract private key bitshares");
             privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
-            System.out.println("private key ok");
+            System.out.println("todo remove this private key ok = privateKey");
             currency = currencyService.findByName(currencyName);
             merchant = merchantService.findByName(merchantName);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
@@ -246,7 +246,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @Override
     public RefillRequestAcceptDto createRequest(String hash, String address, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.error("aunit transaction allready received!!! {}" + hash);
+            log.error(merchantName + " transaction allready received!!! {}" + hash);
             throw new RuntimeException("aunit transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -365,7 +365,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             else if (isIrreversibleBlockInfo(msg)) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-//            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
@@ -395,7 +395,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             }
 
         } catch (JSONException e) {
-            log.debug(e);
+            log.error(e);
         }
     }
 
