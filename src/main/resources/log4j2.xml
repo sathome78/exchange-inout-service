@@ -969,6 +969,7 @@
         </logger>
         <logger name="ppy" level="ALL" additivity="false">
             <AppenderRef ref="ppy"/>
+            <AppenderRef ref="Console"/>
         </logger>
         <logger name="email_log" level="ALL" additivity="false">
             <AppenderRef ref="email_log"/>
