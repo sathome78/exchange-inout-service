@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+     <Socket name="Socket" host="172.10.12.132" port="4560">
+       <JsonLayout compact="true" eventEol="true" />
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Socket"/>
+    </Root>
+  </Loggers>
+</Configuration>
