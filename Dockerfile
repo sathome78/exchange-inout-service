@@ -9,9 +9,8 @@ RUN mkdir /data/ethereum
 RUN mkdir /data/ethereum/keystore
 COPY ./target/input-output-service.jar ${APP_PATH}/input-output-service.jar
 COPY ./target/config/${ENVIRONMENT}/application.yml ${APP_PATH}/application.yml
-ARG CONFIG_FILE_PATH="-Dspring.config.location=${APP_PATH}/application.yml"
 
 WORKDIR ${APP_PATH}
-
+RUN readlink -f application.yml
 EXPOSE 8080
-CMD java -jar input-output-service.jar -Dspring.config.location=/input-output-service/application.yml
+CMD java -jar input-output-service.jar
