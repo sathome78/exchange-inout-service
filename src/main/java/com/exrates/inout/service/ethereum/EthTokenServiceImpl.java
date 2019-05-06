@@ -201,6 +201,7 @@ public class EthTokenServiceImpl implements EthTokenService {
             });
         } catch (Exception e) {
             log.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -271,6 +272,7 @@ public class EthTokenServiceImpl implements EthTokenService {
             gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currency.getName(), username);
         } catch (Exception e) {
             log.error(e);
+            e.printStackTrace();
         }
     }
 
