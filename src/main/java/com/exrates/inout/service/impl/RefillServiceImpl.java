@@ -397,7 +397,7 @@ public class RefillServiceImpl implements RefillService {
     @Override
     @Transactional
     public void putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto onBchExamDto) throws RefillRequestAppropriateNotFoundException {
-        log.debug("Put on bch exam: " + onBchExamDto);
+        System.out.println("Put on bch exam: " + onBchExamDto);
         Integer requestId = onBchExamDto.getRequestId();
         if (requestId == null) {
             Optional<Integer> requestIdOptional = getRequestIdInPendingByAddressAndMerchantIdAndCurrencyId(
