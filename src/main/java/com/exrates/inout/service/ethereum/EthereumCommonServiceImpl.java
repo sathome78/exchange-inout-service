@@ -285,7 +285,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             observable = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(new DefaultBlockParameterNumber(Long.parseLong(lastBlock)));
             log.info("start subscribe method");
             subscription = observable.subscribe(ethBlock -> {
-                System.out.println("new block {}" + ethBlock.getBlockNumber());
+                System.out.print("new block {}" + ethBlock.getBlockNumber());
                 if (merchantName.equals("Ethereum")) {
                     if (ethBlock.getFrom().equals(credentialsMain.getAddress())) {
                         counter[0]++;
@@ -393,6 +393,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         } catch (Exception e) {
             subscribeCreated = false;
             log.error(merchantName + " " + e);
+            e.printStackTrace();
         }
     }
 
