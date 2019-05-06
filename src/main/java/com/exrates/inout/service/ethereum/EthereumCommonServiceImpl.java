@@ -200,7 +200,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             public void run() {
                 checkSession();
             }
-        }, 3, 8, TimeUnit.MINUTES);
+        }, 0, 8, TimeUnit.MINUTES);
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
@@ -285,7 +285,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             observable = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(new DefaultBlockParameterNumber(Long.parseLong(lastBlock)));
             log.info("start subscribe method");
             subscription = observable.subscribe(ethBlock -> {
-                log.info("new block {}", ethBlock.getBlockNumber());
+                System.out.println("new block {}" + ethBlock.getBlockNumber());
                 if (merchantName.equals("Ethereum")) {
                     if (ethBlock.getFrom().equals(credentialsMain.getAddress())) {
                         counter[0]++;
@@ -293,7 +293,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                     }
                 }
 
-//                log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
+                log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
 
                 /*-------------Tokens--------------*/
                 if (ethBlock.getTo() != null && ethTokensContext.isContract(ethBlock.getTo()) && merchantName.equals("Ethereum")) {
