@@ -1,27 +1,48 @@
 package com.exrates.inout.service.btc;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.BtcAdminPreparedTxDto;
+import com.exrates.inout.domain.dto.BtcBlockDto;
+import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDto;
+import com.exrates.inout.domain.dto.BtcPreparedTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
+import com.exrates.inout.domain.dto.BtcWalletInfoDto;
+import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.RefillRequestSetConfirmationsNumberDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.exceptions.*;
+import com.exrates.inout.exceptions.BtcPaymentNotFoundException;
+import com.exrates.inout.exceptions.CoreWalletPasswordNotFoundException;
+import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
+import com.exrates.inout.exceptions.MerchantSpecParamNotFoundException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.BitcoinService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.btcCore.CoreWalletService;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.ParamMapUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -30,11 +51,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -172,7 +201,7 @@ public class BitcoinServiceImpl implements BitcoinService {
     }
 
 
-    @PostConstruct
+//    @PostConstruct
     void startBitcoin() {
         try {
             merchant = merchantService.findByName(merchantName);

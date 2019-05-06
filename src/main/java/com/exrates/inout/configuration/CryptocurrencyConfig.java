@@ -1,11 +1,11 @@
 package com.exrates.inout.configuration;
+
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
 import com.exrates.inout.domain.neo.NeoAsset;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.BitcoinProperty;
-import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.properties.models.EthereumTokenProperty;
 import com.exrates.inout.properties.models.LiskProperty;
 import com.exrates.inout.properties.models.MoneroProperty;
@@ -54,6 +54,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -371,54 +372,58 @@ public class CryptocurrencyConfig {
     //ETH Services
     @Bean(name = "ethereumServiceImpl")
     public EthereumCommonService ethereumService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEth());
+        return new EthereumCommonServiceImpl("merchants/ethereum.properties",
+                "Ethereum", "ETH", 15);
     }
 
     @Bean(name = "ethereumClassicServiceImpl")
     public EthereumCommonService ethereumClassicService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEtc());
+        return new EthereumCommonServiceImpl("merchants/ethereumClassic.properties",
+                "Ethereum Classic", "ETC", 400);
     }
 
     @Bean(name = "etzServiceImpl")
     public EthereumCommonService etzService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEtz());
+        return new EthereumCommonServiceImpl("merchants/etherzero.properties",
+                "EtherZero", "ETZ", 40);
     }
 
     @Bean(name = "cloServiceImpl")
     public EthereumCommonService cloService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getClo());
+        return new EthereumCommonServiceImpl("merchants/callisto.properties",
+                "CLO", "CLO", 40);
     }
 
     @Bean(name = "b2gServiceImpl")
     public EthereumCommonService b2gService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getB2g());
+        return new EthereumCommonServiceImpl("merchants/bitcoiin2g.properties",
+                "B2G", "B2G", 400);
     }
 
     @Bean(name = "golServiceImpl")
     public EthereumCommonService golService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getGol());
+        return new EthereumCommonServiceImpl("merchants/goldiam.properties",
+                "GOL", "GOL", 40);
     }
 
     @Bean(name = "cnetServiceImpl")
     public EthereumCommonService cnetService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getCnet());
+        return new EthereumCommonServiceImpl("merchants/contractnet.properties",
+                "CNET", "CNET", 110);
     }
 
     @Bean(name = "ntyServiceImpl")
     public EthereumCommonService ntyService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getNty());
+        return new EthereumCommonServiceImpl("merchants/nexty.properties",
+                "NTY", "NTY", 40);
     }
 
     @Bean(name = "etherincServiceImpl")
     public EthereumCommonService etherincService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEti());
+        return new EthereumCommonServiceImpl("merchants/eti.properties",
+                "ETI", "ETI", 50);
     }
-
-    private EthereumCommonService createEthereumCommonService(EthereumProperty property) {
-        return new EthereumCommonServiceImpl(property);
-    }
-
-    //Eth tokens
+        //Eth tokens
     @Bean(name = "repServiceImpl")
     public EthTokenService RepService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getRep());
@@ -1061,7 +1066,12 @@ public class CryptocurrencyConfig {
 
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
-        return new EthTokenServiceImpl(property);
+        return new EthTokenServiceImpl(Arrays.asList(property.getContract().replaceAll(" ", "").split(",")),
+                property.getMerchantName(),
+                property.getCurrencyName(),
+                property.isERC20(),
+                property.getUnit(),
+                property.getMinWalletBalance());
     }
 
 //     LISK-like cryptos

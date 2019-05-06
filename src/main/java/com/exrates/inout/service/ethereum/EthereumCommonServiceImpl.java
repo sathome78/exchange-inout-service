@@ -1,13 +1,19 @@
 package com.exrates.inout.service.ethereum;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
-import com.exrates.inout.exceptions.NotImplementedMethod;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -25,7 +31,6 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
@@ -41,18 +46,20 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ajet
- */
-//@Service
 public class EthereumCommonServiceImpl implements EthereumCommonService {
-
-    private static final String ETHEREUM = "Ethereum";
 
     @Autowired
     private CurrencyService currencyService;
@@ -85,7 +92,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private Web3j web3j;
 
-    private Observable<Transaction> observable;
+    private Observable<org.web3j.protocol.core.methods.response.Transaction> observable;
 
     private Subscription subscription;
 
@@ -116,25 +123,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     private BigDecimal minSumOnAccount;
 
     private Logger log;
-
-    public EthereumCommonServiceImpl(EthereumProperty property) {
-        this.url = property.getNode().getUrl();
-        this.destinationDir = property.getNode().getDestinationDir();
-        this.password = property.getNode().getPassword();
-        this.mainAddress = property.getNode().getMainAddress();
-        this.minSumOnAccount = property.getNode().getMinSumOnAccount();
-        this.minBalanceForTransfer = property.getNode().getMinBalanceForTransfer();
-        this.merchantName = property.getMerchantName();
-        this.currencyName = property.getCurrencyName();
-        this.minConfirmations = property.getMinConfirmations();
-        this.log = LogManager.getLogger(property.getNode().getLog());
-        if (this.merchantName.equals(ETHEREUM)) {
-            this.transferAccAddress = property.getNode().getTransferAccAddress();
-            this.transferAccPrivateKey = property.getNode().getTransferAccPrivatKey();
-            this.transferAccPublicKey = property.getNode().getTransferAccPublicKey();
-            this.needToCheckTokens = true;
-        }
-    }
 
     @Override
     public Web3j getWeb3j() {
@@ -178,6 +166,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         Properties props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
+            System.out.println("ETH PROPS: " + props);
             this.url = props.getProperty("ethereum.url");
             this.destinationDir = props.getProperty("ethereum.destinationDir");
             this.password = props.getProperty("ethereum.password");
@@ -211,7 +200,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             public void run() {
                 checkSession();
             }
-        }, 0, 8, TimeUnit.MINUTES);
+        }, 3, 8, TimeUnit.MINUTES);
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
@@ -246,7 +235,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 } catch (Exception e) {
                     log.error(e);
                 }
-            }, 0, 3, TimeUnit.MINUTES);
+            }, 4, 3, TimeUnit.MINUTES);
         }
     }
 
@@ -257,7 +246,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        throw new NotImplementedMethod("for " + params);
+        throw new NotImplimentedMethod("for " + params);
     }
 
     private void checkConnection() {
@@ -430,7 +419,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         try {
 
             File destination = new File(destinationDir);
-            System.out.println("Trying to create " + destinationDir + " folders: " + destination.mkdirs());
             log.debug(merchantName + " " + destinationDir);
 
             String fileName = "";
