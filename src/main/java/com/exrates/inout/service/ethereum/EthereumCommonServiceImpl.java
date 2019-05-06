@@ -297,7 +297,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
                 /*-------------Tokens--------------*/
                 if(ethTokensContext.isContract(ethBlock.getTo())){
-                    System.out.println("Foud contract, to " + ethBlock.getTo());
+                    System.out.println("Found contract, to " + ethBlock.getTo());
                     System.out.println("ethTokensContext.getByContract(ethBlock.getTo()).tokenTransaction(ethBlock)" + ethTokensContext.getByContract(ethBlock.getTo()));
                 }
 
