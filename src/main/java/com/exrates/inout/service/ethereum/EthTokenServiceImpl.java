@@ -160,7 +160,6 @@ public class EthTokenServiceImpl implements EthTokenService {
                 return;
             }
             List<Log> logsList = transactionReceipt.getLogs();
-            System.out.println("logsList" + logsList);
 
             logsList.forEach(l -> {
                 TransferEventResponse response = extractData(l.getTopics(), l.getData());
@@ -176,7 +175,6 @@ public class EthTokenServiceImpl implements EthTokenService {
                             merchant.getId(),
                             currency.getId(),
                             transaction.getHash()).isPresent()) {
-                        System.out.println("starting creating request");
                         BigDecimal amount = ExConvert.fromWei(response.value.getValue().toString(), unit);
                         log.debug(merchant.getName() + " recipient: " + contractRecipient + ", amount: " + amount);
 
