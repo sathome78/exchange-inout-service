@@ -56,6 +56,7 @@ import org.springframework.context.annotation.Scope;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -1066,7 +1067,9 @@ public class CryptocurrencyConfig {
 
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
-        return new EthTokenServiceImpl(Arrays.asList(property.getContract().replaceAll(" ", "").split(",")),
+        String[] s = property.getContract().replaceAll(" ", "").split(",");
+        List<String> contractAddress = Arrays.asList(s);
+        return new EthTokenServiceImpl(contractAddress,
                 property.getMerchantName(),
                 property.getCurrencyName(),
                 property.isERC20(),

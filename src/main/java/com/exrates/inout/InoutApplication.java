@@ -1,19 +1,16 @@
 package com.exrates.inout;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @SpringBootApplication(exclude = {
         JpaRepositoriesAutoConfiguration.class,
         org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class
 })
 @EnableTransactionManagement
-//@EnableEurekaClient
 @EnableScheduling
 public class InoutApplication  {
 
