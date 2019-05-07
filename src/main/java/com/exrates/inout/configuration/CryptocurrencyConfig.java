@@ -376,54 +376,54 @@ public class CryptocurrencyConfig {
         return new EthereumCommonServiceImpl("merchants/ethereum.properties",
                 "Ethereum", "ETH", 15);
     }
-
-    @Bean(name = "ethereumClassicServiceImpl")
-    public EthereumCommonService ethereumClassicService() {
-        return new EthereumCommonServiceImpl("merchants/ethereumClassic.properties",
-                "Ethereum Classic", "ETC", 400);
-    }
-
-    @Bean(name = "etzServiceImpl")
-    public EthereumCommonService etzService() {
-        return new EthereumCommonServiceImpl("merchants/etherzero.properties",
-                "EtherZero", "ETZ", 40);
-    }
-
-    @Bean(name = "cloServiceImpl")
-    public EthereumCommonService cloService() {
-        return new EthereumCommonServiceImpl("merchants/callisto.properties",
-                "CLO", "CLO", 40);
-    }
-
-    @Bean(name = "b2gServiceImpl")
-    public EthereumCommonService b2gService() {
-        return new EthereumCommonServiceImpl("merchants/bitcoiin2g.properties",
-                "B2G", "B2G", 400);
-    }
-
-    @Bean(name = "golServiceImpl")
-    public EthereumCommonService golService() {
-        return new EthereumCommonServiceImpl("merchants/goldiam.properties",
-                "GOL", "GOL", 40);
-    }
-
-    @Bean(name = "cnetServiceImpl")
-    public EthereumCommonService cnetService() {
-        return new EthereumCommonServiceImpl("merchants/contractnet.properties",
-                "CNET", "CNET", 110);
-    }
-
-    @Bean(name = "ntyServiceImpl")
-    public EthereumCommonService ntyService() {
-        return new EthereumCommonServiceImpl("merchants/nexty.properties",
-                "NTY", "NTY", 40);
-    }
-
-    @Bean(name = "etherincServiceImpl")
-    public EthereumCommonService etherincService() {
-        return new EthereumCommonServiceImpl("merchants/eti.properties",
-                "ETI", "ETI", 50);
-    }
+//
+//    @Bean(name = "ethereumClassicServiceImpl")
+//    public EthereumCommonService ethereumClassicService() {
+//        return new EthereumCommonServiceImpl("merchants/ethereumClassic.properties",
+//                "Ethereum Classic", "ETC", 400);
+//    }
+//
+//    @Bean(name = "etzServiceImpl")
+//    public EthereumCommonService etzService() {
+//        return new EthereumCommonServiceImpl("merchants/etherzero.properties",
+//                "EtherZero", "ETZ", 40);
+//    }
+//
+//    @Bean(name = "cloServiceImpl")
+//    public EthereumCommonService cloService() {
+//        return new EthereumCommonServiceImpl("merchants/callisto.properties",
+//                "CLO", "CLO", 40);
+//    }
+//
+//    @Bean(name = "b2gServiceImpl")
+//    public EthereumCommonService b2gService() {
+//        return new EthereumCommonServiceImpl("merchants/bitcoiin2g.properties",
+//                "B2G", "B2G", 400);
+//    }
+//
+//    @Bean(name = "golServiceImpl")
+//    public EthereumCommonService golService() {
+//        return new EthereumCommonServiceImpl("merchants/goldiam.properties",
+//                "GOL", "GOL", 40);
+//    }
+//
+//    @Bean(name = "cnetServiceImpl")
+//    public EthereumCommonService cnetService() {
+//        return new EthereumCommonServiceImpl("merchants/contractnet.properties",
+//                "CNET", "CNET", 110);
+//    }
+//
+//    @Bean(name = "ntyServiceImpl")
+//    public EthereumCommonService ntyService() {
+//        return new EthereumCommonServiceImpl("merchants/nexty.properties",
+//                "NTY", "NTY", 40);
+//    }
+//
+//    @Bean(name = "etherincServiceImpl")
+//    public EthereumCommonService etherincService() {
+//        return new EthereumCommonServiceImpl("merchants/eti.properties",
+//                "ETI", "ETI", 50);
+//    }
         //Eth tokens
     @Bean(name = "repServiceImpl")
     public EthTokenService RepService() {

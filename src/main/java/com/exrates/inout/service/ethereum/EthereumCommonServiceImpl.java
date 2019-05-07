@@ -285,7 +285,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             observable = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(new DefaultBlockParameterNumber(Long.parseLong(lastBlock)));
             log.info("start subscribe method");
             subscription = observable.subscribe(ethBlock -> {
-//                System.out.print("  new block {}" + ethBlock.getBlockNumber());
+                System.out.println("  new block {}" + ethBlock.getBlockNumber());
                 if (merchantName.equals("Ethereum")) {
                     if (ethBlock.getFrom().equals(credentialsMain.getAddress())) {
                         counter[0]++;
@@ -296,18 +296,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
 
                 /*-------------Tokens--------------*/
-                if(ethBlock.getTo().equals("0x1c83501478f1320977047008496dacbd60bb15ef")){
-                    System.out.println("FOUND TO CONTRACT");
-                    System.out.println("ethTokensContext.isContract(ethBlock.getTo() " + ethTokensContext.isContract(ethBlock.getTo()));
-                }
-
-                if(ethTokensContext.isContract(ethBlock.getTo())){
-                    System.out.println("Found contract, to " + ethBlock.getTo());
-                    System.out.println("ethTokensContext.getByContract(ethBlock.getTo()).tokenTransaction(ethBlock)" + ethTokensContext.getByContract(ethBlock.getTo()));
-                }
-
                 if (ethBlock.getTo() != null && ethTokensContext.isContract(ethBlock.getTo()) && merchantName.equals("Ethereum")) {
-                    System.out.println("first if");
+                    System.out.println("Found by contract");
                     ethTokensContext.getByContract(ethBlock.getTo()).tokenTransaction(ethBlock);
                 }
 

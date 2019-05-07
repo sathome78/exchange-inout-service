@@ -151,15 +151,19 @@ public class EthTokenServiceImpl implements EthTokenService {
     public void tokenTransaction(Transaction transaction) {
         try {
             /*check unconfirmed transactions*/
+            System.out.println("Check unconfirmed");
             checkTransaction(transaction.getBlockNumber());
 
             TransactionReceipt transactionReceipt = new TransactionReceipt();
             transactionReceipt = ethereumCommonService.getWeb3j().ethGetTransactionReceipt(transaction.getHash()).send().getResult();
+            System.out.println("transactionReceipt" + transactionReceipt);
             if (transactionReceipt == null) {
                 log.error("receipt null " + transaction.getHash());
                 return;
             }
             List<Log> logsList = transactionReceipt.getLogs();
+            System.out.println("logsList" + logsList);
+
             logsList.forEach(l -> {
                 TransferEventResponse response = extractData(l.getTopics(), l.getData());
                 if (response == null) {
@@ -168,12 +172,16 @@ public class EthTokenServiceImpl implements EthTokenService {
                 }
 
                 String contractRecipient = response.to.toString();
+                System.out.println("contractRecipient " + contractRecipient);
+                System.out.println("ethereumCommonService.getAccounts().contains(contractRecipient) + " + ethereumCommonService.getAccounts().contains(contractRecipient));
+                System.out.println("ethereumCommonService.getAccounts().size() " + ethereumCommonService.getAccounts().size());
                 if (ethereumCommonService.getAccounts().contains(contractRecipient)) {
                     if (!refillService.getRequestIdByAddressAndMerchantIdAndCurrencyIdAndHash(
                             contractRecipient,
                             merchant.getId(),
                             currency.getId(),
                             transaction.getHash()).isPresent()) {
+                        System.out.println("starting creating requestId");
                         BigDecimal amount = ExConvert.fromWei(response.value.getValue().toString(), unit);
                         log.debug(merchant.getName() + " recipient: " + contractRecipient + ", amount: " + amount);
 

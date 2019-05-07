@@ -997,7 +997,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         }
     }
 
-    @Override
+    @Override //0xc1e4a8119a70bdc2ea4141b10e36a9ca5a21d36d
     public List<String> findAllAddresses(Integer merchantId, Integer currencyId, List<Boolean> isValidStatuses) {
         final String sql = "SELECT REFILL_REQUEST_ADDRESS.address FROM REFILL_REQUEST_ADDRESS " +
                 "where merchant_id = :merchant_id AND currency_id = :currency_id AND is_valid IN (:isValidStatuses)";
