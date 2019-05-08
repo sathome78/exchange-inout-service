@@ -2744,6 +2744,15 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 1000000000
+  RWDS:
+    merchant-name: RWDS
+      currency-name: RWDS
+      name-space-id: rewards4u
+      name: rwds
+      decimals: 100
+      divisibility: 2
+      levy-fee: 0
+      supply: 100000000
 
 
 stellar-coins:
