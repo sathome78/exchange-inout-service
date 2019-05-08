@@ -1065,6 +1065,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());
     }
 
+    @Bean(name = "rvtServiceImpl")
+    public EthTokenService rvtService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVT());
+    }
+
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
