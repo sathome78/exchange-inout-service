@@ -163,10 +163,11 @@ public class MerchantServiceImpl implements MerchantService {
 
     /*============================*/
 
+
     @Override
     @Transactional
-    public List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime() {
-        return merchantDao.findMerchantCurrencyWithRefillLifetime();
+    public void setMinSum(double merchantId, double currencyId, double minSum) {
+        merchantDao.setMinSum(merchantId, currencyId, minSum);
     }
 
     @Override
@@ -307,6 +308,12 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public List<MerchantCurrencyBasicInfoDto> findTokenMerchantsByParentId(Integer parentId) {
         return merchantDao.findTokenMerchantsByParentId(parentId);
+    }
+
+    @Override
+    @Transactional
+    public List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime() {
+        return merchantDao.findMerchantCurrencyWithRefillLifetime();
     }
 
 }

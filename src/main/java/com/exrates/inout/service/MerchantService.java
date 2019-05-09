@@ -73,4 +73,6 @@ public interface MerchantService {
 
     @Transactional
     List<MerchantCurrencyLifetimeDto> getMerchantCurrencyWithRefillLifetime();
+
+    void setMinSum(double merchantId, double currencyId, double minSum);
 }

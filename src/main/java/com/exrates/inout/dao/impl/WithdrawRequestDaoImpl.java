@@ -1,7 +1,12 @@
 package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.WithdrawRequestDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.WithdrawFilterData;
+import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
+import com.exrates.inout.domain.dto.WithdrawRequestInfoDto;
+import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceOperationPermission;
@@ -9,12 +14,14 @@ import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
+import com.exrates.inout.domain.main.WithdrawRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,7 +29,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Optional.of;
@@ -434,6 +446,12 @@ public class WithdrawRequestDaoImpl implements WithdrawRequestDao {
         String sql = "SELECT * FROM WITHDRAW_REQUEST WHERE user_id = :user_id";
 
         return jdbcTemplate.query(sql, Collections.singletonMap("user_id", id), (rs, i) -> withdrawRequestFlatDtoRowMapper.mapRow(rs, i));
+    }
+
+    @Override
+    public Optional<WithdrawRequest> findWithdrawRequestByAddress(String withdrawAddress) {
+
+        return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM WITHDRAW_REQUEST WHERE wallet = '" + withdrawAddress + "'", new HashMap<>(), new BeanPropertyRowMapper<>(WithdrawRequest.class)));
     }
 
     private String getPermissionClause(Integer requesterUserId) {

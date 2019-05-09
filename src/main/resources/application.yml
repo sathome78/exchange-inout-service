@@ -1317,24 +1317,25 @@ bitcoin-coins:
   kod:
     merchant-name: KOD
     currency-name: KOD
-    min-confirmations: 30
+    min-confirmations: 1
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/backup/
+    backup-folder: /data/backup
+    wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.15.47
+      rpc-host: 172.10.13.117
       rpc-port: 8090
-      rpc-user: null
-      rpc-password: null
+      rpc-user: devprod
+      rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10900
       notification-block-port: 5580
       notification-wallet-port: 5581
   btx:

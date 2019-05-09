@@ -1,4 +1,5 @@
 package com.exrates.inout.service.btc;
+
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.BtcAdminPreparedTxDto;
 import com.exrates.inout.domain.dto.BtcBlockDto;
@@ -51,6 +52,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -75,7 +77,6 @@ public class BitcoinServiceImpl implements BitcoinService {
 
    private static final Logger log = LogManager.getLogger("bitcoin_core");
 
-
     @Value("${btcInvoice.blockNotifyUsers}")
     private Boolean BLOCK_NOTIFYING;
 
@@ -87,6 +88,7 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @Autowired
     private MerchantService merchantService;
+
     @Autowired
     private MerchantSpecParamsDao merchantSpecParamsDao;
     @Autowired
@@ -98,7 +100,6 @@ public class BitcoinServiceImpl implements BitcoinService {
     @Autowired
     private GtagService gtagService;
     private String backupFolder;
-
     private String nodePropertySource;
 
     private Boolean zmqEnabled;
@@ -128,8 +129,8 @@ public class BitcoinServiceImpl implements BitcoinService {
     private BitcoinNode node;
 
     private Merchant merchant;
-    private Currency currency;
 
+    private Currency currency;
     private ScheduledExecutorService newTxCheckerScheduler = Executors.newSingleThreadScheduledExecutor();
 
     public BitcoinServiceImpl(BitcoinProperty property) {
@@ -201,7 +202,7 @@ public class BitcoinServiceImpl implements BitcoinService {
     }
 
 
-//    @PostConstruct
+    @PostConstruct
     void startBitcoin() {
         try {
             merchant = merchantService.findByName(merchantName);
@@ -237,7 +238,6 @@ public class BitcoinServiceImpl implements BitcoinService {
         }
 
     }
-
 
 
     @Override
@@ -715,5 +715,10 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     public String getCurrencyName() {
         return currencyName;
+    }
+
+    @Override
+    public void setConfirmationNeededCount(int minConfirmationCount) {
+        this.minConfirmations = minConfirmationCount;
     }
 }

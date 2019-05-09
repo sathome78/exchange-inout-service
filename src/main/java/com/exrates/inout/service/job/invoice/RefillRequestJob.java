@@ -1,15 +1,12 @@
 package com.exrates.inout.service.job.invoice;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.IMerchantService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -111,6 +108,15 @@ public class RefillRequestJob {
         return (BitcoinService) merchantService;
     }
 
+    public void forceCheckPaymentsForCoin(String ticker) {
+
+        try {
+            getBitcoinServiceByMerchantName(ticker).scanForUnprocessedTransactions(null);
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+    }
 }
 
 

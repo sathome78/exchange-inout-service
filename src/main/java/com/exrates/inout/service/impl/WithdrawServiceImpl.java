@@ -660,6 +660,27 @@ public class WithdrawServiceImpl implements WithdrawService {
         return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
     }
 
+    @Override
+    @Transactional
+    public void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto) {
+        merchantDao.setAutoWithdrawParamsByMerchantAndCurrency(
+                merchantCurrencyOptionsDto.getMerchantId(),
+                merchantCurrencyOptionsDto.getCurrencyId(),
+                merchantCurrencyOptionsDto.getWithdrawAutoEnabled(),
+                merchantCurrencyOptionsDto.getWithdrawAutoDelaySeconds(),
+                merchantCurrencyOptionsDto.getWithdrawAutoThresholdAmount());
+    }
+
+    @Override
+    public Optional<WithdrawRequest> getWithdrawRequestByAddress(String withdrawAddress) {
+        return withdrawRequestDao.findWithdrawRequestByAddress(withdrawAddress);
+    }
+
+    @Override
+    public Optional<WithdrawRequestFlatDto> getFlatById(Integer requestId) {
+        return withdrawRequestDao.getFlatById(requestId);
+    }
+
 
     private String getAmountWithCurrency(WithdrawRequestCreateDto dto) {
         return String.join("", dto.getAmount().stripTrailingZeros().toPlainString(), " ", dto.getCurrencyName());
