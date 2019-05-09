@@ -2757,7 +2757,7 @@ xem-coins:
     divisibility: 2
     levy-fee: 0
     supply: 100000000
-    
+
 
 stellar-coins:
   slt:
