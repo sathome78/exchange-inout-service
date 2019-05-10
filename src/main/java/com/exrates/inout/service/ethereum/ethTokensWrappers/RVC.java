@@ -1,6 +1,7 @@
 package com.exrates.inout.service.ethereum.ethTokensWrappers;
 
 import org.web3j.abi.EventEncoder;
+import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
@@ -9,7 +10,6 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -37,8 +37,8 @@ import java.util.List;
  *
  * <p>Generated with web3j version 3.4.0.
  */
-public class JET extends Contract implements ethTokenERC20 {
-    private static final String BINARY = "606060409081526003805460a060020a60ff02191690558051908101604052600781527f4a6574636f696e000000000000000000000000000000000000000000000000006020820152600490805161005b92916020019061019d565b5060408051908101604052600381527f4a45540000000000000000000000000000000000000000000000000000000000602082015260059080516100a392916020019061019d565b506006805460ff1916601217905560408051908101604052600381527f322e300000000000000000000000000000000000000000000000000000000000602082015260079080516100f892916020019061019d565b5060088054600160a060020a03191673c1e6c6c681b286fb503b36a9dd6c1dbff85e73cf179055341561012a57600080fd5b5b5b60038054600160a060020a03191633600160a060020a03161790555b6a422ca8b0a00a4250000000600081815573e955c7616dc449fd0cbeeca277cc078f9510bc04905260016020527fae6e08ff71f16122039d3187ed51ef4ead2a18fdc6833965a88e9ef54f23c3a0555b61023d565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106101de57805160ff191683800117855561020b565b8280016001018555821561020b579182015b8281111561020b5782518255916020019190600101906101f0565b5b5061021892915061021c565b5090565b61023a91905b808211156102185760008155600101610222565b5090565b90565b610c1f8061024c6000396000f300606060405236156100e35763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde0381146100e8578063095ea7b31461017357806318160ddd1461019757806323b872dd146101bc578063313ce567146101e65780633f4ba83a1461020f57806354fd4d50146102365780635c975abb146102c15780636678887f146102e857806370a08231146103175780638456cb59146103485780638da5cb5b1461036f57806395d89b411461039e578063a9059cbb14610429578063dd62ed3e1461044d578063f2fde38b14610484575b600080fd5b34156100f357600080fd5b6100fb6104a5565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156101385780820151818401525b60200161011f565b50505050905090810190601f1680156101655780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561017e57600080fd5b610195600160a060020a0360043516602435610543565b005b34156101a257600080fd5b6101aa61056a565b60405190815260200160405180910390f35b34156101c757600080fd5b610195600160a060020a0360043581169060243516604435610570565b005b34156101f157600080fd5b6101f96105ba565b60405160ff909116815260200160405180910390f35b341561021a57600080fd5b6102226105c3565b604051901515815260200160405180910390f35b341561024157600080fd5b6100fb61064c565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156101385780820151818401525b60200161011f565b50505050905090810190601f1680156101655780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34156102cc57600080fd5b6102226106ea565b604051901515815260200160405180910390f35b34156102f357600080fd5b6102fb6106fa565b604051600160a060020a03909116815260200160405180910390f35b341561032257600080fd5b6101aa600160a060020a0360043516610709565b60405190815260200160405180910390f35b341561035357600080fd5b610222610728565b604051901515815260200160405180910390f35b341561037a57600080fd5b6102fb6107b6565b604051600160a060020a03909116815260200160405180910390f35b34156103a957600080fd5b6100fb6107c5565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156101385780820151818401525b60200161011f565b50505050905090810190601f1680156101655780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561043457600080fd5b610195600160a060020a0360043516602435610863565b005b341561045857600080fd5b6101aa600160a060020a03600435811690602435166108ab565b60405190815260200160405180910390f35b341561048f57600080fd5b610195600160a060020a03600435166108d8565b005b60048054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561053b5780601f106105105761010080835404028352916020019161053b565b820191906000526020600020905b81548152906001019060200180831161051e57829003601f168201915b505050505081565b60035460a060020a900460ff161561055a57600080fd5b6105648282610930565b5b5b5050565b60005481565b60035460a060020a900460ff161561058757600080fd5b30600160a060020a031682600160a060020a0316141515156105a857600080fd5b6105b38383836109d2565b5b5b505050565b60065460ff1681565b60035460009033600160a060020a039081169116146105e157600080fd5b60035460a060020a900460ff1615156105f957600080fd5b6003805474ff0000000000000000000000000000000000000000191690557f7805862f689e2f13df9f062ff482ad3ad112aca9e0847911ed832e158c525b3360405160405180910390a15060015b5b5b90565b60078054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561053b5780601f106105105761010080835404028352916020019161053b565b820191906000526020600020905b81548152906001019060200180831161051e57829003601f168201915b505050505081565b60035460a060020a900460ff1681565b600854600160a060020a031681565b600160a060020a0381166000908152600160205260409020545b919050565b60035460009033600160a060020a0390811691161461074657600080fd5b60035460a060020a900460ff161561075d57600080fd5b6003805474ff0000000000000000000000000000000000000000191660a060020a1790557f6985a02210a168e66602d3235cb6db0e70f92b3ba4d376a33c0f3d9434bff62560405160405180910390a15060015b5b5b90565b600354600160a060020a031681565b60058054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561053b5780601f106105105761010080835404028352916020019161053b565b820191906000526020600020905b81548152906001019060200180831161051e57829003601f168201915b505050505081565b60035460a060020a900460ff161561087a57600080fd5b30600160a060020a031682600160a060020a03161415151561089b57600080fd5b6105648282610af5565b5b5b5050565b600160a060020a038083166000908152600260209081526040808320938516835292905220545b92915050565b60035433600160a060020a039081169116146108f357600080fd5b600160a060020a0381161561092b576003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b5b50565b80158015906109635750600160a060020a0333811660009081526002602090815260408083209386168352929052205415155b1561096d57600080fd5b600160a060020a03338116600081815260026020908152604080832094871680845294909152908190208490557f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259084905190815260200160405180910390a35b5050565b6000606060643610156109e457600080fd5b600160a060020a038086166000908152600260209081526040808320338516845282528083205493881683526001909152902054909250610a2b908463ffffffff610bc216565b600160a060020a038086166000908152600160205260408082209390935590871681522054610a60908463ffffffff610bdc16565b600160a060020a038616600090815260016020526040902055610a89828463ffffffff610bdc16565b600160a060020a03808716600081815260026020908152604080832033861684529091529081902093909355908616917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9086905190815260200160405180910390a35b5b5050505050565b60406044361015610b0557600080fd5b600160a060020a033316600090815260016020526040902054610b2e908363ffffffff610bdc16565b600160a060020a033381166000908152600160205260408082209390935590851681522054610b63908363ffffffff610bc216565b600160a060020a0380851660008181526001602052604090819020939093559133909116907fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9085905190815260200160405180910390a35b5b505050565b600082820183811015610bd157fe5b8091505b5092915050565b600082821115610be857fe5b508082035b929150505600a165627a7a72305820e6e7ef4ebd80d214f3d4beba112420e3e2450c5d8be0dffa0858d8b870a7f3a10029\n";
+public class RVC extends Contract implements ethTokenNotERC20{
+    private static final String BINARY = "60806040526003805460a060020a60ff021916905534801561002057600080fd5b50604051602080610ad2833981016040818152915160038054600160a060020a03338116600160a060020a031992831617909255600480548385169216919091178082558216600090815260208181528682206b06765c793fa10079d000000090819055925492865295519395919092169391927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9281900390910190a3506b06765c793fa10079d00000006002556109f4806100de6000396000f3006080604052600436106100f05763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde0381146100f5578063095ea7b31461017f57806318160ddd146101b757806323b872dd146101de5780632cae249a14610208578063313ce567146102395780633f4ba83a1461024e57806342966c68146102635780635c975abb1461027b57806370a08231146102905780638456cb59146102b15780638d24d147146102c65780638da5cb5b146102db57806395d89b41146102f0578063a9059cbb14610305578063dd62ed3e14610329578063f2fde38b14610350575b600080fd5b34801561010157600080fd5b5061010a610373565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561014457818101518382015260200161012c565b50505050905090810190601f1680156101715780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561018b57600080fd5b506101a3600160a060020a03600435166024356103aa565b604080519115158252519081900360200190f35b3480156101c357600080fd5b506101cc6103d5565b60408051918252519081900360200190f35b3480156101ea57600080fd5b506101a3600160a060020a03600435811690602435166044356103db565b34801561021457600080fd5b5061021d61055b565b60408051600160a060020a039092168252519081900360200190f35b34801561024557600080fd5b506101cc61056a565b34801561025a57600080fd5b506101a361056f565b34801561026f57600080fd5b506101a36004356105f2565b34801561028757600080fd5b506101a3610603565b34801561029c57600080fd5b506101cc600160a060020a0360043516610613565b3480156102bd57600080fd5b506101a361061e565b3480156102d257600080fd5b506101cc6106a6565b3480156102e757600080fd5b5061021d6106b6565b3480156102fc57600080fd5b5061010a6106c5565b34801561031157600080fd5b506101a3600160a060020a03600435166024356106fc565b34801561033557600080fd5b506101cc600160a060020a0360043581169060243516610720565b34801561035c57600080fd5b50610371600160a060020a036004351661074b565b005b60408051808201909152600c81527f52656e76616c6520436f696e0000000000000000000000000000000000000000602082015281565b60035460009060a060020a900460ff16156103c457600080fd5b6103ce83836107a1565b9392505050565b60025490565b6000600160a060020a03831615156103f257600080fd5b600160a060020a03841660009081526020819052604090205482111561041757600080fd5b600160a060020a038085166000908152600160209081526040808320339094168352929052205482111561044a57600080fd5b600160a060020a038416600090815260208190526040902054610473908363ffffffff61080b16565b600160a060020a0380861660009081526020819052604080822093909355908516815220546104a8908363ffffffff61081d16565b600160a060020a03808516600090815260208181526040808320949094558783168252600181528382203390931682529190915220546104ee908363ffffffff61080b16565b600160a060020a038086166000818152600160209081526040808320338616845282529182902094909455805186815290519287169391927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef929181900390910190a35060019392505050565b600454600160a060020a031681565b601281565b60035460009033600160a060020a0390811691161461058d57600080fd5b60035460a060020a900460ff1615156105a557600080fd5b6003805474ff0000000000000000000000000000000000000000191690556040517f7805862f689e2f13df9f062ff482ad3ad112aca9e0847911ed832e158c525b3390600090a150600190565b60006105fd8261082c565b92915050565b60035460a060020a900460ff1681565b60006105fd826108b4565b60035460009033600160a060020a0390811691161461063c57600080fd5b60035460a060020a900460ff161561065357600080fd5b6003805474ff0000000000000000000000000000000000000000191660a060020a1790556040517f6985a02210a168e66602d3235cb6db0e70f92b3ba4d376a33c0f3d9434bff62590600090a150600190565b6b06765c793fa10079d000000081565b600354600160a060020a031681565b60408051808201909152600381527f5256430000000000000000000000000000000000000000000000000000000000602082015281565b60035460009060a060020a900460ff161561071657600080fd5b6103ce83836108cf565b600160a060020a03918216600090815260016020908152604080832093909416825291909152205490565b60035433600160a060020a0390811691161461076657600080fd5b600160a060020a0381161561079e576003805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b50565b600160a060020a03338116600081815260016020908152604080832094871680845294825280832086905580518681529051929493927f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925929181900390910190a350600192915050565b60008282111561081757fe5b50900390565b6000828201838110156103ce57fe5b600160a060020a03331660009081526020819052604081205482111561085157600080fd5b600160a060020a0333166000818152602081815260409182902080548690039055600280548690039055815185815291517fcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca59281900390910190a2506001919050565b600160a060020a031660009081526020819052604090205490565b6000600160a060020a03831615156108e657600080fd5b600160a060020a03331660009081526020819052604090205482111561090b57600080fd5b600160a060020a033316600090815260208190526040902054610934908363ffffffff61080b16565b600160a060020a033381166000908152602081905260408082209390935590851681522054610969908363ffffffff61081d16565b600160a060020a03808516600081815260208181526040918290209490945580518681529051919333909316927fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef92918290030190a3506001929150505600a165627a7a7230582070af182191207d1538d6392ae4783f17739d7ec54b5e280ed17795d8ae3539b70029000000000000000000000000b3d4ccaa7993de3ac538ba6623e63ebc12fce36f\n";
 
     public static final String FUNC_NAME = "name";
 
@@ -48,19 +48,21 @@ public class JET extends Contract implements ethTokenERC20 {
 
     public static final String FUNC_TRANSFERFROM = "transferFrom";
 
+    public static final String FUNC_RVDEPOSITADDRESS = "rvDepositAddress";
+
     public static final String FUNC_DECIMALS = "decimals";
 
     public static final String FUNC_UNPAUSE = "unpause";
 
-    public static final String FUNC_VERSION = "version";
+    public static final String FUNC_BURN = "burn";
 
     public static final String FUNC_PAUSED = "paused";
-
-    public static final String FUNC_REPLACESOLDCONTRACT = "replacesOldContract";
 
     public static final String FUNC_BALANCEOF = "balanceOf";
 
     public static final String FUNC_PAUSE = "pause";
+
+    public static final String FUNC_RVDEPOSIT = "rvDeposit";
 
     public static final String FUNC_OWNER = "owner";
 
@@ -82,21 +84,26 @@ public class JET extends Contract implements ethTokenERC20 {
             Arrays.<TypeReference<?>>asList());
     ;
 
-    public static final Event APPROVAL_EVENT = new Event("Approval", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-    ;
-
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
             Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
     ;
 
-    protected JET(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    public static final Event APPROVAL_EVENT = new Event("Approval", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
+            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+    ;
+
+    public static final Event BURN_EVENT = new Event("Burn", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
+            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+    ;
+
+    protected RVC(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected JET(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected RVC(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
@@ -133,10 +140,17 @@ public class JET extends Contract implements ethTokenERC20 {
         return executeRemoteCallTransaction(function);
     }
 
+    public RemoteCall<String> rvDepositAddress() {
+        final Function function = new Function(FUNC_RVDEPOSITADDRESS,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
     public RemoteCall<BigInteger> decimals() {
         final Function function = new Function(FUNC_DECIMALS,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
@@ -148,11 +162,12 @@ public class JET extends Contract implements ethTokenERC20 {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<String> version() {
-        final Function function = new Function(FUNC_VERSION,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
+    public RemoteCall<TransactionReceipt> burn(BigInteger _value) {
+        final Function function = new Function(
+                FUNC_BURN,
+                Arrays.<Type>asList(new Uint256(_value)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Boolean> paused() {
@@ -160,13 +175,6 @@ public class JET extends Contract implements ethTokenERC20 {
                 Arrays.<Type>asList(),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
-    }
-
-    public RemoteCall<String> replacesOldContract() {
-        final Function function = new Function(FUNC_REPLACESOLDCONTRACT,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<BigInteger> balanceOf(String _owner) {
@@ -182,6 +190,13 @@ public class JET extends Contract implements ethTokenERC20 {
                 Arrays.<Type>asList(),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<BigInteger> rvDeposit() {
+        final Function function = new Function(FUNC_RVDEPOSIT,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> owner() {
@@ -223,12 +238,14 @@ public class JET extends Contract implements ethTokenERC20 {
         return executeRemoteCallTransaction(function);
     }
 
-    public static RemoteCall<JET> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(JET.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<RVC> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, String _rvDepositAddress) {
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Address(_rvDepositAddress)));
+        return deployRemoteCall(RVC.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
-    public static RemoteCall<JET> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(JET.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<RVC> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, String _rvDepositAddress) {
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new Address(_rvDepositAddress)));
+        return deployRemoteCall(RVC.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     public List<PauseEventResponse> getPauseEvents(TransactionReceipt transactionReceipt) {
@@ -289,41 +306,6 @@ public class JET extends Contract implements ethTokenERC20 {
         return unpauseEventObservable(filter);
     }
 
-    public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
-            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-            typedResponse.log = eventValues.getLog();
-            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-            typedResponse.spender = (String) eventValues.getIndexedValues().get(1).getValue();
-            typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-            responses.add(typedResponse);
-        }
-        return responses;
-    }
-
-    public Observable<ApprovalEventResponse> approvalEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
-            @Override
-            public ApprovalEventResponse call(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
-                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-                typedResponse.log = log;
-                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse.spender = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
-        });
-    }
-
-    public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
-        filter.addSingleTopic(EventEncoder.encode(APPROVAL_EVENT));
-        return approvalEventObservable(filter);
-    }
-
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
@@ -359,12 +341,80 @@ public class JET extends Contract implements ethTokenERC20 {
         return transferEventObservable(filter);
     }
 
-    public static JET load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new JET(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.spender = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
     }
 
-    public static JET load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new JET(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public Observable<ApprovalEventResponse> approvalEventObservable(EthFilter filter) {
+        return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
+            @Override
+            public ApprovalEventResponse call(Log log) {
+                EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+                typedResponse.log = log;
+                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.spender = (String) eventValues.getIndexedValues().get(1).getValue();
+                typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+                return typedResponse;
+            }
+        });
+    }
+
+    public Observable<ApprovalEventResponse> approvalEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(APPROVAL_EVENT));
+        return approvalEventObservable(filter);
+    }
+
+    public List<BurnEventResponse> getBurnEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = extractEventParametersWithLog(BURN_EVENT, transactionReceipt);
+        ArrayList<BurnEventResponse> responses = new ArrayList<BurnEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            BurnEventResponse typedResponse = new BurnEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public Observable<BurnEventResponse> burnEventObservable(EthFilter filter) {
+        return web3j.ethLogObservable(filter).map(new Func1<Log, BurnEventResponse>() {
+            @Override
+            public BurnEventResponse call(Log log) {
+                EventValuesWithLog eventValues = extractEventParametersWithLog(BURN_EVENT, log);
+                BurnEventResponse typedResponse = new BurnEventResponse();
+                typedResponse.log = log;
+                typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+                return typedResponse;
+            }
+        });
+    }
+
+    public Observable<BurnEventResponse> burnEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(BURN_EVENT));
+        return burnEventObservable(filter);
+    }
+
+    public static RVC load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new RVC(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    }
+
+    public static RVC load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new RVC(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
     public static class PauseEventResponse {
@@ -373,6 +423,16 @@ public class JET extends Contract implements ethTokenERC20 {
 
     public static class UnpauseEventResponse {
         public Log log;
+    }
+
+    public static class TransferEventResponse {
+        public Log log;
+
+        public String from;
+
+        public String to;
+
+        public BigInteger value;
     }
 
     public static class ApprovalEventResponse {
@@ -385,12 +445,10 @@ public class JET extends Contract implements ethTokenERC20 {
         public BigInteger value;
     }
 
-    public static class TransferEventResponse {
+    public static class BurnEventResponse {
         public Log log;
 
         public String from;
-
-        public String to;
 
         public BigInteger value;
     }
