@@ -204,6 +204,7 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @PostConstruct
     void startBitcoin() {
+        System.out.println("starting " + merchantName);
         try {
             merchant = merchantService.findByName(merchantName);
             currency = currencyService.findByName(currencyName);

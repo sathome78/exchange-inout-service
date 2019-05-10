@@ -124,22 +124,27 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     @PostConstruct
     public void init() {
-        merchant = merchantService.findByName(merchantName);
-        currency = currencyService.findByName(currencyName);
+        try {
+            merchant = merchantService.findByName(merchantName);
+            currency = currencyService.findByName(currencyName);
 
-        currentBlockNumber = new BigInteger("0");
-        pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
-        this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
+            currentBlockNumber = new BigInteger("0");
+            pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
+            this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
 
-        scheduler.scheduleWithFixedDelay(new Runnable() {
-            public void run() {
-                try {
-                    transferFundsToMainAccount();
-                } catch (Exception e) {
-                    log.error(e);
+            scheduler.scheduleWithFixedDelay(new Runnable() {
+                public void run() {
+                    try {
+                        transferFundsToMainAccount();
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
                 }
-            }
-        }, 3, 10, TimeUnit.MINUTES);
+            }, 3, 10, TimeUnit.MINUTES);
+        } catch (Exception e){
+            e.printStackTrace();
+            log.error(e);
+        }
     }
 
     @Override

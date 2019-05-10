@@ -50,6 +50,9 @@ public class CreditsOperation {
         this.recipientWallet = builder.recipientWallet;
     }
 
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
 
     public static class Builder {
 

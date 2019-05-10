@@ -119,7 +119,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                         delayDescription,
                         locale);
             } catch (final MailException e) {
-                //log.error(e);
+                log.error(e);
             }
             profileData.setTime2();
             BigDecimal newAmount = walletService.getWalletABalance(request.getUserWalletId());
@@ -715,7 +715,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         notificationMessageCode = "merchants.withdrawNotification.".concat(withdrawRequest.getStatus().name());
         notification = messageSource
                 .getMessage(notificationMessageCode, messageParams, locale);
-        notificationService.notifyUser(withdrawRequest.getUserEmail(), NotificationEvent.IN_OUT,
+        notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT,
                 "merchants.withdrawNotification.header", notificationMessageCode, messageParams);
         return notification;
     }

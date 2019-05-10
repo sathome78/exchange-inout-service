@@ -1,3 +1,6 @@
+logging:
+  level:
+    ROOT: INFO
 
 spring:
   profiles:
@@ -1463,7 +1466,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: http://172.10.13.51:8549
+      url: zalupa
       destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
@@ -1480,7 +1483,7 @@ ethereum-coins:
     node:
       currency: Ethereum Classic
       #      url-our-node:
-      url: http://localhost:8101
+      url:
       destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
@@ -1497,7 +1500,7 @@ ethereum-coins:
     node:
       currency: EtherZero
       #      url-our-node:
-      url: http://18.216.0.44:8102
+      url:
       destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
@@ -1513,14 +1516,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: CLO
-      #      url-our-node:
-      url: http://13.59.242.131:8104
+      url:
       destination-dir: D:\\Ethereum1\\callisto\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1530,14 +1529,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      #      url-our-node:
-      url: http://13.59.242.131:8105
+      url:
       destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
@@ -1547,14 +1542,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: GOL
-      #      url-our-node:
-      url: http://172.31.7.222:8106
+      url:
       destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
@@ -1565,7 +1556,7 @@ ethereum-coins:
     node:
       currency: CNET
       #      url-our-node:
-      url: http://172.31.4.189:8107
+      url:
       destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
@@ -1581,8 +1572,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: NTY
-      #      url-our-node:
-      url: http://172.31.1.74:8108
+      url:
       destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
@@ -1599,7 +1589,7 @@ ethereum-coins:
     node:
       currency: Etherinc
       #      url-our-node: http://13.59.242.131:9545
-      url: https://api.einc.io/jsonrpc/mainnet
+      url:
       destination-dir: D:\\Ethereum1\\Etherinc\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x8B4Fa8D92d2F7A41F80033521aD6fc1fBcB1d5A7

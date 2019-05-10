@@ -1,5 +1,6 @@
 package com.exrates.inout.service.cointest;
 
+import com.exrates.inout.dao.WalletDao;
 import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
 import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyOptionsDto;
@@ -18,6 +19,8 @@ import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.domain.main.WithdrawRequest;
 import com.exrates.inout.exceptions.CoinTestException;
 import com.exrates.inout.exceptions.InvalidAmountException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.BitcoinCoins;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
 import com.exrates.inout.service.BitcoinService;
@@ -44,7 +47,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -52,7 +55,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 
 import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
@@ -65,7 +67,8 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREAT
 public class BtcCoinTester implements CoinTester {
 
     private static final int TEST_NODE_PORT = 8089;
-    private static final String TEST_NODE_PASS = "pass123";
+    private static final String TEST_NODE_PASS = "RGGK9HsXyi3gdiEOXG8zPlyNIFq";
+    private static final String TEST_NODE_USER = "devprod";
     private String testEmail = "yagi3773@gmail.com";
 
     @Autowired
@@ -85,7 +88,9 @@ public class BtcCoinTester implements CoinTester {
     @Autowired
     private RefillRequestJob refillRequestJob;
     @Autowired
-    private Map<String, BitcoinProperty> btcPropertiesMap;
+    private WalletDao walletDao;
+    @Autowired
+    private CryptoCurrencyProperties ccp;
 
     private int userId;
     private int currencyId;
@@ -97,7 +102,7 @@ public class BtcCoinTester implements CoinTester {
     private int withdrawStatus = 0;
     private StringBuilder stringBuilder;
 
-    public void initBot(String name, StringBuilder stringBuilder, String email) throws BitcoindException, IOException, CommunicationException {
+    public void initBot(String name, StringBuilder stringBuilder, String email) throws Exception {
         merchantId = merchantService.findByName(name).getId();
         currencyId = currencyService.findByName(name).getId();
         this.name = name;
@@ -121,7 +126,6 @@ public class BtcCoinTester implements CoinTester {
             testAddressGeneration();
             checkRefill(refillAmount, merchantId, currencyId, request);
             testAutoWithdraw(refillAmount);
-//            testManualWithdraw(refillAmount);
             stringBuilder.append("Everything works fine!<br>");
             return "Works fine";
         } catch (Exception e){
@@ -331,21 +335,22 @@ public class BtcCoinTester implements CoinTester {
         return new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale);
     }
 
-    private BtcdClient prepareTestBtcClient(String name) throws IOException, BitcoindException, CommunicationException {
+    private BtcdClient prepareTestBtcClient(String name) throws Exception {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)
                 .build();
 
-        BitcoinNode bitcoinProperty = btcPropertiesMap.get(name.toUpperCase()).getNode();
-
-        Properties passProperties = merchantService.getPassMerchantProperties(name);
+        BitcoinCoins bitcoinCoins = ccp.getBitcoinCoins();
+        Field field = BitcoinCoins.class.getDeclaredField(name.toLowerCase());
+        field.setAccessible(true);
+        BitcoinNode bitcoinProperty = ((BitcoinProperty)field.get(bitcoinCoins)).getNode();
 
         return new BtcdClientImpl(httpProvider,
-                passProperties.getProperty("node.bitcoind.rpc.user"),
+                bitcoinProperty.getRpcProtocol(),
                 bitcoinProperty.getRpcHost(),
                 TEST_NODE_PORT,
-                passProperties.getProperty("node.bitcoind.rpc.user"),
-                passProperties.getProperty("node.bitcoind.rpc.password")
+                TEST_NODE_USER,
+                TEST_NODE_PASS
                 );
     }
 

@@ -18,7 +18,7 @@ public class ActuatorTestDelete implements
     }
 
     private void test(ContextRefreshedEvent contextRefreshedEvent) {
-        CoinTester kodTester = (CoinTester) contextRefreshedEvent.getApplicationContext().getBean("ethTokenTester");
+        CoinTester kodTester = (CoinTester) contextRefreshedEvent.getApplicationContext().getBean("btcCoinTester");
         try {
             kodTester.initBot("KOD", new StringBuilder(), null);
             kodTester.testCoin("0.017");
