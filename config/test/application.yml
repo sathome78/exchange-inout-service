@@ -1781,8 +1781,8 @@ ethereum-token-coins:
   SIM:
     merchant-name: SIM
     currency-name: SIM
-    contract: '0x7528e3040376edd5db8263db2f5bd1bed91467fb'
-    isERC20: false
+    contract: '0xd7cd762f3ebc2c9a3d9bcf0133e06d04c59a1f7d'
+    isERC20: true
     unit: ETHER
     min-wallet-balance: 0
   AMN:
