@@ -1,11 +1,9 @@
 package com.exrates.inout.service.cointest;
 
-import com.exrates.inout.service.CoinTester;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class ActuatorTestDelete implements
         ApplicationListener<ContextRefreshedEvent> {
 
@@ -18,13 +16,13 @@ public class ActuatorTestDelete implements
     }
 
     private void test(ContextRefreshedEvent contextRefreshedEvent) {
-        CoinTester kodTester = (CoinTester) contextRefreshedEvent.getApplicationContext().getBean("btcCoinTester");
-        try {
-            kodTester.initBot("KOD", new StringBuilder(), null);
-            kodTester.testCoin("0.017");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        CoinTester kodTester = (CoinTester) contextRefreshedEvent.getApplicationContext().getBean("btcCoinTester");
+//        try {
+//            kodTester.initBot("KOD", new StringBuilder(), null);
+//            kodTester.testCoin("0.017");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 
