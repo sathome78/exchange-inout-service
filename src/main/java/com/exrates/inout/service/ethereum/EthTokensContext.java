@@ -30,21 +30,17 @@ public class EthTokensContext {
         merchantServiceMap.forEach((k, v) -> {
             fillContractAddressMap(v);
         });
-        System.out.println("contractAddressByCurrencies size " + contractAddressByCurrencies.size() );
-        System.out.println(isContract("0x1c83501478f1320977047008496dacbd60bb15ef"));
-        System.out.println("merchantMapByCurrencies size " + merchantMapByCurrencies.size() );
-        System.out.println(2);
     }
 
     private void fillContractAddressMap(EthTokenService v) {
-        try {
-            merchantMapByCurrencies.put(v.currencyId(), v);
-            v.getContractAddress().forEach((address) -> {
+        merchantMapByCurrencies.put(v.currencyId(), v);
+        v.getContractAddress().forEach((address) -> {
+            try {
                 contractAddressByCurrencies.put(address, v.currencyId());
-            });
-        } catch (Exception e){
-            log.error(ExceptionUtils.getStackTrace(e));
-        }
+            } catch (Exception e) {
+                log.error(ExceptionUtils.getStackTrace(e));
+            }
+        });
     }
 
     public EthTokenService getByCurrencyId(int currencyId) {
