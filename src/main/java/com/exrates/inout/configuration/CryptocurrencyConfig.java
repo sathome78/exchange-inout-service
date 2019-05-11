@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 
 
-//@Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
 

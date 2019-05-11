@@ -1,7 +1,4 @@
 package com.exrates.inout.service.nem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -9,10 +6,13 @@ import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.domain.dto.NemMosaicTransferDto;
 import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NemProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nem.core.messages.PlainMessage;
@@ -22,8 +22,6 @@ import org.nem.core.serialization.DeserializationContext;
 import org.nem.core.serialization.JsonDeserializer;
 import org.nem.core.serialization.SimpleAccountLookup;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +45,6 @@ import java.util.concurrent.TimeUnit;
  */
 //@Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemRecieveTransactionsService {
 
    private static final Logger log = LogManager.getLogger("nem_log");
@@ -76,7 +73,11 @@ public class NemRecieveTransactionsService {
         }
     });
 
-    private @Value("${nem.address}")String address;
+    private final NemProperty property;
+
+    public NemRecieveTransactionsService(CryptoCurrencyProperties ccp) {
+        this.property = ccp.getNemCoins().getNem();
+    }
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -91,7 +92,7 @@ public class NemRecieveTransactionsService {
         String lastHash = loadLastHash();
         String pagingHash = null;
         do {
-            JSONArray transactions = nodeService.getIncomeTransactions(address, pagingHash);
+            JSONArray transactions = nodeService.getIncomeTransactions(property.getAddress(), pagingHash);
             pagingHash = processTransactions(transactions, lastHash, pagingHash);
         } while (!StringUtils.isEmpty(pagingHash));
     }

@@ -2971,3 +2971,13 @@ payment-system-merchants:
     accountPin: ZIz1WJqo
     transactionStartedPosition: 0
     transactionLimit: 100
+
+nem-coins:
+  nem:
+    nccServerUrl: http://127.0.0.1:8989
+    nisServerUrlReceive: http://37.235.49.90:7890
+    nisServerUrlSend: http://127.0.0.1:7890
+    privateKey: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
+    publicKey: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
+    transactionVersion: 1

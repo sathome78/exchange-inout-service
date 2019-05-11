@@ -1,18 +1,20 @@
 package com.exrates.inout.service.nem;
+
+import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
+import com.exrates.inout.exceptions.InvalidAccountException;
+import com.exrates.inout.exceptions.NemTransactionException;
+import com.exrates.inout.exceptions.NisNotReadyException;
+import com.exrates.inout.exceptions.NisTransactionException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NemProperty;
+import com.exrates.inout.util.RestUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-
-import com.exrates.inout.exceptions.*;
-import com.exrates.inout.util.RestUtil;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nem.core.time.TimeInstant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,15 +34,9 @@ import org.springframework.web.client.RestTemplate;
  */
 //@Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemNodeService {
 
    private static final Logger log = LogManager.getLogger("nem_log");
-
-
-    private @Value("${ncc.server.url}")String nccServer;
-    private @Value("${nis.server.url.receive}")String nisServerRecieve;
-    private @Value("${nis.server.url.send}")String nisServerSend;
 
     private final static String pathExtendedInfo = "/node/extended-info";
     private final static String pathPrepareAnounce = "/transaction/prepare-announce";
@@ -54,14 +50,20 @@ public class NemNodeService {
     @Autowired
     private RestTemplate restTemplate;
 
+    private final NemProperty property;
+
+    public NemNodeService(CryptoCurrencyProperties ccp) {
+        this.property = ccp.getNemCoins().getNem();
+    }
+
     private JSONObject getNodeExtendedInfo() {
-        String response = restTemplate.getForObject(nisServerRecieve.concat(pathExtendedInfo), String.class);
+        String response = restTemplate.getForObject(property.getNisServerUrlReceive().concat(pathExtendedInfo), String.class);
         return new org.json.JSONObject(response);
     }
 
     String getAddressByPk(String publicKey) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(String.format(pathGetAddressByPk, publicKey)), String.class);
+                .getForEntity(property.getNisServerUrlReceive().concat(String.format(pathGetAddressByPk, publicKey)), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -70,7 +72,7 @@ public class NemNodeService {
 
     JSONArray getOwnedMosaics(String address) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(String.format(pathGetOwnedMosaics, address)), String.class);
+                .getForEntity(property.getNisServerUrlReceive().concat(String.format(pathGetOwnedMosaics, address)), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -92,7 +94,7 @@ public class NemNodeService {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<String> entity = new HttpEntity<>(serializedTransaction ,headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity(nisServerSend.concat(pathPrepareAnounce), entity, String.class);
+                .postForEntity(property.getNisServerUrlReceive().concat(pathPrepareAnounce), entity, String.class);
         JSONObject result = new JSONObject(response.getBody());
         if (RestUtil.isError(response.getStatusCode())) {
             String error = result.getString("message");
@@ -109,7 +111,7 @@ public class NemNodeService {
 
     JSONObject getSingleTransactionByHash(String hash) {
         ResponseEntity<String> response = restTemplate
-                .getForEntity(nisServerRecieve.concat(pathGetTransaction).concat(hash), String.class);
+                .getForEntity(property.getNisServerUrlReceive().concat(pathGetTransaction).concat(hash), String.class);
         if (RestUtil.isError(response.getStatusCode()) || response.getBody().contains("error")) {
             throw new NemTransactionException(response.toString());
         }
@@ -117,7 +119,7 @@ public class NemNodeService {
     }
 
     JSONArray getIncomeTransactions(String address, String hash) {
-        String url = nisServerRecieve.concat(String.format(pathGetIncomeTransactions, address));
+        String url = property.getNisServerUrlReceive().concat(String.format(pathGetIncomeTransactions, address));
         if (!StringUtils.isEmpty(hash)) {
             url = url.concat("&hash=").concat(hash);
         }
@@ -130,7 +132,7 @@ public class NemNodeService {
     }
 
     long getLastBlockHeight() {
-        String response = restTemplate.getForObject(nisServerRecieve.concat(pathGetCurrentBlockHeight), String.class);
+        String response = restTemplate.getForObject(property.getNisServerUrlReceive().concat(pathGetCurrentBlockHeight), String.class);
         return new org.json.JSONObject(response).getLong("height");
     }
 

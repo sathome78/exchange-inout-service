@@ -1,19 +1,25 @@
 package com.exrates.inout.service.nem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NemProperty;
 import com.exrates.inout.util.BigDecimalProcessing;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.nem.core.crypto.PrivateKey;
 import org.nem.core.messages.PlainMessage;
-import org.nem.core.model.*;
+import org.nem.core.model.Account;
+import org.nem.core.model.Address;
+import org.nem.core.model.NetworkInfos;
+import org.nem.core.model.Transaction;
+import org.nem.core.model.TransactionFeeCalculatorAfterFork;
+import org.nem.core.model.TransferTransaction;
+import org.nem.core.model.TransferTransactionAttachment;
 import org.nem.core.model.mosaic.Mosaic;
 import org.nem.core.model.mosaic.MosaicFeeInformationLookup;
 import org.nem.core.model.ncc.RequestPrepareAnnounce;
@@ -21,8 +27,6 @@ import org.nem.core.model.primitive.Amount;
 import org.nem.core.serialization.JsonSerializer;
 import org.nem.core.time.TimeInstant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -42,13 +46,16 @@ import java.util.HashMap;
  */
 //@Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemTransactionsService {
 
-   private static final Logger log = LogManager.getLogger("nem_log");
+    private static final Logger log = LogManager.getLogger("nem_log");
 
+    private final NemProperty property;
 
-    private @Value("${nem.transaction.version}")Integer version;
+    public NemTransactionsService(CryptoCurrencyProperties ccp) {
+        this.property = ccp.getNemCoins().getNem();
+    }
+
 
 
     private static final int decimals = 6;
@@ -64,7 +71,7 @@ public class NemTransactionsService {
 
     @PostConstruct
     public void init() {
-        switch (version) {
+        switch (property.getTransactionVersion()) {
             case 1 :{
                 NetworkInfos.setDefault(NetworkInfos.getMainNetworkInfo());
                 break;
