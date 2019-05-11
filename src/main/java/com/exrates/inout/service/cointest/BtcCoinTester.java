@@ -1,6 +1,5 @@
 package com.exrates.inout.service.cointest;
 
-import com.exrates.inout.dao.WalletDao;
 import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
 import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyOptionsDto;
@@ -66,13 +65,16 @@ import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREAT
 @Scope("prototype")
 public class BtcCoinTester implements CoinTester {
 
+    private final static Integer TIME_FOR_REFILL = 10000;
     private static final int TEST_NODE_PORT = 8089;
     private static final String TEST_NODE_PASS = "RGGK9HsXyi3gdiEOXG8zPlyNIFq";
     private static final String TEST_NODE_USER = "devprod";
+    private static final int MIN_CONFIRMATION_COUNT = 1;
+    private static final double MIN_SUM_FOR_WITHDRAW = 0.00000001;
     private String testEmail = "yagi3773@gmail.com";
 
     @Autowired
-    private Map<String, IRefillable> reffilableServiceMap;
+    private Map<String, IRefillable> refillableServiceMap;
     @Autowired
     private MerchantService merchantService;
     @Autowired
@@ -88,25 +90,22 @@ public class BtcCoinTester implements CoinTester {
     @Autowired
     private RefillRequestJob refillRequestJob;
     @Autowired
-    private WalletDao walletDao;
-    @Autowired
     private CryptoCurrencyProperties ccp;
 
     private int userId;
     private int currencyId;
     private int merchantId;
     private String name;
-    private final static Integer TIME_FOR_REFILL = 10000;
     private BtcdClient btcdClient;
-    private Object withdrawTest = new Object();
+    private final Object withdrawTest = new Object();
     private int withdrawStatus = 0;
     private StringBuilder stringBuilder;
 
     public void initBot(String name, StringBuilder stringBuilder, String email) throws Exception {
         merchantId = merchantService.findByName(name).getId();
         currencyId = currencyService.findByName(name).getId();
-        this.name = name;
         btcdClient = prepareTestBtcClient(name);
+        this.name = name;
         this.stringBuilder = stringBuilder;
         if(email != null) this.testEmail = email;
         stringBuilder.append("Init success for coin " + name).append("<br>");
@@ -118,77 +117,41 @@ public class BtcCoinTester implements CoinTester {
     }
 
     @Override
-    public String testCoin(String refillAmount) throws Exception {
+    public void testCoin(String refillAmount) {
         try {
-            testNodeInfo();
-            RefillRequestCreateDto request = prepareRefillRequest(merchantId, currencyId);
-            setMinConfirmation(1);
+            printTestNodeInfo();
             testAddressGeneration();
-            checkRefill(refillAmount, merchantId, currencyId, request);
+            setMinConfirmation();
+            testRefill(refillAmount);
             testAutoWithdraw(refillAmount);
             stringBuilder.append("Everything works fine!<br>");
-            return "Works fine";
         } catch (Exception e){
             e.printStackTrace();
             stringBuilder.append(e.toString());
-            return e.getMessage();
         }
     }
 
-    private void testNodeInfo() throws BitcoindException, CommunicationException {
-        stringBuilder.append("------TEST NODE INFO-----").append("<br>")
-                .append("Current balance = " + btcdClient.getBalance()).append("<br>")
-                .append("You can refill test node on address = " + btcdClient.getNewAddress()).append("<br>");
+    private void printTestNodeInfo() throws BitcoindException, CommunicationException {
+        stringBuilder.append("------TEST NODE INFO-----").append("<br>").append("Current balance = ").append(btcdClient.getBalance()).append("<br>").append("You can refill test node on address = ").append(btcdClient.getNewAddress()).append("<br>");
     }
 
-    private void setMinConfirmation(int i) {
-        BitcoinService btcService = (BitcoinService) getMerchantServiceByName(name, reffilableServiceMap);
-        btcService.setConfirmationNeededCount(i);
+    private void setMinConfirmation() {
+        BitcoinService btcService = (BitcoinService) getMerchantServiceByName(name, refillableServiceMap);
+        btcService.setConfirmationNeededCount(MIN_CONFIRMATION_COUNT);
     }
 
     private void testAddressGeneration() throws BitcoindException, CommunicationException {
         stringBuilder.append("Starting test generating address...<br>");
-        String newAddress = btcdClient.getNewAddress();
-        assert newAddress.length() > 10;
-        assert btcdClient.getNewAddress().length() > 10;
-        stringBuilder.append("Address generation works fine. Example = " + newAddress + " <br>");
+        stringBuilder.append("Address generation works fine. Example = ").append(btcdClient.getNewAddress()).append(" <br>");
 
     }
 
     private void testAutoWithdraw(String refillAmount) throws BitcoindException, CommunicationException, InterruptedException, CoinTestException {
         synchronized (withdrawTest) {
-            String withdrawAddress = btcdClient.getNewAddress();
-            stringBuilder.append("address for withdraw " + withdrawAddress).append("<br>");;
+            String addressForWithdraw = btcdClient.getNewAddress();
+            stringBuilder.append("address for withdraw ").append(addressForWithdraw).append("<br>");;
 
-            WithdrawRequestParamsDto withdrawRequestParamsDto = new WithdrawRequestParamsDto();
-            withdrawRequestParamsDto.setCurrency(currencyId);
-            withdrawRequestParamsDto.setMerchant(merchantId);
-            withdrawRequestParamsDto.setDestination(withdrawAddress);
-            withdrawRequestParamsDto.setDestinationTag("");
-            withdrawRequestParamsDto.setOperationType(OUTPUT);
-            withdrawRequestParamsDto.setSum(new BigDecimal(refillAmount));
-
-            Payment payment = new Payment(OUTPUT);
-            payment.setCurrency(withdrawRequestParamsDto.getCurrency());
-            payment.setMerchant(withdrawRequestParamsDto.getMerchant());
-            payment.setSum(withdrawRequestParamsDto.getSum().doubleValue());
-            payment.setDestination(withdrawRequestParamsDto.getDestination());
-            payment.setDestinationTag(withdrawRequestParamsDto.getDestinationTag());
-
-            merchantService.setMinSum(merchantId, currencyId, 0.00000001);
-            CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, UserRole.USER)
-                    .orElseThrow(InvalidAmountException::new);
-            WithdrawStatusEnum beginStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getBeginState();
-
-            WithdrawRequestCreateDto withdrawRequestCreateDto = new WithdrawRequestCreateDto(withdrawRequestParamsDto, creditsOperation, beginStatus);
-            setAutoWithdraw(true);
-            withdrawService.createWithdrawalRequest(withdrawRequestCreateDto, new Locale("en"));
-
-            Optional<WithdrawRequest> withdrawRequestByAddressOptional = withdrawService.getWithdrawRequestByAddress(withdrawAddress);
-            if (!withdrawRequestByAddressOptional.isPresent())
-                throw new CoinTestException("Empty withdrawRequestByAddressOptional");
-
-            Integer requestId = withdrawRequestByAddressOptional.get().getId();
+            Integer requestId = makeTestWithdraw(refillAmount, addressForWithdraw);
             WithdrawRequestFlatDto flatWithdrawRequest;
 
             do {
@@ -196,12 +159,12 @@ public class BtcCoinTester implements CoinTester {
                     flatWithdrawRequest = withdrawService.getFlatById(requestId).get();
                     withdrawStatus = flatWithdrawRequest.getStatus().getCode();
                     Thread.sleep(5000);
-                    if (withdrawStatus == 10) {
+                    if (isWithdrawProccessed()) {
                         Transaction transaction = btcdClient.getTransaction(flatWithdrawRequest.getTransactionHash());
                         if (!compareObjects(transaction.getAmount(), (flatWithdrawRequest.getAmount().subtract(flatWithdrawRequest.getCommissionAmount()))))
                             stringBuilder.append("Amount expected " + transaction.getAmount() + ", but was " + flatWithdrawRequest.getAmount().min(flatWithdrawRequest.getCommissionAmount())).append("\n");
                     }
-                    stringBuilder.append("Checking withdraw...current status = " + withdrawStatus).append("<br>");;
+                    stringBuilder.append("Checking withdraw...current status = ").append(withdrawStatus).append("<br>");;
                     Thread.sleep(2000);
                 } catch (BitcoindException e) {
                     stringBuilder.append(e).append("<br>");;
@@ -214,6 +177,51 @@ public class BtcCoinTester implements CoinTester {
         }
     }
 
+    private boolean isWithdrawProccessed() {
+        return withdrawStatus == 10;
+    }
+
+    private Integer makeTestWithdraw(String refillAmount, String addressForWithdraw) throws CoinTestException {
+        WithdrawRequestParamsDto withdrawRequestParamsDto = prepareWithdrawRequestParamsDto(refillAmount, addressForWithdraw);
+        Payment payment = preparePayment(withdrawRequestParamsDto);
+
+        merchantService.setMinSum(merchantId, currencyId, MIN_SUM_FOR_WITHDRAW);
+        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, UserRole.USER)
+                .orElseThrow(InvalidAmountException::new);
+        WithdrawStatusEnum beginStatus = (WithdrawStatusEnum) WithdrawStatusEnum.getBeginState();
+
+        WithdrawRequestCreateDto withdrawRequestCreateDto = new WithdrawRequestCreateDto(withdrawRequestParamsDto, creditsOperation, beginStatus);
+        setAutoWithdraw(true);
+        withdrawService.createWithdrawalRequest(withdrawRequestCreateDto, new Locale("en"));
+
+        Optional<WithdrawRequest> withdrawRequestByAddressOptional = withdrawService.getWithdrawRequestByAddress(addressForWithdraw);
+        if (!withdrawRequestByAddressOptional.isPresent())
+            throw new CoinTestException("Empty withdrawRequestByAddressOptional");
+
+        return withdrawRequestByAddressOptional.get().getId();
+    }
+
+    private Payment preparePayment(WithdrawRequestParamsDto withdrawRequestParamsDto) {
+        Payment payment = new Payment(OUTPUT);
+        payment.setCurrency(withdrawRequestParamsDto.getCurrency());
+        payment.setMerchant(withdrawRequestParamsDto.getMerchant());
+        payment.setSum(withdrawRequestParamsDto.getSum().doubleValue());
+        payment.setDestination(withdrawRequestParamsDto.getDestination());
+        payment.setDestinationTag(withdrawRequestParamsDto.getDestinationTag());
+        return payment;
+    }
+
+    private WithdrawRequestParamsDto prepareWithdrawRequestParamsDto(String refillAmount, String addressForWithdraw) {
+        WithdrawRequestParamsDto withdrawRequestParamsDto = new WithdrawRequestParamsDto();
+        withdrawRequestParamsDto.setCurrency(currencyId);
+        withdrawRequestParamsDto.setMerchant(merchantId);
+        withdrawRequestParamsDto.setDestination(addressForWithdraw);
+        withdrawRequestParamsDto.setDestinationTag("");
+        withdrawRequestParamsDto.setOperationType(OUTPUT);
+        withdrawRequestParamsDto.setSum(new BigDecimal(refillAmount));
+        return withdrawRequestParamsDto;
+    }
+
     private void testManualWithdraw(String amount) throws BitcoindException, CommunicationException, InterruptedException, CoinTestException {
         synchronized (withdrawTest) {
             setAutoWithdraw(false);
@@ -221,7 +229,7 @@ public class BtcCoinTester implements CoinTester {
         String withdrawAddress = btcdClient.getNewAddress();
         stringBuilder.append("address for manual withdraw " + withdrawAddress).append("<br>");;
         walletPassphrase();
-        BitcoinService walletService = (BitcoinService) getMerchantServiceByName(name, reffilableServiceMap);
+        BitcoinService walletService = (BitcoinService) getMerchantServiceByName(name, refillableServiceMap);
         List<BtcWalletPaymentItemDto> payments = new LinkedList<>();
         payments.add(new BtcWalletPaymentItemDto(withdrawAddress, new BigDecimal(amount)));
         BtcPaymentResultDetailedDto btcPaymentResultDetailedDto = walletService.sendToMany(payments).get(0);
@@ -259,23 +267,25 @@ public class BtcCoinTester implements CoinTester {
         withdrawService.setAutoWithdrawParams(merchantCurrencyOptionsDto);
     }
 
-    private void checkRefill(String refillAmount, int merchantId, int currencyId, RefillRequestCreateDto request) throws BitcoindException, CommunicationException, InterruptedException, CoinTestException {
+    private void testRefill(String refillAmount) throws BitcoindException, CommunicationException, InterruptedException, CoinTestException {
+        RefillRequestCreateDto request = prepareRefillRequest(merchantId, currencyId);
+
         Map<String, Object> refillRequest = refillService.createRefillRequest(request);
         String addressForRefill = (String) ((Map) refillRequest.get("params")).get("address");
         List<RefillRequestAddressDto> byAddressMerchantAndCurrency = refillService.findByAddressMerchantAndCurrency(addressForRefill, merchantId, currencyId);
         if (byAddressMerchantAndCurrency.size() == 0)
             throw new CoinTestException("byAddressMerchantAndCurrency.size() == 0");
 
-        stringBuilder.append("ADDRESS FRO REFILL FROM BIRZHA " + addressForRefill).append("<br>");;
-        stringBuilder.append("BALANCE = " + btcdClient.getBalance()).append("<br>");;
+        stringBuilder.append("ADDRESS FRO REFILL FROM BIRZHA ").append(addressForRefill).append("<br>");;
+        stringBuilder.append("BALANCE = ").append(btcdClient.getBalance()).append("<br>");;
         walletPassphrase();
-        stringBuilder.append("balance = " + btcdClient.getBalance()).append("<br>");;
-        stringBuilder.append("refill sum = " + refillAmount).append("<br>");;
-        stringBuilder.append("DEBUG: new BigDecimal(refillAmount)" + new BigDecimal(refillAmount)).append("<br>");
+        stringBuilder.append("balance = ").append(btcdClient.getBalance()).append("<br>");;
+        stringBuilder.append("refill sum = ").append(refillAmount).append("<br>");;
+        stringBuilder.append("DEBUG: new BigDecimal(refillAmount)").append(new BigDecimal(refillAmount)).append("<br>");
         String txHash = btcdClient.sendToAddress(addressForRefill, new BigDecimal(refillAmount));
 
         Optional<RefillRequestBtcInfoDto> acceptedRequest;
-        Integer minConfirmation = getMerchantServiceByName(name, reffilableServiceMap).minConfirmationsRefill();
+        Integer minConfirmation = getMerchantServiceByName(name, refillableServiceMap).minConfirmationsRefill();
 
         do {
             acceptedRequest = refillService.findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(merchantId, currencyId, txHash);
