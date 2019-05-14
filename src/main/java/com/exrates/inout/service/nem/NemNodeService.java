@@ -22,17 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-//exrates.service.exception.NemTransactionException;
-//exrates.service.exception.NisNotReadyException;
-//exrates.service.exception.NisTransactionException;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-//exrates.service.exception.invoice.InvalidAccountException;
-//exrates.service.util.RestUtil;
 
 /**
  * Created by maks on 20.07.2017.
  */
-//@Log4j2(topic = "nem_log")
 @Service
 public class NemNodeService {
 
@@ -118,7 +111,7 @@ public class NemNodeService {
         return new JSONObject(response.getBody());
     }
 
-    JSONArray getIncomeTransactions(String address, String hash) {
+    public JSONArray getIncomeTransactions(String address, String hash) {
         String url = property.getNisServerUrlReceive().concat(String.format(pathGetIncomeTransactions, address));
         if (!StringUtils.isEmpty(hash)) {
             url = url.concat("&hash=").concat(hash);
@@ -131,7 +124,7 @@ public class NemNodeService {
         return new JSONObject(response.getBody()).getJSONArray("data");
     }
 
-    long getLastBlockHeight() {
+    public long getLastBlockHeight() {
         String response = restTemplate.getForObject(property.getNisServerUrlReceive().concat(pathGetCurrentBlockHeight), String.class);
         return new org.json.JSONObject(response).getLong("height");
     }

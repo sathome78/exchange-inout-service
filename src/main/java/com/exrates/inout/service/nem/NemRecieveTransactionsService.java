@@ -209,7 +209,7 @@ public class NemRecieveTransactionsService {
         specParamsDao.updateParam(MERCHANT_NAME, LAST_HASH_PARAM, hash);
     }
 
-    private String loadLastHash() {
+    public String loadLastHash() {
         MerchantSpecParamDto specParamsDto = specParamsDao.getByMerchantNameAndParamName(MERCHANT_NAME, LAST_HASH_PARAM);
         return specParamsDto == null ? null : specParamsDto.getParamValue();
     }
