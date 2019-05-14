@@ -72,7 +72,7 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
+    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
 
     private final BigDecimal feeAmount = new BigDecimal("0.01");
 
@@ -99,6 +99,11 @@ public class EthTokenServiceImpl implements EthTokenService {
     @Override
     public Integer currencyId() {
         return currency.getId();
+    }
+
+    @Override
+    public ExConvert.Unit getUnit() {
+        return unit;
     }
 
     public EthTokenServiceImpl(List<String> contractAddress, String merchantName,

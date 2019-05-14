@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service
@@ -26,10 +27,10 @@ public class CoinDispatcher {
         this.applicationContext = applicationContext;
     }
 
-    public CoinTester getCoinTester(String merchantName){
+    public CoinTester getCoinTester(String merchantName, StringBuilder logger, String email){
         Object service = getService(merchantName);
         if(service instanceof BitcoinService){
-            return (CoinTester) applicationContext.getBean(BtcCoinTester.class.getAnnotation(Component.class).value());
+            return (CoinTester) applicationContext.getBean(BtcCoinTester.class.getAnnotation(Component.class).value(), merchantName, email, logger);
         }
 //        if(service instanceof EthTokenService){
 //            return (CoinTester) applicationContext.getBean(EthTokenTester.class.getAnnotation(Component.class).value());
@@ -45,5 +46,15 @@ public class CoinDispatcher {
 //            if(entry.getValue().getMerchantName().equals(merchantName)) return entry.getValue();
 //        }
         return null;
+    }
+
+    @PostConstruct
+    public void test()  {
+        try {
+            CoinTester kod = getCoinTester("KOD", new StringBuilder(), null);
+            kod.testCoin("0.00001");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

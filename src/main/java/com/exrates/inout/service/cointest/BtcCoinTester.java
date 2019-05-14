@@ -18,30 +18,20 @@ import com.exrates.inout.domain.main.Payment;
 import com.exrates.inout.domain.main.WithdrawRequest;
 import com.exrates.inout.exceptions.CoinTestException;
 import com.exrates.inout.exceptions.InvalidAmountException;
-import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.BitcoinCoins;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
 import com.exrates.inout.service.BitcoinService;
-import com.exrates.inout.service.CoinTester;
-import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.IRefillable;
-import com.exrates.inout.service.InputOutputService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.WithdrawService;
-import com.exrates.inout.service.job.invoice.RefillRequestJob;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
 import com.neemre.btcdcli4j.core.domain.Transaction;
-import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -60,10 +50,9 @@ import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
 import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREATE_BY_USER;
 
 
-@NoArgsConstructor
 @Component("btcCoinTester")
 @Scope("prototype")
-public class BtcCoinTester implements CoinTester {
+public class BtcCoinTester extends CoinTestBasic {
 
     private final static Integer TIME_FOR_REFILL = 10000;
     private static final int TEST_NODE_PORT = 8089;
@@ -71,49 +60,23 @@ public class BtcCoinTester implements CoinTester {
     private static final String TEST_NODE_USER = "devprod";
     private static final int MIN_CONFIRMATION_COUNT = 1;
     private static final double MIN_SUM_FOR_WITHDRAW = 0.00000001;
-    private String testEmail = "yagi3773@gmail.com";
 
-    @Autowired
-    private Map<String, IRefillable> refillableServiceMap;
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private InputOutputService inputOutputService;
-    @Autowired
-    private RefillService refillService;
-    @Autowired
-    private CurrencyService currencyService;
-    @Autowired
-    private WithdrawService withdrawService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RefillRequestJob refillRequestJob;
-    @Autowired
-    private CryptoCurrencyProperties ccp;
 
-    private int userId;
-    private int currencyId;
-    private int merchantId;
-    private String name;
     private BtcdClient btcdClient;
     private final Object withdrawTest = new Object();
     private int withdrawStatus = 0;
-    private StringBuilder stringBuilder;
 
-    public void initBot(String name, StringBuilder stringBuilder, String email) throws Exception {
-        merchantId = merchantService.findByName(name).getId();
-        currencyId = currencyService.findByName(name).getId();
-        btcdClient = prepareTestBtcClient(name);
-        this.name = name;
-        this.stringBuilder = stringBuilder;
-        if(email != null) this.testEmail = email;
-        stringBuilder.append("Init success for coin " + name).append("<br>");
+    protected BtcCoinTester(String name, String email, StringBuilder stringBuilder) throws Exception {
+        super(name, email, stringBuilder);
     }
 
     @PostConstruct
-    public void init(){
-        userId = userService.getIdByEmail(testEmail);
+    public void setUp(){
+        try {
+            btcdClient = prepareTestBtcClient(name);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -341,6 +304,7 @@ public class BtcCoinTester implements CoinTester {
         return new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale);
     }
 
+    @SneakyThrows
     private BtcdClient prepareTestBtcClient(String name) throws Exception {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         CloseableHttpClient httpProvider = HttpClients.custom().setConnectionManager(cm)

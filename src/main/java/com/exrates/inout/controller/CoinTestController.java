@@ -37,8 +37,7 @@ public class CoinTestController {
 
     private void startCoinTest(@RequestParam(name = "coin") String name, @RequestParam(name = "amount") String amount, @RequestParam(name = "email", required = false) String email) {
         try {
-            CoinTester coinTester = coinDispatcher.getCoinTester(name);
-            coinTester.initBot(name.toUpperCase(), logger, email);
+            CoinTester coinTester = coinDispatcher.getCoinTester(name, logger, email);
             coinTester.testCoin(amount);
         } catch (Exception e){
             logger.append(e.getMessage()).append("\n");
