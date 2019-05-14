@@ -45,7 +45,7 @@ public class OmniNodeServiceImpl implements OmniNodeService {
         try {
             nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
-            //log.error("wrong ADK url");
+            log.error("wrong ADK url");
         }
     }
 

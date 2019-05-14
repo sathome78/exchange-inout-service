@@ -95,7 +95,7 @@ public class RefillRequestJob {
         try {
             getBitcoinServiceByMerchantName(merchantName).processPayment(params);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

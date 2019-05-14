@@ -84,7 +84,7 @@ public class NemNodeService {
             int time = getNodeExtendedInfo().getJSONObject("nisInfo").getInt("currentTime");
             return new TimeInstant(time);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             throw new NisNotReadyException();
         }
     }
@@ -101,7 +101,7 @@ public class NemNodeService {
             try {
                 defineAndThrowException(error);
             } catch (RuntimeException e) {
-                //log.error("response {}, {}",response, e);
+                log.error("response {}, {}",response, e);
                 throw e;
             }
         }

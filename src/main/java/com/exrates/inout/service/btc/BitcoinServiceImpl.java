@@ -185,7 +185,7 @@ public class BitcoinServiceImpl implements BitcoinService {
             this.supportWalletNotifications = supportWalletNotifications;
             this.supportReferenceLine = supportReferenceLine;
         } catch (IOException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -333,14 +333,14 @@ public class BitcoinServiceImpl implements BitcoinService {
                             try {
                                 processBtcPayment(btcPaymentFlatDto);
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                             }
                         });
             } else {
-                //log.error("Invalid transaction");
+                log.error("Invalid transaction");
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -368,7 +368,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                             .hash(btcPaymentFlatDto.getTxId())
                             .blockhash(btcPaymentFlatDto.getBlockhash()).build());
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -426,7 +426,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                         log.warn("No valid transactions available!");
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
 
             });
@@ -437,7 +437,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 changeConfirmationsOrProvide(payment);
             });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
 
@@ -471,7 +471,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyName, username);
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -596,7 +596,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 try {
                     processBtcPayment(btcPaymentFlatDto);
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
         });
@@ -610,13 +610,13 @@ public class BitcoinServiceImpl implements BitcoinService {
             try {
                 processBtcPayment(btcPaymentFlatDto);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
         try {
             onIncomingBlock(bitcoinWalletService.getBlockByHash(bitcoinWalletService.getLastBlockHash()));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
     }
@@ -639,12 +639,12 @@ public class BitcoinServiceImpl implements BitcoinService {
                     log.info("Processing tx {}", btcPaymentFlatDto);
                     processBtcPayment(btcPaymentFlatDto);
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
             merchantSpecParamsDao.updateParam(merchantName, blockParamName, currentBlockHash);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
     }

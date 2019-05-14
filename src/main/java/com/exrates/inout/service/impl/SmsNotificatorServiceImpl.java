@@ -88,7 +88,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
                 subscriptionDao.updateDeliveryPrice(userId, cost);
             }
         } catch (Exception e) {
-            //log.error("can't get new price", e);
+            log.error("can't get new price", e);
         }
         return String.valueOf(subscriptionDto.getContact());
     }

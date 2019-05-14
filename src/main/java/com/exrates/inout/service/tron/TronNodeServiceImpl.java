@@ -118,7 +118,7 @@ public class TronNodeServiceImpl implements TronNodeService {
             log.debug("trx response to url {} - {}", requestEntity.getUrl(), responseEntity);
             return new String(responseEntity.getBody().getBytes(),"utf-8");
         } catch (Exception e) {
-            //log.error("trx request {} {} {}", requestEntity.getUrl(), requestEntity.getMethod(), e);
+            log.error("trx request {} {} {}", requestEntity.getUrl(), requestEntity.getMethod(), e);
             throw new RuntimeException(e);
         }
     }

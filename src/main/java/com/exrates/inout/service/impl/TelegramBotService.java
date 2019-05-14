@@ -51,7 +51,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
             try {
                 botsApi.registerBot(this);
             } catch (TelegramApiException e) {
-                //log.error("error while initialize bot {}", e);
+                log.error("error while initialize bot {}", e);
             }
         }
     }
@@ -86,7 +86,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
                             .build());
                     message.setText("Registered");
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                     message.setText("error registering profile");
                 }
             }

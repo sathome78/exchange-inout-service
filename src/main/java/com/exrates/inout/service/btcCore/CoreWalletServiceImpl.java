@@ -167,7 +167,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             this.supportSubtractFee = supportSubtractFee;
             this.supportReferenceLine = supportReferenceLine;
         } catch (Exception ex) {
-            //log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
+            log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
         }
     }

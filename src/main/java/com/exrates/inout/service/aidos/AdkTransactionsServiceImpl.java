@@ -94,13 +94,13 @@ public class AdkTransactionsServiceImpl implements TransactionsCheckService {
                             }
                         }
                     } catch (RuntimeException e) {
-                        //log.error(e);
+                        log.error(e);
                     }
                 });
                 offset += TX_SCAN_COUNT;
             } while (transactions.size() >= TX_SCAN_COUNT);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class AdkTransactionsServiceImpl implements TransactionsCheckService {
             paramsMap.put("amount", amount);
             adkService.processPayment(paramsMap);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class AdkTransactionsServiceImpl implements TransactionsCheckService {
                     processTransaction(p.getAddress(), p.getMerchantTransactionId(), p.getAmount().toString());
                 }
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
     }

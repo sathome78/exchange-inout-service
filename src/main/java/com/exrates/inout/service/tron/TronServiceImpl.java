@@ -104,7 +104,7 @@ public class TronServiceImpl implements TronService {
     @Override
     public RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto) {
         if (isTransactionDuplicate(dto.getHash(), currencyId, merchantId)) {
-            //log.error("tron transaction allready received!!! {}", dto);
+            log.error("tron transaction allready received!!! {}", dto);
             throw new RuntimeException("tron transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -133,7 +133,7 @@ public class TronServiceImpl implements TronService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

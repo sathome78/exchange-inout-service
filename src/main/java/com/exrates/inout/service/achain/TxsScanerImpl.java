@@ -117,7 +117,7 @@ public class TxsScanerImpl implements BlocksScaner {
                     }
                 }
             } catch (Exception e) {
-                ////log.error(e);
+                log.error(e);
             }
         }
     }
@@ -180,7 +180,7 @@ public class TxsScanerImpl implements BlocksScaner {
         try {
             achainService.processPayment(paymentParamsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            ////log.error(e);
+            log.error(e);
         }
     }
 

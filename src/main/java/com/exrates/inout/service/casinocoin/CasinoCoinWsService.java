@@ -62,7 +62,7 @@ public class CasinoCoinWsService {
             try {
                 jsonMessage = new JSONObject(msg);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
                 return;
             }
             Object messageType = jsonMessage.get("type");
@@ -92,7 +92,7 @@ public class CasinoCoinWsService {
                         try {
                             subscribeToTransactions();
                         } catch (Exception e) {
-                           //log.error("Error | WebSocket error {}", e);
+                           log.error("Error | WebSocket error {}", e);
                         }
                     }
                     return;
@@ -110,7 +110,7 @@ public class CasinoCoinWsService {
                 }
             }
         } catch (Exception e) {
-            //log.error("ERROR | Exception {}", e);
+            log.error("ERROR | Exception {}", e);
         }
     }
 
@@ -146,7 +146,7 @@ public class CasinoCoinWsService {
 
             subscribeToTransactions();
         } catch (Exception e) {
-            //log.error("ERROR | Error connection to CasinoCoin WebSocket {}", e);
+            log.error("ERROR | Error connection to CasinoCoin WebSocket {}", e);
         }
     }
 
@@ -181,7 +181,7 @@ public class CasinoCoinWsService {
 
     @OnClose
     public void close(final Session session, final CloseReason reason) {
-        //log.error("ERROR | Connection lost. Session closed : {}. Reason : {}", session, reason);
+        log.error("ERROR | Connection lost. Session closed : {}. Reason : {}", session, reason);
         if (!shutdown) {
             connectAndSubscribe();
         }
@@ -193,7 +193,7 @@ public class CasinoCoinWsService {
             shutdown = true;
             session.close();
         } catch (IOException e) {
-            //log.error("ERROR | Closing session");
+            log.error("ERROR | Closing session");
         }
     }
 

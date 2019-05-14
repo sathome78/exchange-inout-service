@@ -79,7 +79,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                     processTransaction(p.getId(), p.getAddress(), p.getMerchantTransactionId(), p.getAmount().toString(), p.getMerchantId(), p.getCurrencyId());
                 }
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
 
@@ -92,7 +92,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                 transferToMainAccount(p);
                 refillService.updateAddressNeedTransfer(p.getAddress(), tronService.getMerchantId(), tronService.getCurrencyId(), false);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
     }
@@ -107,7 +107,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                 transferTokenToMainAccount(p, token.getNameDescription(), token.getBlockchainName());
                 refillService.updateAddressNeedTransfer(p.getAddress(), p.getMerchantId(), p.getCurrencyId(), false);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
     }
@@ -154,7 +154,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
             tronService.processPayment(map);
             refillService.updateAddressNeedTransfer(address, merchantId, currencyId, true);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error("request not found {}", address);
+            log.error("request not found {}", address);
         }
     }
 

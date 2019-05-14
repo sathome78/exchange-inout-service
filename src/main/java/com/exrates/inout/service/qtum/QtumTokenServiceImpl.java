@@ -123,7 +123,7 @@ public class QtumTokenServiceImpl implements QtumTokenService {
             try {
                 scanBlocks();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 8L, 30, TimeUnit.MINUTES);
@@ -132,7 +132,7 @@ public class QtumTokenServiceImpl implements QtumTokenService {
             try {
                 checkBalanceAndTransfer();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 16L, 125L, TimeUnit.MINUTES);
@@ -171,7 +171,7 @@ public class QtumTokenServiceImpl implements QtumTokenService {
 
                         specParamsDao.updateParam(merchant.getName(), qtumSpecParamName, String.valueOf(t.getBlockNumber() + 1));
                     } catch (Exception e) {
-                        //log.error(e);
+                        log.error(e);
                     }
 
                 });
@@ -238,7 +238,7 @@ public class QtumTokenServiceImpl implements QtumTokenService {
                                     qtumNodeService.sendToContract(contractAddress.get(0), transferData, t.getAddress());
                                     log.info("after token transfer");
                                 } catch (Exception e) {
-                                    //log.error(e);
+                                    log.error(e);
 //                            refillService.updateAddressNeedTransfer(t.getAddress(), merchant.getId(),
 //                                    currency.getId(), false);
                                 }

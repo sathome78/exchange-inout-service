@@ -46,22 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.Merchant;
-//exrates.model.dto.*;
-//exrates.model.enums.ActionType;
-//exrates.model.util.BigDecimalProcessing;
-//exrates.service.*;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.WithdrawUtils;
-
-/**
- * Created by maks on 18.07.2017.
- */
-//@Log4j2(topic = "nem_log")
 @Service
 public class NemServiceImpl implements NemService {
 
@@ -201,7 +185,7 @@ public class NemServiceImpl implements NemService {
                                 .hash(requestAcceptDto.getMerchantTransactionId())
                                 .build());
             } catch (RefillRequestAppropriateNotFoundException e) {
-                //log.error(e);
+                log.error(e);
             }
         } else {
             refillService.autoAcceptRefillRequest(requestAcceptDto);
@@ -260,7 +244,7 @@ public class NemServiceImpl implements NemService {
                     gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
                 }
             } catch (RefillRequestAppropriateNotFoundException e) {
-                //log.error(e);
+                log.error(e);
             }
         });
 
@@ -312,7 +296,7 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
-        //log.error("comission merchant {}", merchantId);
+        log.error("comission merchant {}", merchantId);
         if (!merchantId.equals(merchant.getId())) {
             return countSpecComissionForMosaic(amount, destinationTag, merchantId);
         }
@@ -378,7 +362,7 @@ public class NemServiceImpl implements NemService {
                 throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, this.additionalWithdrawFieldName());
             }
         } catch (UnsupportedEncodingException e) {
-            //log.error("unsupported encoding {}", e);
+            log.error("unsupported encoding {}", e);
         }
     }
 

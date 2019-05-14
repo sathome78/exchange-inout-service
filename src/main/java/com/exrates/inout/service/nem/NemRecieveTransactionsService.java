@@ -125,16 +125,16 @@ public class NemRecieveTransactionsService {
                     checkOwnedMosaics(params.get("signer"));
                     nemService.processMosaicPayment(mosaics, params);
                 } catch (Exception e) {
-                    //log.error("nem mosaic refill process error {} {}", e, transactionData.toString());
+                    log.error("nem mosaic refill process error {} {}", e, transactionData.toString());
                 }
             } else {
                 try {
                     checkOwnedMosaics(params.get("signer"));
                     nemService.processPayment(params);
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error("nem refill address not found {}", transactionData.toString());
+                    log.error("nem refill address not found {}", transactionData.toString());
                 } catch (Exception e) {
-                    //log.error("nem refill process error {} {}", e, transactionData.toString());
+                    log.error("nem refill process error {} {}", e, transactionData.toString());
                 }
             }
             if (i == 24) {
@@ -193,7 +193,7 @@ public class NemRecieveTransactionsService {
             message = new String(plainMessage.getEncodedPayload());
             log.debug(message);
         } catch (Exception e) {
-            //log.error("unsupported encoding {}", e);
+            log.error("unsupported encoding {}", e);
         }
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("hash", meta.getJSONObject("hash").getString("data"));

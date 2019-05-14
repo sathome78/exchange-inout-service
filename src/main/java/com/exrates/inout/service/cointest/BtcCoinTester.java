@@ -6,12 +6,10 @@ import com.exrates.inout.domain.dto.MerchantCurrencyOptionsDto;
 import com.exrates.inout.domain.dto.RefillRequestAddressDto;
 import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestParamsDto;
 import com.exrates.inout.domain.dto.WithdrawRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
 import com.exrates.inout.domain.dto.WithdrawRequestParamsDto;
 import com.exrates.inout.domain.enums.UserRole;
-import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
 import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Payment;
@@ -45,9 +43,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
-import static com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum.CREATE_BY_USER;
 
 
 @Component("btcCoinTester")
@@ -282,28 +278,6 @@ public class BtcCoinTester extends CoinTestBasic {
         }
     }
 
-    private RefillRequestCreateDto prepareRefillRequest(int merchantId, int currencyId) {
-        RefillRequestParamsDto requestParamsDto = new RefillRequestParamsDto();
-        requestParamsDto.setChildMerchant("");
-        requestParamsDto.setCurrency(currencyId);
-        requestParamsDto.setGenerateNewAddress(true);
-        requestParamsDto.setMerchant(merchantId);
-        requestParamsDto.setOperationType(INPUT);
-        requestParamsDto.setSum(null);
-
-        Payment payment = new Payment(INPUT);
-        payment.setCurrency(requestParamsDto.getCurrency());
-        payment.setMerchant(requestParamsDto.getMerchant());
-        payment.setSum(requestParamsDto.getSum() == null ? 0 : requestParamsDto.getSum().doubleValue());
-
-        Locale locale = new Locale("en");
-        CreditsOperation creditsOperation = inputOutputService.prepareCreditsOperation(payment, userId, UserRole.USER)
-                .orElseThrow(InvalidAmountException::new);
-        RefillStatusEnum beginStatus = (RefillStatusEnum) RefillStatusEnum.X_STATE.nextState(CREATE_BY_USER);
-
-        return new RefillRequestCreateDto(requestParamsDto, creditsOperation, beginStatus, locale);
-    }
-
     @SneakyThrows
     private BtcdClient prepareTestBtcClient(String name) throws Exception {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
@@ -332,35 +306,10 @@ public class BtcCoinTester extends CoinTestBasic {
     }
 
 
-    public static boolean compareObjects(Object A, Object B) {
-        return normalize(A).equals(normalize(B));
-    }
+
 
     public static void main(String[] args) {
         System.out.println(new BigDecimal("0.0001").multiply(new BigDecimal("0.00010")));
-    }
-
-    private static String normalize(Object B) {
-        BigDecimal A = new BigDecimal(String.valueOf(B));
-        StringBuilder first = new StringBuilder(String.valueOf(A));
-        String check = String.valueOf(A);
-        if (!check.contains(".")) return check;
-
-        String substring = "";
-        substring = check.substring(check.indexOf(".") + 1);
-
-        if (substring.length() > 8) {
-            first = new StringBuilder(substring.substring(0, 8));
-        } else first = new StringBuilder(substring.substring(0, substring.length()));
-
-
-        for (int i = first.length() - 1; i != -1; i--) {
-            if (String.valueOf(first.charAt(i)).equals("0")) {
-                first.deleteCharAt(i);
-            } else break;
-        }
-        String result = check.substring(0, check.indexOf(".") + 1) + first.toString();
-        return result;
     }
 
 

@@ -157,7 +157,7 @@ public class LiskServiceImpl implements LiskService {
                             .hash(txId)
                             .blockhash(transaction.getBlockId()).build());
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -214,7 +214,7 @@ public class LiskServiceImpl implements LiskService {
                 gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyName, username);
             }
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -253,7 +253,7 @@ public class LiskServiceImpl implements LiskService {
                         try {
                             processPayment(params);
                         } catch (RefillRequestAppropriateNotFoundException e) {
-                            //log.error(e);
+                            log.error(e);
                         }
                     }
                 }
@@ -261,7 +261,7 @@ public class LiskServiceImpl implements LiskService {
                     refillService.updateTxOffsetForAddress(address, newOffset);
                 }
             } catch (Exception e) {
-                //log.error("Exception for currency {} merchant {}: {}", currencyName, merchantName, ExceptionUtils.getStackTrace(e));
+                log.error("Exception for currency {} merchant {}: {}", currencyName, merchantName, ExceptionUtils.getStackTrace(e));
             }
         });
     }
