@@ -9,8 +9,6 @@ import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.ethTokensWrappers.ethTokenERC20;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
@@ -30,8 +28,6 @@ import java.util.Optional;
 import static com.exrates.inout.service.ethereum.EthTokenServiceImpl.GAS_LIMIT;
 
 
-@Component("ethCoinTester")
-@Scope("prototype")
 public class EthTokenTester extends CoinTestBasic {
 
     @Autowired

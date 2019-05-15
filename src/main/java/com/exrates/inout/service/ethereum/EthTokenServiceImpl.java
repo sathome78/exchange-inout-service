@@ -416,6 +416,11 @@ public class EthTokenServiceImpl implements EthTokenService {
         public Uint256 value;
     }
 
+    @Override
+    public String getMerchantName() {
+        return merchantName;
+    }
+
     @PreDestroy
     public void destroy() {
         log.debug("Destroying " + merchantName);

@@ -2,6 +2,7 @@ package com.exrates.inout.service.ethereum;
 
 
 import org.web3j.protocol.core.methods.response.Transaction;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -24,4 +25,8 @@ public interface EthTokenService {
     }
 
     ExConvert.Unit getUnit();
+
+    default String getMerchantName(){
+        throw new NotImplementedException();
+    };
 }

@@ -30,8 +30,6 @@ import lombok.SneakyThrows;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
@@ -46,8 +44,6 @@ import java.util.Optional;
 import static com.exrates.inout.domain.enums.OperationType.OUTPUT;
 
 
-@Component("btcCoinTester")
-@Scope("prototype")
 public class BtcCoinTester extends CoinTestBasic {
 
     private final static Integer TIME_FOR_REFILL = 10000;
