@@ -266,7 +266,7 @@ public class BtcCoinTester extends CoinTestBasic {
         } while (!acceptedRequest.isPresent());
 
         stringBuilder.append("THE REQUEST WAS FOUND").append("<br>");;
-        stringBuilder.append("Node balance after refill = " + btcdClient.getBalance()).append("<br>");
+        stringBuilder.append("Node balance after refill = ").append(btcdClient.getBalance()).append("<br>");
         Map<String, String> a = new HashMap<>();
     }
 
@@ -304,13 +304,5 @@ public class BtcCoinTester extends CoinTestBasic {
         }
         throw new RuntimeException("BitcoinService with ticker " + name + " not found!");
     }
-
-
-
-
-    public static void main(String[] args) {
-        System.out.println(new BigDecimal("0.0001").multiply(new BigDecimal("0.00010")));
-    }
-
 
 }

@@ -1,15 +1,12 @@
 package com.exrates.inout.service.waves;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.domain.dto.waves.WavesAddress;
 import com.exrates.inout.domain.waves.WavesPayment;
 import com.exrates.inout.domain.waves.WavesTransaction;
 import com.exrates.inout.exceptions.WavesRestException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,10 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//exrates.model.dto.merchants.waves.WavesAddress;
-//exrates.model.dto.merchants.waves.WavesPayment;
-//exrates.model.dto.merchants.waves.WavesTransaction;
-//exrates.service.exception.WavesRestException;
 
 //@Log4j2(topic = "waves_log")
 @Service
@@ -143,70 +136,9 @@ public class WavesRestClientImpl implements WavesRestClient {
     }
 
 
-   /* public static void main(String[] args) throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        String apiKey = "ridethewaves!";
-        String baseUrl = "http://127.0.0.1:6869";
-        String address = "3MrhJ3a5E1ATKxU15nKW59vfGdyqC2Rt5Xb";
-        String txHistoryEP = "/transactions/address/{address}/limit/{limit}";
-        String transferEP = "/assets/transfer";
-        String txByIdEP = "/transactions/info/{id}";
-        Map<String, Object> params = new HashMap<>();
-        *//*params.put("address", address);
-        params.put("limit", 50);
-        ResponseEntity<List<List<WavesTransaction>>> transactionsResult = restTemplate.exchange(baseUrl + txHistoryEP, HttpMethod.GET,
-                new HttpEntity<>(""), new ParameterizedTypeReference<List<List<WavesTransaction>>>() {}, params);
-        List<List<WavesTransaction>> transactions = transactionsResult.getBody();
-        transactions.stream().flatMap(List::stream).forEach(System.out::println);*//*
-       WavesPayment wavesPayment = new WavesPayment();
-       wavesPayment.setAmount(1839600000L);
-       wavesPayment.setFee(100000L);
-       wavesPayment.setSender("ЫЫ3MrhJ3a5E1ATKxU15nKW59vfGdyqC2Rt5Xb");
-       wavesPayment.setRecipient("3N8DRLQKAc9arr6q5G9AagYUExXLhDJeGH3");
-       wavesPayment.setAttachment("");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("api_key", apiKey);
-        HttpEntity<WavesPayment> entity = new HttpEntity<>(wavesPayment, headers);
-        ResponseEntity<String> response = null;
-        try {
-            response = restTemplate.exchange(baseUrl + transferEP, HttpMethod.POST, entity, String.class);
-        } catch (HttpClientErrorException e) {
-            String body = e.getResponseBodyAsString();
-            System.out.println(body);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode error = objectMapper.readTree(body).get("error");
-            System.out.println(error.asInt());
-
-
-        }
-
-    //    System.out.println(response.getBody());
-        *//*params.put("id", "64PmAooyNtDswN6cCjLXhu5mLfYSNVkqWG4dqVYXxBkv");
-        System.out.println(restTemplate.getForObject(baseUrl+txByIdEP, WavesTransaction.class, params));*//*
-        ;
-        *//*System.out.println(restTemplate.exchange(baseUrl + "/blocks/height", HttpMethod.GET,
-                new HttpEntity<>(""), new ParameterizedTypeReference<Map<String, Integer>>() {}).getBody().get("height"));
-*//*
-
-    }
-*/
-
-
-
-
-
-
-
-
     private String generateBaseUrl() {
         return String.join(":", host, port);
     }
-
-
-
-
-
 
 
 }
