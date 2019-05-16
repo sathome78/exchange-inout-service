@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service
@@ -51,13 +50,4 @@ public class CoinDispatcher {
         return null;
     }
 
-    @PostConstruct
-    public void test()  {
-        try {
-            CoinTester kod = getCoinTester("KOD", new StringBuilder(), null);
-            kod.testCoin("0.00001");
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 }

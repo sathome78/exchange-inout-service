@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Component
 public class MerchantServiceContext {
+
     @Autowired
     Map<String, IMerchantService> merchantServiceMap;
 

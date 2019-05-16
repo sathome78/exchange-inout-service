@@ -20,10 +20,11 @@ public class RabbitMqListener {
     private final MerchantServiceContext merchantServiceContext;
 
     @RabbitListener(queues = RabbitConfig.MERCHANTS_QUEUE)
-    public void merchantsListener(String msg){
-        log.info("merchantsListener: " + msg);
+    public void merchantsListener(org.springframework.amqp.core.Message msg){
+        String body = new String(msg.getBody());
+        log.info("merchantsListener: " + body);
         try {
-            routeToTargetService(msg);
+            routeToTargetService(body);
         } catch (Exception e){
             log.error(ExceptionUtils.getStackTrace(e));
         }
