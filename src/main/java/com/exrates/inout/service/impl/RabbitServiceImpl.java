@@ -10,13 +10,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 import static com.exrates.inout.configuration.RabbitConfig.REFILL_QUEUE;
 
 @Service
 @RequiredArgsConstructor
-//@Log4j2
 public class RabbitServiceImpl implements RabbitService {
 
    private static final Logger log = LogManager.getLogger(RabbitServiceImpl.class);
@@ -34,11 +31,9 @@ public class RabbitServiceImpl implements RabbitService {
     public void sendAcceptRefillEvent(WalletOperationMsDto dto) {
         try {
             log.info("sendAcceptRefillEvent(): " + dto);
-            rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName,REFILL_QUEUE, toJson(dto));
-        } catch (JsonProcessingException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            send(REFILL_QUEUE, toJson(dto));
         } catch (Exception e){
-            log.error(e);
+            log.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -46,8 +41,4 @@ public class RabbitServiceImpl implements RabbitService {
         return objectMapper.writeValueAsString(dto);
     }
 
-    @PostConstruct
-    public void test(){
-        rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName,REFILL_QUEUE, new String("Zalupa"));
-    }
 }

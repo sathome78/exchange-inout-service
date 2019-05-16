@@ -1,8 +1,4 @@
 package com.exrates.inout.service.job.invoice;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.domain.dto.WithdrawRequestPostDto;
 import com.exrates.inout.domain.enums.invoice.InvoiceActionTypeEnum;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
@@ -14,8 +10,9 @@ import com.exrates.inout.exceptions.MerchantException;
 import com.exrates.inout.service.SendMailService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.WithdrawService;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -109,9 +106,6 @@ public class WithdrawRequestJob {
       }
       List<WithdrawRequestPostDto> withdrawForPostingList = withdrawService.dirtyReadForPostByStatusList(candidate.get(0));
       for (WithdrawRequestPostDto withdrawRequest : withdrawForPostingList) {
-        if(withdrawRequest.getCurrencyName().equals("KOD")){
-          System.out.println("KOD WITHDRAWWWWWWWWWWW!!!");
-        }
         withdrawRequest.setUserRole(userService.getUserRoleFromDB(withdrawRequest.getUserId()));
 
         try {

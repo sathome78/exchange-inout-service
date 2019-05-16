@@ -13,13 +13,17 @@ import org.springframework.stereotype.Service;
 public class RabbitConfig  {
 
     public static final String topicExchangeName = "inout-service";
-    public static final String REFILL_QUEUE = "refill";
 
+    public static final String MERCHANTS_QUEUE = "merchants";
+    public static final String REFILL_QUEUE = "refill";
 
     @Bean
     Queue refillQueue() {
         return new Queue(REFILL_QUEUE, true);
     }
+
+    @Bean
+    Queue merchantsQueue() { return new Queue(MERCHANTS_QUEUE, true); }
 
     @Bean
     TopicExchange exchange() {
@@ -35,6 +39,4 @@ public class RabbitConfig  {
     MessageListenerAdapter listenerAdapter(TestRabbitReceiver receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
-
-
 }
