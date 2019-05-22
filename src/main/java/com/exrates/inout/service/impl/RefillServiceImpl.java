@@ -1176,4 +1176,8 @@ public class RefillServiceImpl implements RefillService {
         return refillRequestDao.findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(merchantId, currencyId, txHash);
     }
 
+    @Override
+    public String getPrivKeyByAddress(String address) {
+        return refillRequestDao.getPrivKeyByAddress(address);
+    }
 }
