@@ -19,9 +19,9 @@ spring:
     host: 172.50.50.100
     port: 6379
   rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
+    username: developer
+    password: eehei4AeJein
+    host: rabbitmq-dev.service
     port: 5672
 
 logging:
