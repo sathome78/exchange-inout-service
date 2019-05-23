@@ -8,6 +8,7 @@ import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
 import com.amazonaws.services.secretsmanager.model.InternalServiceErrorException;
 import com.amazonaws.services.secretsmanager.model.InvalidRequestException;
 import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
+import com.exrates.inout.properties.models.GapiProperty;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CommissionService;
 import com.exrates.inout.service.CurrencyService;
@@ -36,7 +37,6 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  */
 @Service
 @Log4j2(topic = "algorithm_log")
-@PropertySource("classpath:/merchants/gapi_wallet.properties")
 public class AlgorithmServiceImpl implements AlgorithmService {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
@@ -56,12 +56,11 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     @Autowired
     private CurrencyService currencyService;
 
-    @Value("${gapi.secret.name}")
     private String environment;
 
     @Autowired
-    public AlgorithmServiceImpl(){
-
+    public AlgorithmServiceImpl(GapiProperty gapiProperty){
+        environment = gapiProperty.getSecretName();
     }
 
     @Override

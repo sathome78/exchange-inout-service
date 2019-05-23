@@ -1,5 +1,7 @@
 package com.exrates.inout.service.impl;
 
+import com.exrates.inout.properties.models.GapiProperty;
+import com.exrates.inout.properties.models.Gapicoin;
 import com.exrates.inout.service.GapiCurrencyService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -26,20 +28,19 @@ import java.util.List;
 
 @Service
 @Log4j2(topic = "gapi_log")
-@PropertySource("classpath:/merchants/gapi_wallet.properties")
 public class GapiCurrencyServiceImpl implements GapiCurrencyService {
 
     private RestTemplate restTemplate;
 
-    @Value("${gapi.mainaddress}")
     private String mainaddress;
 
-    @Value("${gapi.server.ip}")
     private String serverIp;
 
     @Autowired
-    public GapiCurrencyServiceImpl (){
+    public GapiCurrencyServiceImpl (GapiProperty gapiProperty){
         restTemplate = new RestTemplate();
+        mainaddress = gapiProperty.getMainAddress();
+        serverIp = gapiProperty.getServerIp();
     }
 
     public List<String> generateNewAddress() {
