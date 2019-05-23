@@ -1,5 +1,6 @@
 package com.exrates.inout.service.aisi;
 
+import com.exrates.inout.properties.models.AisiProperty;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,23 +27,24 @@ import java.util.List;
 
 @Log4j2(topic = "aisi_log")
 @Service
-@PropertySource("classpath:/merchants/aisi_wallet.properties")
 public class AisiCurrencyServiceImpl implements AisiCurrencyService {
 
     private RestTemplate restTemplate;
-    // TODO
+// TODO with security from amazon!!!!!!!!
     private String apiKey;
 
     private String mainaddress;
 
     @Autowired
-    public AisiCurrencyServiceImpl() {
+    public AisiCurrencyServiceImpl(AisiProperty aisiProperty) {
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);
         restTemplate = new RestTemplate(requestFactory);
+        apiKey = aisiProperty.getApikey();
+        mainaddress = aisiProperty.getApikey();
 
     }
 

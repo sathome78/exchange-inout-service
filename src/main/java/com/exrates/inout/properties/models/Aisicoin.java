@@ -6,5 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "aisi-coin")
 public class Aisicoin {
-    private AisiProperty aisiProperty;
+
+    private AisiProperty aisi;
 }
