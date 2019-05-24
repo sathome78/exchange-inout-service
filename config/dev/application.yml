@@ -3024,6 +3024,11 @@ nem-coins:
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
     transactionVersion: 1
 
+gapi-coin:
+  gapi:
+    main-address: GAPI725735982c625b0cc5c3845deba1b5
+    server-ip: 18.217.228.135
+    secret-name: dev
 aisi-coin:
   aisi:
     apikey: dev

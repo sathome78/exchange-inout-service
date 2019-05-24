@@ -1,6 +1,18 @@
 package com.exrates.inout.properties;
 
-import com.exrates.inout.properties.models.*;
+import com.exrates.inout.properties.models.BitcoinCoins;
+import com.exrates.inout.properties.models.EthereumCoins;
+import com.exrates.inout.properties.models.EthereumTokenCoins;
+import com.exrates.inout.properties.models.LiskCoins;
+import com.exrates.inout.properties.models.MoneroCoins;
+import com.exrates.inout.properties.models.NemCoins;
+import com.exrates.inout.properties.models.NeoCoins;
+import com.exrates.inout.properties.models.OtherCoins;
+import com.exrates.inout.properties.models.PaymentSystemMerchants;
+import com.exrates.inout.properties.models.QtumCoins;
+import com.exrates.inout.properties.models.StellarCoins;
+import com.exrates.inout.properties.models.WavesCoins;
+import com.exrates.inout.properties.models.XemCoins;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,6 +34,8 @@ import org.springframework.stereotype.Component;
         OtherCoins.class,
         PaymentSystemMerchants.class,
         NemCoins.class,
+        Gapicoin.class})
+        NemCoins.class,
         Aisicoin.class})
 public class CryptoCurrencyProperties {
 
@@ -38,6 +52,7 @@ public class CryptoCurrencyProperties {
     private final OtherCoins otherCoins;
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
+    private final Gapicoin gapicoin;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -52,7 +67,7 @@ public class CryptoCurrencyProperties {
                                     StellarCoins stellarCoins,
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
-                                    NemCoins nemCoins) {
+                                    NemCoins nemCoins, Gapicoin gapicoin) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -66,5 +81,6 @@ public class CryptoCurrencyProperties {
         this.otherCoins = otherCoins;
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
+        this.gapicoin = gapicoin;
     }
 }

@@ -12,4 +12,8 @@ public interface AlgorithmService {
     String sha256(String string);
 
     String base64Encode(String string);
+
+    String encodeByKey(String txt);
+
+    String decodeByKey(String text);
 }
