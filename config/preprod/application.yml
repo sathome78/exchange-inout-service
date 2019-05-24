@@ -1472,7 +1472,7 @@ ethereum-coins:
     merchant-name: Ethereum
     currency-name: ETH
     min-confirmations: 12
-    node:
+    node: lalala
       currency: Ethereum
       #      url-our-node:
       url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
