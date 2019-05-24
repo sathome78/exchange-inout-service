@@ -35,7 +35,7 @@ public class CoinTestController {
         return "redirect:/cointest/log";
     }
 
-    private void startCoinTest(@RequestParam(name = "coin") String name, @RequestParam(name = "amount") String amount, @RequestParam(name = "email", required = false) String email) {
+    private void startCoinTest(String name, String amount, String email) {
         try {
             CoinTester coinTester = coinDispatcher.getCoinTester(name, logger, email);
             coinTester.testCoin(amount);
@@ -45,7 +45,7 @@ public class CoinTestController {
     }
 
     @GetMapping(value = "/cointest/log", produces = "text/html")
-    @ResponseBody //TODO make updatable
+    @ResponseBody
     public String getLog(){
         return logger.toString();
     }

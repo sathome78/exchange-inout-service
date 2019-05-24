@@ -5,7 +5,7 @@ import com.exrates.inout.service.nem.NemRecieveTransactionsService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class NemTest extends CoinTestBasic{
+public class NemTest extends CoinTestBasic {
 
     @Autowired
     private NemNodeService nodeService;
@@ -19,9 +19,8 @@ public class NemTest extends CoinTestBasic{
     @Override
     @SneakyThrows
     public void testCoin(String refillAmount) {
-        stringBuilder.append("Starting testing getIncomeTransactions method...").append("\n");
-        nodeService.getIncomeTransactions(ccp.getNemCoins().getNem().getAddress(), transactionsService.loadLastHash());
-        stringBuilder.append("Done").append("\n");
+        checkGetIncomeTrxMethod();
+
         long lastBlockHeight = nodeService.getLastBlockHeight();
         stringBuilder.append("Last block from node: ").append(lastBlockHeight).append("\n");
         stringBuilder.append("Starting checking node syncing...");
@@ -30,6 +29,12 @@ public class NemTest extends CoinTestBasic{
 
         stringBuilder.append("Works fine!").append("\n");
 
+    }
+
+    private void checkGetIncomeTrxMethod() {
+        stringBuilder.append("Starting testing getIncomeTransactions method...").append("\n");
+        nodeService.getIncomeTransactions(ccp.getNemCoins().getNem().getAddress(), transactionsService.loadLastHash());
+        stringBuilder.append("Done").append("\n");
     }
 
     private void checkNodeSyncing(long lastBlockHeight) throws InterruptedException {

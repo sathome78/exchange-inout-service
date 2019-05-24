@@ -7,9 +7,9 @@ spring:
     name: input-output-service
   datasource:
     hikari:
-      username: exdevdb
-      password: KQmK82dd
-      jdbc-url: jdbc:mysql://exdbdev.cedlveyttji9.us-east-2.rds.amazonaws.com:3306/dbdev2?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: devprod
+      password: Fh24soaf8sy3
+      jdbc-url: jdbc:mysql://birzha-aurora-preprod-cluster.cluster-cedlveyttji9.us-east-2.rds.amazonaws.com:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
@@ -22,14 +22,13 @@ spring:
 #    locations: classpath:db/migration
 #    user: root
 #    password: root
-#    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
 #    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
 #    baseline-on-migrate: false
 #    validate-on-migrate: false
   rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
+    username: preprod
+    password: eehVBU21x
+    host: rabbitmq-preprod.service
     port: 5672
 
 logging:
@@ -97,7 +96,7 @@ mail:
 
 
 endpoints:
-  stock:
+  stock: http://inout-preprod.service:8080/
   inoutPrefix: /inout
 
 telegram:

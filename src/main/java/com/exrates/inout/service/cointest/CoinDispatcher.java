@@ -4,11 +4,16 @@ import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.CoinTester;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.ethereum.EthTokenService;
+import com.exrates.inout.service.nem.NemService;
+import com.exrates.inout.service.waves.WavesService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 @Service
@@ -36,8 +41,23 @@ public class CoinDispatcher {
         if(service instanceof EthTokenService){
             coinTestService = new EthTokenTester(merchantName, email, logger);
         }
+        if(service instanceof NemService){
+            coinTestService = new NemTest(merchantName, email, logger);
+        }
+        if(service instanceof WavesService){
+            coinTestService = new WavesTest(merchantName, email, logger);
+        }
         applicationContext.getAutowireCapableBeanFactory().autowireBean(coinTestService);
+        runPostConstruct(coinTestService);
         return coinTestService;
+    }
+
+    private void runPostConstruct(CoinTester coinTestService) throws IllegalAccessException, InvocationTargetException {
+        for (Method method : coinTestService.getClass().getMethods()) {
+            if(method.isAnnotationPresent(PostConstruct.class)){
+                method.invoke(coinTestService);
+            }
+        }
     }
 
     public Object getService(String merchantName){
