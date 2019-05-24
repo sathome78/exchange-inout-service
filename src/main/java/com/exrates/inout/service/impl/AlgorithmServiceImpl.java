@@ -2,12 +2,8 @@ package com.exrates.inout.service.impl;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.DecryptionFailureException;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
-import com.amazonaws.services.secretsmanager.model.InternalServiceErrorException;
-import com.amazonaws.services.secretsmanager.model.InvalidRequestException;
-import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
+import com.amazonaws.services.secretsmanager.model.*;
+import com.exrates.inout.properties.models.AwsProfile;
 import com.exrates.inout.properties.models.GapiProperty;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CommissionService;
@@ -15,8 +11,6 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -56,11 +50,13 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     @Autowired
     private CurrencyService currencyService;
 
-    private String environment;
+    private String gapiHash;
+    private String env;
 
     @Autowired
-    public AlgorithmServiceImpl(GapiProperty gapiProperty){
-        environment = gapiProperty.getSecretName();
+    public AlgorithmServiceImpl(GapiProperty gapiProperty, AwsProfile awsProfile){
+        gapiHash = gapiProperty.getSecretName();
+        env = awsProfile.getEnv();
     }
 
     @Override
@@ -146,6 +142,51 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     }
 
     //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
+    public String getSecret(String сode) {
+        String region = "us-east-2";
+
+        // Create a Secrets Manager client
+        AWSSecretsManager client  = AWSSecretsManagerClientBuilder.standard()
+                .withRegion(region)
+                .build();
+
+        String secret = null;
+        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
+                .withSecretId(env);
+        GetSecretValueResult getSecretValueResult = null;
+
+        try {
+            getSecretValueResult = client.getSecretValue(getSecretValueRequest);
+        } catch (DecryptionFailureException e) {
+            log.error(e);
+            throw e;
+        } catch (InternalServiceErrorException e) {
+            log.error(e);
+            throw e;
+        } catch (InvalidParameterException e) {
+            log.error(e);
+            throw e;
+        } catch (InvalidRequestException e) {
+            log.error(e);
+            throw e;
+        } catch (ResourceNotFoundException e) {
+            log.error(e);
+            throw e;
+        }
+
+        if (getSecretValueResult.getSecretString() != null) {
+            secret = getSecretValueResult.getSecretString();
+        }
+        else {
+            secret = new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
+        }
+
+        secret = secret.substring(secret.indexOf(сode) + сode.length()+1);
+        secret = secret.substring(0, secret.indexOf("\""));
+        return secret;
+    }
+
+    //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
     private String getSecret() {
         String region = "us-east-2";
 
@@ -160,7 +201,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 
         String secret = null;
         GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
-                .withSecretId(environment);
+                .withSecretId(gapiHash);
         GetSecretValueResult getSecretValueResult = null;
 
         try {

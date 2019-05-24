@@ -16,4 +16,6 @@ public interface AlgorithmService {
     String encodeByKey(String txt);
 
     String decodeByKey(String text);
+
+    String getSecret(String aisiCode);
 }

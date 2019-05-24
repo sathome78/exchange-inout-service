@@ -1,18 +1,6 @@
 package com.exrates.inout.properties;
 
-import com.exrates.inout.properties.models.BitcoinCoins;
-import com.exrates.inout.properties.models.EthereumCoins;
-import com.exrates.inout.properties.models.EthereumTokenCoins;
-import com.exrates.inout.properties.models.LiskCoins;
-import com.exrates.inout.properties.models.MoneroCoins;
-import com.exrates.inout.properties.models.NemCoins;
-import com.exrates.inout.properties.models.NeoCoins;
-import com.exrates.inout.properties.models.OtherCoins;
-import com.exrates.inout.properties.models.PaymentSystemMerchants;
-import com.exrates.inout.properties.models.QtumCoins;
-import com.exrates.inout.properties.models.StellarCoins;
-import com.exrates.inout.properties.models.WavesCoins;
-import com.exrates.inout.properties.models.XemCoins;
+import com.exrates.inout.properties.models.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,9 +22,10 @@ import org.springframework.stereotype.Component;
         OtherCoins.class,
         PaymentSystemMerchants.class,
         NemCoins.class,
-        Gapicoin.class})
         NemCoins.class,
-        Aisicoin.class})
+        Gapicoin.class,
+        Aisicoin.class,
+        AwsProperty.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -53,6 +42,8 @@ public class CryptoCurrencyProperties {
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
     private final Gapicoin gapicoin;
+    private final Aisicoin aisicoin;
+    private final AwsProperty awsProperty;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -67,7 +58,7 @@ public class CryptoCurrencyProperties {
                                     StellarCoins stellarCoins,
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
-                                    NemCoins nemCoins, Gapicoin gapicoin) {
+                                    NemCoins nemCoins, Gapicoin gapicoin, Aisicoin aisicoin, AwsProperty awsProperty) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -82,5 +73,9 @@ public class CryptoCurrencyProperties {
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
         this.gapicoin = gapicoin;
+        this.aisicoin = aisicoin;
+        this.awsProperty = awsProperty;
     }
 }
+
+

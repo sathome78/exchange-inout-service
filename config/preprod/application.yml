@@ -3025,3 +3025,12 @@ gapi-coin:
     main-address: GAPI725735982c625b0cc5c3845deba1b5
     server-ip: 18.217.228.135
     secret-name: dev
+
+aisi-coin:
+  aisi:
+    apikey: dev
+    mainaddress: D787287458C54566A9B113DC6B32091C57DDF104CD254B6B89AD87539DB648A1
+
+aws-property:
+  aws:
+    env: dev

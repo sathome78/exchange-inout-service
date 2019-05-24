@@ -2957,3 +2957,12 @@ gapi-coin:
     main-address: GAPIf37fedb4b8c0f06de0dc128cf41e36
     server-ip: 18.217.228.135
     secret-name: prd
+
+aisi-coin:
+  aisi:
+    apikey: prd
+    mainaddress: D787287458C54566A9B113DC6B32091C57DDF104CD254B6B89AD87539DB648A1
+
+aws-property:
+  aws:
+    env: prd

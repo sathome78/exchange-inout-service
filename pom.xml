@@ -373,7 +373,6 @@
             <version>1.11.433</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
 
     <build>
