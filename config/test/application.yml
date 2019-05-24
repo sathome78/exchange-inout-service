@@ -18,18 +18,10 @@ spring:
   redis:
     host: 172.50.50.100
     port: 6379
-#  flyway:
-#    locations: classpath:db/migration
-#    user: root
-#    password: root
-#    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
-#    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
-#    baseline-on-migrate: false
-#    validate-on-migrate: false
   rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
+    username: developer
+    password: eehei4AeJein
+    host: rabbitmq-dev.service
     port: 5672
 
 logging:
@@ -1345,7 +1337,7 @@ bitcoin-coins:
       enabled: true
       rpc-protocol: http
       rpc-host: 172.10.13.117
-      rpc-port: 8089
+      rpc-port: 8090
       rpc-user: devprod
       rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
       http-auth-schema: Basic
@@ -1781,8 +1773,8 @@ ethereum-token-coins:
   SIM:
     merchant-name: SIM
     currency-name: SIM
-    contract: '0x7528e3040376edd5db8263db2f5bd1bed91467fb'
-    isERC20: false
+    contract: '0xd7cd762f3ebc2c9a3d9bcf0133e06d04c59a1f7d'
+    isERC20: true
     unit: ETHER
     min-wallet-balance: 0
   AMN:
@@ -2748,6 +2740,15 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 1000000000
+  RWDS:
+    merchant-name: RWDS
+    currency-name: RWDS
+    name-space-id: rewards4u
+    name: rwds
+    decimals: 100
+    divisibility: 2
+    levy-fee: 0
+    supply: 100000000
 
 
 stellar-coins:
@@ -2970,3 +2971,13 @@ payment-system-merchants:
     accountPin: ZIz1WJqo
     transactionStartedPosition: 0
     transactionLimit: 100
+
+nem-coins:
+  nem:
+    nccServerUrl: http://127.0.0.1:8989
+    nisServerUrlReceive: http://37.235.49.90:7890
+    nisServerUrlSend: http://127.0.0.1:7890
+    privateKey: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
+    publicKey: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
+    transactionVersion: 1

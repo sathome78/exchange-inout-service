@@ -56,7 +56,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         try {
             nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
-            //log.error("wrong ADK url");
+            log.error("wrong ADK url");
         }
     }
 
@@ -88,7 +88,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         try {
             return objectMapper.readValue(result.toString(), BtcTransactionDto.class);
         } catch (IOException e) {
-            //log.error(e);
+            log.error(e);
             throw new RuntimeException(e);
         }
     }

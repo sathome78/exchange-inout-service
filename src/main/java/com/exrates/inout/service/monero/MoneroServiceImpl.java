@@ -120,7 +120,7 @@ public class MoneroServiceImpl implements MoneroService {
             ADDRESSES.add(address);
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
         String message = messageSource.getMessage("merchants.refill.btc",
@@ -153,7 +153,7 @@ public class MoneroServiceImpl implements MoneroService {
                     }
                 }, 3, 60, TimeUnit.MINUTES);
             }catch (Exception e){
-                //log.error(e);
+                log.error(e);
             }
         }else {
             log.info(merchantName + " test mode...");
@@ -201,14 +201,14 @@ public class MoneroServiceImpl implements MoneroService {
 
                     processPayment(mapPayment);
                 }catch (Exception e){
-                    //log.error(e);
+                    log.error(e);
                 }
             }
 
             log.info(new java.util.Date());
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

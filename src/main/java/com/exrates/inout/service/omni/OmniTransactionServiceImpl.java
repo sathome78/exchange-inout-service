@@ -97,11 +97,11 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
                         processTransaction(transactionDto);
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
         } catch (Exception e) {
-            //log.error("error while checking new transactions {}", e);
+            log.error("error while checking new transactions {}", e);
         }
     }
 
@@ -169,11 +169,11 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
                         refillService.declineMerchantRefillRequest(p.getId());
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -189,11 +189,11 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
                     transferToMainAccount(p);
                     refillService.updateAddressNeedTransfer(p.getAddress(), omniService.getMerchant().getId(), omniService.getCurrency().getId(), false);
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -203,7 +203,7 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
         JSONObject res = omniNodeService.sendFunded(dto.getAddress(), mainAddress, omniService.getUsdtPropertyId(), accountBalance, comissionAddress);
         log.debug("send to main result {}", res);
         if (!res.isNull("error")) {
-            //log.error("error send funds {}", res.getString("result"));
+            log.error("error send funds {}", res.getString("result"));
             throw new RuntimeException("error transfer");
         }
         String innerTXHash = res.getString("result");

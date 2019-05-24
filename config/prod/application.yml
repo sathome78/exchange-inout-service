@@ -1753,8 +1753,8 @@ ethereum-token-coins:
   SIM:
     merchant-name: SIM
     currency-name: SIM
-    contract: '0x7528e3040376edd5db8263db2f5bd1bed91467fb'
-    isERC20: false
+    contract: '0xd7cd762f3ebc2c9a3d9bcf0133e06d04c59a1f7d'
+    isERC20: true
     unit: ETHER
     min-wallet-balance: 0
   AMN:
@@ -2724,6 +2724,15 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 1000000000
+  RWDS:
+    merchant-name: RWDS
+    currency-name: RWDS
+    name-space-id: rewards4u
+    name: rwds
+    decimals: 100
+    divisibility: 2
+    levy-fee: 0
+    supply: 100000000
 
 
 stellar-coins:
@@ -2932,3 +2941,13 @@ payment-system-merchants:
     accountPin: ZIz1WJqo
     transactionStartedPosition: 0
     transactionLimit: 100
+
+nem-coins:
+  nem:
+    nccServerUrl: http://ip-172-31-14-168.us-east-2.compute.internal:8989
+    nisServerUrlReceive: http://ip-172-31-14-168.us-east-2.compute.internal:7890
+    nisServerUrlSend: http://ip-172-31-14-168.us-east-2.compute.internal:7890
+    privateKey: 00f16e94836efc9236f1025a99409f17f5d9740acc7e115a8aa681bd17e2b0a378
+    publicKey: 84c5c964fd96a0efa8eb988a36891fc9a3f1d69ecec0a4ede638f201774d2391
+    address: NC7ROGDITAJRT57CK27MQBSNBLNTUZTFKVXAILXQ
+    transactionVersion: 1

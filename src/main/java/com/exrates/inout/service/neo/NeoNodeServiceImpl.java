@@ -52,7 +52,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             return Optional.of(invokeJsonRpcMethod("getblock", Arrays.asList(height, 1), new TypeReference<NeoJsonRpcResponse<Block>>() {}));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             return Optional.empty();
         }
     }
@@ -62,7 +62,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             return Optional.of(invokeJsonRpcMethod("getrawtransaction", Arrays.asList(txId, 1), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {}));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             return Optional.empty();
         }
     }
@@ -88,7 +88,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             NeoJsonRpcResponse<T> response = objectMapper.readValue(responseString,  typeReference);
             if (response.getError() != null) {
-                //log.error(response.getError());
+                log.error(response.getError());
                 throw new NeoApiException(response.getError().getCode(), response.getError().getMessage());
             }
             if (response.getResult() == null) {

@@ -40,7 +40,7 @@ public class CryptoCurrencyBalancesImpl implements CryptoCurrencyBalances {
                             , balance);
                 }
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
         return mapBalances;

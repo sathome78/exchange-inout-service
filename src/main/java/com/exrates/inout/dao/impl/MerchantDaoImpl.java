@@ -1,8 +1,4 @@
 package com.exrates.inout.dao.impl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.dao.MerchantDao;
 import com.exrates.inout.domain.CoreWalletDto;
 import com.exrates.inout.domain.dto.MerchantCurrencyApiDto;
@@ -18,7 +14,8 @@ import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.domain.main.MerchantImage;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -457,5 +454,42 @@ public class MerchantDaoImpl implements MerchantDao {
             return dto;
         });
     }
+
+    @Override
+    public void setAutoWithdrawParamsByMerchantAndCurrency(
+            Integer merchantId,
+            Integer currencyId,
+            Boolean withdrawAutoEnabled,
+            Integer withdrawAutoDelaySeconds,
+            BigDecimal withdrawAutoThresholdAmount
+    ) {
+        String sql = "UPDATE MERCHANT_CURRENCY SET " +
+                " withdraw_auto_enabled = :withdraw_auto_enabled, " +
+                " withdraw_auto_delay_seconds = :withdraw_auto_delay_seconds, " +
+                " withdraw_auto_threshold_amount = :withdraw_auto_threshold_amount " +
+                " WHERE merchant_id = :merchant_id AND currency_id = :currency_id ";
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("withdraw_auto_enabled", withdrawAutoEnabled);
+            put("withdraw_auto_delay_seconds", withdrawAutoDelaySeconds);
+            put("withdraw_auto_threshold_amount", withdrawAutoThresholdAmount);
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+        }};
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    @Override
+    public void setMinSum(double merchant, double currency, double minSum) {
+        final String sql = "UPDATE MERCHANT_CURRENCY SET min_sum = :min_sum WHERE merchant_id = :merchant AND currency_id = :currency";
+        final Map<String, Double> params = new HashMap<String, Double>() {
+            {
+                put("merchant", merchant);
+                put("currency", currency);
+                put("min_sum", minSum);
+            }
+        };
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
 }
 

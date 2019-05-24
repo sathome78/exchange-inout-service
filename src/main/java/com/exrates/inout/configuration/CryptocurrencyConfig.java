@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 
 
-//@Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
 
@@ -1065,6 +1064,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());
     }
 
+    @Bean(name = "rvtServiceImpl")
+    public EthTokenService rvtService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVT());
+    }
+
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
@@ -1231,6 +1235,9 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "darcServiceImpl")
     public XemMosaicService darcService() { return createXemMosaicService(ccp.getXemCoins().getDARC()); }
+
+    @Bean(name = "rwdsServiceImpl")
+    public XemMosaicService rwdsService() { return createXemMosaicService(ccp.getXemCoins().getRWDS()); }
 
     private XemMosaicService createXemMosaicService(XemProperty property) {
         return new XemMosaicServiceImpl(property);

@@ -83,14 +83,14 @@ public class SDKHttpClient {
                 //log.debug("【SDKHttpClient】｜POST URL:[{}],The response is empty!", url);
             }
         } catch (Exception e) {
-            ////log.error("【SDKHttpClient】｜POST URL:[{}] Abnormal[{}]!", url, e.getStackTrace());
+            log.error("【SDKHttpClient】｜POST URL:[{}] Abnormal[{}]!", url, e.getStackTrace());
         } finally {
             try {
                 if (null != httppost) {
                     httppost.releaseConnection();
                 }
             } catch (Exception e) {
-                ////log.error("【SDKHttpClient】｜POST URL:[{}] shut down httpclient.close() abnormal[{}]!", url, e.getStackTrace());
+                log.error("【SDKHttpClient】｜POST URL:[{}] shut down httpclient.close() abnormal[{}]!", url, e.getStackTrace());
             }
         }
         return result;

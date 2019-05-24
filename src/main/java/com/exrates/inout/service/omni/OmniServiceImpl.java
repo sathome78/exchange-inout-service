@@ -102,7 +102,7 @@ public class OmniServiceImpl implements OmniService {
         try {
             refillService.putOnBchExamRefillRequest(dto);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -122,7 +122,7 @@ public class OmniServiceImpl implements OmniService {
     @Override
     public RefillRequestAcceptDto createRequest(String address, String hash, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            //log.error("USDT transaction allready received!!! {}", hash);
+            log.error("USDT transaction allready received!!! {}", hash);
             throw new RuntimeException("USDT transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -205,7 +205,7 @@ public class OmniServiceImpl implements OmniService {
             List<OmniBalanceDto> dtos = objectMapper.readValue(omniNodeService.getOmniBalances(), new TypeReference<List<OmniBalanceDto>>(){});
             return dtos.stream().filter(p -> USDT_PROPERTY_ID.equals(p.getPropertyid())).findFirst().orElse(OmniBalanceDto.getZeroBalancesDto(USDT_PROPERTY_ID, USDT_TOKEN_NAME));
         } catch (IOException e) {
-           //log.error(e);
+           log.error(e);
             return null;
         }
     }

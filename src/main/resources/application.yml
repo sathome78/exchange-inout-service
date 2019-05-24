@@ -1,3 +1,6 @@
+logging:
+  level:
+    ROOT: INFO
 
 spring:
   profiles:
@@ -1317,24 +1320,25 @@ bitcoin-coins:
   kod:
     merchant-name: KOD
     currency-name: KOD
-    min-confirmations: 30
+    min-confirmations: 1
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
-    backup-folder: /data/backup/
+    backup-folder: /data/backup
+    wallet-password: pass123
     node:
       zmq-enabled: true
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.15.47
+      rpc-host: 172.10.13.117
       rpc-port: 8090
-      rpc-user: null
-      rpc-password: null
+      rpc-user: devprod
+      rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10900
       notification-block-port: 5580
       notification-wallet-port: 5581
   btx:
@@ -1462,7 +1466,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: http://172.10.13.51:8549
+      url: zalupa
       destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
@@ -1479,7 +1483,7 @@ ethereum-coins:
     node:
       currency: Ethereum Classic
       #      url-our-node:
-      url: http://localhost:8101
+      url:
       destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
@@ -1496,7 +1500,7 @@ ethereum-coins:
     node:
       currency: EtherZero
       #      url-our-node:
-      url: http://18.216.0.44:8102
+      url:
       destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
@@ -1512,14 +1516,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: CLO
-      #      url-our-node:
-      url: http://13.59.242.131:8104
+      url:
       destination-dir: D:\\Ethereum1\\callisto\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1529,14 +1529,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      #      url-our-node:
-      url: http://13.59.242.131:8105
+      url:
       destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
@@ -1546,14 +1542,10 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: GOL
-      #      url-our-node:
-      url: http://172.31.7.222:8106
+      url:
       destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
-      #      transfer-acc-address:
-      #      transfer-acc-privat-key:
-      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
@@ -1564,7 +1556,7 @@ ethereum-coins:
     node:
       currency: CNET
       #      url-our-node:
-      url: http://172.31.4.189:8107
+      url:
       destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
@@ -1580,8 +1572,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: NTY
-      #      url-our-node:
-      url: http://172.31.1.74:8108
+      url:
       destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
@@ -1598,7 +1589,7 @@ ethereum-coins:
     node:
       currency: Etherinc
       #      url-our-node: http://13.59.242.131:9545
-      url: https://api.einc.io/jsonrpc/mainnet
+      url:
       destination-dir: D:\\Ethereum1\\Etherinc\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x8B4Fa8D92d2F7A41F80033521aD6fc1fBcB1d5A7
@@ -1774,8 +1765,8 @@ ethereum-token-coins:
   SIM:
     merchant-name: SIM
     currency-name: SIM
-    contract: '0x7528e3040376edd5db8263db2f5bd1bed91467fb'
-    isERC20: false
+    contract: '0xd7cd762f3ebc2c9a3d9bcf0133e06d04c59a1f7d'
+    isERC20: true
     unit: ETHER
     min-wallet-balance: 0
   AMN:
@@ -2744,6 +2735,15 @@ xem-coins:
     divisibility: 6
     levy-fee: 0
     supply: 1000000000
+  RWDS:
+    merchant-name: RWDS
+    currency-name: RWDS
+    name-space-id: rewards4u
+    name: rwds
+    decimals: 100
+    divisibility: 2
+    levy-fee: 0
+    supply: 100000000
 
 
 stellar-coins:
@@ -2966,3 +2966,13 @@ payment-system-merchants:
     accountPin: ZIz1WJqo
     transactionStartedPosition: 0
     transactionLimit: 100
+
+nem-coins:
+  nem:
+    nccServerUrl: http://127.0.0.1:8989
+    nisServerUrlReceive: http://37.235.49.90:7890
+    nisServerUrlSend: http://127.0.0.1:7890
+    privateKey: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
+    publicKey: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
+    address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
+    transactionVersion: 1

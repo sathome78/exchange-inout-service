@@ -547,4 +547,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         return withdrawUtils.isValidDestinationAddress(address);
     }
 
+    @Override
+    public void setConfirmationNeededCount(int minConfirmationsCount){
+        this.minConfirmations = minConfirmationsCount;
+    }
 }

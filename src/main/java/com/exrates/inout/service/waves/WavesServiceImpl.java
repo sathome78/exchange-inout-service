@@ -169,7 +169,7 @@ public class WavesServiceImpl implements WavesService {
                             .amount(requestAmount)
                             .hash(transaction.getId()).build());
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -240,11 +240,11 @@ public class WavesServiceImpl implements WavesService {
                         try {
                             processWavesPayment(transaction, blockHeight);
                         } catch (Exception e) {
-                            //log.error(e);
+                            log.error(e);
                         }
                     });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -265,7 +265,7 @@ public class WavesServiceImpl implements WavesService {
                 }
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -295,7 +295,7 @@ public class WavesServiceImpl implements WavesService {
             log.debug("Process of sending data to Google Analytics...");
             gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyBase.getName(), username);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -323,7 +323,7 @@ public class WavesServiceImpl implements WavesService {
             sendMailService.sendInfoMail(email);
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

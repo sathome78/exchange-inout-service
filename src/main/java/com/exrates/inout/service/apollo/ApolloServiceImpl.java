@@ -92,7 +92,7 @@ public class ApolloServiceImpl implements ApolloService {
     @Override
     public RefillRequestAcceptDto createRequest(String address, BigDecimal amount, String hash) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            //log.error("apollo transaction allready received!!! {}", hash);
+            log.error("apollo transaction allready received!!! {}", hash);
             throw new RuntimeException("apollo transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -121,7 +121,7 @@ public class ApolloServiceImpl implements ApolloService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

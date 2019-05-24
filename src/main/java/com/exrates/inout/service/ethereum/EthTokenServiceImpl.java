@@ -72,7 +72,7 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
+    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
 
     private final BigDecimal feeAmount = new BigDecimal("0.01");
 
@@ -101,6 +101,11 @@ public class EthTokenServiceImpl implements EthTokenService {
         return currency.getId();
     }
 
+    @Override
+    public ExConvert.Unit getUnit() {
+        return unit;
+    }
+
     public EthTokenServiceImpl(List<String> contractAddress, String merchantName,
                                String currencyName, boolean isERC20, ExConvert.Unit unit) {
         this.contractAddress = contractAddress;
@@ -124,22 +129,27 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     @PostConstruct
     public void init() {
-        merchant = merchantService.findByName(merchantName);
-        currency = currencyService.findByName(currencyName);
+        try {
+            merchant = merchantService.findByName(merchantName);
+            currency = currencyService.findByName(currencyName);
 
-        currentBlockNumber = new BigInteger("0");
-        pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
-        this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
+            currentBlockNumber = new BigInteger("0");
+            pendingTransactions = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
+            this.minConfirmations = ethereumCommonService.minConfirmationsRefill();
 
-        scheduler.scheduleWithFixedDelay(new Runnable() {
-            public void run() {
-                try {
-                    transferFundsToMainAccount();
-                } catch (Exception e) {
-                    log.error(e);
+            scheduler.scheduleWithFixedDelay(new Runnable() {
+                public void run() {
+                    try {
+                        transferFundsToMainAccount();
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
                 }
-            }
-        }, 3, 10, TimeUnit.MINUTES);
+            }, 3, 10, TimeUnit.MINUTES);
+        } catch (Exception e){
+            e.printStackTrace();
+            log.error(e);
+        }
     }
 
     @Override
@@ -404,6 +414,11 @@ public class EthTokenServiceImpl implements EthTokenService {
         public Address to;
 
         public Uint256 value;
+    }
+
+    @Override
+    public String getMerchantName() {
+        return merchantName;
     }
 
     @PreDestroy

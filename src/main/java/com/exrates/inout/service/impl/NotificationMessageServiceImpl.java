@@ -50,7 +50,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         try {
             contactToNotify = service.sendMessageToUser(userEmail, message, subject);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             if (notificationTypeEnum.getCode() != NotificationTypeEnum.EMAIL.getCode()) {
                 NotificatorService emailService = notificatorsService.getNotificationService(NotificationTypeEnum.EMAIL.getCode());
                 contactToNotify = emailService.sendMessageToUser(userEmail, message, subject);

@@ -1,9 +1,6 @@
 package com.exrates.inout.service.achain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-
-import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +110,7 @@ public class NodeServiceImpl implements NodeService {
                 dto.setConfirmed(isConfirmed);
                 txsList.add(dto);
             } catch (Exception e) {
-                //////log.error(e);
+                log.error(e);
             }
         });
         return null;
@@ -218,7 +215,7 @@ public class NodeServiceImpl implements NodeService {
             }*//*
             return transactionDTO;
         } catch (Exception e) {
-            //////log.error("NodeServiceImpl", e);
+            //log.error("NodeServiceImpl", e);
         }
         return null;
     }*/

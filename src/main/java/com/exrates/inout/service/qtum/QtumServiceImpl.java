@@ -104,7 +104,7 @@ public class QtumServiceImpl implements QtumService {
             try {
                 scanBlocks();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 5L, 25L, TimeUnit.MINUTES);
@@ -113,7 +113,7 @@ public class QtumServiceImpl implements QtumService {
             try {
                 checkBalanceAndTransfer();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 90L, 120L, TimeUnit.MINUTES);
@@ -122,7 +122,7 @@ public class QtumServiceImpl implements QtumService {
             try {
                 backupWallet();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 1L, 12L, TimeUnit.HOURS);
@@ -204,7 +204,7 @@ public class QtumServiceImpl implements QtumService {
                                 log.info("after qtum transfer");
                                 specParamsDao.updateParam(merchant.getName(), qtumSpecParamName, String.valueOf(qtumNodeService.getBlock(t.getBlockhash()).getHeight()));
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                             }
                         }
                 );

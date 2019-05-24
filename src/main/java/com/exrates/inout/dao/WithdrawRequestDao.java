@@ -6,6 +6,7 @@ import com.exrates.inout.domain.enums.UserRole;
 import com.exrates.inout.domain.enums.invoice.InvoiceStatus;
 import com.exrates.inout.domain.main.ClientBank;
 import com.exrates.inout.domain.main.PagingData;
+import com.exrates.inout.domain.main.WithdrawRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -50,4 +51,6 @@ public interface WithdrawRequestDao {
     WithdrawRequestInfoDto findWithdrawInfo(Integer id);
 
     List<WithdrawRequestFlatDto> findByUserId(Integer id);
+
+    Optional<WithdrawRequest> findWithdrawRequestByAddress(String withdrawAddress);
 }
