@@ -54,7 +54,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,42 +151,6 @@ public class BitcoinServiceImpl implements BitcoinService {
         return minConfirmations;
     }
 
-    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee, Boolean rawTxEnabled) {
-        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, true);
-    }
-
-    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
-                              Boolean rawTxEnabled, Boolean supportSubtractFee) {
-        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, true);
-    }
-
-    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
-                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications) {
-        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false);
-    }
-
-    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
-                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.backupFolder = props.getProperty("backup.folder");
-            this.nodePropertySource = props.getProperty("node.propertySource");
-            this.nodeEnabled = Boolean.valueOf(props.getProperty("node.isEnabled"));
-            this.zmqEnabled = Boolean.valueOf(props.getProperty("node.zmqEnabled"));
-            this.supportInstantSend = Boolean.valueOf(props.getProperty("node.supportInstantSend"));
-            this.merchantName = merchantName;
-            this.currencyName = currencyName;
-            this.minConfirmations = minConfirmations;
-            this.blockTargetForFee = blockTargetForFee;
-            this.rawTxEnabled = rawTxEnabled;
-            this.supportSubtractFee = supportSubtractFee;
-            this.supportWalletNotifications = supportWalletNotifications;
-            this.supportReferenceLine = supportReferenceLine;
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
 
     @Override
     public boolean isRawTxEnabled() {
@@ -205,6 +168,8 @@ public class BitcoinServiceImpl implements BitcoinService {
     @PostConstruct
     void startBitcoin() {
         System.out.println("starting " + merchantName);
+        if(this.node.getRpcHost() == null || this.node.getRpcHost().length() == 0) return;
+
         try {
             merchant = merchantService.findByName(merchantName);
             currency = currencyService.findByName(currencyName);
