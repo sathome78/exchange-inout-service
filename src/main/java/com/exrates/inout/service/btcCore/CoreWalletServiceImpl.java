@@ -107,6 +107,8 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     private Boolean supportSubtractFee;
     private Boolean supportReferenceLine;
 
+    private Boolean useSendManyForWithdraw;
+
     private Map<String, ScheduledFuture<?>> unlockingTasks = new ConcurrentHashMap<>();
 
     private ScheduledExecutorService outputUnlockingExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -114,7 +116,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     private final Object SENDING_LOCK = new Object();
 
     @Override
-    public void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine) {
+    public void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine, boolean useSendManyForWithdraw) {
         final String rpcProtocol = node.getRpcProtocol();
         final String rpcHost = node.getRpcHost();
         final String rpcPort = node.getRpcPort();
@@ -174,6 +176,8 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             this.supportInstantSend = node.isSupportInstantSend();
             this.supportSubtractFee = supportSubtractFee;
             this.supportReferenceLine = supportReferenceLine;
+
+            this.useSendManyForWithdraw = useSendManyForWithdraw;
         } catch (Exception ex) {
             log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
@@ -471,12 +475,16 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             String result;
             synchronized (SENDING_LOCK) {
                 unlockWallet(walletPassword, 10);
-                Map<String, BigDecimal> payments = new HashMap<>();
-                payments.put(address, amount);
-                if (supportReferenceLine) {
-                    result = btcdClient.sendMany("", payments, "", MIN_CONFIRMATIONS_FOR_SPENDING);
+                if(useSendManyForWithdraw) {
+                    Map<String, BigDecimal> payments = new HashMap<>();
+                    payments.put(address, amount);
+                    if (supportReferenceLine) {
+                        result = btcdClient.sendMany("", payments, "", MIN_CONFIRMATIONS_FOR_SPENDING);
+                    } else {
+                        result = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING);
+                    }
                 } else {
-                    result = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING);
+                    result = btcdClient.sendToAddress(address, amount);
                 }
                 lockWallet();
             }
@@ -538,19 +546,28 @@ public class CoreWalletServiceImpl implements CoreWalletService {
             if (subtractFeeFromAmount) {
                 subtractFeeAddresses = new ArrayList<>(payments.keySet());
             }
-            String txId;
+            String txId = null;
             synchronized (SENDING_LOCK) {
-                if (supportInstantSend) {
-                    txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING, false,
-                            "", subtractFeeAddresses);
-                } else if (supportReferenceLine) {
-                    txId = btcdClient.sendMany("", payments, "", MIN_CONFIRMATIONS_FOR_SPENDING);
-                } else {
-                    if (supportSubtractFee) {
-                        txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING,
+                if (useSendManyForWithdraw) {
+                    if (supportInstantSend) {
+                        txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING, false,
                                 "", subtractFeeAddresses);
+                    } else if (supportReferenceLine) {
+                        txId = btcdClient.sendMany("", payments, "", MIN_CONFIRMATIONS_FOR_SPENDING);
                     } else {
-                        txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING, "");
+                        if (supportSubtractFee) {
+                            txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING,
+                                    "", subtractFeeAddresses);
+                        } else {
+                            txId = btcdClient.sendMany("", payments, MIN_CONFIRMATIONS_FOR_SPENDING, "");
+                        }
+                    }
+                } else {
+                    for (Map.Entry<String, BigDecimal> payment : payments.entrySet()) {
+                        String address = payment.getKey();
+                        BigDecimal amount = payment.getValue();
+
+                        txId = btcdClient.sendToAddress(address, amount);
                     }
                 }
             }

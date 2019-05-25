@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 public interface CoreWalletService {
 
-  void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine);
+  void initCoreClient(BitcoinNode node, boolean supportSubtractFee, boolean supportReferenceLine, boolean useSendManyForWithdraw);
 
   void initBtcdDaemon(boolean zmqEnabled);
 

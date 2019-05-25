@@ -54,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +88,6 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private MerchantSpecParamsDao merchantSpecParamsDao;
     @Autowired
@@ -123,6 +123,8 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     private Boolean supportReferenceLine;
 
+    private Boolean useSendManyForWithdraw;
+
     private String walletPassword;
 
     private BitcoinNode node;
@@ -151,6 +153,45 @@ public class BitcoinServiceImpl implements BitcoinService {
         return minConfirmations;
     }
 
+    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee, Boolean rawTxEnabled) {
+        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, true);
+    }
+
+    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
+                              Boolean rawTxEnabled, Boolean supportSubtractFee) {
+        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, true);
+    }
+
+    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
+                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications) {
+        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false, true);
+    }
+
+    public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
+                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine,
+                              Boolean useSendManyForWithdraw) {
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
+            this.backupFolder = props.getProperty("backup.folder");
+            this.nodePropertySource = props.getProperty("node.propertySource");
+            this.nodeEnabled = Boolean.valueOf(props.getProperty("node.isEnabled"));
+            this.zmqEnabled = Boolean.valueOf(props.getProperty("node.zmqEnabled"));
+            this.supportInstantSend = Boolean.valueOf(props.getProperty("node.supportInstantSend"));
+            this.merchantName = merchantName;
+            this.currencyName = currencyName;
+            this.minConfirmations = minConfirmations;
+            this.blockTargetForFee = blockTargetForFee;
+            this.rawTxEnabled = rawTxEnabled;
+            this.supportSubtractFee = supportSubtractFee;
+            this.supportWalletNotifications = supportWalletNotifications;
+            this.supportReferenceLine = supportReferenceLine;
+
+            this.useSendManyForWithdraw = useSendManyForWithdraw;
+        } catch (IOException e) {
+            log.error(e);
+        }
+    }
 
     @Override
     public boolean isRawTxEnabled() {
@@ -188,7 +229,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 log.info("{} not started, pass props error", merchantName);
                 return;
             }
-            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine);
+            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine, useSendManyForWithdraw);
             bitcoinWalletService.initBtcdDaemon(node.isZmqEnabled());
             bitcoinWalletService.blockFlux().subscribe(this::onIncomingBlock);
             if (supportWalletNotifications) {
