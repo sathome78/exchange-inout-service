@@ -737,7 +737,7 @@
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="bitcoin_core_log"/>
         </logger>
-        <logger name="org.springframework" level="DEBUG" additivity="false">
+        <logger name="org.springframework" level="INFO" additivity="false">
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="Logs"/>
             <AppenderRef ref="Console"/>
