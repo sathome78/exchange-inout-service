@@ -737,9 +737,10 @@
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="bitcoin_core_log"/>
         </logger>
-        <logger name="org.springframework" level="ERROR" additivity="false">
+        <logger name="org.springframework" level="DEBUG" additivity="false">
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="Logs"/>
+            <AppenderRef ref="Console"/>
         </logger>
         <logger name="org.springframework.security" level="INFO" additivity="false">
             <AppenderRef ref="Socket"/>
@@ -777,7 +778,6 @@
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="MobileAPILog"/>
         </Logger>
-
         <!--WALLET ... -->
         <Logger name="me.exrates.controller.WalletController" level="ERROR" additivity="false">
             <AppenderRef ref="Socket"/>
@@ -1083,7 +1083,7 @@
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="inout"/>
         </logger>
-        <Root level="INFO">
+        <Root level="DEBUG">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Logs"/>
             <AppenderRef ref="Socket"/>
