@@ -130,6 +130,7 @@ public class EthTokenServiceImpl implements EthTokenService {
     @PostConstruct
     public void init() {
         try {
+            System.out.println("Init eth token " + merchantName);
             merchant = merchantService.findByName(merchantName);
             currency = currencyService.findByName(currencyName);
 
