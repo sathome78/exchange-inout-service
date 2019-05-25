@@ -1,8 +1,4 @@
 package com.exrates.inout.service.btcCore;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.domain.dto.BtcBlockDto;
 import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
 import com.exrates.inout.domain.dto.BtcPaymentResultDto;
@@ -30,16 +26,27 @@ import com.neemre.btcdcli4j.core.Commands;
 import com.neemre.btcdcli4j.core.CommunicationException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
 import com.neemre.btcdcli4j.core.client.BtcdClientImpl;
-import com.neemre.btcdcli4j.core.domain.*;
+import com.neemre.btcdcli4j.core.domain.Address;
+import com.neemre.btcdcli4j.core.domain.Block;
+import com.neemre.btcdcli4j.core.domain.FundingResult;
+import com.neemre.btcdcli4j.core.domain.OutputOverview;
+import com.neemre.btcdcli4j.core.domain.Payment;
+import com.neemre.btcdcli4j.core.domain.RawTransactionOverview;
+import com.neemre.btcdcli4j.core.domain.SignatureResult;
+import com.neemre.btcdcli4j.core.domain.SinceBlock;
+import com.neemre.btcdcli4j.core.domain.SmartFee;
+import com.neemre.btcdcli4j.core.domain.Transaction;
+import com.neemre.btcdcli4j.core.domain.WalletInfo;
 import com.neemre.btcdcli4j.core.jsonrpc.client.JsonRpcClient;
 import com.neemre.btcdcli4j.core.util.CollectionUtils;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -118,6 +125,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         final String notificationBlockPort = node.getNotificationBlockPort();
         final String notificationWalletPort = node.getNotificationWalletPort();
         final String notificationInstantSendPort = node.getNotificationInstantSendPort();
+
         try {
             PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
             double timeout = 10;

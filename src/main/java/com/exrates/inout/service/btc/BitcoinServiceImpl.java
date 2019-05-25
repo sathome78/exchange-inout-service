@@ -168,6 +168,8 @@ public class BitcoinServiceImpl implements BitcoinService {
     @PostConstruct
     void startBitcoin() {
         System.out.println("starting " + merchantName);
+        if(this.node.getRpcHost() == null || this.node.getRpcHost().length() == 0) return;
+
         try {
             merchant = merchantService.findByName(merchantName);
             currency = currencyService.findByName(currencyName);
