@@ -365,6 +365,11 @@ public class CryptocurrencyConfig {
         return createBitcoinService(ccp.getBitcoinCoins().getTsl());
     }
 
+    @Bean(name = "vollarServiceImpl")
+    public BitcoinService vollarServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getVollar());
+    }
+
     private BitcoinService createBitcoinService(BitcoinProperty property) {
         return new BitcoinServiceImpl(property);
     }

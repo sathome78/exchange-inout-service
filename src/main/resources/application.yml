@@ -150,6 +150,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.atbcoin/atb_backup/
     node:
       zmq-enabled: false
@@ -173,6 +174,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.litecoincash/lcc_backup/
     node:
       zmq-enabled: true
@@ -196,6 +198,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.fantasygold/fgc_backup/
     node:
       zmq-enabled: false
@@ -219,6 +222,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: false
@@ -242,6 +246,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoindiamond/bcd_backup/
     node:
       zmq-enabled: true
@@ -265,6 +270,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoinz/btcz_backup/
     node:
       zmq-enabled: false
@@ -288,6 +294,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -311,6 +318,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_i/bci_backup/
     node:
       zmq-enabled: true
@@ -334,6 +342,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.perfectcoin_new/ptc_backup/
     node:
       zmq-enabled: false
@@ -357,6 +366,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.sabr/sabr_backup/
     node:
       zmq-enabled: false
@@ -380,6 +390,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.cmk/cmk_backup/
     node:
       zmq-enabled: true
@@ -403,6 +414,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: false
@@ -426,6 +438,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -449,6 +462,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -457,8 +471,8 @@ bitcoin-coins:
       rpc-protocol: http
       rpc-host: #172.10.13.195
       rpc-port: 8090
-      rpc-user: null
-      rpc-password: null
+      rpc-user: devprod
+      rpc-password: pass123
       http-auth-schema: Basic
       notification-alert-port: 11
       notification-block-port: 5580
@@ -472,6 +486,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -494,7 +509,8 @@ bitcoin-coins:
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
-    support-reference-line: false
+    support-reference-line: true
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoinreco/breco_backup/
     node:
       zmq-enabled: false
@@ -518,6 +534,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.lpc/backups/
     node:
       zmq-enabled: true
@@ -541,6 +558,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.lbtc/lbtc_backup/
     node:
       zmq-enabled: false
@@ -564,6 +582,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.ddx/ddx_backup/
     node:
       zmq-enabled: true
@@ -587,6 +606,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.b2x/b2x_backup/
     node:
       zmq-enabled: true
@@ -610,6 +630,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -633,6 +654,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.toa/backup/
     node:
       zmq-enabled: false
@@ -656,6 +678,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: false
@@ -679,6 +702,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.litecoin/ltc_backup/
     node:
       zmq-enabled: true
@@ -702,6 +726,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.breakbits/brb_backup/
     node:
       zmq-enabled: false
@@ -725,6 +750,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.equalizer/eql_backup/
     node:
       zmq-enabled: true
@@ -748,6 +774,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin/btc_backup/
     node:
       zmq-enabled: true
@@ -771,6 +798,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.cbc/cbc_backup/
     node:
       zmq-enabled: false
@@ -794,6 +822,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.mbc/mbc_backup/
     node:
       zmq-enabled: true
@@ -817,6 +846,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.dogecoin/doge_backup/
     node:
       zmq-enabled: false
@@ -840,6 +870,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_atom/bca_backup/
     node:
       zmq-enabled: true
@@ -863,6 +894,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -886,6 +918,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.sic/bca_backup/
     node:
       zmq-enabled: false
@@ -909,6 +942,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitdollar/xbd_backup/
     node:
       zmq-enabled: false
@@ -932,6 +966,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: false
@@ -955,6 +990,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.abbc/abbc_backup/
     node:
       zmq-enabled: false
@@ -978,6 +1014,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
@@ -1001,6 +1038,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_clean/bcl_backup/
     node:
       zmq-enabled: true
@@ -1024,6 +1062,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.quark/clx_backup/
     node:
       zmq-enabled: false
@@ -1047,6 +1086,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.beetlecoin/beet_backup/
     node:
       zmq-enabled: false
@@ -1070,6 +1110,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup
     node:
       zmq-enabled: false
@@ -1093,6 +1134,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.futurocoin/fto_backup/
     node:
       zmq-enabled: false
@@ -1116,6 +1158,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.cryptolux/clx_backup/
     node:
       zmq-enabled: false
@@ -1139,6 +1182,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: ${user.home}\zec_backup\
     node:
       zmq-enabled: false
@@ -1162,6 +1206,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.platincoin/plc_backup/
     node:
       zmq-enabled: true
@@ -1185,6 +1230,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.dash/dash_backup/
     node:
       zmq-enabled: true
@@ -1208,6 +1254,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.rizwave/riz_backup/
     node:
       zmq-enabled: true
@@ -1231,6 +1278,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.nycoin/nyc_backup/
     node:
       zmq-enabled: false
@@ -1254,6 +1302,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_gold/btg_backup/
     node:
       zmq-enabled: true
@@ -1277,6 +1326,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.shopzcoin/szc_backup/
     node:
       zmq-enabled: false
@@ -1300,6 +1350,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_x/bcx_backup/
     node:
       zmq-enabled: true
@@ -1323,6 +1374,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup
     wallet-password: pass123
     node:
@@ -1347,6 +1399,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcore/btx_backup/
     node:
       zmq-enabled: false
@@ -1370,6 +1423,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.octoin/occ_backup/
     node:
       zmq-enabled: true
@@ -1393,6 +1447,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.crypticcoin/backup/
     node:
       zmq-enabled: true
@@ -1416,6 +1471,7 @@ bitcoin-coins:
     support-subtract-fee: true
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoin_private/btcp_backup/
     node:
       zmq-enabled: true
@@ -1439,6 +1495,7 @@ bitcoin-coins:
     support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
+    use-send-many-for-withdraw: true
     backup-folder: /data/backup
     node:
       zmq-enabled: false
@@ -1453,6 +1510,30 @@ bitcoin-coins:
       notification-alert-port: 11
       notification-block-port: 12201
       notification-wallet-port: 12202
+  vollar:
+    merchant-name: VOLLAR
+    currency-name: VOLLAR
+    min-confirmations: 30
+    block-target-for-fee: 20
+    raw-tx-enabled: false
+    support-subtract-fee: true
+    support-wallet-notifications: true
+    support-reference-line: false
+    use-send-many-for-withdraw: false
+    backup-folder: /data/backup
+    node:
+      zmq-enabled: false
+      support-instant-send: false
+      enabled: true
+      rpc-protocol: http
+      rpc-host: 172.10.13.75
+      rpc-port: 8090
+      rpc-user: devprod
+      rpc-password: pass123
+      http-auth-schema: Basic
+      notification-alert-port: 11
+      notification-block-port: 12301
+      notification-wallet-port: 12302
 
 
 

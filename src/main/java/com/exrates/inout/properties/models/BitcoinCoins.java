@@ -64,4 +64,5 @@ public class BitcoinCoins {
     private BitcoinProperty owc;
     private BitcoinProperty wolf;
     private BitcoinProperty tsl;
+    private BitcoinProperty vollar;
 }
