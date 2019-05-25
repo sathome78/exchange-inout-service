@@ -452,7 +452,7 @@ bitcoin-coins:
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
-      support-instant-send: false
+      support-instant-send: true
       enabled: true
       rpc-protocol: http
       rpc-host: #172.10.13.195
