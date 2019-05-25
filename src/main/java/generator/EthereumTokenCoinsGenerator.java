@@ -54,7 +54,7 @@ public class EthereumTokenCoinsGenerator {
         ExConvert.Unit u = Enum.valueOf(ExConvert.Unit.class, split[3].replace("ExConvert.Unit.", ""));
 
         StringBuilder builder = new StringBuilder();
-        builder.append("    private EthereumTokenProperty " + currencyName.toUpperCase()).append(";\n");
+        builder.append("    private EthereumTokenProperty " + merchantName.toUpperCase()).append(";\n");
 
         FileWriter writer = new FileWriter(output, true);
         writer.write(builder.toString());

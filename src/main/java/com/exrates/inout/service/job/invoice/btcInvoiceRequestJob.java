@@ -1,10 +1,9 @@
 package com.exrates.inout.service.job.invoice;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.service.BitcoinService;
-import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +39,7 @@ public class btcInvoiceRequestJob {
 // Integer expireCount = bitcoinService.clearExpiredInvoices(EXPIRE_CLEAN_INTERVAL_MINUTES);
       }
     } catch (Exception e){
-      //log.error(ExceptionUtils.getStackTrace(e));
+      log.error(ExceptionUtils.getStackTrace(e));
     }
   }
 

@@ -3,7 +3,11 @@ package com.exrates.inout.service.ethereum.ethTokensWrappers;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Event;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
@@ -84,7 +88,7 @@ public class BAT extends Contract implements ethTokenNotERC20 {
     }
 
     public RemoteCall<String> symbol() {
-        final Function function = new Function(FUNC_SYMBOL,
+        final Function function = new Function(FUNC_SYMBOL, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
@@ -98,7 +102,7 @@ public class BAT extends Contract implements ethTokenNotERC20 {
     }
 
     public RemoteCall<BigInteger> totalSupply() {
-        final Function function = new Function(FUNC_TOTALSUPPLY,
+        final Function function = new Function(FUNC_TOTALSUPPLY, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
@@ -238,14 +242,14 @@ public class BAT extends Contract implements ethTokenNotERC20 {
                 FUNC_APPROVEANDCALL,
                 Arrays.<Type>asList(new Address(_spender),
                 new Uint256(_value),
-                new org.web3j.abi.datatypes.DynamicBytes(_extraData)),
+                new org.web3j.abi.datatypes.DynamicBytes(_extraData)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<String> version() {
-        final Function function = new Function(FUNC_VERSION,
-                Arrays.<Type>asList(),
+        final Function function = new Function(FUNC_VERSION, 
+                Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }

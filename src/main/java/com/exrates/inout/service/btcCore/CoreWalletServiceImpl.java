@@ -171,7 +171,7 @@ public class CoreWalletServiceImpl implements CoreWalletService {
 
             this.useSendManyForWithdraw = useSendManyForWithdraw;
         } catch (Exception ex) {
-            //log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
+            log.error("Could not initialize BTCD client. Reason:", ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
         }
     }

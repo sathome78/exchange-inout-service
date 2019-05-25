@@ -79,7 +79,7 @@ public class NeoServiceImpl implements NeoService {
             try {
                 scanLastBlocksAndUpdatePayments();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         }, 3L, 5L, TimeUnit.MINUTES);
     }
@@ -161,7 +161,7 @@ public class NeoServiceImpl implements NeoService {
                                     try {
                                         processNeoPayment(tx.getTxid(), vout, block.getConfirmations(), block.getHash());
                                     } catch (Exception e) {
-                                        //log.error(e);
+                                        log.error(e);
                                     }
                                 }))
                 ).collect(Collectors.toList());
@@ -186,7 +186,7 @@ public class NeoServiceImpl implements NeoService {
                                         .hash(dto.getMerchantTransactionId())
                                         .blockhash(tx.getBlockhash()).build(), vout.getAsset());
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                             }
                         }))).forEach(vout -> log.debug("Payment updated: " + vout)));
     }
@@ -236,7 +236,7 @@ public class NeoServiceImpl implements NeoService {
                             .hash(txId)
                             .blockhash(blockhash).build());
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -271,7 +271,7 @@ public class NeoServiceImpl implements NeoService {
                 }
             }
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

@@ -48,14 +48,14 @@ public class TokenPropertiesGenerator {
 
         String merchantName = split[0];
         String currencyName = split[1];
-        boolean isERC  = Boolean.valueOf(split[3]);
+        boolean isERC  = Boolean.valueOf(split[2]);
         ExConvert.Unit u = Enum.valueOf(ExConvert.Unit.class, split[3].replace("ExConvert.Unit.", ""));
 
         StringBuilder builder = new StringBuilder();
         builder.append("  " + merchantName.toUpperCase()).append(":\n")
                 .append("    merchant-name: ").append(merchantName).append("\n")
                 .append("    currency-name: ").append(currencyName).append("\n")
-                .append("    contract: ").append(contract).append("\n")
+                .append("    contract: ").append("'").append(contract).append("'").append("\n")
                 .append("    isERC20: ").append(isERC).append("\n")
                 .append("    unit: ").append(u.name()).append("\n")
                 .append("    min-wallet-balance: ").append("0\n");

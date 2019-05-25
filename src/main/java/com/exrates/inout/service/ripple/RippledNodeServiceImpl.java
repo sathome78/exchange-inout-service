@@ -141,7 +141,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
         JSONObject jsonResponse = new JSONObject(response.getBody()).getJSONObject("result");
         if (RestUtil.isError(response.getStatusCode())) {
-            ////log.error("error checking transaction {}", response.getBody());
+            log.error("error checking transaction {}", response.getBody());
             throw new RuntimeException(jsonResponse.getString("error_message"));
         }
         return jsonResponse;

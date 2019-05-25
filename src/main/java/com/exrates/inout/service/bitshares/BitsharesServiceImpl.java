@@ -19,6 +19,7 @@ import com.google.common.hash.Hashing;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ import org.springframework.context.MessageSource;
 import javax.annotation.PostConstruct;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
@@ -104,7 +106,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             mainAddressId = props.getProperty("mainAddressId");
             wsUrl = props.getProperty("wsUrl");
             scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
-        } catch (IOException e){
+        } catch (Exception e){
             log.error(e);
         }
     }
@@ -114,7 +116,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         try {
             System.out.println("Try to extract private key bitshares");
             privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
-            System.out.println("private key ok");
             currency = currencyService.findByName(currencyName);
             merchant = merchantService.findByName(merchantName);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
@@ -246,7 +247,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @Override
     public RefillRequestAcceptDto createRequest(String hash, String address, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.error("aunit transaction allready received!!! {}" + hash);
+            log.error(merchantName + " transaction allready received!!! {}" + hash);
             throw new RuntimeException("aunit transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -365,7 +366,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             else if (isIrreversibleBlockInfo(msg)) processIrreversebleBlock(msg);
             else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-//            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
@@ -395,7 +396,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             }
 
         } catch (JSONException e) {
-            log.debug(e);
+            log.error(e);
         }
     }
 
@@ -475,5 +476,10 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         String s = decryptBTSmemo("5KJbFnkWbfqZFVdTVo1BfBRj7vFFaGv2irkDfCfpDyHJiSgNK3k", "{\"from\":\"PPY6xkszYqrmwwBeCrwg8FmJM3NLN2DLuDFz8jwb7wZZfUcku5aPP\",\"to\":\"PPY8VikXsDhYu42VQkMECGGrj7pZUxk34GWPH3MVLTgdzjvXgnEtQ\",\"nonce\":\"396729669771043\",\"message\":\"895066dc7b1e53df553b801d7e86a45d\"}", "PPY");
 
         System.out.println(s);
+    }
+
+    @OnError
+    public void onError(Throwable e){
+        System.out.println(merchantName + " onError: "  + ExceptionUtils.getStackTrace(e));
     }
 }

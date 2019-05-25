@@ -185,7 +185,7 @@ public class RefillServiceImpl implements RefillService {
                 result.put("message", notification);
                 result.put("requestId", request.getId());
             } catch (MailException e) {
-                //log.error(e);
+                log.error(e);
             }
         }
         return result;
@@ -270,7 +270,7 @@ public class RefillServiceImpl implements RefillService {
                     request,
                     locale);
         } catch (MailException e) {
-            //log.error(e);
+            log.error(e);
         }
         return requestId;
     }
@@ -397,7 +397,7 @@ public class RefillServiceImpl implements RefillService {
     @Override
     @Transactional
     public void putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto onBchExamDto) throws RefillRequestAppropriateNotFoundException {
-        log.debug("Put on bch exam: " + onBchExamDto);
+        System.out.println("Put on bch exam: " + onBchExamDto);
         Integer requestId = onBchExamDto.getRequestId();
         if (requestId == null) {
             Optional<Integer> requestIdOptional = getRequestIdInPendingByAddressAndMerchantIdAndCurrencyId(
@@ -1043,7 +1043,7 @@ public class RefillServiceImpl implements RefillService {
         try {
             fillAdressesDtos(data.getData());
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
         DataTable<List<RefillRequestAddressShortDto>> output = new DataTable<>();
         output.setData(data.getData());
@@ -1125,7 +1125,7 @@ public class RefillServiceImpl implements RefillService {
         try {
             this.setHashByRequestId(requestId, requestAcceptDto.getMerchantTransactionId());
         } catch (DuplicatedMerchantTransactionIdOrAttemptToRewriteException e) {
-            //log.error(e);
+            log.error(e);
             throw new RuntimeException(e);
         }
         return requestId;
@@ -1169,6 +1169,11 @@ public class RefillServiceImpl implements RefillService {
         } catch (EmptyResultDataAccessException e){
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(int merchantId, int currencyId, String txHash) {
+        return refillRequestDao.findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(merchantId, currencyId, txHash);
     }
 
 }

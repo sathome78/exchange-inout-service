@@ -1,29 +1,37 @@
 package com.exrates.inout.service.nem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MosaicIdDto;
+import com.exrates.inout.domain.dto.NemMosaicTransferDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
-import com.exrates.inout.service.*;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NemProperty;
+import com.exrates.inout.service.AlgorithmService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.nem.core.crypto.KeyPair;
 import org.nem.core.crypto.PublicKey;
 import org.nem.core.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,26 +40,13 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.Merchant;
-//exrates.model.dto.*;
-//exrates.model.enums.ActionType;
-//exrates.model.util.BigDecimalProcessing;
-//exrates.service.*;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.WithdrawUtils;
-
-/**
- * Created by maks on 18.07.2017.
- */
-//@Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemServiceImpl implements NemService {
 
    private static final Logger log = LogManager.getLogger("nem_log");
@@ -96,18 +91,16 @@ public class NemServiceImpl implements NemService {
     public void init() {
         deniedMosaicsList.add(new MosaicIdDto("ts", "warning_dont_accept_stolen_funds"));
         /*deniedMosaicsList.add(new MosaicIdDto("dim", "coin"));*/
-        account = new Account(new KeyPair(PublicKey.fromHexString(publicKey)));
+        account = new Account(new KeyPair(PublicKey.fromHexString(property.getPublicKey())));
         currency = currencyService.findByName("XEM");
         merchant = merchantService.findByName(NEM_MERCHANT);
     }
 
+    private final NemProperty property;
 
-    private @Value("${nem.address}")
-    String address;
-    private @Value("${nem.private.key}")
-    String privateKey;
-    private @Value("${nem.public.key}")
-    String publicKey;
+    public NemServiceImpl(CryptoCurrencyProperties ccp) {
+        this.property = ccp.getNemCoins().getNem();
+    }
 
     private static final String DESTINATION_TAG_ERR_MSG = "message.nem.tagError";
 
@@ -125,7 +118,7 @@ public class NemServiceImpl implements NemService {
         if (!"XEM".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
             throw new WithdrawRequestPostException("Currency not supported by merchant");
         }
-        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, privateKey);
+        return nemTransactionsService.withdraw(withdrawMerchantOperationDto, property.getPrivateKey());
     }
 
     @Transactional
@@ -133,7 +126,7 @@ public class NemServiceImpl implements NemService {
     public Map<String, String> refill(RefillRequestCreateDto request) {
         String destinationTag = generateUniqDestinationTag(request.getUserId(), request.getMerchantId(), request.getCurrencyId());
         String message = messageSource.getMessage("merchants.refill.XEM",
-                new Object[]{address, destinationTag}, request.getLocale());
+                new Object[]{property.getAddress(), destinationTag}, request.getLocale());
         return new HashMap<String, String>() {{
             put("address", destinationTag);
             put("message", message);
@@ -192,7 +185,7 @@ public class NemServiceImpl implements NemService {
                                 .hash(requestAcceptDto.getMerchantTransactionId())
                                 .build());
             } catch (RefillRequestAppropriateNotFoundException e) {
-                //log.error(e);
+                log.error(e);
             }
         } else {
             refillService.autoAcceptRefillRequest(requestAcceptDto);
@@ -251,7 +244,7 @@ public class NemServiceImpl implements NemService {
                     gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
                 }
             } catch (RefillRequestAppropriateNotFoundException e) {
-                //log.error(e);
+                log.error(e);
             }
         });
 
@@ -303,7 +296,7 @@ public class NemServiceImpl implements NemService {
 
     @Override
     public BigDecimal countSpecCommission(BigDecimal amount, String destinationTag, Integer merchantId) {
-        //log.error("comission merchant {}", merchantId);
+        log.error("comission merchant {}", merchantId);
         if (!merchantId.equals(merchant.getId())) {
             return countSpecComissionForMosaic(amount, destinationTag, merchantId);
         }
@@ -369,19 +362,19 @@ public class NemServiceImpl implements NemService {
                 throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, this.additionalWithdrawFieldName());
             }
         } catch (UnsupportedEncodingException e) {
-            //log.error("unsupported encoding {}", e);
+            log.error("unsupported encoding {}", e);
         }
     }
 
     @Override
     public String getMainAddress() {
-        return address;
+        return property.getAddress();
     }
 
     @Override
     public boolean isValidDestinationAddress(String address) {
 
-        return withdrawUtils.isValidDestinationAddress(this.address, address);
+        return withdrawUtils.isValidDestinationAddress(this.property.getAddress(), address);
     }
 
     private BigDecimal getExrateForMosaic(int merchantId) {

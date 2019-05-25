@@ -47,7 +47,7 @@ public class QiwiRecieveService {
                 log.info("*** Qiwi *** transaction - currency:"+transaction.getProvider()+" | hash:"+ transaction.get_id()+" Saved");
             }catch (Exception ex){
                 ex.getStackTrace();
-                //log.error(ex.getMessage());
+                log.error(ex.getMessage());
             }
         });
         log.info("*** Qiwi ** Get transactions for process");

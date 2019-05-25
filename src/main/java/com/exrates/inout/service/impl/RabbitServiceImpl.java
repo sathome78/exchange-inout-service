@@ -1,27 +1,23 @@
 package com.exrates.inout.service.impl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.exrates.inout.configuration.RabbitConfig;
 import com.exrates.inout.domain.dto.WalletOperationMsDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import static com.exrates.inout.configuration.RabbitConfig.REFILL_QUEUE;
+
 @Service
 @RequiredArgsConstructor
-//@Log4j2
 public class RabbitServiceImpl implements RabbitService {
 
    private static final Logger log = LogManager.getLogger(RabbitServiceImpl.class);
 
-
-    private static final String REFILL_ROUTE = "refill";
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
 
@@ -35,8 +31,8 @@ public class RabbitServiceImpl implements RabbitService {
     public void sendAcceptRefillEvent(WalletOperationMsDto dto) {
         try {
             log.info("sendAcceptRefillEvent(): " + dto);
-            rabbitTemplate.convertAndSend(RabbitConfig.topicExchangeName, REFILL_ROUTE, toJson(dto));
-        } catch (JsonProcessingException e) {
+            send(REFILL_QUEUE, toJson(dto));
+        } catch (Exception e){
             log.error(ExceptionUtils.getStackTrace(e));
         }
     }
@@ -44,4 +40,5 @@ public class RabbitServiceImpl implements RabbitService {
     String toJson(WalletOperationMsDto dto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(dto);
     }
+
 }

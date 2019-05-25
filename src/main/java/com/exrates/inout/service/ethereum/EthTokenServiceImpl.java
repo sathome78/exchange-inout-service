@@ -1,15 +1,15 @@
 package com.exrates.inout.service.ethereum;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
 import com.exrates.inout.domain.enums.invoice.RefillStatusEnum;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.properties.models.EthereumTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -18,7 +18,6 @@ import com.exrates.inout.service.ethereum.ethTokensWrappers.ethTokenERC20;
 import com.exrates.inout.service.ethereum.ethTokensWrappers.ethTokenNotERC20;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +45,11 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -54,12 +57,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Maks on 19.09.2017.
  */
-//@Log4j2(topic = "eth_tokens_log")
+@Log4j2(topic = "eth_tokens_log")
 @Service
 public class EthTokenServiceImpl implements EthTokenService {
-
-   private static final Logger log = LogManager.getLogger("eth_tokens_log");
-
 
     private Merchant merchant;
     private Currency currency;
@@ -72,7 +72,7 @@ public class EthTokenServiceImpl implements EthTokenService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
+    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(180000);
 
     private final BigDecimal feeAmount = new BigDecimal("0.01");
 
@@ -96,18 +96,14 @@ public class EthTokenServiceImpl implements EthTokenService {
     @Autowired
     private GtagService gtagService;
 
-    public EthTokenServiceImpl(EthereumTokenProperty property) {
-        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
-        this.merchantName = property.getMerchantName();
-        this.currencyName = property.getCurrencyName();
-        this.isERC20 = property.isERC20();
-        this.unit = property.getUnit();
-        this.minWalletBalance = property.getMinWalletBalance().toBigInteger();
-    }
-
     @Override
     public Integer currencyId() {
         return currency.getId();
+    }
+
+    @Override
+    public ExConvert.Unit getUnit() {
+        return unit;
     }
 
     public EthTokenServiceImpl(List<String> contractAddress, String merchantName,
@@ -151,7 +147,8 @@ public class EthTokenServiceImpl implements EthTokenService {
                 }
             }, 3, 10, TimeUnit.MINUTES);
         } catch (Exception e){
-            log.error(merchantName + " not started, cause: \n" + ExceptionUtils.getStackTrace(e));
+            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -169,10 +166,11 @@ public class EthTokenServiceImpl implements EthTokenService {
             TransactionReceipt transactionReceipt = new TransactionReceipt();
             transactionReceipt = ethereumCommonService.getWeb3j().ethGetTransactionReceipt(transaction.getHash()).send().getResult();
             if (transactionReceipt == null) {
-                ////log.error("receipt null " + transaction.getHash());
+                log.error("receipt null " + transaction.getHash());
                 return;
             }
             List<Log> logsList = transactionReceipt.getLogs();
+
             logsList.forEach(l -> {
                 TransferEventResponse response = extractData(l.getTopics(), l.getData());
                 if (response == null) {
@@ -206,14 +204,15 @@ public class EthTokenServiceImpl implements EthTokenService {
                                     .hash(transaction.getHash())
                                     .blockhash(transaction.getBlockNumber().toString()).build());
                         } catch (RefillRequestAppropriateNotFoundException e) {
-                            ////log.error(e);
+                            log.error(e);
                         }
                         pendingTransactions.add(refillService.getFlatById(requestId));
                     }
                 }
             });
         } catch (Exception e) {
-            ////log.error(e);
+            log.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -221,7 +220,7 @@ public class EthTokenServiceImpl implements EthTokenService {
     @Override
     public void checkTransaction(BigInteger txBlock) {
         if (!currentBlockNumber.equals(txBlock)) {
-            //log.debug(merchant.getName() + " Current block number: " + txBlock.toString());
+            log.debug(merchant.getName() + " Current block number: " + txBlock.toString());
 
             List<RefillRequestFlatDto> providedTransactions = new ArrayList<RefillRequestFlatDto>();
             pendingTransactions.forEach(pendingTransaction ->
@@ -240,7 +239,7 @@ public class EthTokenServiceImpl implements EthTokenService {
                                 providedTransactions.add(pendingTransaction);
                             }
                         } catch (EthereumException | IOException e) {
-                            ////log.error(merchant.getName() + " " + e);
+                            log.error(merchant.getName() + " " + e);
                         }
                     }
 
@@ -283,11 +282,12 @@ public class EthTokenServiceImpl implements EthTokenService {
             log.debug("Process of sending data to Google Analytics...");
             gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currency.getName(), username);
         } catch (Exception e) {
-            ////log.error(e);
+            log.error(e);
+            e.printStackTrace();
         }
     }
 
-    private void transferFundsToMainAccount() {
+    private void transferFundsToMainAccount(){
         List<RefillRequestAddressDto> listRefillRequestAddressDto = refillService.findAllAddressesNeededToTransfer(merchant.getId(), currency.getId());
         for (RefillRequestAddressDto refillRequestAddressDto : listRefillRequestAddressDto) {
             try {
@@ -374,7 +374,7 @@ public class EthTokenServiceImpl implements EthTokenService {
                 }
 
             } catch (Exception e) {
-                ////log.error(e);
+                log.error(e);
             }
         }
     }
@@ -414,6 +414,11 @@ public class EthTokenServiceImpl implements EthTokenService {
         public Address to;
 
         public Uint256 value;
+    }
+
+    @Override
+    public String getMerchantName() {
+        return merchantName;
     }
 
     @PreDestroy

@@ -2,10 +2,12 @@ package com.exrates.inout.service.bitshares.ppy;
 
 import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.OnMessage;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.IOException;
 
 @ClientEndpoint
 @Service("ppyServiceImpl")
+@Log4j2(topic = "ppy")
 public class PPYServiceImpl extends BitsharesServiceImpl {
 
     private static final String name = "PPY";
@@ -20,6 +23,11 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
 
     public PPYServiceImpl() {
         super(name, name, "merchants/ppy.properties", 0, DECIMAL);
+    }
+
+    @PostConstruct
+    public void log(){
+        log.info("Test log ppy");
     }
 
     public void subscribeToTransactions() throws IOException {
@@ -81,14 +89,14 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
         try {
             if (msg.contains("last_irreversible_block_num")) setIrreversableBlock(msg);
             else if (msg.contains("previous")) processIrreversebleBlock(msg);
-            //else //log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
+            else log.info("unrecogrinzed msg from " + merchantName + "\n" + msg);
         } catch (Exception e) {
-            //log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
+            log.error("Web socket error" + merchantName + "  : \n" + e.getMessage());
         }
 
     }
 
-    private void setIrreversableBlock(String msg) throws IOException {
+    private void setIrreversableBlock(String msg) {
         JSONObject message = new JSONObject(msg);
         int blockNumber = message.getJSONArray("params").getJSONArray(1).getJSONArray(0).getJSONObject(0).getInt(lastIrreversebleBlockParam);
         synchronized (this) {
