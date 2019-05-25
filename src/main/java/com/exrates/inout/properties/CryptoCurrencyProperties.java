@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
         OtherCoins.class,
         PaymentSystemMerchants.class,
         NemCoins.class,
-        NemCoins.class,
         Gapicoin.class,
         Aisicoin.class,
         AwsProperty.class})
@@ -59,6 +58,7 @@ public class CryptoCurrencyProperties {
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
                                     NemCoins nemCoins, Gapicoin gapicoin, Aisicoin aisicoin, AwsProperty awsProperty) {
+
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;

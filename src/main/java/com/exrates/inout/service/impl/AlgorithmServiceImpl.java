@@ -187,6 +187,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     }
 
     //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
+
     private String getSecret() {
         String region = "us-east-2";
 

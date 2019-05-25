@@ -53,13 +53,10 @@ public class EthTokenTester extends CoinTestBasic {
         merchantId = merchantService.findByName(name).getId();
         currencyId = currencyService.findByName(name).getId();
         prepareContract();
+        userId = userService.getIdByEmail(testEmail);
         stringBuilder.append("Init success for coin " + name).append("<br>");
     }
 
-    @PostConstruct
-    public void init(){
-        userId = userService.getIdByEmail(testEmail);
-    }
 
     private void prepareContract() throws Exception {
 

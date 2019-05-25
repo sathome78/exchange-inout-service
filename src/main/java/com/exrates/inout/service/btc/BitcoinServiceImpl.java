@@ -124,6 +124,8 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     private Boolean supportReferenceLine;
 
+    private Boolean useSendManyForWithdraw;
+
     private String walletPassword;
 
     private BitcoinNode node;
@@ -163,11 +165,12 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
                               Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications) {
-        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false);
+        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false, true);
     }
 
     public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
-                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine) {
+                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine,
+                              Boolean useSendManyForWithdraw) {
         Properties props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
@@ -184,6 +187,8 @@ public class BitcoinServiceImpl implements BitcoinService {
             this.supportSubtractFee = supportSubtractFee;
             this.supportWalletNotifications = supportWalletNotifications;
             this.supportReferenceLine = supportReferenceLine;
+
+            this.useSendManyForWithdraw = useSendManyForWithdraw;
         } catch (IOException e) {
             log.error(e);
         }
@@ -223,7 +228,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 log.info("{} not started, pass props error", merchantName);
                 return;
             }
-            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine);
+            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine, useSendManyForWithdraw);
             bitcoinWalletService.initBtcdDaemon(node.isZmqEnabled());
             bitcoinWalletService.blockFlux().subscribe(this::onIncomingBlock);
             if (supportWalletNotifications) {
