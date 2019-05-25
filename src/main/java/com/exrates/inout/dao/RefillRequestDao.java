@@ -151,4 +151,6 @@ public interface RefillRequestDao {
     Optional<Integer> autoCreate(RefillRequestAcceptDto request, int userId, int commissionId, RefillStatusEnum statusEnum);
 
     Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(int merchantId, int currencyId, String txHash);
+
+    String getPrivKeyByAddress(String address);
 }

@@ -1398,6 +1398,19 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         }
     }
 
+    @Override
+    public String getPrivKeyByAddress(String address) {
+        final String sql = "SELECT RRA.priv_key " +
+                " FROM REFILL_REQUEST_ADDRESS RRA " +
+                " WHERE RRA.address = :address AND is_valid = 1";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("address", address);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return "";
+        }
+    }
 
 }
 
