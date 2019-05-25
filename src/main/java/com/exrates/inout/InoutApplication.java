@@ -21,7 +21,7 @@ public class InoutApplication  {
         SpringApplication.run(InoutApplication.class, args);
     }
 
-    @Scheduled(fixedRate = 60*1000)
+    @Scheduled(cron = "0 * * * * *")
     public void print(){
         System.out.print("Is alive! ");
     }
