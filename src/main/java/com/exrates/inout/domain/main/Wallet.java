@@ -20,9 +20,24 @@ public class Wallet implements Serializable {
 
     private BigDecimal ieoReserved;
     private String name;
+    private String fullName;
 
     public Wallet() {
 
+    }
+
+    public String getFullName() {
+        final String activeBalance;
+        switch (currencyId) {
+            case 1:
+            case 2:
+            case 3:
+                activeBalance = this.activeBalance.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                break;
+            default:
+                activeBalance = this.activeBalance.toString();
+        }
+        return name + " " + activeBalance;
     }
 
     public Wallet(int currencyId, User user, BigDecimal activeBalance) {
