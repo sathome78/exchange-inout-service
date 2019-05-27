@@ -143,6 +143,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
+    @SneakyThrows
     public Wallet findByUserAndCurrency(int userId, int currencyId) {
         try {
             HttpHeaders headers = getHeaders();
@@ -153,12 +154,14 @@ public class WalletServiceImpl implements WalletService {
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<Wallet> response = template.exchange(
+            ResponseEntity<String> response = template.exchange(
                     builder.toUriString(),
                     HttpMethod.GET,
                     entity,
-                    Wallet.class);
-            return response.getBody();
+                    String.class);
+            String body = response.getBody();
+            System.out.println("Body = " + body);
+            return new ObjectMapper().readValue(body, Wallet.class);
         } catch (Exception e){
             log.error(e);
             throw e;
