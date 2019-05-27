@@ -96,7 +96,7 @@ mail:
 
 
 endpoints:
-  stock: http://dev6.exapp/
+  stock: http://172.10.12.102:8080/
   inoutPrefix: /inout
 
 telegram:
