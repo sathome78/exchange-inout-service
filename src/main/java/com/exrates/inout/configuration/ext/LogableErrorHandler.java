@@ -23,6 +23,8 @@ public class LogableErrorHandler implements ResponseErrorHandler {
     public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
         log.info("Error restTemplate. Status: " + clientHttpResponse.getStatusCode().value());
         log.info("Body: " + IOUtils.toString(clientHttpResponse.getBody()));
+        System.out.println("Error restTemplate. Status: " + clientHttpResponse.getStatusCode().value());
+        System.out.println("Body: " + IOUtils.toString(clientHttpResponse.getBody()));
     }
 
 }
