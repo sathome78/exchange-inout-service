@@ -160,7 +160,7 @@ public class WalletServiceImpl implements WalletService {
                     entity,
                     String.class);
             String body = response.getBody();
-            System.out.println("Body = " + body);
+            System.out.println("Body = " + body);//debug, todo remove
             return new ObjectMapper().readValue(body, Wallet.class);
         } catch (Exception e){
             log.error(e);

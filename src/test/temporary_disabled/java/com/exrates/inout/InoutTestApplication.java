@@ -106,7 +106,7 @@ public abstract class InoutTestApplication {
     protected User registerNewUser(){
         User user = new User();
         user.setEmail("user" + id++ +"@gmail.com");
-        user.setStatus(UserStatus.ACTIVE);
+        user.setUserStatus(UserStatus.ACTIVE);
         user.setId(id);
         userDao.create(user);
 

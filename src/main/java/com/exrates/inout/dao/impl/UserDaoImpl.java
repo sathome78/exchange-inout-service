@@ -58,9 +58,12 @@ public class UserDaoImpl implements UserDao {
             user.setPassword(resultSet.getString("password"));
             user.setRegdate(resultSet.getDate("regdate"));
             user.setPhone(resultSet.getString("phone"));
-            user.setStatus(UserStatus.values()[resultSet.getInt("status") - 1]);
+            user.setUserStatus(UserStatus.values()[resultSet.getInt("status") - 1]);
             user.setRole(UserRole.valueOf(resultSet.getString("role_name")));
             user.setFinpassword(resultSet.getString("finpassword"));
+            user.setKycStatus(resultSet.getString("kyc_status"));
+            user.setCountry(resultSet.getString("country"));
+            user.setPublicId(resultSet.getString("pub_id"));
             try {
                 user.setParentEmail(resultSet.getString("parent_email")); // May not exist for some users
             } catch (final SQLException e) {/*NOP*/}
@@ -112,7 +115,7 @@ public class UserDaoImpl implements UserDao {
             phone = null;
         }
         namedParameters.put("phone", phone);
-        namedParameters.put("status", String.valueOf(user.getStatus().getStatus()));
+        namedParameters.put("status", String.valueOf(user.getUserStatus().getStatus()));
         namedParameters.put("roleid", String.valueOf(user.getRole().getRole()));
         KeyHolder keyHolder = new GeneratedKeyHolder();
         return namedParameterJdbcTemplate.update(sqlUser, new MapSqlParameterSource(namedParameters), keyHolder) == 1;
