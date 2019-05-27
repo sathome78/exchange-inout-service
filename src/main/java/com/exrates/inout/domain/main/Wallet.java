@@ -79,26 +79,6 @@ public class Wallet implements Serializable {
         this.reservedBalance = reservedBalance;
     }
 
-    /**
-     * Currently represents currency and balance on wallet
-     * 1,2,3 -> RUB,USD,EUR respectively
-     * any other value - BTC
-     *
-     * @return
-     */
-    public String getFullName() {
-        final String activeBalance;
-        switch (currencyId) {
-            case 1:
-            case 2:
-            case 3:
-                activeBalance = this.activeBalance.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-                break;
-            default:
-                activeBalance = this.activeBalance.toString();
-        }
-        return name + " " + activeBalance;
-    }
 
     @Override
     public boolean equals(Object o) {
