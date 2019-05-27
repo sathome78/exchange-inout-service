@@ -26,9 +26,9 @@ spring:
 #    baseline-on-migrate: false
 #    validate-on-migrate: false
   rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
+    username: preprod
+    password: eehVBU21x
+    host: 172.10.10.71
     port: 5672
 
 logging:
