@@ -39,8 +39,7 @@ import rx.Subscription;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -420,6 +419,9 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         try {
 
             File destination = new File(destinationDir);
+
+            log.info("Created new destination directories for {} by path {}", merchantName, destination.mkdirs());
+
             log.debug(merchantName + " " + destinationDir);
 
             String fileName = "";
@@ -551,4 +553,5 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     public void setConfirmationNeededCount(int minConfirmationsCount){
         this.minConfirmations = minConfirmationsCount;
     }
+
 }
