@@ -33,7 +33,7 @@ spring:
 
 logging:
   level:
-    ROOT: DEBUG
+    ROOT: INFO
 
 server:
   port: 8080
