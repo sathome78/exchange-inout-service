@@ -40,10 +40,16 @@ public class UserDaoImpl implements UserDao {
 
     private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
 
+
     private final String SELECT_USER =
-            "SELECT USER.id, USER.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
-                    "USER.phone, USER.status, USER_ROLE.name AS role_name FROM USER " +
-                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id ";
+            "SELECT USER.id, u.email AS parent_email, USER.finpassword, USER.nickname, USER.email, USER.password, USER.regdate, " +
+                    "USER.phone, USER.status, USER.kyc_status, USER_ROLE.name AS role_name, USER.country AS country, USER.pub_id FROM USER " +
+                    "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id LEFT JOIN REFERRAL_USER_GRAPH " +
+                    "ON USER.id = REFERRAL_USER_GRAPH.child LEFT JOIN USER AS u ON REFERRAL_USER_GRAPH.parent = u.id ";
+
+    private final String SELECT_COUNT = "SELECT COUNT(*) FROM USER " +
+            "INNER JOIN USER_ROLE ON USER.roleid = USER_ROLE.id LEFT JOIN REFERRAL_USER_GRAPH " +
+            "ON USER.id = REFERRAL_USER_GRAPH.child LEFT JOIN USER AS u ON REFERRAL_USER_GRAPH.parent = u.id ";
 
     @Autowired
     @Qualifier(value = "masterTemplate")
