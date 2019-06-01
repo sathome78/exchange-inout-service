@@ -742,6 +742,11 @@
             <AppenderRef ref="Logs"/>
             <AppenderRef ref="Console"/>
         </logger>
+        <logger name="okhttp3.logging" level="INFO" additivity="false">
+            <AppenderRef ref="Socket"/>
+            <AppenderRef ref="Logs"/>
+            <AppenderRef ref="Console"/>
+        </logger>
         <logger name="org.springframework.security" level="INFO" additivity="false">
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="Logs"/>
