@@ -126,7 +126,8 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
                 lastIrreversibleBlockValue = Integer.valueOf(merchantSpecParam.getParamValue());
             }
         }catch (Exception ex){
-            log.error(ex);
+            ex.printStackTrace();
+            log.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

@@ -310,6 +310,9 @@ public class BitcoinServiceImpl implements BitcoinService {
     }
 
     void processBtcPayment(BtcPaymentFlatDto btcPaymentFlatDto) {
+        System.out.println("checkTransactionAlreadyOnBchExam = " + checkTransactionAlreadyOnBchExam(btcPaymentFlatDto.getAddress(), btcPaymentFlatDto.getMerchantId(),
+                btcPaymentFlatDto.getCurrencyId(), btcPaymentFlatDto.getTxId()));
+
         if (!checkTransactionAlreadyOnBchExam(btcPaymentFlatDto.getAddress(), btcPaymentFlatDto.getMerchantId(),
                 btcPaymentFlatDto.getCurrencyId(), btcPaymentFlatDto.getTxId())) {
             Optional<Integer> refillRequestIdResult = refillService.getRequestIdInPendingByAddressAndMerchantIdAndCurrencyId(
@@ -324,6 +327,7 @@ public class BitcoinServiceImpl implements BitcoinService {
             if (btcPaymentFlatDto.getConfirmations() >= 0 && btcPaymentFlatDto.getConfirmations() < minConfirmations) {
                 try {
                     log.info("put on bch exam {}", btcPaymentFlatDto);
+                    System.out.println("put on bch exam {}");
                     refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()
                             .requestId(requestId)
                             .merchantId(btcPaymentFlatDto.getMerchantId())
@@ -576,12 +580,14 @@ public class BitcoinServiceImpl implements BitcoinService {
                 processBtcPayment(btcPaymentFlatDto);
             } catch (Exception e) {
                 log.error(e);
+                e.printStackTrace();
             }
         });
         try {
             onIncomingBlock(bitcoinWalletService.getBlockByHash(bitcoinWalletService.getLastBlockHash()));
         } catch (Exception e) {
             log.error(e);
+            e.printStackTrace();
         }
 
     }
