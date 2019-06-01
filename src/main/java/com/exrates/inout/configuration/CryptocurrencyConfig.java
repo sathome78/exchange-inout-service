@@ -375,7 +375,7 @@ public class CryptocurrencyConfig {
         return new EthereumCommonServiceImpl("merchants/ethereum.properties",
                 "Ethereum", "ETH", 15);
     }
-
+//lala
     /*
     @Bean(name = "ethereumClassicServiceImpl")
     public EthereumCommonService ethereumClassicService() {
