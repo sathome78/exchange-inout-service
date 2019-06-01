@@ -59,10 +59,8 @@ public class RefillRequestJob {
         String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL"};
         for (String coin : merchantNames) {
             try {
-                if(coin.equals("KOD")) {
-                    System.out.println("Scanning " + coin);
-                    getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
-                }
+                if(coin.equals("KOD")) System.out.println("Scanning " + coin);
+                getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
             } catch (Exception e) {
                 if(coin.equals("KOD"))
                 e.printStackTrace();
