@@ -15,36 +15,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-#  redis:
-#    host: 172.50.50.100
-#    port: 6379
-#  flyway:
-#    locations: classpath:db/migration
-#    user: root
-#    password: root
-#    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
-#    baseline-on-migrate: false
-#    validate-on-migrate: false
   rabbitmq:
     username: preprod
     password: eehVBU21x
     host: 172.10.10.33
     port: 5672
 
-logging:
-  level:
-    ROOT: INFO
-
 server:
   port: 8080
-#slave:
-#  datasource:
-#    hikari:
-#      password: root
-#      username: root
-#      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-#      connection-test-query: SELECT 1 FROM DUAL
-#      driver-class-name: com.mysql.jdbc.Driver
 ssm:
   mode: dev
   path: /exrates/auth-service/test/pass.token

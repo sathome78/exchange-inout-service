@@ -24,20 +24,10 @@ spring:
     host: rabbitmq-dev.service
     port: 5672
 
-logging:
-  level:
-    ROOT: DEBUG
 
 server:
   port: 8080
-#slave:
-#  datasource:
-#    hikari:
-#      password: root
-#      username: root
-#      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-#      connection-test-query: SELECT 1 FROM DUAL
-#      driver-class-name: com.mysql.jdbc.Driver
+
 ssm:
   mode: dev
   path: /exrates/auth-service/test/pass.token
