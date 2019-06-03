@@ -123,6 +123,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private Logger log;
 
+    private static final Logger consoleLogger = LogManager.getLogger();
+
     @Override
     public Web3j getWeb3j() {
         return web3j;
@@ -191,7 +193,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     void start() {
         merchantId = merchantService.findByName(merchantName).getId();
 
-        log.info("start " + merchantName);
+        consoleLogger.info("start init " + merchantName);
 
         web3j = Web3j.build(new HttpService(url));
 
@@ -236,6 +238,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 }
             }, 4, 3, TimeUnit.MINUTES);
         }
+        consoleLogger.info("finish init " + merchantName);
     }
 
     @Override
