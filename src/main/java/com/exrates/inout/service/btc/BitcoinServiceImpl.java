@@ -145,6 +145,9 @@ public class BitcoinServiceImpl implements BitcoinService {
         this.supportSubtractFee = property.isSupportSubtractFee();
         this.supportWalletNotifications = property.isSupportWalletNotifications();
         this.supportReferenceLine = property.isSupportReferenceLine();
+
+        this.useSendManyForWithdraw = property.isUseSendManyForWithdraw();
+
         this.node = property.getNode();
     }
 
