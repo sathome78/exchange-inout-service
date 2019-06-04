@@ -152,6 +152,8 @@ public interface RefillService {
 
     Integer getRequestId(RefillRequestAcceptDto requestAcceptDto) throws RefillRequestAppropriateNotFoundException;
 
+    String getUserGAByRequestId(int requestId);
+
     void blockUserByFrozeTx(String address, int merchantId, int currencyId);
 
     List<RefillRequestAddressShortDto> getBlockedAddresses(int merchantId, int currencyId);
