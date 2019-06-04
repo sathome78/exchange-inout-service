@@ -3,6 +3,8 @@ package com.exrates.inout.controller;
 import com.exrates.inout.domain.dto.QuberaRequestDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.main.CreditsOperation;
+import com.exrates.inout.domain.main.Currency;
+import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
@@ -21,6 +23,10 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.YandexKassaService;
 import com.exrates.inout.service.YandexMoneyService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
+import com.exrates.inout.service.usdx.UsdxRestApiService;
+import com.exrates.inout.service.usdx.UsdxService;
+import com.exrates.inout.service.usdx.model.UsdxTransaction;
+import com.exrates.inout.service.usdx.model.UsdxTxSendAdmin;
 import com.yandex.money.api.methods.RequestPayment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -60,6 +66,7 @@ public class MerchantApiController {
     private final QuberaService quberaService;
     private final YandexMoneyService yandexMoneyService;
     private final YandexKassaService yandexKassaService;
+    private final UsdxService usdxService;
 
     @GetMapping(value = "/getAdditionalRefillFieldName/{merchantId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getAdditionalRefillFieldName(@PathVariable("merchantId") int merchantId) {
@@ -152,6 +159,43 @@ public class MerchantApiController {
     public void quberaProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         quberaService.processPayment(params);
     }
+
+    @PostMapping("/lht/processPayment")
+    public void lhtProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        usdxService.processPayment(params);
+    }
+
+    //START | LHT methods
+    @GetMapping("lht/getMainAddress")
+    public String lhtGetMainAddress(){
+        return usdxService.getMainAddress();
+    }
+
+    @GetMapping("lht/getMerchant")
+    public Merchant lhtGetMerchant(){
+        return usdxService.getMerchant();
+    }
+
+    @GetMapping("lht/getCurrency")
+    public Currency lhtGetCurrency(){
+        return usdxService.getCurrency();
+    }
+
+    @GetMapping("lht/getUsdxRestApi")
+    public UsdxRestApiService lhtGetUsdxRestApi(){
+        return usdxService.getUsdxRestApiService();
+    }
+
+    @PostMapping("/lht/create/refill/admin")
+    public void lhtCreateRefillRequestAdmin(@RequestBody Map<String, String> params) {
+        usdxService.createRefillRequestAdmin(params);
+    }
+
+    @PostMapping("/lht/create/withdraw/admin")
+    public void lhtSendUsdxTransactionToExternalWallet(UsdxTxSendAdmin usdxTxSendAdmin) {
+        usdxService.sendUsdxTransactionToExternalWallet(usdxTxSendAdmin);
+    }
+    //END | LHT methods
 
     @PostMapping("/yamoney/getTemporaryAuthCode")
     public Boolean quberaLogResponse(@RequestBody QuberaRequestDto requestDto) {

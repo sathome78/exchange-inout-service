@@ -1102,6 +1102,12 @@ public class RefillServiceImpl implements RefillService {
         }
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public String getUserGAByRequestId(int requestId) {
+        return refillRequestDao.getGaTagByRequestId(requestId);
+    }
+
     @Override
     public void blockUserByFrozeTx(String address, int merchantId, int currencyId) {
         refillRequestDao.setAddressBlocked(address, merchantId, currencyId, true);

@@ -1,7 +1,4 @@
 package com.exrates.inout.service.stellar;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -19,7 +16,8 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.CryptoUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -60,13 +58,11 @@ import java.util.Optional;
 /**
  * Created by maks on 06.06.2017.
  */
-//@Log4j2(topic = "stellar_log")
 @Service
 @PropertySource("classpath:/merchants/stellar.properties")
 public class StellarServiceImpl implements StellarService {
 
    private static final Logger log = LogManager.getLogger("stellar_log");
-
 
     private @Value("${stellar.horizon.url}")
     String SEVER_URL;
@@ -96,13 +92,12 @@ public class StellarServiceImpl implements StellarService {
 
     @PostConstruct
     public void init() {
-        currency = currencyService.findByName("XLM");
+        currency = currencyService.findByName(XML_CURRENCY);
         merchant = merchantService.findByName(XLM_MERCHANT);
     }
 
-
     private static final String XLM_MERCHANT = "Stellar";
-
+    private static final String XML_CURRENCY = "XLM";
     private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
     @Override
@@ -188,7 +183,7 @@ public class StellarServiceImpl implements StellarService {
         Optional<Integer> id;
         String destinationTag;
         do {
-            destinationTag = CryptoUtils.generateDestinationTag(userId, MAX_TAG_DESTINATION_DIGITS);
+            destinationTag = CryptoUtils.generateDestinationTag(userId, MAX_TAG_DESTINATION_DIGITS, XML_CURRENCY);
             id = refillService.getRequestIdReadyForAutoAcceptByAddressAndMerchantIdAndCurrencyId(destinationTag, currency.getId(), merchant.getId());
         } while (id.isPresent());
         return destinationTag;
