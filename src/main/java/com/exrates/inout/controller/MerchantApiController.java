@@ -7,38 +7,19 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.CheckDestinationTagException;
+import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.service.AdvcashService;
-import com.exrates.inout.service.EDCService;
-import com.exrates.inout.service.IRefillable;
-import com.exrates.inout.service.InterkassaService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.NixMoneyService;
-import com.exrates.inout.service.OkPayService;
-import com.exrates.inout.service.PayeerService;
-import com.exrates.inout.service.PerfectMoneyService;
-import com.exrates.inout.service.Privat24Service;
-import com.exrates.inout.service.QuberaService;
-import com.exrates.inout.service.RefillService;
-import com.exrates.inout.service.YandexKassaService;
-import com.exrates.inout.service.YandexMoneyService;
+import com.exrates.inout.service.*;
 import com.exrates.inout.service.impl.MerchantServiceContext;
-import com.exrates.inout.service.usdx.UsdxRestApiService;
 import com.exrates.inout.service.usdx.UsdxService;
+import com.exrates.inout.service.usdx.model.UsdxAccountBalance;
 import com.exrates.inout.service.usdx.model.UsdxTransaction;
-import com.exrates.inout.service.usdx.model.UsdxTxSendAdmin;
 import com.yandex.money.api.methods.RequestPayment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -161,39 +142,72 @@ public class MerchantApiController {
     }
 
     @PostMapping("/lht/processPayment")
-    public void lhtProcessPayment(@RequestBody Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        usdxService.processPayment(params);
+    public ResponseEntity lhtProcessPayment(@RequestBody Map<String, String> params) {
+        try {
+            usdxService.processPayment(params);
+
+            return ResponseEntity.ok().build();
+
+        } catch(Exception ex){
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     //START | LHT methods
-    @GetMapping("lht/getMainAddress")
+    @GetMapping("lht/mainAddress")
     public String lhtGetMainAddress(){
         return usdxService.getMainAddress();
     }
 
-    @GetMapping("lht/getMerchant")
+    @GetMapping("lht/merchant")
     public Merchant lhtGetMerchant(){
         return usdxService.getMerchant();
     }
 
-    @GetMapping("lht/getCurrency")
+    @GetMapping("lht/currency")
     public Currency lhtGetCurrency(){
         return usdxService.getCurrency();
     }
 
-    @GetMapping("lht/getUsdxRestApi")
-    public UsdxRestApiService lhtGetUsdxRestApi(){
-        return usdxService.getUsdxRestApiService();
+    @GetMapping("lht/accountBalance")
+    public UsdxAccountBalance lhtGetUsdxAccountBalance(){
+        return usdxService.getUsdxAccountBalance();
+    }
+
+    @GetMapping("lht/transactions")
+    public List<UsdxTransaction> lhtGetAllTransactions(){
+        return usdxService.getAllTransactions();
+    }
+
+    @GetMapping("lht/transaction")
+    public UsdxTransaction lhtGetTransactionByTransferId(String transferId){
+        return usdxService.getTransactionByTransferId(transferId);
     }
 
     @PostMapping("/lht/create/refill/admin")
-    public void lhtCreateRefillRequestAdmin(@RequestBody Map<String, String> params) {
-        usdxService.createRefillRequestAdmin(params);
+    public ResponseEntity lhtCreateRefillRequestAdmin(@RequestBody Map<String, String> params) {
+        try {
+            usdxService.createRefillRequestAdmin(params);
+
+            return ResponseEntity.ok().build();
+
+        } catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/lht/create/withdraw/admin")
-    public void lhtSendUsdxTransactionToExternalWallet(UsdxTxSendAdmin usdxTxSendAdmin) {
-        usdxService.sendUsdxTransactionToExternalWallet(usdxTxSendAdmin);
+    public ResponseEntity lhtSendUsdxTransactionToExternalWallet(@RequestParam String password, @RequestBody UsdxTransaction usdxTransaction) {
+        try{
+            usdxService.sendUsdxTransactionToExternalWallet(password, usdxTransaction);
+
+            return ResponseEntity.ok().build();
+
+        } catch(IncorrectCoreWalletPasswordException incorrectCoreWalletPasswordException){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
     //END | LHT methods
 

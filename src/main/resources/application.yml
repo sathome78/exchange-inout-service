@@ -39,7 +39,7 @@ ssm:
 
 
 endpoints:
-  stock: http://localhost:8079/
+  stock: http://localhost:8080/
   inoutPrefix: /inout
 
 eureka:

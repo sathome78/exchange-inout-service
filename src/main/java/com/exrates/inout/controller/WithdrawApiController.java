@@ -36,7 +36,7 @@ public class WithdrawApiController {
         return withdrawService.createWithdrawalRequest(dto, extractUserLocale(request));
     }
 
-    @GetMapping("/getAdditionalServiceData/merchantId")
+    @GetMapping(value = "/getAdditionalServiceData/{merchantId}")
     public WithdrawableDataDto getAdditionalServiceData(@PathVariable("merchantId") Integer merchantId){
         IWithdrawable withdrawable = (IWithdrawable) serviceContext.getMerchantService(merchantId);
         WithdrawableDataDto dto = new WithdrawableDataDto();

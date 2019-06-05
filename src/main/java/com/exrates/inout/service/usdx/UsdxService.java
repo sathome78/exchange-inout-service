@@ -2,11 +2,13 @@ package com.exrates.inout.service.usdx;
 
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.service.IRefillable;
 import com.exrates.inout.service.IWithdrawable;
+import com.exrates.inout.service.usdx.model.UsdxAccountBalance;
 import com.exrates.inout.service.usdx.model.UsdxTransaction;
-import com.exrates.inout.service.usdx.model.UsdxTxSendAdmin;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UsdxService extends IRefillable, IWithdrawable {
@@ -65,11 +67,15 @@ public interface UsdxService extends IRefillable, IWithdrawable {
 
     Currency getCurrency();
 
-    UsdxRestApiService getUsdxRestApiService();
+    UsdxAccountBalance getUsdxAccountBalance();
+
+    List<UsdxTransaction> getAllTransactions();
+
+    UsdxTransaction getTransactionByTransferId(String transferId);
 
     void checkHeaderOnValidForSecurity(String securityHeaderValue, UsdxTransaction usdxTransaction);
 
-    void createRefillRequestAdmin(Map<String, String> params);
+    void createRefillRequestAdmin(Map<String, String> params) throws RefillRequestAppropriateNotFoundException;
 
-    UsdxTransaction sendUsdxTransactionToExternalWallet(UsdxTxSendAdmin usdxTxSendAdmin);
+    UsdxTransaction sendUsdxTransactionToExternalWallet(String password, UsdxTransaction usdxTransaction);
 }
