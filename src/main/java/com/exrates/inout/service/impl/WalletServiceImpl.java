@@ -29,6 +29,7 @@ import com.exrates.inout.service.WalletService;
 import com.exrates.inout.service.api.ExchangeApi;
 import com.exrates.inout.service.api.WalletsApi;
 import com.exrates.inout.util.BigDecimalProcessing;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -143,7 +144,6 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
-    @SneakyThrows
     public Wallet findByUserAndCurrency(int userId, int currencyId) {
         try {
             HttpHeaders headers = getHeaders();
@@ -160,11 +160,13 @@ public class WalletServiceImpl implements WalletService {
                     entity,
                     String.class);
             String body = response.getBody();
-            System.out.println("Body = " + body);//debug, todo remove
+
+            log.debug("Body = {}", body);
+
             return new ObjectMapper().readValue(body, Wallet.class);
         } catch (Exception e){
             log.error(e);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
@@ -192,7 +194,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @SneakyThrows
     public WalletTransferStatus walletInnerTransfer(int walletId, BigDecimal amount, TransactionSourceType sourceType, int sourceId, String description) {
         HttpHeaders headers = getHeaders();
 
@@ -206,8 +207,12 @@ public class WalletServiceImpl implements WalletService {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + WALLET_INNER_TRANSFER);
 
-        HttpEntity<?> entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(walletInnerTransferDto), headers);
-
+        HttpEntity<?> entity = null;
+        try {
+            entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(walletInnerTransferDto), headers);
+        } catch (JsonProcessingException e) {
+            log.error("Error : {}", e);
+        }
 
         ResponseEntity<WalletTransferStatus> response = template.exchange(
                 builder.toUriString(),

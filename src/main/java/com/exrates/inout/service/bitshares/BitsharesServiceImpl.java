@@ -371,7 +371,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
 
     }
 
-    @SneakyThrows
     protected void getBlock(int blockNum) throws IOException {
         JSONObject block = new JSONObject();
         block.put("id", 10);
@@ -400,8 +399,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         }
     }
 
-
-    @SneakyThrows
     protected void makeRefill(List<String> lisfOfMemo, JSONObject transaction, String hash) {
         JSONObject memo = transaction.getJSONObject("memo");
         try {

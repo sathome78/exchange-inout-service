@@ -230,7 +230,6 @@ public class OmniServiceImpl implements OmniService {
         return refillService.getBlockedAddresses(merchant.getId(), currency.getId());
     }
 
-    @SneakyThrows
     @Override
     public void createRefillRequestAdmin(Map<String, String> params) {
         String hash = params.get("txId");
