@@ -2,6 +2,7 @@ package com.exrates.inout.service.aisi;
 
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.AisiProperty;
+import com.exrates.inout.service.AlgorithmService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,8 +13,6 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -31,12 +30,16 @@ import java.util.List;
 @Service
 public class AisiCurrencyServiceImpl implements AisiCurrencyService {
 
+    private static final String AISI_CODE = "aisi_hash\":\"";
+
     private RestTemplate restTemplate;
 
     private AisiProperty aisiProperty;
 
+    private AlgorithmService algorithmService;
+
     @Autowired
-    public AisiCurrencyServiceImpl(CryptoCurrencyProperties ccp) {
+    public AisiCurrencyServiceImpl(CryptoCurrencyProperties ccp, AlgorithmService algorithmServic) {
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
@@ -44,12 +47,13 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
         requestFactory.setHttpClient(httpClient);
         restTemplate = new RestTemplate(requestFactory);
 
+        this.algorithmService = algorithmServic;
         this.aisiProperty = ccp.getAisiCoins().getAisi();
     }
 
     public String generateNewAddress() {
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", aisiProperty.getAisiApikey());
+        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/account/address/new")
                 .queryParams(requestParameters)
@@ -79,7 +83,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
     public List<Transaction> getAccountTransactions(){
         Integer max = Integer.MAX_VALUE;
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", aisiProperty.getAisiApikey());
+        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/transaction/account/{max}")
                 .queryParams(requestParameters)
@@ -127,7 +131,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
 
     public String createNewTransaction(String address, BigDecimal amount){
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", aisiProperty.getAisiApikey());
+        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/transaction/create/{FROM_ADDRESS}/{TO_ADDRESS}/{AMOUNT}")
                 .queryParams(requestParameters)
@@ -164,7 +168,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
   */
     public String getBalanceByAddress(String address){
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", aisiProperty.getAisiApikey());
+        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/account/{address}/balance")
                 .queryParams(requestParameters)

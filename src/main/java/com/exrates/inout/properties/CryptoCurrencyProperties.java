@@ -40,6 +40,7 @@ public class CryptoCurrencyProperties {
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
     private final AisiCoins aisiCoins;
+    private final AwsServer awsServer;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -55,7 +56,8 @@ public class CryptoCurrencyProperties {
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
                                     NemCoins nemCoins,
-                                    AisiCoins aisiCoins) {
+                                    AisiCoins aisiCoins,
+                                    AwsServer awsServer) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -70,5 +72,6 @@ public class CryptoCurrencyProperties {
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
         this.aisiCoins = aisiCoins;
+        this.awsServer = awsServer;
     }
 }

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AisiProperty {
-    private String aisiApikey;
     private String aisiMainaddress;
 }
