@@ -22,7 +22,8 @@ import org.springframework.stereotype.Component;
         OtherCoins.class,
         PaymentSystemMerchants.class,
         NemCoins.class,
-        AisiCoins.class})
+        AisiCoins.class,
+        AwsServer.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
