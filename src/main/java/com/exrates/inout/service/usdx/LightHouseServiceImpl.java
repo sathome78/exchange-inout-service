@@ -10,8 +10,8 @@ import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
+import com.exrates.inout.service.usdx.model.UsdxAccountBalance;
 import com.exrates.inout.service.usdx.model.UsdxTransaction;
-import com.exrates.inout.service.usdx.model.UsdxTxSendAdmin;
 import com.exrates.inout.service.usdx.model.enums.UsdxWalletAsset;
 import com.exrates.inout.util.CryptoUtils;
 import com.exrates.inout.util.WithdrawUtils;
@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2(topic = "usdx_log")
@@ -176,8 +177,18 @@ public class LightHouseServiceImpl implements UsdxService {
     }
 
     @Override
-    public UsdxRestApiService getUsdxRestApiService(){
-        return usdxRestApiService;
+    public UsdxAccountBalance getUsdxAccountBalance(){
+        return usdxRestApiService.getAccountBalance();
+    }
+
+    @Override
+    public List<UsdxTransaction> getAllTransactions(){
+        return usdxRestApiService.getAllTransactions();
+    }
+
+    @Override
+    public UsdxTransaction getTransactionByTransferId(String transferId){
+        return usdxRestApiService.getTransactionStatus(transferId);
     }
 
     @Override
@@ -192,9 +203,8 @@ public class LightHouseServiceImpl implements UsdxService {
         }
     }
 
-    @SneakyThrows
     @Override
-    public void createRefillRequestAdmin(Map<String, String> params){
+    public void createRefillRequestAdmin(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
         String merchantTransactionId = params.get("txId");
 
         UsdxTransaction usdxTransaction = usdxRestApiService.getTransactionStatus(merchantTransactionId);
@@ -208,12 +218,12 @@ public class LightHouseServiceImpl implements UsdxService {
     }
 
     @Override
-    public UsdxTransaction sendUsdxTransactionToExternalWallet(UsdxTxSendAdmin usdxTxSendAdmin){
-        if(!usdxTxSendAdmin.getPassword().equals(merchantService.getPassMerchantProperties(merchant.getName()).getProperty("wallet.password"))){
+    public UsdxTransaction sendUsdxTransactionToExternalWallet(String password, UsdxTransaction usdxTransaction){
+        if(!password.equals(merchantService.getPassMerchantProperties(merchant.getName()).getProperty("wallet.password"))){
             log.info("USDX Wallet. Invalid password. Time to try: {}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             throw new IncorrectCoreWalletPasswordException("Invalid password");
         }
-        return usdxRestApiService.transferAssetsToUserAccount(usdxTxSendAdmin.getUsdxTransaction());
+        return usdxRestApiService.transferAssetsToUserAccount(usdxTransaction);
     }
 
 
