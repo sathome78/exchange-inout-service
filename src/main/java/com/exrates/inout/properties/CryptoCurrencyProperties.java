@@ -1,5 +1,7 @@
 package com.exrates.inout.properties;
 
+import com.exrates.inout.properties.models.AisiCoins;
+import com.exrates.inout.properties.models.AwsServer;
 import com.exrates.inout.properties.models.BitcoinCoins;
 import com.exrates.inout.properties.models.EthereumCoins;
 import com.exrates.inout.properties.models.EthereumTokenCoins;
@@ -33,7 +35,9 @@ import org.springframework.stereotype.Component;
         StellarCoins.class,
         OtherCoins.class,
         PaymentSystemMerchants.class,
-        NemCoins.class})
+        NemCoins.class,
+        AisiCoins.class,
+        AwsServer.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -49,6 +53,8 @@ public class CryptoCurrencyProperties {
     private final OtherCoins otherCoins;
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
+    private final AisiCoins aisiCoins;
+    private final AwsServer awsServer;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -63,7 +69,9 @@ public class CryptoCurrencyProperties {
                                     StellarCoins stellarCoins,
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
-                                    NemCoins nemCoins) {
+                                    NemCoins nemCoins,
+                                    AisiCoins aisiCoins,
+                                    AwsServer awsServer) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -77,5 +85,7 @@ public class CryptoCurrencyProperties {
         this.otherCoins = otherCoins;
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
+        this.aisiCoins = aisiCoins;
+        this.awsServer = awsServer;
     }
 }

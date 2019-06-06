@@ -3032,3 +3032,11 @@ nem-coins:
     publicKey: 84c5c964fd96a0efa8eb988a36891fc9a3f1d69ecec0a4ede638f201774d2391
     address: NC7ROGDITAJRT57CK27MQBSNBLNTUZTFKVXAILXQ
     transactionVersion: 1
+
+aisi-coins:
+  aisi:
+    aisiMainaddress: 5E46E0E836CF410E84CB72E36C90C426B2DE33E2522C4D3789946F979B29B52F
+
+aws-server:
+  aws:
+    env: prd

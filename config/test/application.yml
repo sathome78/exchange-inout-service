@@ -3051,3 +3051,11 @@ nem-coins:
     publicKey: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
     transactionVersion: 1
+
+aisi-coins:
+  aisi:
+    aisiMainaddress: D787287458C54566A9B113DC6B32091C57DDF104CD254B6B89AD87539DB648A1
+
+aws-server:
+  aws:
+    env: dev
