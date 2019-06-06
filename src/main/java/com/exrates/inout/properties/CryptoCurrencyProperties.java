@@ -1,6 +1,7 @@
 package com.exrates.inout.properties;
 
 import com.exrates.inout.properties.models.BitcoinCoins;
+import com.exrates.inout.properties.models.EosCoins;
 import com.exrates.inout.properties.models.EthereumCoins;
 import com.exrates.inout.properties.models.EthereumTokenCoins;
 import com.exrates.inout.properties.models.LiskCoins;
@@ -33,7 +34,8 @@ import org.springframework.stereotype.Component;
         StellarCoins.class,
         OtherCoins.class,
         PaymentSystemMerchants.class,
-        NemCoins.class})
+        NemCoins.class,
+        EosCoins.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -49,6 +51,7 @@ public class CryptoCurrencyProperties {
     private final OtherCoins otherCoins;
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
+    private final EosCoins eosCoins;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -63,7 +66,8 @@ public class CryptoCurrencyProperties {
                                     StellarCoins stellarCoins,
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
-                                    NemCoins nemCoins) {
+                                    NemCoins nemCoins,
+                                    EosCoins eosCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -77,5 +81,6 @@ public class CryptoCurrencyProperties {
         this.otherCoins = otherCoins;
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
+        this.eosCoins = eosCoins;
     }
 }

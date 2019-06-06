@@ -3,6 +3,8 @@ package com.exrates.inout.service.eos;
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.EosDataDto;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.EosProperty;
 import io.jafka.jeos.EosApi;
 import io.jafka.jeos.EosApiFactory;
 import io.jafka.jeos.core.response.chain.Block;
@@ -10,8 +12,6 @@ import io.jafka.jeos.core.response.history.transaction.Transaction;
 import lombok.extern.log4j.Log4j2;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2(topic = "eos_log")
 @Service
-@PropertySource("classpath:/merchants/eos.properties")
 public class EosReceiveServiceImpl implements EosReceiveService {
 
     private EosApi client;
@@ -41,9 +40,7 @@ public class EosReceiveServiceImpl implements EosReceiveService {
     private static final String EXECUTED = "executed";
     private static final int CONFIRMATIONS_NEEDED = 500;
 
-
-    @Value("${eos.main.address}")
-    private String mainAccount;
+    private EosProperty eosProperty;
 
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
@@ -61,6 +58,10 @@ public class EosReceiveServiceImpl implements EosReceiveService {
         scheduler.scheduleAtFixedRate(this::checkRefills, 5, 5, TimeUnit.MINUTES);
     }
 
+    @Autowired
+    public EosReceiveServiceImpl(CryptoCurrencyProperties ccp){
+        this.eosProperty = ccp.getEosCoins().getEos();
+    }
 
     private void checkRefills() {
         long lastBlock = loadLastBlock();
@@ -76,7 +77,7 @@ public class EosReceiveServiceImpl implements EosReceiveService {
                             String operation = action.getName();
                             if (operation.equalsIgnoreCase(TRANSFER) && action.getAccount().equals(EOSIO_ACCOUNT)) {
                                 EosDataDto dataDto = new EosDataDto((LinkedHashMap) action.getData());
-                                if (dataDto.getToAccount().equals(mainAccount) && dataDto.getCurrency().equals(CURRENCY_NAME)) {
+                                if (dataDto.getToAccount().equals(eosProperty.getEosMainAddress()) && dataDto.getCurrency().equals(CURRENCY_NAME)) {
                                     processTransaction(dataDto, trx.getId());
                                 }
                             }
