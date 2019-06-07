@@ -10,14 +10,14 @@ spring:
       ssm-path: vLHjSkPJjB6JLVcA
       username: root
       password: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236
+    host: localhost
     port: 6379
   #  flyway:
   #    locations: classpath:db/migration
@@ -78,8 +78,8 @@ mail:
     host: smtp.gmail.com
     port: 587
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: exrates.dev.test@gmail.com
+    password: vq2q3DjVqpzKPXXZ
   mail_mandrill:
     host: smtp.mandrillapp.com
     port: 587
@@ -90,8 +90,8 @@ mail:
     host: smtp.gmail.com
     port: 587
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: exrates.dev.test@gmail.com
+    password: tc*<kF7,h[bXLK_e
     allowedOnly: true
     allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
@@ -152,7 +152,7 @@ btcInvoice:
 
 withdraw:
   rejectErrorTimeout: 3
-  walletNotifyEmails: wayfarer2006@ukr.net
+  walletNotifyEmails: vlad.dziubak@upholding.biz,gregory.taranik@upholding.biz
 
 bitcoin-coins:
   atb:
@@ -171,12 +171,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.10.114
+      rpc-host: 163.172.53.240
       rpc-port: 28332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5458
       notification-block-port: 5459
       notification-wallet-port: 5460
   lcc:
