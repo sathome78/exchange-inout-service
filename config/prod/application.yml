@@ -16,7 +16,7 @@ spring:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236 #
+    host: 172.50.50.50
     port: 6379
   flyway:
     locations: classpath:db/migration
@@ -73,25 +73,25 @@ management:
 
 mail:
   mail_support:
-    host: smtp.gmail.com
-    port: 587
+    host: exrates.top
+    port: 25
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: mail@exrates.top
+    password: R37yt7gEft
   mail_mandrill:
     host: smtp.mandrillapp.com
     port: 587
     protocol: smtp
-    user: Currency
-    password: PsQhkDq7dB8Zn3qAserRTw
+    user: Service
+    password: dKD_WZ61VHQbQwWlRQI8cA
   mail_info:
-    host: smtp.gmail.com
-    port: 587
+    host: exrates.top
+    port: 25
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: no-reply@exrates.top
+    password: E3ZW3397dV
     allowedOnly: true
-    allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
+    allowedEmails: coo@exrates.me
   default_mail_type: gmail
 
 
@@ -120,7 +120,7 @@ referral:
   url: localhost:8080/register?ref=
 
 upload:
-  userFilesDir: c:/Users/Public/upload/
+  userFilesDir: /opt/temp/
   userFilesLogicalDir: /userFiles
 
 ban:
@@ -145,12 +145,12 @@ invoice:
   accountTHB: 015-1-65751-6
 # 5760 = 96 hours * 60 minutes
 btcInvoice:
-  invoiceTimeOutIntervalMinutes: 500
-  blockNotifyUsers: true
+  invoiceTimeOutIntervalMinutes: 5760
+  blockNotifyUsers: false
 
 withdraw:
   rejectErrorTimeout: 3
-  walletNotifyEmails: wayfarer2006@ukr.net
+  walletNotifyEmails: ental.era@gmail.com,dima.kolesnik@gmail.com,exratesnew@gmail.com
 
 bitcoin-coins:
   atb:
