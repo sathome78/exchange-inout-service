@@ -191,16 +191,16 @@ bitcoin-coins:
     use-send-many-for-withdraw: true
     backup-folder: /data/.litecoincash/lcc_backup/
     node:
-      zmq-enabled: true
+      zmq-enabled: false
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.1.10
+      rpc-host: 127.0.0.1
       rpc-port: 11980
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6458
       notification-block-port: 6469
       notification-wallet-port: 6470
   fgc:
@@ -215,16 +215,16 @@ bitcoin-coins:
     use-send-many-for-withdraw: true
     backup-folder: /data/.fantasygold/fgc_backup/
     node:
-      zmq-enabled: false
-      support-instant-send: false
+      zmq-enabled: true
+      support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 57814
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25558
       notification-block-port: 25559
       notification-wallet-port: 25560
   owc:
@@ -243,7 +243,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.12.22
+      rpc-host: 172.10.13.160
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -267,12 +267,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.8.5
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 7116
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 35458
       notification-block-port: 35459
       notification-wallet-port: 35460
   btcz:
@@ -291,12 +291,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.10.247
+      rpc-host: 192.168.0.109
       rpc-port: 11979
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6358
       notification-block-port: 6369
       notification-wallet-port: 6370
   grs:
@@ -315,7 +315,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.9.230
+      rpc-host: 172.10.13.202
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -339,14 +339,14 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.14.111
-      rpc-port: 8331
+      rpc-host: ip-172-31-30-170.us-east-2.compute.internal
+      rpc-port: 38980
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
-      notification-block-port: 6859
-      notification-wallet-port: 6860
+      notification-alert-port: 8330
+      notification-block-port: 8332
+      notification-wallet-port: 8333
   ptc:
     merchant-name: Perfectcoin
     currency-name: PTC
@@ -368,7 +368,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 8891
       notification-block-port: 8892
       notification-wallet-port: 8893
   sabr:
@@ -392,7 +392,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 9991
       notification-block-port: 9992
       notification-wallet-port: 9993
   cmk:
@@ -416,7 +416,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10202
       notification-block-port: 10200
       notification-wallet-port: 10201
   xfc:
@@ -435,12 +435,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.13.54
+      rpc-host: 172.10.13.163
       rpc-port: 7268
       rpc-user: multichainrpc
       rpc-password: 9rNG3fPuDhTVniaAHopu98aHebcwacWCZ7EJJHUTzaoi
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 12000
       notification-block-port: 12001
       notification-wallet-port: 12002
   rime:
@@ -456,10 +456,10 @@ bitcoin-coins:
     backup-folder: /data/backup/
     node:
       zmq-enabled: true
-      support-instant-send: true
+      support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.7.89
+      rpc-host: 172.31.15.165
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
