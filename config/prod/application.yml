@@ -894,7 +894,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6568
       notification-block-port: 6569
       notification-wallet-port: 6570
   ctx:
@@ -942,7 +942,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10100
       notification-block-port: 10101
       notification-wallet-port: 10102
   xbd:
@@ -966,7 +966,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7068
       notification-block-port: 7069
       notification-wallet-port: 7070
   divi:
@@ -1014,7 +1014,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 11200
       notification-block-port: 11201
       notification-wallet-port: 11202
   exo:
@@ -1062,7 +1062,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7568
       notification-block-port: 7569
       notification-wallet-port: 7570
   qrk:
@@ -1086,7 +1086,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10004
       notification-block-port: 10005
       notification-wallet-port: 10006
   beet:
@@ -1110,7 +1110,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7868
       notification-block-port: 7869
       notification-wallet-port: 7870
   dime:
@@ -1158,7 +1158,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25658
       notification-block-port: 25659
       notification-wallet-port: 25660
   clx:
@@ -1182,7 +1182,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10001
       notification-block-port: 10002
       notification-wallet-port: 10003
   zec:
@@ -1195,7 +1195,7 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     use-send-many-for-withdraw: true
-    backup-folder: ${user.home}\zec_backup\
+    backup-folder: ${user.home}\zec_backup\  # comment here: is it true such way of posting directory?
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -1206,7 +1206,7 @@ bitcoin-coins:
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25458
       notification-block-port: 25459
       notification-wallet-port: 25460
   plc:
@@ -1230,7 +1230,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6658
       notification-block-port: 6659
       notification-wallet-port: 6660
   dash:
@@ -1254,7 +1254,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5368
       notification-block-port: 5369
       notification-wallet-port: 5370
   riz:
@@ -1278,7 +1278,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25958
       notification-block-port: 25959
       notification-wallet-port: 25960
   nyc:
@@ -1302,7 +1302,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7768
       notification-block-port: 7769
       notification-wallet-port: 7770
   btg:
@@ -1326,7 +1326,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5768
       notification-block-port: 5769
       notification-wallet-port: 5770
   szc:
@@ -1350,7 +1350,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6968
       notification-block-port: 6969
       notification-wallet-port: 6970
   bcx:
@@ -1374,7 +1374,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6168
       notification-block-port: 6169
       notification-wallet-port: 6170
   kod:
@@ -1422,7 +1422,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6768
       notification-block-port: 6769
       notification-wallet-port: 6770
   occ:
@@ -1446,7 +1446,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6268
       notification-block-port: 6269
       notification-wallet-port: 6270
   cryp:
@@ -1494,7 +1494,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6668
       notification-block-port: 6669
       notification-wallet-port: 6670
   tsl:
@@ -1533,7 +1533,7 @@ bitcoin-coins:
     use-send-many-for-withdraw: false
     backup-folder: /data/backup
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
       enabled: true
       rpc-protocol: http
