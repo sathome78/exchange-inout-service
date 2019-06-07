@@ -507,14 +507,14 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.6.204
-      rpc-port: 38889
+      rpc-host: 172.10.13.22
+      rpc-port: 8332
       rpc-user: null
       rpc-password: null
       http-auth-schema: Basic
       notification-alert-port: 11
-      notification-block-port: 5580
-      notification-wallet-port: 5581
+      notification-block-port: 11601
+      notification-wallet-port: 11602
   breco:
     merchant-name: BRECO
     currency-name: BRECO
@@ -525,7 +525,7 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: true
     use-send-many-for-withdraw: true
-    backup-folder: /data/.bitcoinreco/breco_backup/
+    backup-folder: /data/.bitcoinreco/bca_backup/
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -536,7 +536,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 8981
       notification-block-port: 8982
       notification-wallet-port: 8983
   lpc:
@@ -555,12 +555,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: 172.31.12.117
+      rpc-host: 172.10.13.78
       rpc-port: 11004
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 11000
       notification-block-port: 11001
       notification-wallet-port: 11002
   lbtc:
@@ -579,12 +579,12 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: ip-172-31-3-255.us-east-2.compute.internal
+      rpc-host: 127.0.0.1
       rpc-port: 9332
-      rpc-user: devprod
-      rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
+      rpc-user: wayfarer88
+      rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7168
       notification-block-port: 7169
       notification-wallet-port: 7170
   ddx:
