@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "stellar-coins")
 public class StellarCoins {
 
-    private StellarProperty slt;
-    private StellarProperty tern;
-    private StellarProperty vnt;
+    private StellarAssetProperty slt;
+    private StellarAssetProperty tern;
+    private StellarAssetProperty vnt;
 }

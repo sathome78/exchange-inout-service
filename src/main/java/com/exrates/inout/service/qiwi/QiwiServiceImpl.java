@@ -1,7 +1,4 @@
 package com.exrates.inout.service.qiwi;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -15,13 +12,11 @@ import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,47 +25,36 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-//exrates.model.Currency;
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.model.dto.qiwi.response.QiwiResponseTransaction;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-
 //@Log4j2(topic = "Qiwi")
 @Service
-@PropertySource("classpath:/merchants/qiwi.properties")
 @Profile("!dev")
 public class QiwiServiceImpl implements QiwiService {
 
-   private static final Logger log = LogManager.getLogger("Qiwi");
-
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(QiwiServiceImpl.class);
 
     private final static String MERCHANT_NAME = "QIWI";
     private final static String CURRENCY_NAME = "RUB";
 
-    private static final Logger logger = org.apache.logging.log4j.LogManager.getLogger(QiwiServiceImpl.class);
-
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private MessageSource messageSource;
-    @Autowired
     private QiwiExternalService qiwiExternalService;
-    @Autowired
     private GtagService gtagService;
 
     private Merchant merchant;
     private Currency currency;
+
+    @Autowired
+    public QiwiServiceImpl(MerchantService merchantService, CurrencyService currencyService, RefillService refillService,
+                           MessageSource messageSource, QiwiExternalService qiwiExternalService, GtagService gtagService){
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.messageSource = messageSource;
+        this.qiwiExternalService = qiwiExternalService;
+        this.gtagService = gtagService;
+    }
 
     @PostConstruct
     public void init() {
@@ -161,7 +145,7 @@ public class QiwiServiceImpl implements QiwiService {
         }
         final String username = refillService.getUsernameByRequestId(requestId);
 
-        logger.debug("Process of sending data to Google Analytics...");
+        log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(fullAmount.toString(), currency.getName(), username);
     }
 

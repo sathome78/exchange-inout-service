@@ -10,6 +10,8 @@ import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.YandexMoneyProperty;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.UserService;
 import com.exrates.inout.service.YandexMoneyService;
@@ -50,18 +52,24 @@ import static com.exrates.inout.domain.enums.OperationType.INPUT;
 import static com.squareup.okhttp.MediaType.parse;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
-/**
- * @author Denis Savin (pilgrimm333@gmail.com)
- */
 @Service("yandexMoneyService")
-@PropertySource("classpath:/merchants/yandexmoney.properties")
 public class YandexMoneyServiceImpl implements YandexMoneyService {
 
-    private @Value("${yandexmoney.clientId}") String clientId;
-    private @Value("${yandexmoney.token}") String token;
-    private @Value("${yandexmoney.redirectURI}") String redirectURI;
-    private @Value("${yandexmoney.companyWalletId}") String companyWalletId;
-    private @Value("${yandexmoney.responseType}") String responseType;
+    private String clientId;
+    private String token;
+    private String redirectURI;
+    private String companyWalletId;
+    private String responseType;
+
+    public YandexMoneyServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties) {
+        YandexMoneyProperty yandexMoneyProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getYandexmoney();
+
+        this.clientId = yandexMoneyProperty.getClientId();
+        this.token = yandexMoneyProperty.getToken();
+        this.redirectURI = yandexMoneyProperty.getRedirectURI();
+        this.companyWalletId = yandexMoneyProperty.getCompanyWalletId();
+        this.responseType = yandexMoneyProperty.getResponseType();
+    }
 
     private static final Logger logger = LogManager.getLogger(YandexMoneyServiceImpl.class);
 

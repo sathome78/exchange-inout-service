@@ -16,6 +16,7 @@ import com.exrates.inout.domain.main.User;
 import com.exrates.inout.exceptions.NgDashboardException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
+import com.exrates.inout.properties.models.QuberaConfig;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -27,15 +28,12 @@ import com.google.common.collect.Maps;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
-@PropertySource("classpath:/merchants/qubera.properties")
 public class QuberaServiceImpl implements QuberaService {
 
     private static final Logger logger = LogManager.getLogger(QuberaServiceImpl.class);
@@ -48,17 +46,13 @@ public class QuberaServiceImpl implements QuberaService {
     private final KycHttpClient kycHttpClient;
     private final UserService userService;
 
-    private @Value("${qubera.threshold.length}") int thresholdLength;
-    private @Value("${qubera.poolId}") int poolId;
+    private int thresholdLength;
+    private int poolId;
 
     @Autowired
-    public QuberaServiceImpl(CurrencyService currencyService,
-                             GtagService gtagService,
-                             MerchantService merchantService,
-                             RefillService refillService,
-                             QuberaDao quberaDao,
-                             KycHttpClient kycHttpClient,
-                             UserService userService) {
+    public QuberaServiceImpl(CurrencyService currencyService, GtagService gtagService, MerchantService merchantService,
+                             RefillService refillService, QuberaDao quberaDao, KycHttpClient kycHttpClient,
+                             UserService userService, QuberaConfig quberaConfig) {
         this.currencyService = currencyService;
         this.gtagService = gtagService;
         this.merchantService = merchantService;
@@ -66,6 +60,9 @@ public class QuberaServiceImpl implements QuberaService {
         this.quberaDao = quberaDao;
         this.kycHttpClient = kycHttpClient;
         this.userService = userService;
+
+        this.thresholdLength = quberaConfig.getThresholdLength();
+        this.poolId = quberaConfig.getPoolId();
     }
 
     @Override

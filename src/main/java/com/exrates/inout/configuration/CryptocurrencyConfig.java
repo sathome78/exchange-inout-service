@@ -5,15 +5,7 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.neo.AssetMerchantCurrencyDto;
 import com.exrates.inout.domain.neo.NeoAsset;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
-import com.exrates.inout.properties.models.BitcoinProperty;
-import com.exrates.inout.properties.models.EthereumTokenProperty;
-import com.exrates.inout.properties.models.LiskProperty;
-import com.exrates.inout.properties.models.MoneroProperty;
-import com.exrates.inout.properties.models.NeoProperty;
-import com.exrates.inout.properties.models.QtumProperty;
-import com.exrates.inout.properties.models.StellarProperty;
-import com.exrates.inout.properties.models.WavesProperty;
-import com.exrates.inout.properties.models.XemProperty;
+import com.exrates.inout.properties.models.*;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
@@ -377,59 +369,52 @@ public class CryptocurrencyConfig {
     //ETH Services
     @Bean(name = "ethereumServiceImpl")
     public EthereumCommonService ethereumService() {
-        return new EthereumCommonServiceImpl("merchants/ethereum.properties",
-                "Ethereum", "ETH", 15);
+        return createEthereumService(ccp.getEthereumCoins().getEth());
     }
-//lala
-    /*
+
     @Bean(name = "ethereumClassicServiceImpl")
     public EthereumCommonService ethereumClassicService() {
-        return new EthereumCommonServiceImpl("merchants/ethereumClassic.properties",
-                "Ethereum Classic", "ETC", 400);
+        return createEthereumService(ccp.getEthereumCoins().getEtc());
     }
 
     @Bean(name = "etzServiceImpl")
     public EthereumCommonService etzService() {
-        return new EthereumCommonServiceImpl("merchants/etherzero.properties",
-                "EtherZero", "ETZ", 40);
+        return createEthereumService(ccp.getEthereumCoins().getEtz());
     }
 
     @Bean(name = "cloServiceImpl")
     public EthereumCommonService cloService() {
-        return new EthereumCommonServiceImpl("merchants/callisto.properties",
-                "CLO", "CLO", 40);
+        return createEthereumService(ccp.getEthereumCoins().getClo());
     }
 
     @Bean(name = "b2gServiceImpl")
     public EthereumCommonService b2gService() {
-        return new EthereumCommonServiceImpl("merchants/bitcoiin2g.properties",
-                "B2G", "B2G", 400);
+        return createEthereumService(ccp.getEthereumCoins().getB2g());
     }
 
     @Bean(name = "golServiceImpl")
     public EthereumCommonService golService() {
-        return new EthereumCommonServiceImpl("merchants/goldiam.properties",
-                "GOL", "GOL", 40);
+        return createEthereumService(ccp.getEthereumCoins().getGol());
     }
 
     @Bean(name = "cnetServiceImpl")
     public EthereumCommonService cnetService() {
-        return new EthereumCommonServiceImpl("merchants/contractnet.properties",
-                "CNET", "CNET", 110);
+        return createEthereumService(ccp.getEthereumCoins().getCnet());
     }
 
     @Bean(name = "ntyServiceImpl")
     public EthereumCommonService ntyService() {
-        return new EthereumCommonServiceImpl("merchants/nexty.properties",
-                "NTY", "NTY", 40);
+        return createEthereumService(ccp.getEthereumCoins().getNty());
     }
 
     @Bean(name = "etherincServiceImpl")
     public EthereumCommonService etherincService() {
-        return new EthereumCommonServiceImpl("merchants/eti.properties",
-                "ETI", "ETI", 50);
+        return createEthereumService(ccp.getEthereumCoins().getEti());
     }
-    */
+
+    private EthereumCommonServiceImpl createEthereumService(EthereumProperty property) {
+        return new EthereumCommonServiceImpl(property);
+    }
 
         //Eth tokens
     @Bean(name = "repServiceImpl")
@@ -1203,8 +1188,8 @@ public class CryptocurrencyConfig {
         return createQtumService(ccp.getQtumCoins().getHlc());
     }
 
-    private QtumTokenServiceImpl createQtumService(QtumProperty property) {
-        return new QtumTokenServiceImpl(property);
+    private QtumTokenServiceImpl createQtumService(QtumTokenProperty property) {
+        return new QtumTokenServiceImpl(property, ccp.getOtherCoins().getQtum());
     }
 
     //**** Monero ****/
@@ -1225,8 +1210,7 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "hcxpServiceImpl")
     public MoneroService hcxpService() {
-        return new HCXPServiceImpl("merchants/hcxp.properties",
-                "HCXP", "HCXP", 20, 6);
+        return new HCXPServiceImpl(ccp.getMoneroCoins().getHcxp());
     }
 
     private MoneroService createMoneroService(MoneroProperty property) {
@@ -1282,7 +1266,7 @@ public class CryptocurrencyConfig {
         return createStellarService(ccp.getStellarCoins().getVnt());
     }
 
-    private StellarAsset createStellarService(StellarProperty property) {
+    private StellarAsset createStellarService(StellarAssetProperty property) {
         return new StellarAsset(property);
     }
 
@@ -1294,6 +1278,6 @@ public class CryptocurrencyConfig {
     //Bithsares
     @Bean(name = "creaServiceImpl")
     public BitsharesService bitsharesService(){
-        return new CreaServiceImpl("CREA", "CREA", "merchants/crea.properties", 6, 3);
+        return new CreaServiceImpl("CREA", "CREA", ccp.getBitsharesCoins().getCrea(), 6, 3);
     }
 }

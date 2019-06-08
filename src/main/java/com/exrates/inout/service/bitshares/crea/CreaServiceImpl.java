@@ -1,5 +1,6 @@
 package com.exrates.inout.service.bitshares.crea;
 
+import com.exrates.inout.properties.models.BitsharesProperty;
 import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
 import com.google.common.hash.Hashing;
 import org.json.JSONArray;
@@ -20,12 +21,11 @@ import java.util.concurrent.TimeUnit;
 @ClientEndpoint
 public class CreaServiceImpl extends BitsharesServiceImpl {
 
-
     private static final long IRREVERIBLE_BLOCK_PERIOD = 3L;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public CreaServiceImpl(String merchantName, String currencyName, String propertySource, long SCANING_INITIAL_DELAY, int decimal) {
-        super(merchantName, currencyName, propertySource, SCANING_INITIAL_DELAY, decimal);
+    public CreaServiceImpl(String merchantName, String currencyName, BitsharesProperty bitsharesProperty, long SCANING_INITIAL_DELAY, int decimal) {
+        super(merchantName, currencyName, bitsharesProperty, SCANING_INITIAL_DELAY, decimal);
     }
 
     @PostConstruct

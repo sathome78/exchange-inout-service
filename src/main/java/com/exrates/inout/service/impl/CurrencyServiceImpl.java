@@ -11,7 +11,6 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.ScaleForAmountNotSetException;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.api.ExchangeApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,12 +35,9 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ExchangeApi exchangeApi;
-
     private static final Set<String> CRYPTO = new HashSet<String>() {
         {
-            add("EDRC");
+            add("EDC");
             add("BTC");
             add("LTC");
             add("EDR");

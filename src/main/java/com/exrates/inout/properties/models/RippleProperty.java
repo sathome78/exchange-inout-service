@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder(builderClassName = "Builder", toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class OtherTronProperty {
+public class RippleProperty {
 
-    private String fullNodeUrl;
-    private String fullNodeForSendUrl;
-    private String solidityNodeUrl;
-    private String explorerApi;
-    private String mainAccountAddress;
-    private String mainAccountHexAddress;
+    private String rpcUrl;
+    private String ws;
+    private String accountAddress;
+    private String accountSecret;
 }

@@ -35,11 +35,10 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
     private RestTemplate restTemplate;
 
     private AisiProperty aisiProperty;
-
     private AlgorithmService algorithmService;
 
     @Autowired
-    public AisiCurrencyServiceImpl(CryptoCurrencyProperties ccp, AlgorithmService algorithmServic) {
+    public AisiCurrencyServiceImpl(CryptoCurrencyProperties ccp, AlgorithmService algorithmService) {
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
@@ -47,7 +46,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
         requestFactory.setHttpClient(httpClient);
         restTemplate = new RestTemplate(requestFactory);
 
-        this.algorithmService = algorithmServic;
+        this.algorithmService = algorithmService;
         this.aisiProperty = ccp.getAisiCoins().getAisi();
     }
 

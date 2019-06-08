@@ -15,13 +15,11 @@ import com.exrates.inout.service.usdx.model.UsdxTransaction;
 import com.exrates.inout.service.usdx.model.enums.UsdxWalletAsset;
 import com.exrates.inout.util.CryptoUtils;
 import com.exrates.inout.util.WithdrawUtils;
-import lombok.SneakyThrows;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,11 +34,12 @@ import java.util.Map;
 
 @Log4j2(topic = "usdx_log")
 @Service
-@PropertySource("classpath:/merchants/usdx.properties")
 public class LightHouseServiceImpl implements UsdxService {
 
     private static final String LIGHTHOUSE_CURRENCY_NAME = UsdxWalletAsset.LHT.name();
     private static final int MAX_TAG_DESTINATION_DIGITS = 8;
+
+    private static final String DESTINATION_TAG_ERR_MSG = "message.usdx.tagError";
 
     @Autowired
     private MerchantService merchantService;
@@ -54,13 +53,11 @@ public class LightHouseServiceImpl implements UsdxService {
     private WithdrawUtils withdrawUtils;
     @Autowired
     private GtagService gtagService;
-
     @Autowired
     private UsdxRestApiService usdxRestApiService;
 
     private Merchant merchant;
     private Currency currency;
-    private static final String DESTINATION_TAG_ERR_MSG = "message.usdx.tagError";
 
     @PostConstruct
     public void init() {
