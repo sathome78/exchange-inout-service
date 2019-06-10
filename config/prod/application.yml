@@ -2667,7 +2667,7 @@ waves-coins:
       main-account: 3PNu2t61vQFw9fDT8B9h881H4AtBejnN7mV
       process-delay: 30
       fee-account: 3PGYEbabkisSxzaZBzQHromYimsnpgQoy8k
-      notify-email: mikita.malykov@gmail.com
+      notify-email: vlad.dziubak@upholding.biz
       token-ids:
         GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
         RBC: AQWjZbz7mgW8AJwcdrdWF3ijTB4WFV1hWqH1866BkafD
@@ -2682,9 +2682,8 @@ waves-coins:
       main-account: 381jSB8nr9J41hsNMtvgSv7TgaYuf5ZtKJ2
       process-delay: 30
       fee-account: 37ysJEA9BYh64tke3szshnvAEUk5sMHFKgV
-      notify-email: mikita.malykov@gmail.com
+      notify-email: vlad.dziubak@upholding.biz
       token-ids:
-        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
 
 neo-coins:
   neo:
@@ -2716,7 +2715,7 @@ monero-coins:
   xmr:
     merchant-name: Monero
     currency-name: XMR
-    min-confirmations: 20
+    min-confirmations: 15
     decimals: 12
     node:
       host: ip-172-31-14-168.us-east-2.compute.internal
@@ -2869,8 +2868,8 @@ other-coins:
     #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
     hook: https://exrates.me/merchants/edc/payment/received
     history: https://receive.blockchain.mn/history/
-    blockchain-host-fast: http://localhost:8091
-    blockchain-host-delayed: http://localhost:8092
+    blockchain-host-fast: http://172.31.4.237:8091
+    blockchain-host-delayed: http://172.31.4.237:8092
     account-registrar: exrates-currency-exchange
     account-referrer: exrates-currency-exchange
     #      account-main: output-exrates
