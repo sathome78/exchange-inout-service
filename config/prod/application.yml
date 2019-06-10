@@ -1606,7 +1606,7 @@ ethereum-coins:
   b2g:
     merchant-name: B2G
     currency-name: B2G
-    min-confirmations: 12
+    min-confirmations: 400
     node:
       currency: B2G
       url: http://172.31.14.169:8105
