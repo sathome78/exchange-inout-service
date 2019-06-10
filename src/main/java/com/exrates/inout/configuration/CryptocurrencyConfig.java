@@ -1062,6 +1062,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVT());
     }
 
+    @Bean(name = "linaServiceImpl")
+    public EthTokenService linaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getLINA());
+    }
+
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
