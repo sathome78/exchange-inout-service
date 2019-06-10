@@ -2608,14 +2608,14 @@ lisk-coins:
     broadcast-tx-endpoint:
     node:
       host: http://54.37.87.6
-      port: 8198
+      port: 8196
       address: 10751039947056279805
       secret:
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
-      port-get-account: 8198
-      port-send-tx: 8198
+      port-get-account: 8196
+      port-send-tx: 8196
   rise:
     merchant-name: RiseVision
     currency-name: RISE
@@ -2629,8 +2629,8 @@ lisk-coins:
       address: 5465983647188469549R
       secret:
       tx-sort-prefix:
-      tx-query-limit: 10000
-      tx-count-node-type: STRING
+      tx-query-limit: 1000
+      tx-count-node-type: NUMBER
       port-get-account: 18111
       port-send-tx: 6990
   ark:
