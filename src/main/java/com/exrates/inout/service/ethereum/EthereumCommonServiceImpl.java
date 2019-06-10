@@ -151,8 +151,6 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     private static final String LAST_BLOCK_PARAM = "LastRecievedBlock";
 
     public EthereumCommonServiceImpl(EthereumProperty ethereumProperty) {
-        log.info("Ethereum properties: {}", ethereumProperty);
-
         this.merchantName = ethereumProperty.getMerchantName();
         this.currencyName = ethereumProperty.getCurrencyName();
 
@@ -171,6 +169,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             this.transferAccPublicKey = ethereumProperty.getNode().getTransferAccPublicKey();
             this.needToCheckTokens = true;
         }
+
+        log.info("Ethereum properties: " + ethereumProperty);
     }
 
     @PostConstruct
