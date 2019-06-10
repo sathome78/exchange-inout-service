@@ -1886,7 +1886,7 @@ ethereum-token-coins:
     contract: '0x170cf89358ce17742955ea43927da5fc1e8e1211'
     isERC20: true
     unit: ETHER
-    min-wallet-balance: 0
+    min-wallet-balance: 1
   FSBT:
     merchant-name: FSBT
     currency-name: FSBT
@@ -2149,7 +2149,7 @@ ethereum-token-coins:
   CRBT:
     merchant-name: CRBT
     currency-name: CRBT
-    contract: '0x6b7734c5ecc51116b806e2ea6decbb3b97f4f92e'
+    contract: '0x2cf618c19041d9db330d8222b860a624021f30fb'
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
