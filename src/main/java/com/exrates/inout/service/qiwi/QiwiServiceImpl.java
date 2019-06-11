@@ -7,6 +7,8 @@ import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseTransaction;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.QiwiProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -42,18 +44,24 @@ public class QiwiServiceImpl implements QiwiService {
     private QiwiExternalService qiwiExternalService;
     private GtagService gtagService;
 
+    private String mainAddress;
+
     private Merchant merchant;
     private Currency currency;
 
     @Autowired
     public QiwiServiceImpl(MerchantService merchantService, CurrencyService currencyService, RefillService refillService,
-                           MessageSource messageSource, QiwiExternalService qiwiExternalService, GtagService gtagService){
+                           MessageSource messageSource, QiwiExternalService qiwiExternalService, GtagService gtagService,
+                           CryptoCurrencyProperties cryptoCurrencyProperties){
         this.merchantService = merchantService;
         this.currencyService = currencyService;
         this.refillService = refillService;
         this.messageSource = messageSource;
         this.qiwiExternalService = qiwiExternalService;
         this.gtagService = gtagService;
+
+        QiwiProperty qiwiProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getQiwi();
+        mainAddress = qiwiProperty.getAccountAddress();
     }
 
     @PostConstruct
@@ -61,9 +69,6 @@ public class QiwiServiceImpl implements QiwiService {
         currency = currencyService.findByName(CURRENCY_NAME);
         merchant = merchantService.findByName(MERCHANT_NAME);
     }
-
-    @Value("${qiwi.account.address}")
-    private String mainAddress;
 
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
