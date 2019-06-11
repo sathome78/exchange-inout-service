@@ -79,7 +79,7 @@ mail:
 
 
 endpoints:
-  stock: http://172.10.10.118:8080/ #dev1
+  stock: http://172.10.11.122:8080/ #qa1
   inoutPrefix: /inout
 
 telegram:
