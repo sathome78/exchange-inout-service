@@ -116,6 +116,7 @@ public class ApolloServiceImpl implements ApolloService {
 
     @Override
     public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
+        log.info("ApolloServiceImpl.putOnBchExam() start method.................");
         try {
             refillService.putOnBchExamRefillRequest(
                     RefillRequestPutOnBchExamDto.builder()
@@ -134,6 +135,7 @@ public class ApolloServiceImpl implements ApolloService {
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("ApolloServiceImpl.processPayment() start method.................");
         String address = params.get("address");
         String hash = params.get("hash");
         BigDecimal amount = new BigDecimal(params.get("amount"));
@@ -147,7 +149,9 @@ public class ApolloServiceImpl implements ApolloService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(id);
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);
