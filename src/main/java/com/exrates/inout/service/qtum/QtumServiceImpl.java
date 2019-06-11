@@ -86,7 +86,6 @@ public class QtumServiceImpl implements QtumService {
         merchant = merchantService.findByName(QTUM_MERCHANT_NAME);
         currency = currencyService.findByName(QTUM_CURRENCY_NAME);
 
-
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 scanBlocks();
@@ -130,6 +129,7 @@ public class QtumServiceImpl implements QtumService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment start..................................");
         final BigDecimal amount = new BigDecimal(params.get("amount"));
 
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -139,12 +139,13 @@ public class QtumServiceImpl implements QtumService {
                 .amount(amount)
                 .merchantTransactionId(params.get("hash"))
                 .build();
-
+        log.info("BEFORE ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        log.info("AFTER ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         requestAcceptDto.setRequestId(requestId);
-
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
-
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(requestId);
 
         log.debug("Process of sending data to Google Analytics...");
@@ -158,7 +159,6 @@ public class QtumServiceImpl implements QtumService {
 
     @Synchronized
     private void scanBlocks() {
-
         log.debug("Start scanning blocks Qtum");
         ProfileData profileData = new ProfileData(500);
 

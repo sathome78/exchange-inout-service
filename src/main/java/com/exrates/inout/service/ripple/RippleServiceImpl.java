@@ -157,7 +157,9 @@ public class RippleServiceImpl implements RippleService {
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
 
+        log.info("BEFORE ---  refillService.createAndAutoAcceptRefillRequest(requestAcceptDto)");
         int requestId = refillService.createAndAutoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.createAndAutoAcceptRefillRequest(requestAcceptDto)");
 
         final String username = refillService.getUsernameByRequestId(requestId);
 
@@ -211,7 +213,6 @@ public class RippleServiceImpl implements RippleService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(systemAddress, address);
     }
 }

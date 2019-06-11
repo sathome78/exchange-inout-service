@@ -118,6 +118,7 @@ public class WavesServiceImpl implements WavesService {
     }
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment() start process.................");
         String address = ParamMapUtils.getIfNotNull(params, "address");
         String txId = ParamMapUtils.getIfNotNull(params, "txId");
         int blockHeight = restClient.getCurrentBlockHeight();
@@ -158,12 +159,14 @@ public class WavesServiceImpl implements WavesService {
         int confirmations = lastBlockHeight - transaction.getHeight();
 
         if (!refillRequestResult.isPresent()) {
+            log.info("BEFORE ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto......)");
             Integer requestId = refillService.createRefillRequestByFact(RefillRequestAcceptDto.builder()
                     .address(transaction.getRecipient())
                     .amount(requestAmount)
                     .merchantId(merchantId)
                     .currencyId(currencyId)
                     .merchantTransactionId(transaction.getId()).build());
+            log.info("AFTER ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.....)");
             if (confirmations >= 0 && confirmations < minConfirmations) {
                 try {
                     log.debug("put on bch exam {}", transaction);
@@ -174,10 +177,12 @@ public class WavesServiceImpl implements WavesService {
                             .address(transaction.getRecipient())
                             .amount(requestAmount)
                             .hash(transaction.getId()).build());
+                    log.info("AFTER ---  refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()......)");
                 } catch (RefillRequestAppropriateNotFoundException e) {
                     log.error(e);
                 }
             } else {
+                log.info("BEFORE ---  changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder().....)");
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
                         .requestId(requestId)
                         .address(transaction.getRecipient())
@@ -190,6 +195,7 @@ public class WavesServiceImpl implements WavesService {
         } else {
             RefillRequestFlatDto flatDto = refillRequestResult.get();
             if (!flatDto.getStatus().isSuccessEndStatus()) {
+                log.info("BEFORE ---  changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder().....)");
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
                         .requestId(refillRequestResult.get().getId())
                         .address(transaction.getRecipient())
@@ -199,8 +205,8 @@ public class WavesServiceImpl implements WavesService {
                         .merchantId(merchantId)
                         .hash(transaction.getId()).build());
             }
-
         }
+        log.info("processWavesPayment() finish method.................");
     }
 
     private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
