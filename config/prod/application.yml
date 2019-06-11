@@ -2580,6 +2580,13 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  LINA:
+    merchant-name: LINA
+    currency-name: LINA
+    contract: '0xc05d14442a510de4d3d71a3d316585aa0ce32b50'
+    isERC20: true
+    unit: ETHER
+    min-wallet-balance: 0
 
 lisk-coins:
   lisk:
@@ -2748,6 +2755,19 @@ monero-coins:
       password: jhkasdfu75tghs
       mode: main
       log: sumokoin_log
+  hcxp:
+    merchant-name: HCXP
+    currency-name: HCXP
+    min-confirmations: 20
+    decimals: 6
+    main-account: hysGeMWsvZdBq7tBimycV71rXSwJPkn4f2gRNfDwP2AogUK7cNYt7saCAcYA9cFsvpeUEiiYA44jm1GRswFENhan2XEaiEfMo
+    node:
+      host: 172.31.11.249
+      port: 8090
+      login: test
+      password: test
+      mode: main
+      log: hcxp_log
 
 xem-coins:
   dim:
@@ -2831,6 +2851,34 @@ stellar-coins:
     currency-name: VNT
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
+
+bitshares-coins:
+  aunit:
+    main-address: exrates
+    main-address-num: 1.2.27569
+    ws: ws://172.31.13.125:8090
+  crea:
+    main-address: exrates
+    main-address-num: exrates
+    ws: wss://nodes.creary.net/ws/
+    pk-path: ""
+  ppy:
+    main-address: exrates-test
+    main-address-num: 1.2.13320
+    ws: ws://78.ip-149-202-43.eu
+    pk-path: ""
+
+ripple-coins:
+  ripple:
+    rpc-url: http://172.31.14.117:11005
+    ws: wss://s1.ripple.com
+    account-address: rpTxdXAm6AcW8S6ewpGeccKaMXcppz7kVZ
+    account-secret: ""
+  csc:
+    rpc-url: https://api.altnet.rippletest.net:51234
+    ws: wss://ws01.casinocoin.org:4443
+    account-address: cK3fiP4JpcG3ACtTokYpffokX2Wx3DyCCc
+    account-secret: ""
 #дошёл сюда
 other-coins:
   qtum:
@@ -2857,10 +2905,6 @@ other-coins:
   apollo:
     url: http://172.31.10.179:7876/apl
     main-address: APL-LFZZ-ECDW-LXRG-4V4D9
-  aunit:
-    main-address: exrates
-    main-address-num: 1.2.27569
-    ws: ws://172.31.13.125:8090
   edc:
     token: 0190804484737779216097337067072357
     main-account: exrates-in
@@ -2899,10 +2943,6 @@ other-coins:
     private-key: 00f16e94836efc9236f1025a99409f17f5d9740acc7e115a8aa681bd17e2b0a378
     public-key: 84c5c964fd96a0efa8eb988a36891fc9a3f1d69ecec0a4ede638f201774d2391
     address: NC7ROGDITAJRT57CK27MQBSNBLNTUZTFKVXAILXQ
-  ripple:
-    rippled-rpc-url: http://172.31.14.117:11005
-    rippled-ws: wss://s1.ripple.com
-    account-address: rpTxdXAm6AcW8S6ewpGeccKaMXcppz7kVZ
   stellar:
     horizon-url: https://horizon.stellar.org:443
     account-name: GCMXCY23EVYR5BMW4LS7SUELIV7GR5FCMY5YORXANDAPDS4XHM6XEOAS
@@ -2910,13 +2950,26 @@ other-coins:
     mode: PUBLIC
   tron:
     full-node-url: https://api.trongrid.io
+    full-node-for-send-url: http://172.31.43.186:8090
     solidity-node-url: https://api.trongrid.io
+    explorer-api: https://apilist.tronscan.org/api
     main-account-address: TT7GXCLozywiXGTXmmme1qTTTPBGZSoo9v
     main-account-hex-address: 41BC00676F36B1A36A01CBA57FFDCF6EE133372175
   edr:
     id: 27
     account: EDRC2753690
     key: dad3d0c5970fa800056fbb3e486b98a7
+  usdx:
+    server-url: https://exchange.usdx.cash/v1/
+    api-key: VDXY9wyWf7ETcKFNVFQhhWkF5Cenj9rX
+    account-name: usdx-exchange-exrates
+    exchange-id: xv2vkfd7yjcfp839
+  omni:
+    rpc-host: http://172.31.5.217:8332
+    rpc-user: wayfarer88
+    rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+    hot-wallet-address: 13bKt8rDLtZjYG4GpSuN88nGLxCSckGmBs
+    commission-address: 137ZGF2CJ7L7TyrGaxcKBNBEpV7gsosD8U
 
 btc:
   wallets-password-folder: /opt/properties/
@@ -2945,10 +2998,13 @@ payment-system-merchants:
     ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60;193.93.79.99;
   interkassa:
     url: https://sci.interkassa.com/
-    checkoutId: 5bf2ca393c1eaf6b098b456a
-    statustUrl: https://exrates.me/merchants/interkassa/payment/status
-    successtUrl: https://exrates.me/merchants/interkassa/payment/success
-    secretKey: lVf3A5Nc0JPLYJkf
+    checkout-id: 5bf2ca393c1eaf6b098b456a
+    status-url: https://exrates.me/merchants/interkassa/payment/status
+    success-url: https://exrates.me/merchants/interkassa/payment/success
+    secret-key: lVf3A5Nc0JPLYJkf
+    secret-url: https://api.interkassa.com/v1/paysystem-input-payway?checkoutId=
+    username: 5bf2a6c03c1eafc8048b4576
+    password: T9C2GmtYAEk7YzyBfL4gXYlt3z2ELqyL
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
@@ -3035,6 +3091,13 @@ nem-coins:
 aisi-coins:
   aisi:
     aisiMainaddress: 5E46E0E836CF410E84CB72E36C90C426B2DE33E2522C4D3789946F979B29B52F
+
+qubera:
+  kyc-url: https://eapi.thefintechlab.com
+  kyc-api-key: f14a29fe-1fb8-4d30-adc0-01d558860da2
+  threshold-length: 100
+  pool-id: 3
+  master-account: 410075436872
 
 aws-server:
   aws:

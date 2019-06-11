@@ -1,15 +1,13 @@
 package com.exrates.inout.service.stellar;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherStellarProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;
@@ -29,11 +27,12 @@ import java.util.concurrent.TimeUnit;
  */
 //@Log4j2(topic = "stellar_log")
 @Component
-@PropertySource("classpath:/merchants/stellar.properties")
 public class StellarReceivePaymentsService {
 
-   private static final Logger log = LogManager.getLogger("stellar_log");
+    private static final Logger log = LogManager.getLogger("stellar_log");
 
+    private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
+    private static final String MERCHANT_NAME = "Stellar";
 
     @Autowired
     private StellarService stellarService;
@@ -44,18 +43,22 @@ public class StellarReceivePaymentsService {
     @Autowired
     private StellarAsssetsContext asssetsContext;
 
+    private String SEVER_URL;
+    private String ACCOUNT_NAME;
+    private String ACCOUNT_SECRET;
 
-    private @Value("${stellar.horizon.url}")String SEVER_URL;
-    private @Value("${stellar.account.name}")String ACCOUNT_NAME;
-    private @Value("${stellar.account.seed}")String ACCOUNT_SECRET;
     private Server server;
     private KeyPair account;
-    private static final String LAST_PAGING_TOKEN_PARAM = "LastPagingToken";
-    private static final String MERCHANT_NAME = "Stellar";
-    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private EventSource eventSource;
 
+    public StellarReceivePaymentsService(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherStellarProperty stellarProperty = cryptoCurrencyProperties.getOtherCoins().getStellar();
+        this.SEVER_URL = stellarProperty.getHorizonUrl();
+        this.ACCOUNT_NAME = stellarProperty.getAccountName();
+        this.ACCOUNT_SECRET = stellarProperty.getAccountSeed();
+    }
 
     @PostConstruct
     public void init() {

@@ -1,7 +1,4 @@
 package com.exrates.inout.service.qiwi;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.dto.qiwi.request.QiwiRequest;
 import com.exrates.inout.domain.dto.qiwi.request.QiwiRequestGetTransactions;
@@ -9,12 +6,13 @@ import com.exrates.inout.domain.dto.qiwi.request.QiwiRequestHeader;
 import com.exrates.inout.domain.dto.qiwi.response.QiwiResponse;
 import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseP2PInvoice;
 import com.exrates.inout.domain.dto.qiwi.response.QiwiResponseTransaction;
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.QiwiProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,36 +20,32 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
-//exrates.model.dto.qiwi.request.QiwiRequest;
-//exrates.model.dto.qiwi.request.QiwiRequestGetTransactions;
-//exrates.model.dto.qiwi.request.QiwiRequestHeader;
-//exrates.model.dto.qiwi.response.QiwiResponse;
-//exrates.model.dto.qiwi.response.QiwiResponseP2PInvoice;
-//exrates.model.dto.qiwi.response.QiwiResponseTransaction;
-
 @Service
 //@Log4j2(topic = "Qiwi")
-@PropertySource("classpath:/merchants/qiwi.properties")
 @Profile("!dev")
 public class QiwiExternalServiceImpl implements QiwiExternalService{
 
-   private static final Logger log = LogManager.getLogger("Qiwi");
-
+    private static final Logger log = LogManager.getLogger("Qiwi");
 
     private final static String URL_GET_TRANSACTIONS = "/transfer/get-merchant-tx";
     private final static String URL_GENERATE_P2P_INVOICE_WITH_UNIQ_MEMO = "/transfer/tx-merchant-wallet";
 
-    @Value("${qiwi.base.production.url}")
     private String baseUrl;
-
-    @Value("${qiwi.transaction.position.start}")
     private int startPosition;
-    @Value("${qiwi.transaction.limit}")
     private int limit;
 
-    @Qualifier(value = "qiwiRestTemplate")
-    @Autowired
     private RestTemplate qiwiRestTemplate;
+
+    @Autowired
+    public QiwiExternalServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties, @Qualifier(value = "qiwiRestTemplate") RestTemplate qiwiRestTemplate){
+        QiwiProperty qiwiProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getQiwi();
+
+        this.baseUrl = qiwiProperty.getProductionUrl();
+        this.startPosition = qiwiProperty.getTransactionStartedPosition();
+        this.limit = qiwiProperty.getTransactionLimit();
+
+        this.qiwiRestTemplate = qiwiRestTemplate;
+    }
 
     public String generateUniqMemo(int userId) {
         QiwiRequestHeader requestHeader = new QiwiRequestHeader("p2pInvoiceRequest");

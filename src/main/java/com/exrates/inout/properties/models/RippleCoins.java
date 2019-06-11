@@ -4,9 +4,10 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "qtum-coins")
-public class QtumCoins {
+@ConfigurationProperties(prefix = "ripple-coins")
+public class RippleCoins {
 
-    QtumTokenProperty spc;
-    QtumTokenProperty hlc;
+    private RippleProperty ripple;
+    private RippleProperty csc;
+
 }

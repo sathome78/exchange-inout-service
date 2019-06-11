@@ -1,17 +1,15 @@
 package com.exrates.inout.service.stellar;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.enums.StellarNetworkModeEnum;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.InvalidAccountException;
 import com.exrates.inout.exceptions.MerchantException;
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherStellarProperty;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.stellar.sdk.*;
 import org.stellar.sdk.requests.TransactionsRequestBuilder;
@@ -27,26 +25,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.model.enums.StellarNetworkModeEnum;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-//exrates.service.exception.invoice.InvalidAccountException;
-//exrates.service.exception.invoice.MerchantException;
-
 /**
  * Created by maks on 11.06.2017.
  */
 //@Log4j2(topic = "stellar_log")
 @Service
-@PropertySource("classpath:/merchants/stellar.properties")
 public class StellarTransactionServiceImpl implements StellarTransactionService {
 
-   private static final Logger log = LogManager.getLogger("stellar_log");
-
+    private static final Logger log = LogManager.getLogger("stellar_log");
 
     private static final BigDecimal XLM_MIN_BALANCE = new BigDecimal(21);
-    private @Value("${stellar.mode}") String MODE;
-    private @Value("${stellar.horizon.url}")String SEVER_URL;
+
+    private String MODE;
+    private String SEVER_URL;
+
+    public StellarTransactionServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherStellarProperty stellarProperty = cryptoCurrencyProperties.getOtherCoins().getStellar();
+        this.MODE = stellarProperty.getMode();
+        this.SEVER_URL = stellarProperty.getHorizonUrl();
+    }
 
     @Override
     public TransactionResponse getTxByURI(String serverURI, URI txUri) throws IOException, URISyntaxException {

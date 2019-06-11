@@ -1,19 +1,13 @@
 package com.exrates.inout.service.ethereum;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.MerchantSpecParamDto;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestAddressDto;
-import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -39,21 +33,14 @@ import rx.Subscription;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -163,30 +150,27 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private static final String LAST_BLOCK_PARAM = "LastRecievedBlock";
 
-    public EthereumCommonServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            System.out.println("ETH PROPS: " + props);
-            this.url = props.getProperty("ethereum.url");
-            this.destinationDir = props.getProperty("ethereum.destinationDir");
-            this.password = props.getProperty("ethereum.password");
-            this.mainAddress = props.getProperty("ethereum.mainAddress");
-            this.minSumOnAccount = new BigDecimal(props.getProperty("ethereum.minSumOnAccount"));
-            this.minBalanceForTransfer = new BigDecimal(props.getProperty("ethereum.minBalanceForTransfer"));
-            this.merchantName = merchantName;
-            this.currencyName = currencyName;
-            this.minConfirmations = minConfirmations;
-            this.log = LogManager.getLogger(props.getProperty("ethereum.log"));
-            if (merchantName.equals("Ethereum")) {
-                this.transferAccAddress = props.getProperty("ethereum.transferAccAddress");
-                this.transferAccPrivateKey = props.getProperty("ethereum.transferAccPrivateKey");
-                this.transferAccPublicKey = props.getProperty("ethereum.transferAccPublicKey");
-                this.needToCheckTokens = true;
-            }
-        } catch (IOException e) {
-            log.error(e);
+    public EthereumCommonServiceImpl(EthereumProperty ethereumProperty) {
+        this.merchantName = ethereumProperty.getMerchantName();
+        this.currencyName = ethereumProperty.getCurrencyName();
+
+        this.url = ethereumProperty.getNode().getUrl();
+        this.destinationDir = ethereumProperty.getNode().getDestinationDir();
+        this.password = ethereumProperty.getNode().getPassword();
+        this.mainAddress = ethereumProperty.getNode().getMainAddress();
+        this.minSumOnAccount = ethereumProperty.getNode().getMinSumOnAccount();
+        this.minBalanceForTransfer = ethereumProperty.getNode().getMinBalanceForTransfer();
+        this.minConfirmations = ethereumProperty.getMinConfirmations();
+
+        this.log = LogManager.getLogger(ethereumProperty.getNode().getLog());
+        if (merchantName.equals("Ethereum")) {
+            this.transferAccAddress = ethereumProperty.getNode().getTransferAccAddress();
+            this.transferAccPrivateKey = ethereumProperty.getNode().getTransferAccPrivatKey();
+            this.transferAccPublicKey = ethereumProperty.getNode().getTransferAccPublicKey();
+            this.needToCheckTokens = true;
         }
+
+        log.info("Ethereum properties: " + ethereumProperty);
     }
 
     @PostConstruct

@@ -1,4 +1,6 @@
 package com.exrates.inout.service.impl;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherEdcProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,34 +45,9 @@ import java.util.regex.Pattern;
  */
 //@Log4j2(topic = "edc_log")
 @Service
-@PropertySource({"classpath:/merchants/edc_cli_wallet.properties", "classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceNodeImpl implements EDCServiceNode {
 
-   private static final Logger log = LogManager.getLogger("edc_log");
-
-
-  private @Value("${edcmerchant.token}") String token;
-  private @Value("${edcmerchant.main_account}") String main_account;
-  private @Value("${edcmerchant.hook}") String hook;
-
-  private @Value("${edc.blockchain.host_delayed}") String RPC_URL_DELAYED;
-  private @Value("${edc.blockchain.host_fast}") String RPC_URL_FAST;
-  private @Value("${edc.account.registrar}") String REGISTRAR_ACCOUNT;
-  private @Value("${edc.account.referrer}") String REFERRER_ACCOUNT;
-  private @Value("${edc.account.main}") String MAIN_ACCOUNT;
-  private @Value("${edc.account.main.private.key}") String MAIN_ACCOUNT_PRIVATE_KEY;
-  private final String PENDING_PAYMENT_HASH = "1fc3403096856798ab8992f73f241334a4fe98ce";
-
-  private final BigDecimal BTS = new BigDecimal(1000L);
-  private final int DEC_PLACES = 2;
-
-  private final OkHttpClient HTTP_CLIENT = new OkHttpClient();
-  private final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
-
-  private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();
-  private final BlockingQueue<BiTuple<String, String>> incomingPayments = new LinkedBlockingQueue<>();
-  private final ExecutorService workers = Executors.newFixedThreadPool(2);
-  private volatile boolean isRunning = true;
+  private static final Logger log = LogManager.getLogger("edc_log");
 
   private final String ACCOUNT_PREFIX = "ex1f";
   private final String REGISTER_NEW_ACCOUNT_RPC = "{\"method\":\"register_account\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 0, \"true\"], \"id\":%s}";
@@ -79,13 +56,50 @@ public class EDCServiceNodeImpl implements EDCServiceNode {
   private final String TRANSFER_EDC = "{\"method\":\"transfer\", \"jsonrpc\": \"2.0\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"true\"], \"id\":%s}";
   private final Pattern pattern = Pattern.compile("\"brain_priv_key\":\"([\\w\\s]+)+\",\"wif_priv_key\":\"(\\S+)\",\"pub_key\":\"(\\S+)\"");
 
+  private final BigDecimal BTS = new BigDecimal(1000L);
+  private final int DEC_PLACES = 2;
+  private final String PENDING_PAYMENT_HASH = "1fc3403096856798ab8992f73f241334a4fe98ce";
+
+  private final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
+  private final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+
+  private final BlockingQueue<String> rawTransactions = new LinkedBlockingQueue<>();
+  private final BlockingQueue<BiTuple<String, String>> incomingPayments = new LinkedBlockingQueue<>();
+  private final ExecutorService workers = Executors.newFixedThreadPool(2);
+  private volatile boolean isRunning = true;
   private volatile boolean debugLog = true;
 
-  @Autowired
-  TransactionService transactionService;
+  private String token;
+  private String main_account;
+  private String hook;
+
+  private String RPC_URL_DELAYED;
+  private String RPC_URL_FAST;
+  private String REGISTRAR_ACCOUNT;
+  private String REFERRER_ACCOUNT;
+  private String MAIN_ACCOUNT;
+  private String MAIN_ACCOUNT_PRIVATE_KEY;
+
+  private TransactionService transactionService;
+  private EDCAccountDao edcAccountDao;
 
   @Autowired
-  EDCAccountDao edcAccountDao;
+  public EDCServiceNodeImpl(CryptoCurrencyProperties cryptoCurrencyProperties, TransactionService transactionService, EDCAccountDao edcAccountDao){
+    this.transactionService = transactionService;
+    this.edcAccountDao = edcAccountDao;
+
+    OtherEdcProperty edcProperty = cryptoCurrencyProperties.getOtherCoins().getEdc();
+    this.token = edcProperty.getToken();
+    this.main_account = edcProperty.getMainAccount();
+    this.hook = edcProperty.getHook();
+
+    this.RPC_URL_DELAYED = edcProperty.getBlockchainHostDelayed();
+    this.RPC_URL_FAST = edcProperty.getBlockchainHostFast();
+    this.REGISTRAR_ACCOUNT = edcProperty.getAccountRegistrar();
+    this.REFERRER_ACCOUNT = edcProperty.getAccountReferrer();
+    this.MAIN_ACCOUNT = edcProperty.getAccountMain();
+    this.MAIN_ACCOUNT_PRIVATE_KEY = edcProperty.getAccountPrivateKey();
+  }
 
   public void changeDebugLogStatus(final boolean status) {
     debugLog = true;

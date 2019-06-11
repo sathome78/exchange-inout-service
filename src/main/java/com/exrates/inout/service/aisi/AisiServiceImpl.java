@@ -31,31 +31,31 @@ public class AisiServiceImpl implements AisiService {
     public final static String MERCHANT_NAME = "AISI";
     public final static String STATUS_OK = "1";
 
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
-    private final AisiCurrencyService aisiCurrencyService;
-
-    @Autowired
+    private AisiCurrencyService aisiCurrencyService;
     private MessageSource messageSource;
 
     private Merchant merchant;
     private Currency currency;
 
+    @Autowired
+    public AisiServiceImpl(AisiCurrencyService aisiCurrencyService, MerchantService merchantService, CurrencyService currencyService,
+                           RefillService refillService, WithdrawUtils withdrawUtils, MessageSource messageSource) {
+        this.aisiCurrencyService = aisiCurrencyService;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
+        this.messageSource = messageSource;
+    }
+
     @PostConstruct
     public void init() {
         currency = currencyService.findByName(MERCHANT_NAME);
         merchant = merchantService.findByName(MERCHANT_NAME);
-    }
-
-    public AisiServiceImpl(AisiCurrencyService aisiCurrencyService) {
-        this.aisiCurrencyService = aisiCurrencyService;
     }
 
     @Override

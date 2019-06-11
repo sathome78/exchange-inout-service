@@ -1,21 +1,15 @@
 package com.exrates.inout.service.component;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 
 import com.exrates.inout.domain.constants.Constants;
 import com.exrates.inout.domain.dto.AccountQuberaRequestDto;
 import com.exrates.inout.domain.dto.AccountQuberaResponseDto;
 import com.exrates.inout.exceptions.NgDashboardException;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.QuberaConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,22 +19,24 @@ import java.net.URI;
 
 //@Log4j2
 @Component
-@PropertySource("classpath:/merchants/qubera.properties")
 public class KycHttpClient {
 
-   private static final Logger log = LogManager.getLogger(KycHttpClient.class);
+    private static final Logger log = LogManager.getLogger(KycHttpClient.class);
 
-
-    private @Value("${qubera.kyc.url}") String uriApi;
-    private @Value("${qubera.kyc.apiKey}") String apiKey;
+    private String uriApi;
+    private String apiKey;
 
     private RestTemplate template;
 
-    public KycHttpClient() {
+    @Autowired
+    public KycHttpClient(QuberaConfig quberaConfig) {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setConnectTimeout(10000);
         requestFactory.setReadTimeout(30000);
         this.template = new RestTemplate(requestFactory);
+
+        this.uriApi = quberaConfig.getKycUrl();
+        this.apiKey = quberaConfig.getKycApiKey();
     }
 
     public AccountQuberaResponseDto createAccount(AccountQuberaRequestDto accountQuberaRequestDto) {

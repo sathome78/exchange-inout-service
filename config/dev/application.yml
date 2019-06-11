@@ -2639,6 +2639,13 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  LINA:
+    merchant-name: LINA
+    currency-name: LINA
+    contract: '0xc05d14442a510de4d3d71a3d316585aa0ce32b50'
+    isERC20: true
+    unit: ETHER
+    min-wallet-balance: 0
 
 
 lisk-coins:
@@ -2777,6 +2784,7 @@ monero-coins:
     currency-name: XMR
     min-confirmations: 10
     decimals: 12
+    main-account: ""
     node:
       host: 127.0.0.1
       port: 18082
@@ -2789,6 +2797,7 @@ monero-coins:
     currency-name: DIT
     min-confirmations: 10
     decimals: 8
+    main-account: ""
     node:
       host: ec2-18-221-189-33.us-east-2.compute.amazonaws.com
       port: 18085
@@ -2801,6 +2810,7 @@ monero-coins:
     currency-name: SUMO
     min-confirmations: 10
     decimals: 9
+    main-account: ""
     node:
       host: 127.0.0.1
       port: 18087
@@ -2808,6 +2818,19 @@ monero-coins:
       password: jhkasdfu75tghs
       mode: test
       log: sumokoin_log
+  hcxp:
+    merchant-name: HCXP
+    currency-name: HCXP
+    min-confirmations: 1
+    decimals: 6
+    main-account: hyrbkkRXLLXRPh3ybJvg7Gf8jniwh4nMS9AJstBLAaj78HfnwEMNZkCE5zFFeV12rf3dkWQ3P5spF198UVembtqF2qf5PeBQJ
+    node:
+      host: 172.10.13.238
+      port: 8090
+      login: test
+      password: test
+      mode: main
+      log: hcxp_log
 
 xem-coins:
   dim:
@@ -2892,6 +2915,35 @@ stellar-coins:
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
 
+bitshares-coins:
+  aunit:
+    main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
+    main-address-num: 1.2.23845
+    ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
+    pk-path: /opt/aunit/pk.properies
+  crea:
+    main-address: exrates-test
+    main-address-num: exrates-test
+    ws: wss://nodes.creary.net/ws/
+    pk-path: ""
+  ppy:
+    main-address: exrates-test
+    main-address-num: 1.2.13320
+    ws: ws://78.ip-149-202-43.eu
+    pk-path: ""
+
+ripple-coins:
+  ripple:
+    rpc-url: https://api.altnet.rippletest.net:51234
+    ws: wss://s.altnet.rippletest.net:51233
+    account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
+    account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
+  csc:
+    rpc-url: https://api.altnet.rippletest.net:51234
+    ws: wss://ws01.casinocoin.org:4443
+    account-address: cK3fiP4JpcG3ACtTokYpffokX2Wx3DyCCc
+    account-secret: ""
+
 other-coins:
   qtum:
     #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
@@ -2917,11 +2969,6 @@ other-coins:
   apollo:
     url: http://172.10.13.74:7876/apl
     main-address: APL-PERW-X5U2-9YLF-7YRAC
-  aunit:
-    main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
-    main-address-num: 1.2.23845
-    ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
-    pk-path: /opt/aunit/pk.properies
   edc:
     token: 0190804484737779216097337067072357
     main-account: ajet2103
@@ -2965,11 +3012,6 @@ other-coins:
     private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
     public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
-  ripple:
-    rippled-rpc-url: https://api.altnet.rippletest.net:51234
-    rippled-ws: wss://s.altnet.rippletest.net:51233
-    account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
-    account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
   stellar:
     #    horizon-url-1: https://horizon-testnet.stellar.org/
     #    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
@@ -2980,14 +3022,27 @@ other-coins:
     account-seed: SCEEBOQXMZHYBQSOEK3YZAKVZA6O5UCJRKYCZW2FK6VGN42KV76RZH3I
     mode: PUBLIC
   tron:
-    full-node-url: http://18.220.99.189:8090
-    solidity-node-url: https://api.tronscan.org
+    full-node-url: https://api.trongrid.io
+    full-node-for-send-url: https://api.trongrid.io
+    solidity-node-url: https://api.trongrid.io
+    explorer-api: https://apilist.tronscan.org/api
     main-account-address: TNSofexxLZoyCLUQ2x2VSPifQyHZFXKL76
     main-account-hex-address: 4188d9ad79b07ca7dd940d9ef096982b7420ebe4b1
   edr:
     id: 14
     account: EDC13707253
     key: cfc6ac5b15d16ad4dce2b00ccf6593db
+  usdx:
+    server-url: https://exchange.api-sandbox.usdx.cash/v1/
+    api-key: J9sVYrbjQuV3rWMr428sCZmfHPHVKJY5
+    account-name: usdx-exchange-exrates
+    exchange-id: dfzevdgep8b656dj
+  omni:
+    rpc-host: http://localhost:8332
+    rpc-user: wayfarer88
+    rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+    hot-wallet-address: 13bKt8rDLtZjYG4GpSuN88nGLxCSckGmBs
+    commission-address: 13bKt8rDLtZjYG4GpSuN88nGLxCSckGmBs
 
 btc:
   wallets-password-folder: /opt/properties/
@@ -3016,10 +3071,13 @@ payment-system-merchants:
     ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60; 193.93.79.99;
   interkassa:
     url: https://sci.interkassa.com/
-    checkoutId: 57163a9b3d1eafe27b8b456a
-    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
-    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
-    secretKey: 7pKC765ZsUGGHQIN
+    checkout-id: 5bf2ca393c1eaf6b098b456a
+    status-url: http://dev1.exrates.tech/merchants/interkassa/payment/status
+    success-url: http://dev1.exrates.tech/merchants/interkassa/payment/success
+    secret-key: lVf3A5Nc0JPLYJkf
+    secret-url: https://api.interkassa.com/v1/paysystem-input-payway?checkoutId=
+    username: 5bf2a6c03c1eafc8048b4576
+    password: T9C2GmtYAEk7YzyBfL4gXYlt3z2ELqyL
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
@@ -3109,6 +3167,13 @@ nem-coins:
 aisi-coins:
   aisi:
     aisiMainaddress: D787287458C54566A9B113DC6B32091C57DDF104CD254B6B89AD87539DB648A1
+
+qubera:
+  kyc-url: https://eapi.thefintechlab.com
+  kyc-api-key: f14a29fe-1fb8-4d30-adc0-01d558860da2
+  threshold-length: 100
+  pool-id: 3
+  master-account: 410075436872
 
 aws-server:
   aws:

@@ -11,13 +11,13 @@ public class OtherCoins {
     private OtherAchainProperty achain;
     private OtherAdkProperty adk;
     private OtherApolloProperty apollo;
-    private OtherAunitProperty aunit;
     private OtherEdcProperty edc;
     private OtherIotaProperty iota;
     private OtherDecredProperty decred;
     private OtherNemProperty nem;
-    private OtherRippleProperty ripple;
     private OtherStellarProperty stellar;
     private OtherTronProperty tron;
     private OtherEdrProperty edr;
+    private OtherUsdxProperty usdx;
+    private OtherOmniProperty omni;
 }

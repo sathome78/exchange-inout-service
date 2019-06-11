@@ -1,14 +1,12 @@
 package com.exrates.inout.service.casinocoin;
+
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-
-import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,19 +20,14 @@ import java.net.URI;
 //@Log4j2(topic = "casinocoin_log")
 @ClientEndpoint
 @Service
-@PropertySource("classpath:/merchants/casinocoin.properties")
 public class CasinoCoinWsService {
 
-   private static final Logger log = LogManager.getLogger("casinocoin_log");
-
+    private static final Logger log = LogManager.getLogger("casinocoin_log");
 
     private static final String SUBSCRIBE_COMAND_ID = "watch main account transactions";
     private static final String GET_TX_COMMAND_ID = "get transaction";
 
-    @Value("${casinocoin.ws}")
     private String wsUrl;
-
-    @Value("${casinocoin.account.address}")
     private String mainAddress;
 
     private URI WS_SERVER_URL;
@@ -46,6 +39,12 @@ public class CasinoCoinWsService {
 
     @Autowired
     private CasinoCoinService casinoCoinService;
+
+    public CasinoCoinWsService(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty casinocoinProperty = cryptoCurrencyProperties.getRippleCoins().getCsc();
+        this.wsUrl = casinocoinProperty.getWs();
+        this.mainAddress = casinocoinProperty.getAccountAddress();
+    }
 
     @PostConstruct
     public void init() {
