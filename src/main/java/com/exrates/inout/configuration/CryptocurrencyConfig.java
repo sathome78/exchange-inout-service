@@ -1067,6 +1067,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getLINA());
     }
 
+    @Bean(name = "gapiServiceImpl")
+    public EthTokenService gapiService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGAPI());
+    }
+
     @Bean(name = "embrServiceImpl")
     public EthTokenService embrService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getEMBR());
