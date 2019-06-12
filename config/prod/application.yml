@@ -2594,6 +2594,13 @@ ethereum-token-coins:
     isERC20: false
     unit: ETHER
     min-wallet-balance: 0
+  EMBR:
+    merchant-name: EMBR
+    currency-name: EMBR
+    contract: '0x07f74c8480ccfee0d4f803e9bdde8383748b40de'
+    isERC20: true
+    unit: AIWEI
+    min-wallet-balance: 0
 
 lisk-coins:
   lisk:

@@ -140,5 +140,6 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty GOLEM;
     private EthereumTokenProperty LINA;
     private EthereumTokenProperty GAPI;
+    private EthereumTokenProperty EMBR;
 
 }
