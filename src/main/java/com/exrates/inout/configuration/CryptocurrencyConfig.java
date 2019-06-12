@@ -1067,6 +1067,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getLINA());
     }
 
+    @Bean(name = "gapiServiceImpl")
+    public EthTokenService gapiService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGAPI());
+    }
+
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");

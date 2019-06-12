@@ -2646,6 +2646,13 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  GAPI:
+    merchant-name: GAPI
+    currency-name: GAPI
+    contract: '0x1ac8bd74065e11c07c0fa3687c0dcfb86af76d46'
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
 
 
 lisk-coins:
