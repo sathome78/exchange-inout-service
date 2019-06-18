@@ -10,6 +10,8 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.PerfectMoneyProperty;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
@@ -26,46 +28,53 @@ import java.util.Properties;
  * @author Denis Savin (pilgrimm333@gmail.com)
  */
 @Service
-@PropertySource("classpath:/merchants/perfectmoney.properties")
 public class PerfectMoneyServiceImpl implements PerfectMoneyService {
-
-    private @Value("${perfectmoney.url}")
-    String url;
-    private @Value("${perfectmoney.accountId}")
-    String accountId;
-    private @Value("${perfectmoney.accountPass}")
-    String accountPass;
-    private @Value("${perfectmoney.payeeName}")
-    String payeeName;
-    private @Value("${perfectmoney.paymentSuccess}")
-    String paymentSuccess;
-    private @Value("${perfectmoney.paymentFailure}")
-    String paymentFailure;
-    private @Value("${perfectmoney.paymentStatus}")
-    String paymentStatus;
-    private @Value("${perfectmoney.USDAccount}")
-    String usdCompanyAccount;
-    private @Value("${perfectmoney.EURAccount}")
-    String eurCompanyAccount;
-    private @Value("${perfectmoney.alternatePassphrase}")
-    String alternatePassphrase;
 
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PerfectMoneyServiceImpl.class);
 
-    @Autowired
+    private String url;
+    private String accountId;
+    private String accountPass;
+    private String payeeName;
+    private String paymentSuccess;
+    private String paymentFailure;
+    private String paymentStatus;
+    private String usdCompanyAccount;
+    private String eurCompanyAccount;
+    private String alternatePassphrase;
+
     private AlgorithmService algorithmService;
-    @Autowired
     private RefillRequestDao refillRequestDao;
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
     private GtagService gtagService;
+
+    @Autowired
+    public PerfectMoneyServiceImpl(AlgorithmService algorithmService, RefillRequestDao refillRequestDao, MerchantService merchantService,
+                                   CurrencyService currencyService, RefillService refillService, WithdrawUtils withdrawUtils, GtagService gtagService,
+                                   CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.algorithmService = algorithmService;
+        this.refillRequestDao = refillRequestDao;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+
+        PerfectMoneyProperty perfectMoneyProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getPerfectmoney();
+        this.url = perfectMoneyProperty.getUrl();
+        this.accountId = perfectMoneyProperty.getAccountId();
+        this.accountPass = perfectMoneyProperty.getAccountPass();
+        this.payeeName = perfectMoneyProperty.getPayeeName();
+        this.paymentSuccess = perfectMoneyProperty.getPaymentSuccess();
+        this.paymentFailure = perfectMoneyProperty.getPaymentFailure();
+        this.paymentStatus = perfectMoneyProperty.getPaymentStatus();
+        this.usdCompanyAccount = perfectMoneyProperty.getUSDAccount();
+        this.eurCompanyAccount = perfectMoneyProperty.getEURAccount();
+        this.alternatePassphrase = perfectMoneyProperty.getAlternatePassphrase();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {

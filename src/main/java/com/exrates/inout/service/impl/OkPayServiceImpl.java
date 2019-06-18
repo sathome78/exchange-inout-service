@@ -8,6 +8,8 @@ import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.*;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OkPayProperty;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.WithdrawUtils;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -26,36 +28,42 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("classpath:/merchants/okpay.properties")
 public class OkPayServiceImpl implements OkPayService {
-
-    private @Value("${okpay.ok_receiver}")
-    String ok_receiver;
-    private @Value("${okpay.ok_receiver_email}")
-    String ok_receiver_email;
-    private @Value("${okpay.ok_item_1_name}")
-    String ok_item_1_name;
-    private @Value("${okpay.ok_s_title}")
-    String ok_s_title;
-    private @Value("${okpay.url}")
-    String url;
-    private @Value("${okpay.urlReturn}")
-    String urlReturn;
 
     private static final Logger logger = LogManager.getLogger("merchant");
 
-    @Autowired
+    private String ok_receiver;
+    private String ok_receiver_email;
+    private String ok_item_1_name;
+    private String ok_s_title;
+    private String url;
+    private String urlReturn;
+
     private RefillRequestDao refillRequestDao;
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
     private GtagService gtagService;
+
+    @Autowired
+    public OkPayServiceImpl(RefillRequestDao refillRequestDao, MerchantService merchantService, CurrencyService currencyService, RefillService refillService,
+                            WithdrawUtils withdrawUtils, GtagService gtagService, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.refillRequestDao = refillRequestDao;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+
+        OkPayProperty okPayProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getOkpay();
+        this.ok_receiver = okPayProperty.getReceiver();
+        this.ok_receiver_email = okPayProperty.getReceiverEmail();
+        this.ok_item_1_name = okPayProperty.getItemName();
+        this.ok_s_title = okPayProperty.getSTitle();
+        this.url = okPayProperty.getUrl();
+        this.urlReturn = okPayProperty.getUrlReturn();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {

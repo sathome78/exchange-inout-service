@@ -1,4 +1,6 @@
 package com.exrates.inout.service.achain;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherAchainProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -11,33 +13,34 @@ import org.springframework.stereotype.Component;
 /**
  * Created by Maks on 14.06.2018.
  */
-
-@PropertySource("classpath:/merchants/achain.properties")
 //@Log4j2(topic = "achain")
 @Component
 public class NodeServiceImpl implements NodeService {
 
-   private static final Logger log = LogManager.getLogger("achain");
-
+    private static final Logger log = LogManager.getLogger("achain");
 
     private final SDKHttpClient httpClient;
 
-    private @Value("${achain.node.url}")String nodeUrl;
-    private @Value("${achain.node.rpcUser}")String rpcUser;
-    private @Value("${achain.mainAddress}")String mainAccountAddress;
-    private @Value("${achain.accountName}")String accountName;
+    private String nodeUrl;
+    private String rpcUser;
+    private String mainAccountAddress;
+    private String accountName;
 
     @Autowired
-    public NodeServiceImpl(SDKHttpClient httpClient) {
+    public NodeServiceImpl(SDKHttpClient httpClient, CryptoCurrencyProperties cryptoCurrencyProperties) {
         this.httpClient = httpClient;
+
+        OtherAchainProperty achainProperty = cryptoCurrencyProperties.getOtherCoins().getAchain();
+        this.nodeUrl = achainProperty.getUrl();
+        this.rpcUser = achainProperty.getRpcUser();
+        this.mainAccountAddress = achainProperty.getMainAddress();
+        this.accountName = achainProperty.getAccountName();
     }
 
     @Override
     public String getMainAccountAddress() {
         return mainAccountAddress;
     }
-
-
 
     @Override
     public String getAccountName() {
@@ -46,7 +49,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public long getBlockCount() {
-        //log.debug("NodeServiceImpl|getBlockCount");
+        log.debug("NodeServiceImpl|getBlockCount");
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block_count", new JSONArray());
         JSONObject createTaskJson = new JSONObject(result);
@@ -55,7 +58,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public JSONArray getBlock(long blockNum) {
-        //log.debug("NodeServiceImpl|getBlock [{}]", blockNum);
+        log.debug("NodeServiceImpl|getBlock [{}]", blockNum);
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block", String.valueOf(blockNum));
         JSONObject createTaskJson = new JSONObject(result);
@@ -64,7 +67,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public boolean getSyncState() {
-        //log.debug("NodeServiceImpl|getSyncState [{}]");
+        log.debug("NodeServiceImpl|getSyncState [{}]");
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_is_synced", new JSONArray());
         JSONObject createTaskJson = new JSONObject(result);
@@ -73,7 +76,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public JSONArray getBlockTransactions(long blockNum) {
-        //log.debug("NodeServiceImpl|getBlockTransactions [{}]", blockNum);
+        log.debug("NodeServiceImpl|getBlockTransactions [{}]", blockNum);
         String result =
                 httpClient.post(nodeUrl, rpcUser, "blockchain_get_block_transactions", String.valueOf(blockNum));
         JSONObject transactions = new JSONObject(result);
@@ -84,8 +87,9 @@ public class NodeServiceImpl implements NodeService {
     public JSONObject getPrettyContractTransaction(String innerHash) {
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(innerHash);
-        //log.info("getPretty|[result_trx_id={}]",
-//                innerHash);
+
+        log.info("getPretty|[result_trx_id={}]", innerHash);
+
         String result =
                 httpClient
                         .post(nodeUrl, rpcUser, "blockchain_get_pretty_contract_transaction", jsonArray);

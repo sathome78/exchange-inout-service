@@ -1,4 +1,6 @@
 package com.exrates.inout.service.apollo;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherApolloProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,18 +32,16 @@ import java.util.Optional;
 
 
 //@Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloServiceImpl implements ApolloService {
 
-   private static final Logger log = LogManager.getLogger("apollo");
+    private static final Logger log = LogManager.getLogger("apollo");
 
-
-    private @Value("${apollo.url}")
-    String SEVER_URL;
-    private @Value("${apollo.main_address}")
-    String MAIN_ADDRESS;
     private static final String APOLLO_MERCHANT_CURRENCY = "APL";
+
+    private String SEVER_URL;
+    private String MAIN_ADDRESS;
+
     private Merchant merchant;
     private Currency currency;
 
@@ -59,6 +59,12 @@ public class ApolloServiceImpl implements ApolloService {
     private WithdrawUtils withdrawUtils;
     @Autowired
     private GtagService gtagService;
+
+    public ApolloServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherApolloProperty apolloProperty = cryptoCurrencyProperties.getOtherCoins().getApollo();
+        this.SEVER_URL = apolloProperty.getUrl();
+        this.MAIN_ADDRESS = apolloProperty.getMainAddress();
+    }
 
     @PostConstruct
     public void init() {

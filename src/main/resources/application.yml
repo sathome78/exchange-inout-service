@@ -1,7 +1,3 @@
-logging:
-  level:
-    ROOT: INFO
-
 spring:
   profiles:
     active: dev
@@ -20,27 +16,40 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  flyway:
-    locations: classpath:db/migration
-    user: root
-    password: root
-    url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
-    baseline-on-migrate: true
-    validate-on-migrate: false
+  redis:
+    host: 172.10.10.236
+    port: 6379
+  #  flyway:
+  #    locations: classpath:db/migration
+  #    user: root
+  #    password: root
+  #    #url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+  #    url: jdbc:mysql://localhost:3306/birzha?useSSL=false
+  #    baseline-on-migrate: false
+  #    validate-on-migrate: false
   rabbitmq:
     username: angulardemoaccess
     password: angulardemoaccess
     host: 172.31.14.1
     port: 5672
 
+#logging:
+#  level:
+#    ROOT: DEBUG
+
+server:
+  port: 8090
+#slave:
+#  datasource:
+#    hikari:
+#      password: root
+#      username: root
+#      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+#      connection-test-query: SELECT 1 FROM DUAL
+#      driver-class-name: com.mysql.jdbc.Driver
 ssm:
   mode: dev
   path: /exrates/auth-service/test/pass.token
-
-
-endpoints:
-  stock: http://localhost:8080/
-  inoutPrefix: /inout
 
 eureka:
   client:
@@ -86,6 +95,11 @@ mail:
     allowedOnly: true
     allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
   default_mail_type: gmail
+
+
+endpoints:
+  stock: http://localhost:8080/
+  inoutPrefix: /inout
 
 telegram:
   bot:
@@ -157,7 +171,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.10.114
+      rpc-host: 172.31.10.114
       rpc-port: 28332
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -181,7 +195,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.1.10
+      rpc-host: 172.31.1.10
       rpc-port: 11980
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -205,7 +219,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 57814
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -229,7 +243,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: ##172.31.12.22
+      rpc-host: 172.31.12.22
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -253,7 +267,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.8.5
+      rpc-host: 172.31.8.5
       rpc-port: 7116
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -277,7 +291,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.10.247
+      rpc-host: 172.31.10.247
       rpc-port: 11979
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -301,7 +315,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.9.230
+      rpc-host: 172.31.9.230
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -325,7 +339,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.14.111
+      rpc-host: 172.31.14.111
       rpc-port: 8331
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -349,7 +363,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 16001
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -373,7 +387,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19001
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -397,7 +411,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.11.23
+      rpc-host: 172.31.11.23
       rpc-port: 1777
       rpc-user: devprod
       rpc-password: pass123
@@ -421,7 +435,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.13.54
+      rpc-host: 172.31.13.54
       rpc-port: 7268
       rpc-user: multichainrpc
       rpc-password: 9rNG3fPuDhTVniaAHopu98aHebcwacWCZ7EJJHUTzaoi
@@ -445,7 +459,7 @@ bitcoin-coins:
       support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.7.89
+      rpc-host: 172.31.7.89
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -469,7 +483,7 @@ bitcoin-coins:
       support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.10.13.195
+      rpc-host: 172.10.13.195
       rpc-port: 8090
       rpc-user: devprod
       rpc-password: pass123
@@ -493,7 +507,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.6.204
+      rpc-host: 172.31.6.204
       rpc-port: 38889
       rpc-user: null
       rpc-password: null
@@ -517,7 +531,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-169.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 6522
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -541,7 +555,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.12.117
+      rpc-host: 172.31.12.117
       rpc-port: 11004
       rpc-user: devprod
       rpc-password: pass123
@@ -565,7 +579,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-3-255.us-east-2.compute.internal
+      rpc-host: ip-172-31-3-255.us-east-2.compute.internal
       rpc-port: 9332
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -589,7 +603,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.1.150
+      rpc-host: 172.31.1.150
       rpc-port: 10703
       rpc-user: devprod
       rpc-password: pass123
@@ -613,7 +627,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 38552
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -637,7 +651,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.37.34
+      rpc-host: 172.31.37.34
       rpc-port: 11500
       rpc-user: null
       rpc-password: null
@@ -661,7 +675,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.11.233
+      rpc-host: 172.31.11.233
       rpc-port: 8090
       rpc-user: devprod
       rpc-password: pass123
@@ -685,7 +699,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.4.136
+      rpc-host: 172.31.4.136
       rpc-port: 8333
       rpc-user: null
       rpc-password: null
@@ -709,7 +723,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.8.143
+      rpc-host: 172.31.8.143
       rpc-port: 9332
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -733,7 +747,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-10-199.us-east-2.compute.internal
+      rpc-host: ip-172-31-10-199.us-east-2.compute.internal
       rpc-port: 39186
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -757,7 +771,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-115.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-115.us-east-2.compute.internal
       rpc-port: 10306
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -781,7 +795,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 8332
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -805,7 +819,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.9.105
+      rpc-host: 172.31.9.105
       rpc-port: 11103
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -829,7 +843,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.7.254
+      rpc-host: 172.31.7.254
       rpc-port: 10603
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -853,7 +867,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.8.235
+      rpc-host: 172.31.8.235
       rpc-port: 22555
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -877,7 +891,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.11.169
+      rpc-host: 172.31.11.169
       rpc-port: 7332
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -901,7 +915,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.11.120
+      rpc-host: 172.31.11.120
       rpc-port: 8332
       rpc-user: null
       rpc-password: null
@@ -925,7 +939,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.0.50
+      rpc-host: 172.31.0.50
       rpc-port: 16715
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -949,7 +963,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 8227
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -973,7 +987,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.4.60
+      rpc-host: 172.31.4.60
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -997,7 +1011,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.6.243
+      rpc-host: 172.31.6.243
       rpc-port: 11203
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1021,7 +1035,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.43.239
+      rpc-host: 172.31.43.239
       rpc-port: 8332
       rpc-user: null
       rpc-password: null
@@ -1045,7 +1059,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 19105
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1069,7 +1083,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.3.116
+      rpc-host: 172.31.3.116
       rpc-port: 10007
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1093,7 +1107,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-169.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 47620
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1117,7 +1131,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.4.13
+      rpc-host: 172.31.4.13
       rpc-port: 8090
       rpc-user: null
       rpc-password: null
@@ -1141,7 +1155,7 @@ bitcoin-coins:
       support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-169.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-169.us-east-2.compute.internal
       rpc-port: 9008
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1165,7 +1179,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.31.16
+      rpc-host: 172.31.31.16
       rpc-port: 25572
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1189,7 +1203,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.4.126
+      rpc-host: 172.31.4.126
       rpc-port: 28234
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
@@ -1213,7 +1227,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 11982
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1237,7 +1251,7 @@ bitcoin-coins:
       support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.9.239
+      rpc-host: 172.31.9.239
       rpc-port: 9998
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1261,7 +1275,7 @@ bitcoin-coins:
       support-instant-send: true
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-6-221.us-east-2.compute.internal
+      rpc-host: ip-172-31-6-221.us-east-2.compute.internal
       rpc-port: 27198
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1285,7 +1299,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 18823
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1309,7 +1323,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.11.202
+      rpc-host: 172.31.11.202
       rpc-port: 38444
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1333,7 +1347,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-5-128.us-east-2.compute.internal
+      rpc-host: ip-172-31-5-128.us-east-2.compute.internal
       rpc-port: 4525
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1357,7 +1371,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 9004
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1382,7 +1396,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.10.13.117
+      rpc-host: 172.10.13.117
       rpc-port: 8090
       rpc-user: devprod
       rpc-password: RGGK9HsXyi3gdiEOXG8zPlyNIFq
@@ -1406,7 +1420,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.3.23
+      rpc-host: 172.31.3.23
       rpc-port: 11981
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1430,7 +1444,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #ip-172-31-14-168.us-east-2.compute.internal
+      rpc-host: ip-172-31-14-168.us-east-2.compute.internal
       rpc-port: 38562
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1454,7 +1468,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.39.168
+      rpc-host: 172.31.39.168
       rpc-port: 8090
       rpc-user: devprod
       rpc-password: Jppeu3tMTjZtElthVYRkcuJMAgWsnozrAjeVxuDzMCGuM7tD9n
@@ -1478,7 +1492,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.31.0.117
+      rpc-host: 172.31.0.117
       rpc-port: 7932
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
@@ -1502,7 +1516,7 @@ bitcoin-coins:
       support-instant-send: false
       enabled: true
       rpc-protocol: http
-      rpc-host: #172.10.13.6
+      rpc-host: 172.10.13.6
       rpc-port: 8090
       rpc-user: devprod
       rpc-password: pass123
@@ -1536,7 +1550,6 @@ bitcoin-coins:
       notification-wallet-port: 12302
 
 
-
 ethereum-coins:
   eth:
     merchant-name: Ethereum
@@ -1544,16 +1557,40 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: zalupa
-      destination-dir: //data//ethereum//keystore//
+      #      url-our-node:
+      url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
+      #      url: http://18.216.0.44:8545
+      #      url: http://18.216.0.44:8549
+      #      url: http://13.59.242.131:8545
+      #      url: http://13.59.242.131:8549
+      destination-dir: D:\\Ethereum1\\Original\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
+      #      main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
       transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
       transfer-acc-privat-key: 78180378588292946369072654859668816086445717220539896029516054714478935781278
       transfer-acc-public-key: 1425913302398861939078339181395283390436141003096815016453538908192640696056254429740883940954808439783149865751992200750059751882787467546927733789459983
       min-sum-on-account: 0
       min-balance-for-transfer: 0.0031
       log: ethereum_log
+  #Test
+  #  eth:
+  #    merchant-name: Ethereum
+  #    currency-name: ETH
+  #    min-confirmations: 12
+  #    node:
+  #      currency: Ethereum
+  #      url-our-node:
+  #      url: http://52.208.46.161:8546
+  #      destination-dir: D:\\Ethereum1\\Original\\testnet\\keystore\\
+  #      password: 061372f91f949effb934abadff5f0636de09113d
+  #      main-address: 0xa8522390c0Ae551028fbfb5ef97A1aF13F5492a8
+  #      transfer-acc-address: 0x211f4bf57ba49ca363b73d71b368c916e46635c1
+  #      transfer-acc-privat-key: 74199533323615390595446811567054381692532959393563993073409395447229707848705
+  #      transfer-acc-public-key: 13119590832013525280742184238702178365489504100104976407042930393855053495689192423115970974319645018672313443483886856541705435663423306545046973102286102
+  #      min-sum-on-account: 0
+  #      min-balance-for-transfer: 0.0031
+  #      log: ethereum_log
   etc:
     merchant-name: Ethereum Classic
     currency-name: ETC
@@ -1561,7 +1598,7 @@ ethereum-coins:
     node:
       currency: Ethereum Classic
       #      url-our-node:
-      url:
+      url: http://localhost:8101
       destination-dir: D:\\Ethereum1\\Classic\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf35b9ee70b45f55e4bc4e80988fab679ebe760e8
@@ -1578,7 +1615,7 @@ ethereum-coins:
     node:
       currency: EtherZero
       #      url-our-node:
-      url:
+      url: http://18.216.0.44:8102
       destination-dir: D:\\Ethereum1\\EtherZero\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x28474615cb8b5969ed699ab1c0be273fe0d53568
@@ -1594,10 +1631,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: CLO
-      url:
+      #      url-our-node:
+      url: http://13.59.242.131:8104
       destination-dir: D:\\Ethereum1\\callisto\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xf10a6776Ca0C194e231183Fd4773cF3d6392a268
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: callisto_log
@@ -1607,10 +1648,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: B2G
-      url:
+      #      url-our-node:
+      url: http://13.59.242.131:8105
       destination-dir: D:\\Ethereum1\\Bitcoiin\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xd5e42d3b2cf845e1ab53d8174f9fc640ab2ca574
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: bitcoiin2g_log
@@ -1620,10 +1665,14 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: GOL
-      url:
+      #      url-our-node:
+      url: http://172.31.7.222:8106
       destination-dir: D:\\Ethereum1\\Goldiam\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x95972e1facf9cfab1d9fe305837a652cf1791a47
+      #      transfer-acc-address:
+      #      transfer-acc-privat-key:
+      #      transfer-acc-public-key:
       min-sum-on-account: 0
       min-balance-for-transfer: 0.02
       log: goldiam_log
@@ -1634,7 +1683,7 @@ ethereum-coins:
     node:
       currency: CNET
       #      url-our-node:
-      url:
+      url: http://172.31.4.189:8107
       destination-dir: D:\\Ethereum1\\ContractNet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xc480285624cb01352d5c1926361073ac36d1c4a5
@@ -1650,7 +1699,8 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: NTY
-      url:
+      #      url-our-node:
+      url: http://172.31.1.74:8108
       destination-dir: D:\\Ethereum1\\Nexty\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xeba3f66756cd35de39fb12c46b8302991c59a39d
@@ -1667,7 +1717,7 @@ ethereum-coins:
     node:
       currency: Etherinc
       #      url-our-node: http://13.59.242.131:9545
-      url:
+      url: https://api.einc.io/jsonrpc/mainnet
       destination-dir: D:\\Ethereum1\\Etherinc\\mainnet\\keystore\\
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0x8B4Fa8D92d2F7A41F80033521aD6fc1fBcB1d5A7
@@ -2158,7 +2208,7 @@ ethereum-token-coins:
   CRBT:
     merchant-name: CRBT
     currency-name: CRBT
-    contract: '0x2cf618c19041d9db330d8222b860a624021f30fb'
+    contract: '0x6b7734c5ecc51116b806e2ea6decbb3b97f4f92e'
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
@@ -2589,6 +2639,28 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  LINA:
+    merchant-name: LINA
+    currency-name: LINA
+    contract: '0xc05d14442a510de4d3d71a3d316585aa0ce32b50'
+    isERC20: true
+    unit: ETHER
+    min-wallet-balance: 0
+  GAPI:
+    merchant-name: GAPI
+    currency-name: GAPI
+    contract: '0x1ac8bd74065e11c07c0fa3687c0dcfb86af76d46'
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
+  EMBR:
+    merchant-name: EMBR
+    currency-name: EMBR
+    contract: '0x07f74c8480ccfee0d4f803e9bdde8383748b40de'
+    isERC20: true
+    unit: AIWEI
+    min-wallet-balance: 0
+
 
 lisk-coins:
   lisk:
@@ -2726,6 +2798,7 @@ monero-coins:
     currency-name: XMR
     min-confirmations: 10
     decimals: 12
+    main-account: ""
     node:
       host: 127.0.0.1
       port: 18082
@@ -2738,6 +2811,7 @@ monero-coins:
     currency-name: DIT
     min-confirmations: 10
     decimals: 8
+    main-account: ""
     node:
       host: ec2-18-221-189-33.us-east-2.compute.amazonaws.com
       port: 18085
@@ -2750,6 +2824,7 @@ monero-coins:
     currency-name: SUMO
     min-confirmations: 10
     decimals: 9
+    main-account: ""
     node:
       host: 127.0.0.1
       port: 18087
@@ -2757,6 +2832,19 @@ monero-coins:
       password: jhkasdfu75tghs
       mode: test
       log: sumokoin_log
+  hcxp:
+    merchant-name: HCXP
+    currency-name: HCXP
+    min-confirmations: 1
+    decimals: 6
+    main-account: hyrbkkRXLLXRPh3ybJvg7Gf8jniwh4nMS9AJstBLAaj78HfnwEMNZkCE5zFFeV12rf3dkWQ3P5spF198UVembtqF2qf5PeBQJ
+    node:
+      host: 172.10.13.238
+      port: 8090
+      login: test
+      password: test
+      mode: main
+      log: hcxp_log
 
 xem-coins:
   dim:
@@ -2841,6 +2929,35 @@ stellar-coins:
     asset-name: VNT
     emmitent-account: GC2YBPMNHBHW7R7D2MFRH5RDLC6FGJDCBH7FRSNCHC5326ALOYWGMXLO
 
+bitshares-coins:
+  aunit:
+    main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
+    main-address-num: 1.2.23845
+    ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
+    pk-path: /opt/aunit/pk.properies
+  crea:
+    main-address: exrates-test
+    main-address-num: exrates-test
+    ws: wss://nodes.creary.net/ws/
+    pk-path: ""
+  ppy:
+    main-address: exrates-test
+    main-address-num: 1.2.13320
+    ws: ws://78.ip-149-202-43.eu
+    pk-path: ""
+
+ripple-coins:
+  ripple:
+    rpc-url: https://api.altnet.rippletest.net:51234
+    ws: wss://s.altnet.rippletest.net:51233
+    account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
+    account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
+  csc:
+    rpc-url: https://api.altnet.rippletest.net:51234
+    ws: wss://ws01.casinocoin.org:4443
+    account-address: cK3fiP4JpcG3ACtTokYpffokX2Wx3DyCCc
+    account-secret: ""
+
 other-coins:
   qtum:
     #      endpoint: http://ec2-18-221-242-2.us-east-2.compute.amazonaws.com:38891
@@ -2858,7 +2975,7 @@ other-coins:
     main-address: ACT54nD2uNstDg3AYfGJJ9g8ZxiC4RPs7EAG
     account-name: newone
   adk:
-    rpc-host: #http://172.10.13.150:16322
+    rpc-host: http://172.10.13.150:16322
     rpc-user: wayfarer88
     rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
     enabled: true
@@ -2866,11 +2983,6 @@ other-coins:
   apollo:
     url: http://172.10.13.74:7876/apl
     main-address: APL-PERW-X5U2-9YLF-7YRAC
-  aunit:
-    main-address: a46865dd7-91af-4d22-9bf3-d695e32efeec
-    main-address-num: 1.2.23845
-    ws: ws://ec2-18-223-213-72.us-east-2.compute.amazonaws.com:8090
-    pk-path: /opt/aunit/pk.properies
   edc:
     token: 0190804484737779216097337067072357
     main-account: ajet2103
@@ -2914,11 +3026,6 @@ other-coins:
     private-key: 2c807bc3c8f0475659e7f0260f026ea34fcceebd24baa5f356db40568204977a
     public-key: 242af20803f61142ea5df048898cb3b9e768a6619266ffb48f5b4a09779b9227
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
-  ripple:
-    rippled-rpc-url: https://api.altnet.rippletest.net:51234
-    rippled-ws: wss://s.altnet.rippletest.net:51233
-    account-address: rEDz1wnKCSakb8AU1ScCRdkLHFgr7XTNij
-    account-secret: sptNAq5NGFwPEEbWcMCE1G41GZjZe
   stellar:
     #    horizon-url-1: https://horizon-testnet.stellar.org/
     #    account-name-1: GCXL53PTGDMTS2CU2EKCDW3O3SV23UGZAJOK24JBZEP3GPEPL3UCRZVZ
@@ -2929,14 +3036,27 @@ other-coins:
     account-seed: SCEEBOQXMZHYBQSOEK3YZAKVZA6O5UCJRKYCZW2FK6VGN42KV76RZH3I
     mode: PUBLIC
   tron:
-    full-node-url: http://18.220.99.189:8090
-    solidity-node-url: https://api.tronscan.org
+    full-node-url: https://api.trongrid.io
+    full-node-for-send-url: https://api.trongrid.io
+    solidity-node-url: https://api.trongrid.io
+    explorer-api: https://apilist.tronscan.org/api
     main-account-address: TNSofexxLZoyCLUQ2x2VSPifQyHZFXKL76
     main-account-hex-address: 4188d9ad79b07ca7dd940d9ef096982b7420ebe4b1
   edr:
     id: 14
     account: EDC13707253
     key: cfc6ac5b15d16ad4dce2b00ccf6593db
+  usdx:
+    server-url: https://exchange.api-sandbox.usdx.cash/v1/
+    api-key: J9sVYrbjQuV3rWMr428sCZmfHPHVKJY5
+    account-name: usdx-exchange-exrates
+    exchange-id: dfzevdgep8b656dj
+  omni:
+    rpc-host: http://localhost:8332
+    rpc-user: wayfarer88
+    rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
+    hot-wallet-address: 13bKt8rDLtZjYG4GpSuN88nGLxCSckGmBs
+    commission-address: 13bKt8rDLtZjYG4GpSuN88nGLxCSckGmBs
 
 btc:
   wallets-password-folder: /opt/properties/
@@ -2965,10 +3085,13 @@ payment-system-merchants:
     ipWhiteList: 77.109.141.170;91.205.41.208;94.242.216.60; 193.93.79.99;
   interkassa:
     url: https://sci.interkassa.com/
-    checkoutId: 57163a9b3d1eafe27b8b456a
-    statustUrl: http://193.93.79.99:9000/merchants/interkassa/payment/status
-    successtUrl: http://127.0.0.1:9000/merchants/interkassa/payment/success
-    secretKey: 7pKC765ZsUGGHQIN
+    checkout-id: 5bf2ca393c1eaf6b098b456a
+    status-url: http://dev1.exrates.tech/merchants/interkassa/payment/status
+    success-url: http://dev1.exrates.tech/merchants/interkassa/payment/success
+    secret-key: lVf3A5Nc0JPLYJkf
+    secret-url: https://api.interkassa.com/v1/paysystem-input-payway?checkoutId=
+    username: 5bf2a6c03c1eafc8048b4576
+    password: T9C2GmtYAEk7YzyBfL4gXYlt3z2ELqyL
   liqpay:
     url: https://www.liqpay.com/api/3/checkout/
     public-key: i2376892658
@@ -3054,9 +3177,18 @@ nem-coins:
     publicKey: fdb3bbba4d70fb483592c69a9dff6a52bc81499e2a7f6ff094344172a4c818ac
     address: NBFMGHYKGFNRPHAZ6FTZKIV7VYW76KCS47WYZTJS
     transactionVersion: 1
-server:
-  port: 8090
 
-eos-coins:
-  eos:
-    eosMainAddress: ha4tgmbvgege
+aisi-coins:
+  aisi:
+    aisiMainaddress: D787287458C54566A9B113DC6B32091C57DDF104CD254B6B89AD87539DB648A1
+
+qubera:
+  kyc-url: https://eapi.thefintechlab.com
+  kyc-api-key: f14a29fe-1fb8-4d30-adc0-01d558860da2
+  threshold-length: 100
+  pool-id: 3
+  master-account: 410075436872
+
+aws-server:
+  aws:
+    env: dev

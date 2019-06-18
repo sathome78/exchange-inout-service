@@ -1,4 +1,5 @@
 package com.exrates.inout.service.waves;
+import lombok.Synchronized;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +18,7 @@ import com.exrates.inout.util.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
@@ -127,6 +129,7 @@ public class WavesServiceImpl implements WavesService {
         processWavesPayment(wavesTransaction, blockHeight);
     }
 
+    @Synchronized
     private void processWavesPayment(WavesTransaction transaction, int lastBlockHeight) {
         log.debug("Processing tx: " + transaction);
         int merchantId;
@@ -145,6 +148,9 @@ public class WavesServiceImpl implements WavesService {
             merchantId = assetInfo.getMerchantId();
             currencyId = assetInfo.getCurrencyId();
             requestAmount = scaleFromLong(transaction.getAmount(), assetInfo.getRefillScale());
+        }
+        if (isTransactionDuplicate(transaction.getId(), currencyId, merchantId)) {
+            throw new RuntimeException(String.format("transaction %s currency %d, allready received", transaction.getId(), currencyId));
         }
         Optional<RefillRequestFlatDto> refillRequestResult =
                 refillService.findFlatByAddressAndMerchantIdAndCurrencyIdAndHash(transaction.getRecipient(),
@@ -196,6 +202,12 @@ public class WavesServiceImpl implements WavesService {
 
         }
     }
+
+    private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
+        return StringUtils.isEmpty(hash)
+                || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchantId, currencyId, hash).isPresent();
+    }
+
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {

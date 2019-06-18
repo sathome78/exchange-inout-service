@@ -12,6 +12,6 @@ public class QiwiProperty {
     private String developmentUrl;
     private String accountAddress;
     private String accountPin;
-    private String transactionStartedPosition;
-    private String transactionLimit;
+    private int transactionStartedPosition;
+    private int transactionLimit;
 }

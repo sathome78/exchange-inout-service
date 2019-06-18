@@ -37,40 +37,41 @@ import java.util.stream.Stream;
 
 
 //@Log4j2(topic = "neo_log")
-@PropertySource("classpath:/merchants/neo.properties")
 public class NeoServiceImpl implements NeoService {
 
-   private static final Logger log = LogManager.getLogger("neo_log");
-
+    private static final Logger log = LogManager.getLogger("neo_log");
 
     private static final String NEO_SPEC_PARAM_NAME = "LastRecievedBlock";
-
-    @Autowired
-    private RefillService refillService;
-    @Autowired
-    private MerchantSpecParamsDao specParamsDao;
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private WithdrawUtils withdrawUtils;
 
     private String merchantName;
     private String currencyName;
     private int minConfirmations;
-
     private String endpoint;
     private String address;
-
     private Merchant merchant;
     private Currency currency;
     private Map<String, AssetMerchantCurrencyDto> neoAssetMap;
 
     private NeoNodeService neoNodeService;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private RefillService refillService;
+    private MerchantSpecParamsDao specParamsDao;
+    private MessageSource messageSource;
+    private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
+    private WithdrawUtils withdrawUtils;
+
+    @Autowired
+    public NeoServiceImpl(RefillService refillService, MerchantSpecParamsDao specParamsDao, MessageSource messageSource,
+                          RestTemplate restTemplate, ObjectMapper objectMapper, WithdrawUtils withdrawUtils){
+        this.refillService = refillService;
+        this.specParamsDao = specParamsDao;
+        this.messageSource = messageSource;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+        this.withdrawUtils = withdrawUtils;
+    }
 
     @PostConstruct
     public void init() {

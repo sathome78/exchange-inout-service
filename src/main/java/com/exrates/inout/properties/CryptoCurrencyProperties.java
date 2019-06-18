@@ -1,5 +1,6 @@
 package com.exrates.inout.properties;
 
+import com.exrates.inout.properties.models.*;
 import com.exrates.inout.properties.models.BitcoinCoins;
 import com.exrates.inout.properties.models.EosCoins;
 import com.exrates.inout.properties.models.EthereumCoins;
@@ -35,6 +36,12 @@ import org.springframework.stereotype.Component;
         OtherCoins.class,
         PaymentSystemMerchants.class,
         NemCoins.class,
+        AisiCoins.class,
+        AwsServer.class,
+        BitsharesCoins.class,
+        RippleCoins.class,
+        QuberaConfig.class,
+        NemCoins.class,
         EosCoins.class})
 public class CryptoCurrencyProperties {
 
@@ -51,6 +58,12 @@ public class CryptoCurrencyProperties {
     private final OtherCoins otherCoins;
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
+    private final AisiCoins aisiCoins;
+    private final AwsServer awsServer;
+    private final BitsharesCoins bitsharesCoins;
+    private final RippleCoins rippleCoins;
+
+    private final QuberaConfig quberaConfig;
     private final EosCoins eosCoins;
 
     @Autowired
@@ -67,6 +80,12 @@ public class CryptoCurrencyProperties {
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
                                     NemCoins nemCoins,
+                                    AisiCoins aisiCoins,
+                                    AwsServer awsServer,
+                                    BitsharesCoins bitsharesCoins,
+                                    RippleCoins rippleCoins,
+                                    QuberaConfig quberaConfig) {
+                                    NemCoins nemCoins,
                                     EosCoins eosCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
@@ -81,6 +100,12 @@ public class CryptoCurrencyProperties {
         this.otherCoins = otherCoins;
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
+        this.aisiCoins = aisiCoins;
+        this.awsServer = awsServer;
+        this.bitsharesCoins = bitsharesCoins;
+        this.rippleCoins = rippleCoins;
+
+        this.quberaConfig = quberaConfig;
         this.eosCoins = eosCoins;
     }
 }

@@ -1,4 +1,6 @@
 package com.exrates.inout.service.ripple;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,33 +37,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.MerchantInternalException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.WithdrawUtils;
-
 /**
  * Created by maks on 11.05.2017.
  */
 //@Log4j2(topic = "ripple_log")
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleServiceImpl implements RippleService {
 
-   private static final Logger log = LogManager.getLogger("ripple_log");
+    private static final Logger log = LogManager.getLogger("ripple_log");
 
+    private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
 
-    private @Value("${ripple.account.address}")
-    String systemAddress;
+    private static final String XRP_MERCHANT = "Ripple";
+    private static final String XRP_CURRENCY = "XRP";
+    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
+
+    private String systemAddress;
 
     @Autowired
     private RippleTransactionService rippleTransactionService;
@@ -80,19 +71,17 @@ public class RippleServiceImpl implements RippleService {
     @Autowired
     private GtagService gtagService;
 
-    private static final String XRP_MERCHANT = "Ripple";
-
-    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
-
-    private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
-
     private Currency currency;
-
     private Merchant merchant;
+
+    public RippleServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.systemAddress = rippleProperty.getAccountAddress();
+    }
 
     @PostConstruct
     private void init() {
-        currency = currencyService.findByName("XRP");
+        currency = currencyService.findByName(XRP_CURRENCY);
         merchant = merchantService.findByName(XRP_MERCHANT);
     }
 
