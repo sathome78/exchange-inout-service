@@ -3056,3 +3056,7 @@ nem-coins:
     transactionVersion: 1
 server:
   port: 8090
+
+eos-coins:
+  eos:
+    eosMainAddress: ha4tgmbvgege
