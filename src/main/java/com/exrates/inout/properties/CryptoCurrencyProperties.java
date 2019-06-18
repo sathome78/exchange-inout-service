@@ -1,7 +1,9 @@
 package com.exrates.inout.properties;
 
-import com.exrates.inout.properties.models.*;
+import com.exrates.inout.properties.models.AisiCoins;
+import com.exrates.inout.properties.models.AwsServer;
 import com.exrates.inout.properties.models.BitcoinCoins;
+import com.exrates.inout.properties.models.BitsharesCoins;
 import com.exrates.inout.properties.models.EosCoins;
 import com.exrates.inout.properties.models.EthereumCoins;
 import com.exrates.inout.properties.models.EthereumTokenCoins;
@@ -12,6 +14,8 @@ import com.exrates.inout.properties.models.NeoCoins;
 import com.exrates.inout.properties.models.OtherCoins;
 import com.exrates.inout.properties.models.PaymentSystemMerchants;
 import com.exrates.inout.properties.models.QtumCoins;
+import com.exrates.inout.properties.models.QuberaConfig;
+import com.exrates.inout.properties.models.RippleCoins;
 import com.exrates.inout.properties.models.StellarCoins;
 import com.exrates.inout.properties.models.WavesCoins;
 import com.exrates.inout.properties.models.XemCoins;
@@ -41,7 +45,6 @@ import org.springframework.stereotype.Component;
         BitsharesCoins.class,
         RippleCoins.class,
         QuberaConfig.class,
-        NemCoins.class,
         EosCoins.class})
 public class CryptoCurrencyProperties {
 
@@ -62,7 +65,6 @@ public class CryptoCurrencyProperties {
     private final AwsServer awsServer;
     private final BitsharesCoins bitsharesCoins;
     private final RippleCoins rippleCoins;
-
     private final QuberaConfig quberaConfig;
     private final EosCoins eosCoins;
 
@@ -84,8 +86,7 @@ public class CryptoCurrencyProperties {
                                     AwsServer awsServer,
                                     BitsharesCoins bitsharesCoins,
                                     RippleCoins rippleCoins,
-                                    QuberaConfig quberaConfig) {
-                                    NemCoins nemCoins,
+                                    QuberaConfig quberaConfig,
                                     EosCoins eosCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
@@ -104,7 +105,6 @@ public class CryptoCurrencyProperties {
         this.awsServer = awsServer;
         this.bitsharesCoins = bitsharesCoins;
         this.rippleCoins = rippleCoins;
-
         this.quberaConfig = quberaConfig;
         this.eosCoins = eosCoins;
     }

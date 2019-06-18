@@ -3192,3 +3192,7 @@ qubera:
 aws-server:
   aws:
     env: dev
+
+eos-coins:
+  eos:
+    eosMainAddress: ha4tgmbvgege
