@@ -41,7 +41,7 @@ public class RefillRequestJob {
     private MerchantServiceContext serviceContext;
 
     @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
-    private void refillExpiredClean() throws Exception {
+    protected void refillExpiredClean() throws Exception {
         log.debug("\nstart expired refill cleaning ... ");
         Integer expireCount = refillService.clearExpiredInvoices();
         log.debug("\n... end expired refill cleaning. Mark as expired: " + expireCount);
@@ -59,7 +59,10 @@ public class RefillRequestJob {
         String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL"};
         for (String coin : merchantNames) {
             try {
-                if(coin.equals("KOD")) System.out.println("Scanning " + coin);
+                if(coin.equals("KOD")) {
+                    log.info("Scanning log. Kod");
+                    System.out.println("Scanning " + coin);
+                }
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
             } catch (Exception e) {
                 if(coin.equals("KOD"))
