@@ -57,7 +57,7 @@ public class RefillRequestJob {
 
         log.info("Starting refillCheckPaymentsForCoins");
         String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC",
-                "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL", "DOGE"};
+                "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL", "DOGE", "DIME"};
         for (String coin : merchantNames) {
             try {
                 if(coin.equals("KOD")) System.out.println("Scanning " + coin);
