@@ -34,9 +34,10 @@ spring:
 server:
   port: 8080
 
-logging:
-  level:
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+#logging:
+#  level:
+#    ROOT: DEBUG
+
 #slave:
 #  datasource:
 #    hikari:
