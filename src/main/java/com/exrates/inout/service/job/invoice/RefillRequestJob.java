@@ -52,12 +52,12 @@ public class RefillRequestJob {
      * Because blocknotify doesn't work correctly (!!! need to check node config and node config properties !!!)
      * During the check processBtcPayment is executed, which create refill request and refill user wallet.
      */
-    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 1)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
         String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC",
-                "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL", "DOGE", "DIME"};
+                "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL", "DOGE"};
         for (String coin : merchantNames) {
             try {
                 if(coin.equals("KOD")) System.out.println("Scanning " + coin);
