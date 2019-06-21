@@ -713,7 +713,7 @@
         </Socket>
     </Appenders>
     <Loggers>
-        <Logger name="jdbc_logger" level="ALL" additivity="false">
+        <Logger name="jdbc_logger" level="ALL" additivity="false" env="%X{active.profile}">
             <AppenderRef ref="Socket"/>
             <appender-ref ref="jdbc_log" />
         </Logger>
