@@ -85,7 +85,7 @@ public class MoneroServiceImpl implements MoneroService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-
+        log.info("MoneroServiceImpl.processPayment() start process.................");
         BigDecimal amount = new BigDecimal(params.get("amount"));
 
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -96,9 +96,14 @@ public class MoneroServiceImpl implements MoneroService {
                 .merchantTransactionId(params.get("hash"))
                 .build();
 
+        log.info("BEFORE ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        log.info("AFTER ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         requestAcceptDto.setRequestId(requestId);
+
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
     }
 
     @Override

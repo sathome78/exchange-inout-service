@@ -103,6 +103,7 @@ public class AdkServiceImpl implements AdkService {
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment starts.........................");
         if (params.containsKey("admin")) {
             processAdminTransaction(params);
         }
@@ -121,8 +122,9 @@ public class AdkServiceImpl implements AdkService {
 
         Integer requestId = refillService.getRequestId(requestAcceptDto);
         requestAcceptDto.setRequestId(requestId);
-
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
 
         final String username = refillService.getUsernameByRequestId(requestId);
 
@@ -174,7 +176,7 @@ public class AdkServiceImpl implements AdkService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
+            log.error(e + "  in AdkServiceImpl.putOnBchExam(RefillRequestAcceptDto requestAcceptDto)");
         }
     }
 

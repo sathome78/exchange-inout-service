@@ -128,22 +128,26 @@ public class LiskServiceImpl implements LiskService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("ApolloServiceImpl.processPayment() start method.................");
         Optional<String> refillRequestIdResult = Optional.ofNullable(params.get("requestId"));
         Integer currencyId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "currencyId"));
         Integer merchantId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "merchantId"));
         String address = ParamMapUtils.getIfNotNull(params, "address");
         String txId = ParamMapUtils.getIfNotNull(params, "txId");
         LiskTransaction transaction = getTransactionById(txId);
+        log.info("BEFORE liskRestClient.getFee() .................");
         long txFee = liskRestClient.getFee();
         BigDecimal scaledAmount = LiskTransaction.scaleAmount(transaction.getAmount() - txFee);
 
         if (!refillRequestIdResult.isPresent()) {
+            log.info("BEFORE ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.........)");
             Integer requestId = refillService.createRefillRequestByFact(RefillRequestAcceptDto.builder()
                     .address(address)
                     .amount(scaledAmount)
                     .merchantId(merchantId)
                     .currencyId(currencyId)
                     .merchantTransactionId(txId).build());
+            log.info("AFTER ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.........)");
             if (transaction.getConfirmations() >= 0 && transaction.getConfirmations() < minConfirmations) {
                 try {
                     log.debug("put on bch exam {}", transaction);
@@ -155,8 +159,9 @@ public class LiskServiceImpl implements LiskService {
                             .amount(scaledAmount)
                             .hash(txId)
                             .blockhash(transaction.getBlockId()).build());
+                    log.info("AFTER ---  refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder().........)");
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    log.error(e);
+                    log.error(e + " in processPayment() method.......");
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -181,15 +186,18 @@ public class LiskServiceImpl implements LiskService {
                     .hash(txId)
                     .blockhash(transaction.getBlockId()).build());
         }
+        log.info("END OF LiskServiceImpl.processPayment().........");
     }
 
     private void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto) {
+        log.info("changeConfirmationsOrProvide start.........)");
         try {
             refillService.setConfirmationCollectedNumber(dto);
             if (dto.getConfirmations() >= minConfirmations) {
                 log.debug("Providing transaction!");
                 Integer requestId = dto.getRequestId();
 
+                log.info("BEFORE RefillRequestAcceptDto.builder().........)");
                 RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
                         .address(dto.getAddress())
                         .amount(dto.getAmount())
@@ -202,8 +210,9 @@ public class LiskServiceImpl implements LiskService {
                     requestId = refillService.getRequestId(requestAcceptDto);
                 }
                 requestAcceptDto.setRequestId(requestId);
-
+                log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
                 refillService.autoAcceptRefillRequest(requestAcceptDto);
+                log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
                 RefillRequestFlatDto flatDto = refillService.getFlatById(requestId);
                 sendTransaction(flatDto.getBrainPrivKey(), dto.getAmount(), mainAddress);
 
