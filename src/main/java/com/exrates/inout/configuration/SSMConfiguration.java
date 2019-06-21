@@ -18,7 +18,7 @@ public class SSMConfiguration {
     @Bean
     public SSMGetter ssmGetter() {
         System.out.println("SSMGetter posted smth into log file");
-        log.info("ssmGetter");
+        log.info("ssmGetter()");
         if(ssmProperties.getMode().equals("dev")) return new MockSSM();
 
         return new SSMGetterImpl();

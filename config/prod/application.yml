@@ -16,7 +16,7 @@ spring:
     hibernate:
       ddl-auto: none
   redis:
-    host: 172.10.10.236 #
+    host: 172.50.50.50
     port: 6379
   flyway:
     locations: classpath:db/migration
@@ -73,25 +73,25 @@ management:
 
 mail:
   mail_support:
-    host: smtp.gmail.com
-    port: 587
+    host: exrates.top
+    port: 25
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: mail@exrates.top
+    password: R37yt7gEft
   mail_mandrill:
     host: smtp.mandrillapp.com
     port: 587
     protocol: smtp
-    user: Currency
-    password: PsQhkDq7dB8Zn3qAserRTw
+    user: Service
+    password: dKD_WZ61VHQbQwWlRQI8cA
   mail_info:
-    host: smtp.gmail.com
-    port: 587
+    host: exrates.top
+    port: 25
     protocol: smtp
-    user: exrates.dev@gmail.com
-    password: setarxe123
+    user: no-reply@exrates.top
+    password: E3ZW3397dV
     allowedOnly: true
-    allowedEmails: avto12@i.ua,wayfarer2006@ukr.net,yagi7337@gmail.com,yagi3773@gmail.com,vlad.dziubak@gmail.com,nikita.dmytrenko@upholding.biz,oleg.kostiukevych@upholding.biz
+    allowedEmails: coo@exrates.me
   default_mail_type: gmail
 
 
@@ -120,7 +120,7 @@ referral:
   url: localhost:8080/register?ref=
 
 upload:
-  userFilesDir: c:/Users/Public/upload/
+  userFilesDir: /opt/temp/
   userFilesLogicalDir: /userFiles
 
 ban:
@@ -145,12 +145,12 @@ invoice:
   accountTHB: 015-1-65751-6
 # 5760 = 96 hours * 60 minutes
 btcInvoice:
-  invoiceTimeOutIntervalMinutes: 500
-  blockNotifyUsers: true
+  invoiceTimeOutIntervalMinutes: 5760
+  blockNotifyUsers: false
 
 withdraw:
   rejectErrorTimeout: 3
-  walletNotifyEmails: wayfarer2006@ukr.net
+  walletNotifyEmails: ental.era@gmail.com,dima.kolesnik@gmail.com,exratesnew@gmail.com
 
 bitcoin-coins:
   atb:
@@ -174,7 +174,7 @@ bitcoin-coins:
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5458
       notification-block-port: 5459
       notification-wallet-port: 5460
   lcc:
@@ -198,7 +198,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6468
       notification-block-port: 6469
       notification-wallet-port: 6470
   fgc:
@@ -222,7 +222,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25558
       notification-block-port: 25559
       notification-wallet-port: 25560
   owc:
@@ -270,7 +270,7 @@ bitcoin-coins:
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 35458
       notification-block-port: 35459
       notification-wallet-port: 35460
   btcz:
@@ -294,7 +294,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6368
       notification-block-port: 6369
       notification-wallet-port: 6370
   grs:
@@ -342,7 +342,7 @@ bitcoin-coins:
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6858
       notification-block-port: 6859
       notification-wallet-port: 6860
   ptc:
@@ -366,7 +366,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 8891
       notification-block-port: 8892
       notification-wallet-port: 8893
   sabr:
@@ -390,7 +390,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 9991
       notification-block-port: 9992
       notification-wallet-port: 9993
   cmk:
@@ -414,7 +414,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10202
       notification-block-port: 10200
       notification-wallet-port: 10201
   xfc:
@@ -438,7 +438,7 @@ bitcoin-coins:
       rpc-user: multichainrpc
       rpc-password: 9rNG3fPuDhTVniaAHopu98aHebcwacWCZ7EJJHUTzaoi
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 12000
       notification-block-port: 12001
       notification-wallet-port: 12002
   rime:
@@ -521,7 +521,7 @@ bitcoin-coins:
     raw-tx-enabled: false
     support-subtract-fee: false
     support-wallet-notifications: true
-    support-reference-line: false
+    support-reference-line: true
     use-send-many-for-withdraw: true
     backup-folder: /data/.bitcoinreco/breco_backup/
     node:
@@ -534,7 +534,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 8981
       notification-block-port: 8982
       notification-wallet-port: 8983
   lpc:
@@ -558,7 +558,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 11000
       notification-block-port: 11001
       notification-wallet-port: 11002
   lbtc:
@@ -582,7 +582,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7168
       notification-block-port: 7169
       notification-wallet-port: 7170
   ddx:
@@ -606,7 +606,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10700
       notification-block-port: 10701
       notification-wallet-port: 10702
   b2x:
@@ -630,7 +630,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5868
       notification-block-port: 5869
       notification-wallet-port: 5870
   bsv:
@@ -678,7 +678,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: pass123
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10500
       notification-block-port: 10501
       notification-wallet-port: 10502
   q:
@@ -726,7 +726,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5268
       notification-block-port: 5269
       notification-wallet-port: 5270
   brb:
@@ -750,7 +750,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25858
       notification-block-port: 25859
       notification-wallet-port: 25860
   eql:
@@ -774,14 +774,14 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25758
       notification-block-port: 25759
       notification-wallet-port: 25760
   btc:
     merchant-name: Bitcoin
     currency-name: BTC
     min-confirmations: 4
-    block-target-for-fee: 20
+    block-target-for-fee: 15
     raw-tx-enabled: false
     support-subtract-fee: true
     support-wallet-notifications: true
@@ -798,7 +798,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5168
       notification-block-port: 5169
       notification-wallet-port: 5170
   cbc:
@@ -822,7 +822,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 11100
       notification-block-port: 11101
       notification-wallet-port: 11102
   mbc:
@@ -846,7 +846,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10600
       notification-block-port: 10601
       notification-wallet-port: 10602
   doge:
@@ -870,7 +870,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5668
       notification-block-port: 5669
       notification-wallet-port: 5670
   bca:
@@ -894,7 +894,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6568
       notification-block-port: 6569
       notification-wallet-port: 6570
   ctx:
@@ -942,7 +942,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10100
       notification-block-port: 10101
       notification-wallet-port: 10102
   xbd:
@@ -966,7 +966,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7068
       notification-block-port: 7069
       notification-wallet-port: 7070
   divi:
@@ -1014,7 +1014,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 11200
       notification-block-port: 11201
       notification-wallet-port: 11202
   exo:
@@ -1062,7 +1062,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7568
       notification-block-port: 7569
       notification-wallet-port: 7570
   qrk:
@@ -1086,7 +1086,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10004
       notification-block-port: 10005
       notification-wallet-port: 10006
   beet:
@@ -1110,7 +1110,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7868
       notification-block-port: 7869
       notification-wallet-port: 7870
   dime:
@@ -1158,7 +1158,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25658
       notification-block-port: 25659
       notification-wallet-port: 25660
   clx:
@@ -1182,7 +1182,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 10001
       notification-block-port: 10002
       notification-wallet-port: 10003
   zec:
@@ -1195,7 +1195,7 @@ bitcoin-coins:
     support-wallet-notifications: true
     support-reference-line: false
     use-send-many-for-withdraw: true
-    backup-folder: ${user.home}\zec_backup\
+    backup-folder: ${user.home}\zec_backup\  # comment here: is it true such way of posting directory?
     node:
       zmq-enabled: false
       support-instant-send: false
@@ -1206,7 +1206,7 @@ bitcoin-coins:
       rpc-user: wayfarer88
       rpc-password: Xlo8JfnWMur__7nZkEWxz6GgcX8SnzY6ZvJDr4qHU4c=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25458
       notification-block-port: 25459
       notification-wallet-port: 25460
   plc:
@@ -1230,7 +1230,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6658
       notification-block-port: 6659
       notification-wallet-port: 6660
   dash:
@@ -1254,7 +1254,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5368
       notification-block-port: 5369
       notification-wallet-port: 5370
   riz:
@@ -1278,7 +1278,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 25958
       notification-block-port: 25959
       notification-wallet-port: 25960
   nyc:
@@ -1302,7 +1302,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 7768
       notification-block-port: 7769
       notification-wallet-port: 7770
   btg:
@@ -1326,7 +1326,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 5768
       notification-block-port: 5769
       notification-wallet-port: 5770
   szc:
@@ -1350,7 +1350,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6968
       notification-block-port: 6969
       notification-wallet-port: 6970
   bcx:
@@ -1374,7 +1374,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6168
       notification-block-port: 6169
       notification-wallet-port: 6170
   kod:
@@ -1422,7 +1422,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6768
       notification-block-port: 6769
       notification-wallet-port: 6770
   occ:
@@ -1446,7 +1446,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6268
       notification-block-port: 6269
       notification-wallet-port: 6270
   cryp:
@@ -1494,7 +1494,7 @@ bitcoin-coins:
       rpc-user: devprod
       rpc-password: ZcergOfTzoSbDEFNdcxaEBRDRJh3VOOs-anma1viJPk=
       http-auth-schema: Basic
-      notification-alert-port: 11
+      notification-alert-port: 6668
       notification-block-port: 6669
       notification-wallet-port: 6670
   tsl:
@@ -1533,7 +1533,7 @@ bitcoin-coins:
     use-send-many-for-withdraw: false
     backup-folder: /data/backup
     node:
-      zmq-enabled: false
+      zmq-enabled: true
       support-instant-send: false
       enabled: true
       rpc-protocol: http
@@ -1606,7 +1606,7 @@ ethereum-coins:
   b2g:
     merchant-name: B2G
     currency-name: B2G
-    min-confirmations: 12
+    min-confirmations: 400
     node:
       currency: B2G
       url: http://172.31.14.169:8105
@@ -1886,7 +1886,7 @@ ethereum-token-coins:
     contract: '0x170cf89358ce17742955ea43927da5fc1e8e1211'
     isERC20: true
     unit: ETHER
-    min-wallet-balance: 0
+    min-wallet-balance: 1
   FSBT:
     merchant-name: FSBT
     currency-name: FSBT
@@ -2149,7 +2149,7 @@ ethereum-token-coins:
   CRBT:
     merchant-name: CRBT
     currency-name: CRBT
-    contract: '0x6b7734c5ecc51116b806e2ea6decbb3b97f4f92e'
+    contract: '0x2cf618c19041d9db330d8222b860a624021f30fb'
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
@@ -2629,14 +2629,14 @@ lisk-coins:
     broadcast-tx-endpoint:
     node:
       host: http://54.37.87.6
-      port: 8198
+      port: 8196
       address: 10751039947056279805
       secret:
       tx-sort-prefix: t_
       tx-query-limit: 100
       tx-count-node-type: NUMBER
-      port-get-account: 8198
-      port-send-tx: 8198
+      port-get-account: 8196
+      port-send-tx: 8196
   rise:
     merchant-name: RiseVision
     currency-name: RISE
@@ -2650,8 +2650,8 @@ lisk-coins:
       address: 5465983647188469549R
       secret:
       tx-sort-prefix:
-      tx-query-limit: 10000
-      tx-count-node-type: STRING
+      tx-query-limit: 1000
+      tx-count-node-type: NUMBER
       port-get-account: 18111
       port-send-tx: 6990
   ark:
@@ -2688,7 +2688,7 @@ waves-coins:
       main-account: 3PNu2t61vQFw9fDT8B9h881H4AtBejnN7mV
       process-delay: 30
       fee-account: 3PGYEbabkisSxzaZBzQHromYimsnpgQoy8k
-      notify-email: mikita.malykov@gmail.com
+      notify-email: vlad.dziubak@upholding.biz
       token-ids:
         GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
         RBC: AQWjZbz7mgW8AJwcdrdWF3ijTB4WFV1hWqH1866BkafD
@@ -2703,9 +2703,8 @@ waves-coins:
       main-account: 381jSB8nr9J41hsNMtvgSv7TgaYuf5ZtKJ2
       process-delay: 30
       fee-account: 37ysJEA9BYh64tke3szshnvAEUk5sMHFKgV
-      notify-email: mikita.malykov@gmail.com
+      notify-email: vlad.dziubak@upholding.biz
       token-ids:
-        GameX: GFiWx4dcceJXGWfHc53GMXEidpciUCN5tnHUwE18NEfY
 
 neo-coins:
   neo:
@@ -2737,7 +2736,7 @@ monero-coins:
   xmr:
     merchant-name: Monero
     currency-name: XMR
-    min-confirmations: 20
+    min-confirmations: 15
     decimals: 12
     node:
       host: ip-172-31-14-168.us-east-2.compute.internal
@@ -2927,8 +2926,8 @@ other-coins:
     #    hook: http://195.211.146.225:9000/merchants/edc/payment/received
     hook: https://exrates.me/merchants/edc/payment/received
     history: https://receive.blockchain.mn/history/
-    blockchain-host-fast: http://localhost:8091
-    blockchain-host-delayed: http://localhost:8092
+    blockchain-host-fast: http://172.31.4.237:8091
+    blockchain-host-delayed: http://172.31.4.237:8092
     account-registrar: exrates-currency-exchange
     account-referrer: exrates-currency-exchange
     #      account-main: output-exrates
