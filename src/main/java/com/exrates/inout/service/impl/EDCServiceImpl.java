@@ -93,8 +93,10 @@ public class EDCServiceImpl implements EDCService {
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
         String address = getAddress();
-        String message = messageSource.getMessage("merchants.refill.edr",
-                new Object[]{address}, request.getLocale());
+        log.info("EDC. Generate new refill address: {}" + address);
+
+        String message = messageSource.getMessage("merchants.refill.edr", new Object[]{address}, request.getLocale());
+
         return new HashMap<String, String>() {{
             put("address", address);
             put("message", message);
@@ -157,6 +159,7 @@ public class EDCServiceImpl implements EDCService {
                     .body()
                     .string();
         } catch (IOException e) {
+            log.error("EDC coin. Error: {}" + e);
             throw new MerchantInternalException(e);
         }
 
@@ -174,8 +177,10 @@ public class EDCServiceImpl implements EDCService {
             }
         } catch (IllegalStateException e) {
             if ("Address not found".equals(parser.parse(returnResponse).getAsJsonObject().get("message").getAsString())) {
+                log.info("EDC coin. Address not found. Fake transaction error: {}" + e);
                 throw new RefillRequestFakePaymentReceivedException(params.toString());
             } else {
+                log.error("EDC coin. Error in parse: {}" + e);
                 throw new RefillRequestMerchantException(params.toString());
             }
         }
@@ -204,6 +209,7 @@ public class EDCServiceImpl implements EDCService {
             return object.get("address").getAsString();
 
         } catch (Exception e) {
+            log.error("EDC coin. Error in generate new address for refill: {}" + e);
             throw new MerchantInternalException("Unfortunately, the operation is not available at the moment, please try again later!");
         }
     }
