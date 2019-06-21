@@ -1121,7 +1121,7 @@ bitcoin-coins:
     min-confirmations: 30
     block-target-for-fee: 20
     raw-tx-enabled: false
-    support-subtract-fee: true
+    support-subtract-fee: false
     support-wallet-notifications: true
     support-reference-line: false
     use-send-many-for-withdraw: true
