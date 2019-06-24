@@ -9,48 +9,53 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestFakePaymentReceivedException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
-import com.exrates.inout.service.AlgorithmService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.GtagService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.PayeerService;
-import com.exrates.inout.service.RefillService;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.PayeerProperty;
+import com.exrates.inout.service.*;
 import com.exrates.inout.util.WithdrawUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("classpath:/merchants/payeer.properties")
 public class PayeerServiceImpl implements PayeerService {
-
-  private @Value("${payeer.url}") String url;
-  private @Value("${payeer.m_shop}") String m_shop;
-  private @Value("${payeer.m_desc}") String m_desc;
-  private @Value("${payeer.m_key}") String m_key;
-
 
   private static final Logger logger = LogManager.getLogger("merchant");
 
-  @Autowired
+  private String url;
+  private String m_shop;
+  private String m_desc;
+  private String m_key;
+
   private AlgorithmService algorithmService;
-  @Autowired
   private RefillService refillService;
-  @Autowired
   private MerchantService merchantService;
-  @Autowired
   private CurrencyService currencyService;
-  @Autowired
   private WithdrawUtils withdrawUtils;
-  @Autowired
   private GtagService gtagService;
+
+  @Autowired
+  public PayeerServiceImpl(AlgorithmService algorithmService, RefillService refillService, MerchantService merchantService,
+                           CurrencyService currencyService, WithdrawUtils withdrawUtils, GtagService gtagService,
+                           CryptoCurrencyProperties cryptoCurrencyProperties){
+    this.algorithmService = algorithmService;
+    this.refillService = refillService;
+    this.merchantService = merchantService;
+    this.currencyService = currencyService;
+    this.withdrawUtils = withdrawUtils;
+    this.gtagService = gtagService;
+
+    PayeerProperty payeerProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getPayeer();
+    this.url = payeerProperty.getUrl();
+    this.m_shop = payeerProperty.getMShop();
+    this.m_desc = payeerProperty.getMDesc();
+    this.m_key = payeerProperty.getMKey();
+  }
 
   @Override
   public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {

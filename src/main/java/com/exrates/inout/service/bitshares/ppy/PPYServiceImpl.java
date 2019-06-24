@@ -1,5 +1,6 @@
 package com.exrates.inout.service.bitshares.ppy;
 
+import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.service.bitshares.BitsharesServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -21,8 +22,8 @@ public class PPYServiceImpl extends BitsharesServiceImpl {
     private static final String name = "PPY";
     private static final int DECIMAL = 5;
 
-    public PPYServiceImpl() {
-        super(name, name, "merchants/ppy.properties", 0, DECIMAL);
+    public PPYServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties) {
+        super(name, name, cryptoCurrencyProperties.getBitsharesCoins().getPpy(), 0, DECIMAL);
     }
 
     @PostConstruct

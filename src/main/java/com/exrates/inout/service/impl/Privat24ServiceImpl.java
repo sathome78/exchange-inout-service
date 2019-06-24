@@ -6,6 +6,8 @@ import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Transaction;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.Privat24Property;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.Privat24Service;
 import com.exrates.inout.service.TransactionService;
@@ -25,30 +27,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@PropertySource("classpath:/merchants/privat24.properties")
 public class Privat24ServiceImpl implements Privat24Service {
 
-    private @Value("${privat24.url}") String url;
-    private @Value("${privat24.merchant}") String merchant;
-    private @Value("${privat24.details}") String details;
-    private @Value("${privat24.ext_details}") String ext_details;
-    private @Value("${privat24.pay_way}") String pay_way;
-    private @Value("${privat24.return_url}") String return_url;
-    private @Value("${privat24.server_url}") String server_url;
-    private @Value("${privat24.password}") String password;
-
+    private static final Logger LOG = LogManager.getLogger("merchant");
     private final OkHttpClient client = new OkHttpClient();
 
-    private static final Logger LOG = LogManager.getLogger("merchant");
-
-    @Autowired
     private TransactionService transactionService;
-
-    @Autowired
     private AlgorithmService algorithmService;
+    private WithdrawUtils withdrawUtils;
+
+    private String url;
+    private String merchant;
+    private String details;
+    private String ext_details;
+    private String pay_way;
+    private String return_url;
+    private String server_url;
+    private String password;
 
     @Autowired
-    private WithdrawUtils withdrawUtils;
+    public Privat24ServiceImpl(TransactionService transactionService, AlgorithmService algorithmService,
+                               WithdrawUtils withdrawUtils, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.transactionService = transactionService;
+        this.algorithmService = algorithmService;
+        this.withdrawUtils = withdrawUtils;
+
+        Privat24Property privat24Property = cryptoCurrencyProperties.getPaymentSystemMerchants().getPrivat24();
+        this.url = privat24Property.getUrl();
+        this.merchant = privat24Property.getMerchant();
+        this.details = privat24Property.getDetails();
+        this.ext_details = privat24Property.getExtDetails();
+        this.pay_way = privat24Property.getPayWay();
+        this.return_url = privat24Property.getReturnUrl();
+        this.server_url = privat24Property.getServerUrl();
+        this.password = privat24Property.getPassword();
+    }
 
     @Override
     @Transactional

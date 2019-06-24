@@ -8,7 +8,9 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.qtum.QtumTokenTransaction;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.properties.models.QtumProperty;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherQtumProperty;
+import com.exrates.inout.properties.models.QtumTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -18,7 +20,6 @@ import lombok.Synchronized;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.EventValues;
@@ -46,34 +47,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestAddressDto;
-//exrates.model.dto.merchants.qtum.QtumTokenTransaction;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.ethereum.ExConvert;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.vo.ProfileData;
-
 //@Log4j2(topic = "qtum_log")
-@PropertySource("classpath:/merchants/qtum.properties")
 public class QtumTokenServiceImpl implements QtumTokenService {
 
-   private static final Logger log = LogManager.getLogger("qtum_log");
-
-
-    private @Value("${qtum.min.confirmations}")
-    Integer minConfirmations;
-    private @Value("${qtum.min.transfer.amount}")
-    BigDecimal minTransferAmount;
-    private @Value("${qtum.main.address.for.transfer}")
-    String mainAddressForTransfer;
-    private @Value("${qtum.node.endpoint}")
-    String endpoint;
+    private static final Logger log = LogManager.getLogger("qtum_log");
 
     @Autowired
     private QtumNodeService qtumNodeService;
@@ -88,29 +65,34 @@ public class QtumTokenServiceImpl implements QtumTokenService {
     @Autowired
     private GtagService gtagService;
 
-    private List<String> contractAddress;
-
-    private String merchantName;
-
-    private String currencyName;
-
-    private Merchant merchant;
-
-    private Currency currency;
-
     private final String qtumSpecParamName = "LastRecievedBlock";
-
     private final BigDecimal amountForCommission = new BigDecimal("0.15");
 
+    private Integer minConfirmations;
+    private BigDecimal minTransferAmount;
+    private String mainAddressForTransfer;
+    private String endpoint;
+
+    private List<String> contractAddress;
+    private String merchantName;
+    private String currencyName;
     private final ExConvert.Unit unit;
+
+    private Merchant merchant;
+    private Currency currency;
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public QtumTokenServiceImpl(QtumProperty property) {
-        this.contractAddress = Arrays.asList(property.getContract().replaceAll(" ", "").split(","));
-        this.merchantName = property.getMerchantName();
-        this.currencyName = property.getCurrencyName();
-        this.unit = property.getUnit();
+    public QtumTokenServiceImpl(QtumTokenProperty tokenProperty, OtherQtumProperty qtumProperty) {
+        this.contractAddress = Arrays.asList(tokenProperty.getContract().replaceAll(" ", "").split(","));
+        this.merchantName = tokenProperty.getMerchantName();
+        this.currencyName = tokenProperty.getCurrencyName();
+        this.unit = tokenProperty.getUnit();
+
+        this.minConfirmations = qtumProperty.getMinConfirmations();
+        this.minTransferAmount = qtumProperty.getMinTransferAmount();
+        this.mainAddressForTransfer = qtumProperty.getMainAddressForTransfer();
+        this.endpoint = qtumProperty.getEndpoint();
     }
 
     @PostConstruct

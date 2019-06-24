@@ -1,33 +1,19 @@
 package com.exrates.inout.service.impl;
 
 import com.exrates.inout.dao.RefillRequestDao;
-import com.exrates.inout.domain.dto.InterkassaActionUrlDto;
-import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
-import com.exrates.inout.domain.dto.RefillRequestCreateDto;
-import com.exrates.inout.domain.dto.RefillRequestFlatDto;
-import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
+import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
-import com.exrates.inout.exceptions.InterKassaMerchantException;
-import com.exrates.inout.exceptions.InterKassaMerchantNotFoundException;
-import com.exrates.inout.exceptions.NotImplimentedMethod;
-import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
-import com.exrates.inout.exceptions.RefillRequestIdNeededException;
-import com.exrates.inout.exceptions.RefillRequestNotFoundException;
-import com.exrates.inout.service.AlgorithmService;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.GtagService;
-import com.exrates.inout.service.InterkassaService;
-import com.exrates.inout.service.MerchantService;
-import com.exrates.inout.service.RefillService;
+import com.exrates.inout.exceptions.*;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.InterkassaProperty;
+import com.exrates.inout.service.*;
 import com.exrates.inout.util.WithdrawUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,55 +25,57 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
 @Service
-@PropertySource("classpath:/merchants/interkassa.properties")
 public class InterkassaServiceImpl implements InterkassaService {
 
     private static final Logger logger = LogManager.getLogger(InterkassaServiceImpl.class);
 
     private static final String POST = "post";
 
-    @Value("${interkassa.url}")
     private String url;
-    @Value("${interkassa.checkoutId}")
     private String checkoutId;
-    @Value("${interkassa.statusUrl}")
-    private String statustUrl;
-    @Value("${interkassa.successUrl}")
-    private String successtUrl;
-    @Value("${interkassa.secretKey}")
+    private String statusUrl;
+    private String successUrl;
     private String secretKey;
-    @Value("${interkassa.secret.url}")
     private String interkassaSecretUrl;
-    @Value("${interkassa.username}")
     private String interkassaUsername;
-    @Value("${interkassa.password}")
     private String interkassaPassword;
 
-    @Autowired
     private AlgorithmService algorithmService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillRequestDao refillRequestDao;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
     private GtagService gtagService;
+
+    @Autowired
+    public InterkassaServiceImpl(AlgorithmService algorithmService, RefillService refillService,
+                                 MerchantService merchantService, CurrencyService currencyService,
+                                 RefillRequestDao refillRequestDao, WithdrawUtils withdrawUtils,
+                                 GtagService gtagService, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.algorithmService = algorithmService;
+        this.refillService = refillService;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillRequestDao = refillRequestDao;
+        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+
+        InterkassaProperty interkassaProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getInterkassa();
+        this.url = interkassaProperty.getUrl();
+        this.checkoutId = interkassaProperty.getCheckoutId();
+        this.statusUrl = interkassaProperty.getStatusUrl();
+        this.successUrl = interkassaProperty.getSuccessUrl();
+        this.secretKey = interkassaProperty.getSecretKey();
+        this.interkassaSecretUrl = interkassaProperty.getSecretUrl();
+        this.interkassaUsername = interkassaProperty.getUsername();
+        this.interkassaPassword = interkassaProperty.getPassword();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
@@ -111,11 +99,11 @@ public class InterkassaServiceImpl implements InterkassaService {
         map.put("ik_cur", currency);
         map.put("ik_desc", "Exrates input");
         map.put("ik_ia_m", POST);
-        map.put("ik_ia_u", statustUrl);
+        map.put("ik_ia_u", statusUrl);
         map.put("ik_pm_no", String.valueOf(requestId));
         map.put("ik_pnd_m", POST);
-        map.put("ik_pnd_u", statustUrl);
-        map.put("ik_suc_u", successtUrl);
+        map.put("ik_pnd_u", statusUrl);
+        map.put("ik_suc_u", successUrl);
         map.put("ik_suc_m", POST);
         map.put("ik_int", "json");
         map.put("ik_act", "process");

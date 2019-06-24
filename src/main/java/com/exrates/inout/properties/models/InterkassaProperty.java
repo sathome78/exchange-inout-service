@@ -13,7 +13,10 @@ public class InterkassaProperty {
 
     private String url;
     private String checkoutId;
-    private String statustUrl;
-    private String successtUrl;
+    private String statusUrl;
+    private String successUrl;
     private String secretKey;
+    private String secretUrl;
+    private String username;
+    private String password;
 }

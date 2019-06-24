@@ -10,4 +10,5 @@ public class MoneroCoins {
     private MoneroProperty xmr;
     private MoneroProperty dit;
     private MoneroProperty sumo;
+    private MoneroProperty hcxp;
 }

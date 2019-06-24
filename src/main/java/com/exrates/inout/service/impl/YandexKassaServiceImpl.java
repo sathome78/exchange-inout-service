@@ -6,6 +6,8 @@ import com.exrates.inout.domain.main.CreditsOperation;
 import com.exrates.inout.domain.main.Transaction;
 import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.YandexkassaProperty;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.TransactionService;
 import com.exrates.inout.service.YandexKassaService;
@@ -24,16 +26,25 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Service
-@PropertySource("classpath:/merchants/yandex_kassa.properties")
 public class YandexKassaServiceImpl implements YandexKassaService {
 
-    private @Value("${yandex_kassa.shopId}") String shopId;
-    private @Value("${yandex_kassa.scid}") String scid;
-    private @Value("${yandex_kassa.shopSuccessURL}") String shopSuccessURL;
-    private @Value("${yandex_kassa.paymentType}") String paymentType;
-    private @Value("${yandex_kassa.key}") String key;
-    private @Value("${yandex_kassa.password}") String password;
+    private String shopId;
+    private String scid;
+    private String shopSuccessURL;
+    private String paymentType;
+    private String key;
+    private String password;
 
+    public YandexKassaServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        YandexkassaProperty yandexkassaProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getYandexkassa();
+
+        this.shopId = yandexkassaProperty.getShopId();
+        this.scid = yandexkassaProperty.getScid();
+        this.shopSuccessURL = yandexkassaProperty.getShopSuccessURL();
+        this.paymentType = yandexkassaProperty.getPaymentType();
+        this.key = yandexkassaProperty.getKey();
+        this.password = yandexkassaProperty.getPassword();
+    }
 
     private static final Logger LOG = LogManager.getLogger("merchant");
 
