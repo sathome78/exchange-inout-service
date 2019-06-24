@@ -1,5 +1,6 @@
 package com.exrates.inout.configuration;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.logging.LoggingApplicationListener;
 import org.springframework.context.ApplicationEvent;
