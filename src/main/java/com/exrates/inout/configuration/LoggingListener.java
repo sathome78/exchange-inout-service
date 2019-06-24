@@ -1,6 +1,5 @@
 package com.exrates.inout.configuration;
 
-import org.apache.logging.log4j.ThreadContext;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.logging.LoggingApplicationListener;
 import org.springframework.context.ApplicationEvent;
@@ -20,7 +19,8 @@ public class LoggingListener implements ApplicationListener, Ordered {
             ConfigurableEnvironment environment = ((ApplicationEnvironmentPreparedEvent) event).getEnvironment();
 
             String activeProfile = environment.getProperty("spring.profiles.active");
-            ThreadContext.put("spring.profiles.active", activeProfile);
+
+            System.setProperty("spring.profiles.active", activeProfile != null ? activeProfile : "");
         }
     }
 }
