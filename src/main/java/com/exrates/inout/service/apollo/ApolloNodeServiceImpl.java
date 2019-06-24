@@ -1,4 +1,6 @@
 package com.exrates.inout.service.apollo;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherApolloProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,17 +21,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Collections;
 
 //@Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
 @Service
 public class ApolloNodeServiceImpl implements ApolloNodeService {
 
-   private static final Logger log = LogManager.getLogger("apollo");
+    private static final Logger log = LogManager.getLogger("apollo");
 
-
-    private @Value("${apollo.url}")String SEVER_URL;
+    private String SEVER_URL;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    public ApolloNodeServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherApolloProperty apolloProperty = cryptoCurrencyProperties.getOtherCoins().getApollo();
+        this.SEVER_URL = apolloProperty.getUrl();
+    }
 
     @Override
     public String getTransactions(String address, long timestamp) {

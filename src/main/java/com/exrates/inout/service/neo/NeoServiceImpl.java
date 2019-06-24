@@ -37,40 +37,41 @@ import java.util.stream.Stream;
 
 
 //@Log4j2(topic = "neo_log")
-@PropertySource("classpath:/merchants/neo.properties")
 public class NeoServiceImpl implements NeoService {
 
-   private static final Logger log = LogManager.getLogger("neo_log");
-
+    private static final Logger log = LogManager.getLogger("neo_log");
 
     private static final String NEO_SPEC_PARAM_NAME = "LastRecievedBlock";
-
-    @Autowired
-    private RefillService refillService;
-    @Autowired
-    private MerchantSpecParamsDao specParamsDao;
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private WithdrawUtils withdrawUtils;
 
     private String merchantName;
     private String currencyName;
     private int minConfirmations;
-
     private String endpoint;
     private String address;
-
     private Merchant merchant;
     private Currency currency;
     private Map<String, AssetMerchantCurrencyDto> neoAssetMap;
 
     private NeoNodeService neoNodeService;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private RefillService refillService;
+    private MerchantSpecParamsDao specParamsDao;
+    private MessageSource messageSource;
+    private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
+    private WithdrawUtils withdrawUtils;
+
+    @Autowired
+    public NeoServiceImpl(RefillService refillService, MerchantSpecParamsDao specParamsDao, MessageSource messageSource,
+                          RestTemplate restTemplate, ObjectMapper objectMapper, WithdrawUtils withdrawUtils){
+        this.refillService = refillService;
+        this.specParamsDao = specParamsDao;
+        this.messageSource = messageSource;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+        this.withdrawUtils = withdrawUtils;
+    }
 
     @PostConstruct
     public void init() {
@@ -192,6 +193,7 @@ public class NeoServiceImpl implements NeoService {
     }
 
     private void processNeoPayment(String txId, NeoVout vout, Integer confirmations, String blockhash) {
+        log.info("processNeoPayment start....");
         AssetMerchantCurrencyDto assetMerchantCurrencyDto = neoAssetMap.get(vout.getAsset());
         String address = vout.getAddress();
         BigDecimal amount = new BigDecimal(vout.getValue());
@@ -227,6 +229,7 @@ public class NeoServiceImpl implements NeoService {
             });
             if (confirmations >= 0 && confirmations < minConfirmations) {
                 try {
+                    log.info("BEFORE ---  refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()");
                     refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()
                             .requestId(requestId)
                             .merchantId(merchantId)
@@ -239,6 +242,7 @@ public class NeoServiceImpl implements NeoService {
                     log.error(e);
                 }
             } else {
+                log.info("BEFORE ---  changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()");
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
                         .requestId(requestId)
                         .address(address)
@@ -250,6 +254,7 @@ public class NeoServiceImpl implements NeoService {
                         .blockhash(blockhash).build(), vout.getAsset());
             }
         }
+        log.info("processNeoPayment finish..........");
     }
 
     private void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto, String assetId) {
@@ -266,6 +271,7 @@ public class NeoServiceImpl implements NeoService {
                             .merchantId(dto.getMerchantId())
                             .merchantTransactionId(dto.getHash())
                             .build();
+                    log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
                     refillService.autoAcceptRefillRequest(requestAcceptDto);
                     transferCostsToMainAccount(assetId, dto.getAmount());
                 }
@@ -276,6 +282,7 @@ public class NeoServiceImpl implements NeoService {
     }
 
     private void transferCostsToMainAccount(String assetId, BigDecimal amount) {
+        log.info("BEFORE ---  transferCostsToMainAccount()..............................");
         neoNodeService.sendToAddress(neoAssetMap.get(assetId).getAsset(), address, amount, address);
     }
 

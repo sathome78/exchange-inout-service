@@ -1,4 +1,6 @@
 package com.exrates.inout.service.omni;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherOmniProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,25 +33,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.dto.*;
-//exrates.model.dto.merchants.omni.OmniTxDto;
-//exrates.service.RefillService;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-
-@PropertySource("classpath:/merchants/omni.properties")
 //@Log4j2(topic = "omni_log")
 @Service
 public class OmniTransactionServiceImpl implements OmniTransactionService {
 
-   private static final Logger log = LogManager.getLogger("omni_log");
-
-
-    private final MerchantSpecParamsDao specParamsDao;
-    private final OmniNodeService omniNodeService;
-    private final OmniService omniService;
-    private final RefillService refillService;
-    private final ObjectMapper objectMapper;
+    private static final Logger log = LogManager.getLogger("omni_log");
 
     private static final String LAST_BLOCK_PARAM = "LastScannedBlock";
     private static final Integer LAST_BLOCK_TO_SCAN = 999999999;
@@ -58,19 +46,31 @@ public class OmniTransactionServiceImpl implements OmniTransactionService {
     private static final Integer OFFSET_TO_SCAN = 0;
     private static final Integer TIME_TO_ONE_TRANSFER_SECONDS = 20;
 
-    private @Value("${omni.hotwallet.address}")String mainAddress;
-    private @Value("${omni.comission.address}")String comissionAddress;
+    private final MerchantSpecParamsDao specParamsDao;
+    private final OmniNodeService omniNodeService;
+    private final OmniService omniService;
+    private final RefillService refillService;
+    private final ObjectMapper objectMapper;
+
+    private String mainAddress;
+    private String comissionAddress;
 
     private ScheduledExecutorService txScheduler = Executors.newScheduledThreadPool(1);
     private ScheduledExecutorService unconfScheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
-    public OmniTransactionServiceImpl(MerchantSpecParamsDao specParamsDao, OmniNodeService omniNodeService, OmniService omniService, RefillService refillService, ObjectMapper objectMapper) {
+    public OmniTransactionServiceImpl(MerchantSpecParamsDao specParamsDao, OmniNodeService omniNodeService,
+                                      OmniService omniService, RefillService refillService, ObjectMapper objectMapper,
+                                      CryptoCurrencyProperties cryptoCurrencyProperties) {
         this.specParamsDao = specParamsDao;
         this.omniNodeService = omniNodeService;
         this.omniService = omniService;
         this.refillService = refillService;
         this.objectMapper = objectMapper;
+
+        OtherOmniProperty omniProperty = cryptoCurrencyProperties.getOtherCoins().getOmni();
+        this.mainAddress = omniProperty.getHotWalletAddress();
+        this.comissionAddress = omniProperty.getCommissionAddress();
     }
 
     @PostConstruct

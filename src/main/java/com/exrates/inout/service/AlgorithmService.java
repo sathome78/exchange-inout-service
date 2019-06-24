@@ -12,4 +12,6 @@ public interface AlgorithmService {
     String sha256(String string);
 
     String base64Encode(String string);
+
+    String getSecret(String сode);
 }

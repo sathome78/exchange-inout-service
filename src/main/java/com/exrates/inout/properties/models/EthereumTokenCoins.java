@@ -138,5 +138,8 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty FST;
     private EthereumTokenProperty RVT;
     private EthereumTokenProperty GOLEM;
+    private EthereumTokenProperty LINA;
+    private EthereumTokenProperty GAPI;
+    private EthereumTokenProperty EMBR;
 
 }

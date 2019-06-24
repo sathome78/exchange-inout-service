@@ -1,16 +1,14 @@
 package com.exrates.inout.service.qtum;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 
 import com.exrates.inout.domain.qtum.*;
 import com.exrates.inout.exceptions.QtumApiException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherQtumProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
@@ -22,29 +20,31 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
-
-//exrates.model.dto.merchants.qtum.*;
-//exrates.service.exception.QtumApiException;
-
 @Service
 //@Log4j2(topic = "qtum_log")
-@PropertySource("classpath:/merchants/qtum.properties")
 public class QtumNodeServiceImpl implements QtumNodeService {
 
-   private static final Logger log = LogManager.getLogger("qtum_log");
-
+    private static final Logger log = LogManager.getLogger("qtum_log");
 
     @Autowired
     private RestTemplate restTemplate;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    private @Value("${qtum.node.endpoint}") String endpoint;
-    private @Value("${qtum.node.user}") String user;
-    private @Value("${qtum.node.password}") String password;
-    private @Value("${qtum.wallet.password}") String walletPassphrase;
-    private @Value("${qtum.backup.folder}") String backupDestination;
+    private String endpoint;
+    private String user;
+    private String password;
+    private String walletPassphrase;
+    private String backupDestination;
+
+    public QtumNodeServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherQtumProperty qtumProperty = cryptoCurrencyProperties.getOtherCoins().getQtum();
+        this.endpoint = qtumProperty.getEndpoint();
+        this.user = qtumProperty.getUser();
+        this.password = qtumProperty.getPassword();
+        this.walletPassphrase = qtumProperty.getWalletPassword();
+        this.backupDestination = qtumProperty.getBackupFolder();
+    }
 
     @PostConstruct
     private void init() {

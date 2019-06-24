@@ -10,6 +10,7 @@ import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.BitsharesProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -45,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -94,21 +94,21 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     protected final String lastIrreversebleBlockParam = "last_irreversible_block_num";
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public BitsharesServiceImpl(String merchantName, String currencyName, String propertySource, long SCANING_INITIAL_DELAY, int decimal) {
+    public BitsharesServiceImpl() {
+    }
+
+    public BitsharesServiceImpl(String merchantName, String currencyName, BitsharesProperty bitsharesProperty, long SCANING_INITIAL_DELAY, int decimal) {
         this.merchantName = merchantName;
         this.currencyName = currencyName;
         this.decimal = decimal;
+
         log = LogManager.getLogger(merchantName.toLowerCase());
-        Properties props = new Properties();
-        try {
-            props.load(this.getClass().getClassLoader().getResourceAsStream(propertySource));
-            mainAddress = props.getProperty("mainAddress");
-            mainAddressId = props.getProperty("mainAddressId");
-            wsUrl = props.getProperty("wsUrl");
-            scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
-        } catch (Exception e){
-            log.error(e);
-        }
+
+        mainAddress = bitsharesProperty.getMainAddress();
+        mainAddressId = bitsharesProperty.getMainAddressNum();
+        wsUrl = bitsharesProperty.getWs();
+
+        scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
     }
 
     @PostConstruct

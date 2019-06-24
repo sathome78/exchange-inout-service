@@ -115,13 +115,16 @@ public class TronServiceImpl implements TronService {
                 .merchantTransactionId(dto.getHash())
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+        log.info("BEFORE ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        log.info("AFTER ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         requestAcceptDto.setRequestId(requestId);
         return requestAcceptDto;
     }
 
     @Override
     public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
+        log.info("putOnBchExam(RefillRequestAcceptDto requestAcceptDto) start................");
         try {
             refillService.putOnBchExamRefillRequest(
                     RefillRequestPutOnBchExamDto.builder()
@@ -140,6 +143,7 @@ public class TronServiceImpl implements TronService {
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment() start process.................");
         String address = params.get("address");
         String hash = params.get("hash");
         Integer id = Integer.parseInt(params.get("id"));
@@ -157,7 +161,10 @@ public class TronServiceImpl implements TronService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(id);
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);

@@ -1,4 +1,5 @@
 package com.exrates.inout.service.impl;
+
 import com.exrates.inout.dao.WalletDao;
 import com.exrates.inout.domain.dto.TransferDto;
 import com.exrates.inout.domain.dto.WalletInnerTransferDto;
@@ -6,28 +7,11 @@ import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.enums.OperationType;
 import com.exrates.inout.domain.enums.TransactionSourceType;
 import com.exrates.inout.domain.enums.WalletTransferStatus;
-import com.exrates.inout.domain.main.Commission;
-import com.exrates.inout.domain.main.CompanyWallet;
-import com.exrates.inout.domain.main.Currency;
-import com.exrates.inout.domain.main.NotificationEvent;
-import com.exrates.inout.domain.main.User;
-import com.exrates.inout.domain.main.Wallet;
+import com.exrates.inout.domain.main.*;
 import com.exrates.inout.domain.other.WalletOperationData;
-import com.exrates.inout.exceptions.BalanceChangeException;
-import com.exrates.inout.exceptions.InvalidAmountException;
-import com.exrates.inout.exceptions.NotEnoughUserWalletMoneyException;
-import com.exrates.inout.exceptions.UserNotFoundException;
-import com.exrates.inout.exceptions.WalletNotFoundException;
+import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.EndpointProperties;
-import com.exrates.inout.service.CommissionService;
-import com.exrates.inout.service.CompanyWalletService;
-import com.exrates.inout.service.CryptoCurrencyBalances;
-import com.exrates.inout.service.CurrencyService;
-import com.exrates.inout.service.NotificationService;
-import com.exrates.inout.service.UserService;
-import com.exrates.inout.service.WalletService;
-import com.exrates.inout.service.api.ExchangeApi;
-import com.exrates.inout.service.api.WalletsApi;
+import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,12 +67,6 @@ public class WalletServiceImpl implements WalletService {
     private NotificationService notificationService;
     @Autowired
     private MessageSource messageSource;
-    @Autowired
-    private CryptoCurrencyBalances cryptoCurrencyBalances;
-    @Autowired
-    private ExchangeApi exchangeApi;
-    @Autowired
-    private WalletsApi walletsApi;
     @Autowired
     private RestTemplate template;
     @Autowired

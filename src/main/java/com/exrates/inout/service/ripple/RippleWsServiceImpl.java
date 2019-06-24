@@ -1,4 +1,6 @@
 package com.exrates.inout.service.ripple;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,36 +35,42 @@ import java.util.Optional;
 //@Log4j2(topic = "ripple_log")
 @ClientEndpoint
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleWsServiceImpl {
 
-   private static final Logger log = LogManager.getLogger("ripple_log");
+    private static final Logger log = LogManager.getLogger("ripple_log");
 
+    private static final String XRP_MERCHANT = "Ripple";
 
-    private @Value("${ripple.rippled.ws}") String wsUrl;
-    private @Value("${ripple.account.address}") String address;
-    private URI WS_SERVER_URL;
-
-    private Session session;
-    private boolean access = false;
-    private volatile RemoteEndpoint.Basic endpoint = null;
     private static final String SUBSCRIBE_COMAND_ID = "watch main account transactions";
     private static final String GET_TX_COMMAND_ID = "get transaction";
-    private volatile boolean shutdown = false;
-    private Merchant merchant;
-    private static final String XRP_MERCHANT = "Ripple";
 
     private final RippleService rippleService;
     private final MerchantService merchantService;
     private final WithdrawService withdrawService;
 
+    private String wsUrl;
+    private String address;
+
+    private URI WS_SERVER_URL;
+
+    private Session session;
+    private boolean access = false;
+    private volatile RemoteEndpoint.Basic endpoint = null;
+
+    private volatile boolean shutdown = false;
+    private Merchant merchant;
+
     @Autowired
-    public RippleWsServiceImpl(RippleService rippleService, MerchantService merchantService, WithdrawService withdrawService) {
+    public RippleWsServiceImpl(RippleService rippleService, MerchantService merchantService,
+                               WithdrawService withdrawService, CryptoCurrencyProperties cryptoCurrencyProperties) {
         this.rippleService = rippleService;
         this.merchantService = merchantService;
         this.withdrawService = withdrawService;
-    }
 
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.wsUrl = rippleProperty.getWs();
+        this.address = rippleProperty.getAccountAddress();
+    }
 
     @PostConstruct
     public void init() {

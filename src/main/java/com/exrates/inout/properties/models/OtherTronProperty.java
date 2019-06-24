@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class OtherTronProperty {
 
     private String fullNodeUrl;
+    private String fullNodeForSendUrl;
     private String solidityNodeUrl;
+    private String explorerApi;
     private String mainAccountAddress;
     private String mainAccountHexAddress;
 }

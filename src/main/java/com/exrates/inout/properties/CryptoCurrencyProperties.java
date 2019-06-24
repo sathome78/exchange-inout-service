@@ -1,6 +1,10 @@
 package com.exrates.inout.properties;
 
+import com.exrates.inout.properties.models.AisiCoins;
+import com.exrates.inout.properties.models.AwsServer;
 import com.exrates.inout.properties.models.BitcoinCoins;
+import com.exrates.inout.properties.models.BitsharesCoins;
+import com.exrates.inout.properties.models.EosCoins;
 import com.exrates.inout.properties.models.EthereumCoins;
 import com.exrates.inout.properties.models.EthereumTokenCoins;
 import com.exrates.inout.properties.models.LiskCoins;
@@ -10,6 +14,8 @@ import com.exrates.inout.properties.models.NeoCoins;
 import com.exrates.inout.properties.models.OtherCoins;
 import com.exrates.inout.properties.models.PaymentSystemMerchants;
 import com.exrates.inout.properties.models.QtumCoins;
+import com.exrates.inout.properties.models.QuberaConfig;
+import com.exrates.inout.properties.models.RippleCoins;
 import com.exrates.inout.properties.models.StellarCoins;
 import com.exrates.inout.properties.models.WavesCoins;
 import com.exrates.inout.properties.models.XemCoins;
@@ -33,7 +39,13 @@ import org.springframework.stereotype.Component;
         StellarCoins.class,
         OtherCoins.class,
         PaymentSystemMerchants.class,
-        NemCoins.class})
+        NemCoins.class,
+        AisiCoins.class,
+        AwsServer.class,
+        BitsharesCoins.class,
+        RippleCoins.class,
+        QuberaConfig.class,
+        EosCoins.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -49,6 +61,12 @@ public class CryptoCurrencyProperties {
     private final OtherCoins otherCoins;
     private final PaymentSystemMerchants paymentSystemMerchants;
     private final NemCoins nemCoins;
+    private final AisiCoins aisiCoins;
+    private final AwsServer awsServer;
+    private final BitsharesCoins bitsharesCoins;
+    private final RippleCoins rippleCoins;
+    private final QuberaConfig quberaConfig;
+    private final EosCoins eosCoins;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -63,7 +81,13 @@ public class CryptoCurrencyProperties {
                                     StellarCoins stellarCoins,
                                     OtherCoins otherCoins,
                                     PaymentSystemMerchants paymentSystemMerchants,
-                                    NemCoins nemCoins) {
+                                    NemCoins nemCoins,
+                                    AisiCoins aisiCoins,
+                                    AwsServer awsServer,
+                                    BitsharesCoins bitsharesCoins,
+                                    RippleCoins rippleCoins,
+                                    QuberaConfig quberaConfig,
+                                    EosCoins eosCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -77,5 +101,11 @@ public class CryptoCurrencyProperties {
         this.otherCoins = otherCoins;
         this.paymentSystemMerchants = paymentSystemMerchants;
         this.nemCoins = nemCoins;
+        this.aisiCoins = aisiCoins;
+        this.awsServer = awsServer;
+        this.bitsharesCoins = bitsharesCoins;
+        this.rippleCoins = rippleCoins;
+        this.quberaConfig = quberaConfig;
+        this.eosCoins = eosCoins;
     }
 }

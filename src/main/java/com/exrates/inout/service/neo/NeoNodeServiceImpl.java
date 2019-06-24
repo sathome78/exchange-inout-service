@@ -23,9 +23,7 @@ import java.util.Optional;
 //@Log4j2(topic = "neo_log")
 public class NeoNodeServiceImpl implements NeoNodeService {
 
-   private static final Logger log = LogManager.getLogger("neo_log");
-
-
+    private static final Logger log = LogManager.getLogger("neo_log");
 
     private String endpoint;
     private RestTemplate restTemplate;

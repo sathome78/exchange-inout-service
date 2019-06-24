@@ -1,4 +1,6 @@
 package com.exrates.inout.service.apollo;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherApolloProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,18 +30,19 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 //@Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
 @Component
 public class ApolloReceiveServiceImpl {
 
-   private static final Logger log = LogManager.getLogger("apollo");
+    private static final Logger log = LogManager.getLogger("apollo");
 
-
-
-    private @Value("${apollo.main_address}")String MAIN_ADDRESS;
     private static final String PARAM_NAME = "LastBlockTime";
     private static final String MERCHANT_NAME = "APL";
     private static final long GENESIS_TIME = 1515931200;
+
+    private String MAIN_ADDRESS;
+
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
@@ -50,8 +53,11 @@ public class ApolloReceiveServiceImpl {
     @Autowired
     private RefillService refillService;
 
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
+    @Autowired
+    public ApolloReceiveServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherApolloProperty apolloProperty = cryptoCurrencyProperties.getOtherCoins().getApollo();
+        this.MAIN_ADDRESS = apolloProperty.getMainAddress();
+    }
 
     @PostConstruct
     private void init() {

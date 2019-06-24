@@ -7,6 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "qtum-coins")
 public class QtumCoins {
 
-    QtumProperty spc;
-    QtumProperty hlc;
+    QtumTokenProperty spc;
+    QtumTokenProperty hlc;
 }

@@ -10,12 +10,10 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.MerchantCurrency;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.api.ExchangeApi;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +44,6 @@ public class MerchantServiceImpl implements MerchantService {
     private UserService userService;
 
     @Autowired
-    private SendMailService sendMailService;
-
-    @Autowired
     private MessageSource messageSource;
 
     @Autowired
@@ -60,14 +55,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private CurrencyService currencyService;
 
-    @Autowired
-    private ExchangeApi exchangeApi;
-
     private static final BigDecimal HUNDREDTH = new BigDecimal(100L);
-
-    @Autowired
-    @Qualifier("bitcoinServiceImpl")
-    private BitcoinService bitcoinService;
 
     @Override
     public List<Merchant> findAllByCurrency(Currency currency) {

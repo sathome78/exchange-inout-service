@@ -1,6 +1,8 @@
 package com.exrates.inout.service.usdx;
 
 import com.exrates.inout.exceptions.UsdxApiException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherUsdxProperty;
 import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.usdx.model.UsdxAccountBalance;
 import com.exrates.inout.service.usdx.model.UsdxApiResponse;
@@ -33,7 +35,6 @@ import java.util.List;
 
 @Log4j2(topic = "usdx_log")
 @Service
-@PropertySource("classpath:/merchants/usdx.properties")
 public class UsdxRestApiServiceImpl implements UsdxRestApiService {
 
     private final static String GET_ACCOUNT_BALANCE = "exchange/:exchangeId/balance";
@@ -47,20 +48,21 @@ public class UsdxRestApiServiceImpl implements UsdxRestApiService {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${usdx.server.url}")
     private String baseUrl;
-
-    @Value("${usdx.account.name}")
     private String accountName;
-
-    @Value("${usdx.api.key}")
     private String apiKey;
-
-    @Value("${usdx.exchange.id}")
     private String exchangeId;
 
     @Autowired
     private AlgorithmService algorithmService;
+
+    public UsdxRestApiServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherUsdxProperty usdxProperty = cryptoCurrencyProperties.getOtherCoins().getUsdx();
+        this.baseUrl = usdxProperty.getServerUrl();
+        this.accountName = usdxProperty.getAccountName();
+        this.apiKey = usdxProperty.getApiKey();
+        this.exchangeId = usdxProperty.getExchangeId();
+    }
 
     @Override
     public UsdxTransaction transferAssetsToUserAccount(UsdxTransaction usdxTransaction) {

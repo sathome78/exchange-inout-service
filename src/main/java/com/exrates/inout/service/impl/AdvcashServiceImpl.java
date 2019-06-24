@@ -1,4 +1,6 @@
 package com.exrates.inout.service.impl;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.AdvCashProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,46 +30,54 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("classpath:/merchants/advcashmoney.properties")
 //@Log4j2
 public class AdvcashServiceImpl implements AdvcashService {
 
-   private static final Logger log = LogManager.getLogger(AdvcashServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(AdvcashServiceImpl.class);
 
-
-    private @Value("${advcash.url}")
-    String url;
-    private @Value("${advcash.accountId}")
-    String accountId;
-    private @Value("${advcash.payeeName}")
-    String payeeName;
-    private @Value("${advcash.paymentSuccess}")
-    String paymentSuccess;
-    private @Value("${advcash.paymentFailure}")
-    String paymentFailure;
-    private @Value("${advcash.paymentStatus}")
-    String paymentStatus;
-    private @Value("${advcash.USDAccount}")
-    String usdCompanyAccount;
-    private @Value("${advcash.EURAccount}")
-    String eurCompanyAccount;
-    private @Value("${advcash.payeePassword}")
-    String payeePassword;
-
-    @Autowired
     private AlgorithmService algorithmService;
-    @Autowired
     private RefillRequestDao refillRequestDao;
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
     private GtagService gtagService;
+
+    private String url;
+    private String accountId;
+    private String payeeName;
+    private String paymentSuccess;
+    private String paymentFailure;
+    private String paymentStatus;
+    private String usdCompanyAccount;
+    private String eurCompanyAccount;
+    private String payeePassword;
+
+    @Autowired
+    public AdvcashServiceImpl(AlgorithmService algorithmService, RefillRequestDao refillRequestDao,
+                              MerchantService merchantService, CurrencyService currencyService,
+                              RefillService refillService, WithdrawUtils withdrawUtils,
+                              GtagService gtagService, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.algorithmService = algorithmService;
+        this.refillRequestDao = refillRequestDao;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+
+        AdvCashProperty advCashProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getAdvcash();
+        this.url = advCashProperty.getUrl();
+        this.accountId = advCashProperty.getAccountId();
+        this.payeeName = advCashProperty.getPayeeName();
+        this.paymentSuccess = advCashProperty.getPaymentSuccess();
+        this.paymentFailure = advCashProperty.getPaymentFailure();
+        this.paymentStatus = advCashProperty.getPaymentStatus();
+        this.usdCompanyAccount = advCashProperty.getUSDAccount();
+        this.eurCompanyAccount = advCashProperty.getEURAccount();
+        this.payeePassword = advCashProperty.getPayeePassword();
+    }
+
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {
