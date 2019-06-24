@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <property name="activeProfile">${sys:spring.profiles.active}</property>
+        <property name="springActiveProfile">${sys:spring.profiles.active}</property>
     </Properties>
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="env=${activeProfile} | %d{dd MMM yyyy HH:mm:ss.SSS} %level [%t] %C:%M:%L - %message  %n"/>
+            <PatternLayout pattern="env=${springActiveProfile} | %d{dd MMM yyyy HH:mm:ss.SSS} %level [%t] %C:%M:%L - %message  %n"/>
         </Console>
         <RollingFile name="Merchants" fileName="${sys:catalina.home}/logs/merchants/merchants.log"
                      filePattern="${sys:catalina.home}/logs/merchants/merchants_%d_%i.log" append="true">
@@ -723,7 +723,7 @@
         </RollingFile>
         <Socket name="Socket" host="172.10.12.148" port="4560">
             <JsonLayout complete="true" compact="false" properties="true">
-                <KeyValuePair key="activeProfile" value="${activeProfile}"/>
+                <KeyValuePair key="activeProfile" value="${springActiveProfile}"/>
             </JsonLayout>
         </Socket>
     </Appenders>
