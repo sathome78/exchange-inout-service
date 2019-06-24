@@ -1,6 +1,8 @@
 package com.exrates.inout;
 
 import com.exrates.inout.configuration.LoggingListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @EnableRabbit
 public class InoutApplication  {
-
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(InoutApplication.class);
         application.addListeners(new LoggingListener());

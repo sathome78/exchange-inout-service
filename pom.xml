@@ -27,7 +27,7 @@
         <spring-cloud.version>Finchley.SR1</spring-cloud.version>
         <btcd-cli4j.version>0.5.9.17</btcd-cli4j.version>
         <bitcoinj.version>0.14.3</bitcoinj.version>
-        <log4j2.version>2.1</log4j2.version>
+        <log4j2.version>2.11.2</log4j2.version>
         <docker.image.prefix>input-output</docker.image.prefix>
         <aws-java-sdk.version>1.11.433</aws-java-sdk.version>
     </properties>
