@@ -24,12 +24,8 @@ spring:
     host: rabbitmq-dev.service
     port: 5672
 
-kibana:
-  host: logstash-parser.exrates-k8s.name
-
-#logging:
-#  level:
-#    ROOT: DEBUG
+logging:
+  config: classpath:log4j2-test.xml
 
 server:
   port: 8080
