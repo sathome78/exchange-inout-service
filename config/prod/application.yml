@@ -31,6 +31,9 @@ spring:
     host: 172.31.14.1
     port: 5672
 
+kibana:
+  host: logstash-parser.exrates-k8s.name
+
 server:
   port: 8080
 

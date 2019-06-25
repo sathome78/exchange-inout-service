@@ -61,7 +61,6 @@ public class RefillRequestJob {
         for (String coin : merchantNames) {
             try {
                 if(coin.equals("KOD")) {
-                    log.info("Scanning log. Kod");
                     System.out.println("Scanning " + coin);
                 }
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
