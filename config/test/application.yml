@@ -24,8 +24,8 @@ spring:
     host: rabbitmq-dev.service
     port: 5672
 
-#logging:
-#  config: classpath:log4j2-test.xml
+logging:
+  config: classpath:log4j2-test.xml
 
 server:
   port: 8080
