@@ -721,7 +721,7 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <Socket name="Socket" host="logstash-parser.exrates-k8s.name" port="4560">
+        <Socket name="Socket" host="${sys:kibana.host}" port="4560">
             <JsonLayout complete="true" compact="false">
                 <KeyValuePair key="activeProfile" value="${activeProfile}"/>
             </JsonLayout>
