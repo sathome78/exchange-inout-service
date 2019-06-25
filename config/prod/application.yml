@@ -31,15 +31,11 @@ spring:
     host: 172.31.14.1
     port: 5672
 
-kibana:
-  host: logstash-parser.exrates-k8s.name
+logging:
+  config: classpath:log4j2-prod.xml
 
 server:
   port: 8080
-
-#logging:
-#  level:
-#    ROOT: DEBUG
 
 #slave:
 #  datasource:
