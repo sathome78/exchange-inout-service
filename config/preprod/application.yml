@@ -21,8 +21,8 @@ spring:
     host: 172.10.10.33
     port: 5672
 
-logging:
-  config: classpath:log4j2-preprod.xml
+#logging:
+#  config: classpath:log4j2-preprod.xml
 
 #logging:
 #  level:
