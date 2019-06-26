@@ -31,8 +31,8 @@ spring:
     host: 172.31.14.1
     port: 5672
 
-logging:
-  config: classpath:log4j2-prod.xml
+#logging:
+#  config: classpath:log4j2-prod.xml
 
 server:
   port: 8080

@@ -20,9 +20,6 @@ public class SpringPropertyConfigLog4j2 implements ApplicationListener, Ordered 
 
             String activeProfile = environment.getProperty("spring.profiles.active");
             System.setProperty("spring.profiles.active", activeProfile != null ? activeProfile : "");
-
-            String kibanaHostUrl = environment.getProperty("kibana.host");
-            System.setProperty("kibana.host", kibanaHostUrl != null ? kibanaHostUrl : "");
         }
     }
 }
