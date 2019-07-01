@@ -2670,15 +2670,15 @@ lisk-coins:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://testnet.lisk.io
-      port: 7000
-      address: 2153431705828817770L
+      host: http://172.10.13.104
+      port: 8000
+      address: 11069838797124010917L
       secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
       tx-sort-prefix:
-      tx-query-limit: 1000
-      tx-count-node-type: STRING
-      port-get-account: 7000
-      port-send-tx: 7000
+      tx-query-limit: 100
+      tx-count-node-type: NUMBER
+      microservice-host: http://172.10.13.104
+      microservice-port: 19111
   btw:
     merchant-name: BitcoinWhite
     currency-name: BTW

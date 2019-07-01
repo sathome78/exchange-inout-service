@@ -1,7 +1,5 @@
 package com.exrates.inout.service.lisk;
 
-//exrates.model.dto.merchants.lisk.LiskAccount;
-//exrates.model.dto.merchants.lisk.LiskTransaction;
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskTransaction;
 import com.exrates.inout.service.IRefillable;

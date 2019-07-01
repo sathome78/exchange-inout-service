@@ -1,11 +1,8 @@
 package com.exrates.inout.service.lisk;
 
-//exrates.model.dto.merchants.lisk.LiskAccount;
-//exrates.model.dto.merchants.lisk.LiskSendTxDto;
-
-
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskSendTxDto;
+
 
 public class LiskSpecialMethodServiceImpl implements LiskSpecialMethodService {
 
@@ -18,7 +15,7 @@ public class LiskSpecialMethodServiceImpl implements LiskSpecialMethodService {
     @Override
     public String sendTransaction(String secret, Long amount, String recipientId) {
         LiskSendTxDto dto = new LiskSendTxDto();
-        dto.setSecret(secret);
+        dto.setPassphrase(secret);
         dto.setAmount(amount);
         dto.setRecipientId(recipientId);
         return liskRestClient.sendTransaction(dto);

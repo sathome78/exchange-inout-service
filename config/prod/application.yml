@@ -2606,20 +2606,20 @@ lisk-coins:
   lisk:
     merchant-name: Lisk
     currency-name: LSK
-    min-confirmations: 300
+    min-confirmations: 30
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://ip-172-31-14-168.us-east-2.compute.internal
+      host: http://172.10.13.104
       port: 8000
       address: 11069838797124010917L
-      secret:
+      secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
       tx-sort-prefix:
-      tx-query-limit: 1000
-      tx-count-node-type: STRING
-      port-get-account: 8000
-      port-send-tx: 8000
+      tx-query-limit: 100
+      tx-count-node-type: NUMBER
+      microservice-host: http://172.10.13.104
+      microservice-port: 19111
   btw:
     merchant-name: BitcoinWhite
     currency-name: BTW

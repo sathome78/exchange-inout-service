@@ -9,7 +9,11 @@ import com.exrates.inout.service.AlgorithmService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +25,9 @@ import static com.yandex.money.api.utils.Numbers.bytesToHex;
 @Service
 public class AlgorithmServiceImpl implements AlgorithmService {
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+    private static BASE64Encoder enc = new BASE64Encoder();
+    private static BASE64Decoder dec = new BASE64Decoder();
     private static final int decimalPlaces = 8;
 
     private AwsProperty awsProperty;
@@ -28,6 +35,30 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     @Autowired
     public AlgorithmServiceImpl(CryptoCurrencyProperties ccp){
         this.awsProperty = ccp.getAwsServer().getAws();
+    }
+
+    @Override
+    public String encodeByKey(String code, String txt) {
+        String key = getSecret(code);
+        String text = xorMessage(txt, key);
+        try {
+            return enc.encode(text.getBytes(DEFAULT_ENCODING));
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String decodeByKey(String code, String text) {
+        String txt;
+        String key;
+        try {
+            txt = new String(dec.decodeBuffer(text), DEFAULT_ENCODING);
+        } catch (IOException e) {
+            return null;
+        }
+        key = getSecret(code);
+        return xorMessage(txt, key);
     }
 
     //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
@@ -126,5 +157,25 @@ public class AlgorithmServiceImpl implements AlgorithmService {
             result.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
         return result.toString();
+    }
+
+    private String xorMessage(String message, String key) {
+        try {
+            if (message == null || key == null) {return null;}
+
+            char[] keys = key.toCharArray();
+            char[] mesg = message.toCharArray();
+
+            int ml = mesg.length;
+            int kl = keys.length;
+            char[] newmsg = new char[ml];
+
+            for (int i = 0; i < ml; i++) {
+                newmsg[i] = (char)(mesg[i] ^ keys[i % kl]);
+            }
+            return new String(newmsg);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
