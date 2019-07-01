@@ -11,5 +11,7 @@ public class ArkNode extends LiskNode {
     private String arkCreateAccountEndpoint;
     private String arkCreateTxEndpoint;
     private String arkBroadcastTxEndpoint;
+    private String portSendTx;
+    private String portGetAccount;
 
 }
