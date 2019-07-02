@@ -2,18 +2,20 @@ package com.exrates.inout.service.impl;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.*;
+import com.amazonaws.services.secretsmanager.model.DecryptionFailureException;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+import com.amazonaws.services.secretsmanager.model.InternalServiceErrorException;
+import com.amazonaws.services.secretsmanager.model.InvalidParameterException;
+import com.amazonaws.services.secretsmanager.model.InvalidRequestException;
+import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.AwsProperty;
 import com.exrates.inout.service.AlgorithmService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,9 +27,6 @@ import static com.yandex.money.api.utils.Numbers.bytesToHex;
 @Service
 public class AlgorithmServiceImpl implements AlgorithmService {
 
-    private static final String DEFAULT_ENCODING = "UTF-8";
-    private static BASE64Encoder enc = new BASE64Encoder();
-    private static BASE64Decoder dec = new BASE64Decoder();
     private static final int decimalPlaces = 8;
 
     private AwsProperty awsProperty;
@@ -42,8 +41,8 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         String key = getSecret(code);
         String text = xorMessage(txt, key);
         try {
-            return enc.encode(text.getBytes(DEFAULT_ENCODING));
-        } catch (UnsupportedEncodingException e) {
+            return base64Encode(text);
+        } catch (Exception e) {
             return null;
         }
     }
@@ -53,8 +52,8 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         String txt;
         String key;
         try {
-            txt = new String(dec.decodeBuffer(text), DEFAULT_ENCODING);
-        } catch (IOException e) {
+            txt = base64Decode(text);
+        } catch (Exception e) {
             return null;
         }
         key = getSecret(code);
@@ -149,6 +148,10 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         return Base64
                 .getEncoder()
                 .encodeToString(string.getBytes());
+    }
+
+    public String base64Decode(final String string) {
+        return new String(Base64.getDecoder().decode(string));
     }
 
     private String byteArrayToHexString(byte[] bytes) {
