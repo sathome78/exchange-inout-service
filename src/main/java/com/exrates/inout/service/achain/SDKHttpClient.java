@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpStatus;
@@ -20,9 +23,12 @@ import java.util.Random;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class SDKHttpClient {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
 
     private CloseableHttpClient httpclient;
@@ -77,14 +83,14 @@ public class SDKHttpClient {
                 //log.debug("【SDKHttpClient】｜POST URL:[{}],The response is empty!", url);
             }
         } catch (Exception e) {
-            ////log.error("【SDKHttpClient】｜POST URL:[{}] Abnormal[{}]!", url, e.getStackTrace());
+            log.error("【SDKHttpClient】｜POST URL:[{}] Abnormal[{}]!", url, e.getStackTrace());
         } finally {
             try {
                 if (null != httppost) {
                     httppost.releaseConnection();
                 }
             } catch (Exception e) {
-                ////log.error("【SDKHttpClient】｜POST URL:[{}] shut down httpclient.close() abnormal[{}]!", url, e.getStackTrace());
+                log.error("【SDKHttpClient】｜POST URL:[{}] shut down httpclient.close() abnormal[{}]!", url, e.getStackTrace());
             }
         }
         return result;

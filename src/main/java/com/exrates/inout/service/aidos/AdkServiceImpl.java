@@ -6,25 +6,26 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.BtcPaymentNotFoundException;
 import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherAdkProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
 import com.google.common.base.Preconditions;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -35,42 +36,47 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 
-@Log4j2(topic = "adk_log")
-@PropertySource("classpath:/merchants/adk.properties")
+//@Log4j2(topic = "adk_log")
 @Service
+@RequiredArgsConstructor
 public class AdkServiceImpl implements AdkService {
 
-    private final AidosNodeService aidosNodeService;
-    private final MessageSource messageSource;
-    private final MerchantService merchantService;
-    private final CurrencyService currencyService;
-    private final RefillService refillService;
-    private final GtagService gtagService;
-    private final WithdrawUtils withdrawUtils;
+    private static final Logger log = LogManager.getLogger("adk_log");
+
+    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
+    private static final Object SEND_MONITOR = new Object();
 
     public static final String CURRENCY_NAME = "ADK";
     public static final String MERCHANT_NAME = "ADK";
+
     private Merchant merchant;
     private Currency currency;
-    private static final Integer SECONDDS_TO_UNLOCK_WALLET = 60;
-    private static final Object SEND_MONITOR = new Object();
-    private static final String PASS_PATH = "/opt/properties/Aidos_pass.properties";
+
+    //TODO Rewrite with more security
+    private String walletPassword;
+
+    private AidosNodeService aidosNodeService;
+    private MessageSource messageSource;
+    private CurrencyService currencyService;
+    private RefillService refillService;
+    private GtagService gtagService;
+    private WithdrawUtils withdrawUtils;
+    private MerchantService merchantService;
 
     @Autowired
-    public AdkServiceImpl(AidosNodeService aidosNodeService,
-                          MessageSource messageSource,
-                          MerchantService merchantService,
-                          CurrencyService currencyService,
-                          RefillService refillService,
-                          GtagService gtagService,
-                          WithdrawUtils withdrawUtils) {
+    public AdkServiceImpl(AidosNodeService aidosNodeService, MessageSource messageSource, CurrencyService currencyService,
+                          RefillService refillService, GtagService gtagService, WithdrawUtils withdrawUtils,
+                          MerchantService merchantService, CryptoCurrencyProperties cryptoCurrencyProperties){
         this.aidosNodeService = aidosNodeService;
         this.messageSource = messageSource;
-        this.merchantService = merchantService;
         this.currencyService = currencyService;
         this.refillService = refillService;
         this.gtagService = gtagService;
         this.withdrawUtils = withdrawUtils;
+        this.merchantService = merchantService;
+
+        OtherAdkProperty adkProperty = cryptoCurrencyProperties.getOtherCoins().getAdk();
+        this.walletPassword = adkProperty.getWalletPassword();
     }
 
     @PostConstruct
@@ -97,6 +103,7 @@ public class AdkServiceImpl implements AdkService {
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment starts.........................");
         if (params.containsKey("admin")) {
             processAdminTransaction(params);
         }
@@ -115,8 +122,9 @@ public class AdkServiceImpl implements AdkService {
 
         Integer requestId = refillService.getRequestId(requestAcceptDto);
         requestAcceptDto.setRequestId(requestId);
-
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
 
         final String username = refillService.getUsernameByRequestId(requestId);
 
@@ -139,7 +147,7 @@ public class AdkServiceImpl implements AdkService {
     @Override
     public RefillRequestAcceptDto createRequest(String address, String hash, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            //log.error("ADK transaction allready received!!! {}", hash);
+            log.error("ADK transaction allready received!!! {}", hash);
             throw new RuntimeException("ADK transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -168,7 +176,7 @@ public class AdkServiceImpl implements AdkService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e + "  in AdkServiceImpl.putOnBchExam(RefillRequestAcceptDto requestAcceptDto)");
         }
     }
 
@@ -223,15 +231,6 @@ public class AdkServiceImpl implements AdkService {
 
     @Override
     public void submitWalletPassword(String password) {
-        Properties props = new Properties();
-        FileInputStream inputStream;
-        try {
-            inputStream = new FileInputStream(new File(PASS_PATH));
-            props.load(inputStream);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        String walletPassword = props.getProperty("wallet.password");
         if (password == null || !password.equals(walletPassword)) {
             throw new IncorrectCoreWalletPasswordException("Incorrect password: " + password);
         }

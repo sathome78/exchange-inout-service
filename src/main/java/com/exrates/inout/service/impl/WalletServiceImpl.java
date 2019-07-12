@@ -12,13 +12,13 @@ import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.properties.EndpointProperties;
 import com.exrates.inout.service.*;
-import com.exrates.inout.service.api.ExchangeApi;
-import com.exrates.inout.service.api.WalletsApi;
 import com.exrates.inout.util.BigDecimalProcessing;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.*;
@@ -36,11 +36,14 @@ import java.util.Locale;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.math.BigDecimal.ZERO;
 
-@Log4j2
+//@Log4j2
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
+
+   private static final Logger log = LogManager.getLogger(WalletServiceImpl.class);
+
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
@@ -64,12 +67,6 @@ public class WalletServiceImpl implements WalletService {
     private NotificationService notificationService;
     @Autowired
     private MessageSource messageSource;
-    @Autowired
-    private CryptoCurrencyBalances cryptoCurrencyBalances;
-    @Autowired
-    private ExchangeApi exchangeApi;
-    @Autowired
-    private WalletsApi walletsApi;
     @Autowired
     private RestTemplate template;
     @Autowired
@@ -131,15 +128,19 @@ public class WalletServiceImpl implements WalletService {
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<Wallet> response = template.exchange(
+            ResponseEntity<String> response = template.exchange(
                     builder.toUriString(),
                     HttpMethod.GET,
                     entity,
-                    Wallet.class);
-            return response.getBody();
+                    String.class);
+            String body = response.getBody();
+
+            log.debug("Body = {}", body);
+
+            return new ObjectMapper().readValue(body, Wallet.class);
         } catch (Exception e){
             log.error(e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -167,7 +168,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @SneakyThrows
     public WalletTransferStatus walletInnerTransfer(int walletId, BigDecimal amount, TransactionSourceType sourceType, int sourceId, String description) {
         HttpHeaders headers = getHeaders();
 
@@ -181,8 +181,12 @@ public class WalletServiceImpl implements WalletService {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoints.getStock() + endpoints.getInoutPrefix() + WALLET_INNER_TRANSFER);
 
-        HttpEntity<?> entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(walletInnerTransferDto), headers);
-
+        HttpEntity<?> entity = null;
+        try {
+            entity = new HttpEntity<>(new ObjectMapper().writeValueAsString(walletInnerTransferDto), headers);
+        } catch (JsonProcessingException e) {
+            log.error("Error : {}", e);
+        }
 
         ResponseEntity<WalletTransferStatus> response = template.exchange(
                 builder.toUriString(),

@@ -6,10 +6,13 @@ import com.exrates.inout.domain.dto.MosaicIdDto;
 import com.exrates.inout.domain.dto.NemMosaicTransferDto;
 import com.exrates.inout.exceptions.NemTransactionException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NemProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nem.core.messages.PlainMessage;
@@ -19,8 +22,6 @@ import org.nem.core.serialization.DeserializationContext;
 import org.nem.core.serialization.JsonDeserializer;
 import org.nem.core.serialization.SimpleAccountLookup;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -42,10 +43,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by maks on 21.07.2017.
  */
-@Log4j2(topic = "nem_log")
+//@Log4j2(topic = "nem_log")
 @Service
-@PropertySource("classpath:/merchants/nem.properties")
 public class NemRecieveTransactionsService {
+
+   private static final Logger log = LogManager.getLogger("nem_log");
+
 
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
@@ -70,7 +73,11 @@ public class NemRecieveTransactionsService {
         }
     });
 
-    private @Value("${nem.address}")String address;
+    private final NemProperty property;
+
+    public NemRecieveTransactionsService(CryptoCurrencyProperties ccp) {
+        this.property = ccp.getNemCoins().getNem();
+    }
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -85,7 +92,7 @@ public class NemRecieveTransactionsService {
         String lastHash = loadLastHash();
         String pagingHash = null;
         do {
-            JSONArray transactions = nodeService.getIncomeTransactions(address, pagingHash);
+            JSONArray transactions = nodeService.getIncomeTransactions(property.getAddress(), pagingHash);
             pagingHash = processTransactions(transactions, lastHash, pagingHash);
         } while (!StringUtils.isEmpty(pagingHash));
     }
@@ -118,16 +125,16 @@ public class NemRecieveTransactionsService {
                     checkOwnedMosaics(params.get("signer"));
                     nemService.processMosaicPayment(mosaics, params);
                 } catch (Exception e) {
-                    //log.error("nem mosaic refill process error {} {}", e, transactionData.toString());
+                    log.error("nem mosaic refill process error {} {}", e, transactionData.toString());
                 }
             } else {
                 try {
                     checkOwnedMosaics(params.get("signer"));
                     nemService.processPayment(params);
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error("nem refill address not found {}", transactionData.toString());
+                    log.error("nem refill address not found {}", transactionData.toString());
                 } catch (Exception e) {
-                    //log.error("nem refill process error {} {}", e, transactionData.toString());
+                    log.error("nem refill process error {} {}", e, transactionData.toString());
                 }
             }
             if (i == 24) {
@@ -186,7 +193,7 @@ public class NemRecieveTransactionsService {
             message = new String(plainMessage.getEncodedPayload());
             log.debug(message);
         } catch (Exception e) {
-            //log.error("unsupported encoding {}", e);
+            log.error("unsupported encoding {}", e);
         }
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("hash", meta.getJSONObject("hash").getString("data"));
@@ -202,7 +209,7 @@ public class NemRecieveTransactionsService {
         specParamsDao.updateParam(MERCHANT_NAME, LAST_HASH_PARAM, hash);
     }
 
-    private String loadLastHash() {
+    public String loadLastHash() {
         MerchantSpecParamDto specParamsDto = specParamsDao.getByMerchantNameAndParamName(MERCHANT_NAME, LAST_HASH_PARAM);
         return specParamsDto == null ? null : specParamsDto.getParamValue();
     }

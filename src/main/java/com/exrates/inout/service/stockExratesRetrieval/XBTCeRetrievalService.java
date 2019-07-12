@@ -1,4 +1,7 @@
 package com.exrates.inout.service.stockExratesRetrieval;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.StockExchange;
 import com.exrates.inout.domain.dto.StockExchangeStats;
@@ -21,9 +24,12 @@ import java.util.stream.Collectors;
 /**
  * Created by OLEG on 15.12.2016.
  */
-@Log4j2(topic = "tracker")
+//@Log4j2(topic = "tracker")
 @Service(value = "xBTCe")
 public class XBTCeRetrievalService implements StockExrateRetrievalService {
+
+   private static final Logger log = LogManager.getLogger("tracker");
+
 
     @Autowired
     private ExchangeResponseProcessingService exchangeResponseProcessingService;

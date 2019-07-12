@@ -20,7 +20,7 @@ import com.exrates.inout.domain.other.WalletOperationData;
 import com.exrates.inout.exceptions.*;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.BigDecimalProcessing;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +87,6 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Autowired
     private MerchantService merchantService;
-//    @Autowired
-//    private SecureService secureServiceImpl;
 
     @Override
     @Transactional(readOnly = true)
@@ -121,7 +119,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                         delayDescription,
                         locale);
             } catch (final MailException e) {
-                //log.error(e);
+                log.error(e);
             }
             profileData.setTime2();
             BigDecimal newAmount = walletService.getWalletABalance(request.getUserWalletId());
@@ -446,14 +444,14 @@ public class WithdrawServiceImpl implements WithdrawService {
                     userService.addUserComment(WITHDRAW_POSTED, comment, userEmail, false);
                     notificationService.notifyUser(withdrawRequestResult.getUserId(), NotificationEvent.IN_OUT, title, comment);
                 } catch (Exception e) {
-                    //log.error("cant send notification on withdraw {}", e);
+                    log.error("cant send notification on withdraw {}", e);
                 }
             }
         } catch (MerchantException e) {
-            //log.error(e);
+            log.error(e);
             throw e;
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             throw new WithdrawRequestPostException(String.format("withdraw data: %s via merchant: %s", withdrawMerchantOperation.toString(), merchantService.toString()));
         }
     }
@@ -477,7 +475,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                 notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT, title, comment);
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             throw new WithdrawRequestPostException(withdrawRequest.toString());
         }
     }
@@ -662,6 +660,27 @@ public class WithdrawServiceImpl implements WithdrawService {
         return new WithdrawRequestCreateDto(requestParamsDto, creditsOperation, beginStatus);
     }
 
+    @Override
+    @Transactional
+    public void setAutoWithdrawParams(MerchantCurrencyOptionsDto merchantCurrencyOptionsDto) {
+        merchantDao.setAutoWithdrawParamsByMerchantAndCurrency(
+                merchantCurrencyOptionsDto.getMerchantId(),
+                merchantCurrencyOptionsDto.getCurrencyId(),
+                merchantCurrencyOptionsDto.getWithdrawAutoEnabled(),
+                merchantCurrencyOptionsDto.getWithdrawAutoDelaySeconds(),
+                merchantCurrencyOptionsDto.getWithdrawAutoThresholdAmount());
+    }
+
+    @Override
+    public Optional<WithdrawRequest> getWithdrawRequestByAddress(String withdrawAddress) {
+        return withdrawRequestDao.findWithdrawRequestByAddress(withdrawAddress);
+    }
+
+    @Override
+    public Optional<WithdrawRequestFlatDto> getFlatById(Integer requestId) {
+        return withdrawRequestDao.getFlatById(requestId);
+    }
+
 
     private String getAmountWithCurrency(WithdrawRequestCreateDto dto) {
         return String.join("", dto.getAmount().stripTrailingZeros().toPlainString(), " ", dto.getCurrencyName());
@@ -696,7 +715,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         notificationMessageCode = "merchants.withdrawNotification.".concat(withdrawRequest.getStatus().name());
         notification = messageSource
                 .getMessage(notificationMessageCode, messageParams, locale);
-        notificationService.notifyUser(withdrawRequest.getUserEmail(), NotificationEvent.IN_OUT,
+        notificationService.notifyUser(withdrawRequest.getUserId(), NotificationEvent.IN_OUT,
                 "merchants.withdrawNotification.header", notificationMessageCode, messageParams);
         return notification;
     }

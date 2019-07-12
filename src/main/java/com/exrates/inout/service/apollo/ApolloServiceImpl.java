@@ -1,4 +1,9 @@
 package com.exrates.inout.service.apollo;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherApolloProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
@@ -26,16 +31,17 @@ import java.util.Map;
 import java.util.Optional;
 
 
-@Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
+//@Log4j2(topic = "apollo")
 @Service
 public class ApolloServiceImpl implements ApolloService {
 
-    private @Value("${apollo.url}")
-    String SEVER_URL;
-    private @Value("${apollo.main_address}")
-    String MAIN_ADDRESS;
+    private static final Logger log = LogManager.getLogger("apollo");
+
     private static final String APOLLO_MERCHANT_CURRENCY = "APL";
+
+    private String SEVER_URL;
+    private String MAIN_ADDRESS;
+
     private Merchant merchant;
     private Currency currency;
 
@@ -53,6 +59,12 @@ public class ApolloServiceImpl implements ApolloService {
     private WithdrawUtils withdrawUtils;
     @Autowired
     private GtagService gtagService;
+
+    public ApolloServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherApolloProperty apolloProperty = cryptoCurrencyProperties.getOtherCoins().getApollo();
+        this.SEVER_URL = apolloProperty.getUrl();
+        this.MAIN_ADDRESS = apolloProperty.getMainAddress();
+    }
 
     @PostConstruct
     public void init() {
@@ -86,7 +98,7 @@ public class ApolloServiceImpl implements ApolloService {
     @Override
     public RefillRequestAcceptDto createRequest(String address, BigDecimal amount, String hash) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            //log.error("apollo transaction allready received!!! {}", hash);
+            log.error("apollo transaction allready received!!! {}", hash);
             throw new RuntimeException("apollo transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -104,6 +116,7 @@ public class ApolloServiceImpl implements ApolloService {
 
     @Override
     public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
+        log.info("ApolloServiceImpl.putOnBchExam() start method.................");
         try {
             refillService.putOnBchExamRefillRequest(
                     RefillRequestPutOnBchExamDto.builder()
@@ -115,13 +128,14 @@ public class ApolloServiceImpl implements ApolloService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("ApolloServiceImpl.processPayment() start method.................");
         String address = params.get("address");
         String hash = params.get("hash");
         BigDecimal amount = new BigDecimal(params.get("amount"));
@@ -135,7 +149,9 @@ public class ApolloServiceImpl implements ApolloService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(id);
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);

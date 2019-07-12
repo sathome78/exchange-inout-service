@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.enums.NotificationTypeEnum;
 import com.exrates.inout.domain.main.Email;
@@ -9,9 +12,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class EmailNotificatorServiceImpl implements NotificatorService {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     private final SendMailService sendMailService;
 

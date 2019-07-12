@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.NotificationUserSettingsDao;
 import com.exrates.inout.domain.enums.NotificationMessageEventEnum;
@@ -17,9 +20,12 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
+//@Log4j2
 @Repository
 public class NotificationUserSettingsDaoImpl implements NotificationUserSettingsDao {
+
+   private static final Logger log = LogManager.getLogger(NotificationUserSettingsDaoImpl.class);
+
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

@@ -5,7 +5,7 @@ import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.EthereumException;
-import com.exrates.inout.exceptions.NotImplementedMethod;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.EthereumProperty;
 import com.exrates.inout.service.CurrencyService;
@@ -25,7 +25,6 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
@@ -46,13 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ajet
- */
-//@Service
 public class EthereumCommonServiceImpl implements EthereumCommonService {
-
-    private static final String ETHEREUM = "Ethereum";
 
     @Autowired
     private CurrencyService currencyService;
@@ -85,7 +78,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private Web3j web3j;
 
-    private Observable<Transaction> observable;
+    private Observable<org.web3j.protocol.core.methods.response.Transaction> observable;
 
     private Subscription subscription;
 
@@ -117,24 +110,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private Logger log;
 
-    public EthereumCommonServiceImpl(EthereumProperty property) {
-        this.url = property.getNode().getUrl();
-        this.destinationDir = property.getNode().getDestinationDir();
-        this.password = property.getNode().getPassword();
-        this.mainAddress = property.getNode().getMainAddress();
-        this.minSumOnAccount = property.getNode().getMinSumOnAccount();
-        this.minBalanceForTransfer = property.getNode().getMinBalanceForTransfer();
-        this.merchantName = property.getMerchantName();
-        this.currencyName = property.getCurrencyName();
-        this.minConfirmations = property.getMinConfirmations();
-        this.log = LogManager.getLogger(property.getNode().getLog());
-        if (this.merchantName.equals(ETHEREUM)) {
-            this.transferAccAddress = property.getNode().getTransferAccAddress();
-            this.transferAccPrivateKey = property.getNode().getTransferAccPrivatKey();
-            this.transferAccPublicKey = property.getNode().getTransferAccPublicKey();
-            this.needToCheckTokens = true;
-        }
-    }
+    private static final Logger consoleLogger = LogManager.getLogger();
 
     @Override
     public Web3j getWeb3j() {
@@ -174,36 +150,34 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     private static final String LAST_BLOCK_PARAM = "LastRecievedBlock";
 
-    public EthereumCommonServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.url = props.getProperty("ethereum.url");
-            this.destinationDir = props.getProperty("ethereum.destinationDir");
-            this.password = props.getProperty("ethereum.password");
-            this.mainAddress = props.getProperty("ethereum.mainAddress");
-            this.minSumOnAccount = new BigDecimal(props.getProperty("ethereum.minSumOnAccount"));
-            this.minBalanceForTransfer = new BigDecimal(props.getProperty("ethereum.minBalanceForTransfer"));
-            this.merchantName = merchantName;
-            this.currencyName = currencyName;
-            this.minConfirmations = minConfirmations;
-            this.log = LogManager.getLogger(props.getProperty("ethereum.log"));
-            if (merchantName.equals("Ethereum")) {
-                this.transferAccAddress = props.getProperty("ethereum.transferAccAddress");
-                this.transferAccPrivateKey = props.getProperty("ethereum.transferAccPrivateKey");
-                this.transferAccPublicKey = props.getProperty("ethereum.transferAccPublicKey");
-                this.needToCheckTokens = true;
-            }
-        } catch (IOException e) {
-            //log.error(e);
+    public EthereumCommonServiceImpl(EthereumProperty ethereumProperty) {
+        this.merchantName = ethereumProperty.getMerchantName();
+        this.currencyName = ethereumProperty.getCurrencyName();
+
+        this.url = ethereumProperty.getNode().getUrl();
+        this.destinationDir = ethereumProperty.getNode().getDestinationDir();
+        this.password = ethereumProperty.getNode().getPassword();
+        this.mainAddress = ethereumProperty.getNode().getMainAddress();
+        this.minSumOnAccount = ethereumProperty.getNode().getMinSumOnAccount();
+        this.minBalanceForTransfer = ethereumProperty.getNode().getMinBalanceForTransfer();
+        this.minConfirmations = ethereumProperty.getMinConfirmations();
+
+        this.log = LogManager.getLogger(ethereumProperty.getNode().getLog());
+        if (merchantName.equals("Ethereum")) {
+            this.transferAccAddress = ethereumProperty.getNode().getTransferAccAddress();
+            this.transferAccPrivateKey = ethereumProperty.getNode().getTransferAccPrivatKey();
+            this.transferAccPublicKey = ethereumProperty.getNode().getTransferAccPublicKey();
+            this.needToCheckTokens = true;
         }
+
+        log.info("Ethereum properties: " + ethereumProperty);
     }
 
     @PostConstruct
     void start() {
         merchantId = merchantService.findByName(merchantName).getId();
 
-        log.info("start " + merchantName);
+        consoleLogger.info("start init " + merchantName);
 
         web3j = Web3j.build(new HttpService(url));
 
@@ -211,13 +185,13 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             public void run() {
                 checkSession();
             }
-        }, 3, 8, TimeUnit.MINUTES);
+        }, 0, 8, TimeUnit.MINUTES);
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
                 transferFundsToMainAccount();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         }, 4, 20, TimeUnit.MINUTES);
 
@@ -228,7 +202,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                         saveLastBlock(currentBlockNumber.toString());
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             }
         }, 1, 24, TimeUnit.HOURS);
@@ -244,10 +218,11 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 try {
                     checkConnection();
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             }, 4, 3, TimeUnit.MINUTES);
         }
+        consoleLogger.info("finish init " + merchantName);
     }
 
     @Override
@@ -257,7 +232,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        throw new NotImplementedMethod("for " + params);
+        throw new NotImplimentedMethod("for " + params);
     }
 
     private void checkConnection() {
@@ -296,7 +271,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             observable = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(new DefaultBlockParameterNumber(Long.parseLong(lastBlock)));
             log.info("start subscribe method");
             subscription = observable.subscribe(ethBlock -> {
-                log.info("new block {}", ethBlock.getBlockNumber());
+//                System.out.println("  new block {}" + ethBlock.getBlockNumber());
                 if (merchantName.equals("Ethereum")) {
                     if (ethBlock.getFrom().equals(credentialsMain.getAddress())) {
                         counter[0]++;
@@ -304,11 +279,11 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                     }
                 }
 
-//                log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
+                log.debug(merchantName + " block: " + ethBlock.getBlockNumber());
 
                 /*-------------Tokens--------------*/
                 if (ethBlock.getTo() != null && ethTokensContext.isContract(ethBlock.getTo()) && merchantName.equals("Ethereum")) {
-                    ethTokensContext.getByContract(ethBlock.getTo()).tokenTransaction(ethBlock);
+                        ethTokensContext.getByContract(ethBlock.getTo()).tokenTransaction(ethBlock);
                 }
 
                 if (ethBlock.getTo() != null && ethBlock.getInput().contains("0xb61d27f6")
@@ -343,7 +318,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                                     .hash(ethBlock.getHash())
                                     .blockhash(ethBlock.getBlockNumber().toString()).build());
                         } catch (RefillRequestAppropriateNotFoundException e) {
-                            //log.error(e);
+                            log.error(e);
                         }
 
                         pendingTransactions.add(refillService.getFlatById(requestId));
@@ -364,7 +339,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                         }
 
                     } catch (Exception e) {
-                        //log.error(e);
+                        log.error(e);
                     }
                     counter[0] = 0;
 
@@ -385,7 +360,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                                     }
                                 } catch (EthereumException | IOException e) {
                                     subscribeCreated = false;
-                                    //log.error(merchantName + " " + e);
+                                    log.error(merchantName + " " + e);
                                 }
 
                             }
@@ -403,7 +378,8 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
         } catch (Exception e) {
             subscribeCreated = false;
-            //log.error(merchantName + " " + e);
+            log.error(merchantName + " " + e);
+            e.printStackTrace();
         }
     }
 
@@ -417,7 +393,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             }
             subscribeCreated = true;
         } catch (IOException e) {
-            //log.error(merchantName + " " + e);
+            log.error(merchantName + " " + e);
             subscribeCreated = false;
         }
     }
@@ -430,6 +406,9 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
         try {
 
             File destination = new File(destinationDir);
+
+            log.info("Created new destination directories for {} by path {}", merchantName, destination.mkdirs());
+
             log.debug(merchantName + " " + destinationDir);
 
             String fileName = "";
@@ -446,7 +425,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
 
         } catch (EthereumException | IOException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | NoSuchProviderException | CipherException e) {
-            //log.error(merchantName + " " + e);
+            log.error(merchantName + " " + e);
         }
 
 
@@ -488,7 +467,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
             log.debug("Process of sending data to Google Analytics...");
             gtagService.sendGtagEvents(refillRequestInfoDto.get().getAmount().toString(), currencyName, username);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
     }
@@ -516,7 +495,7 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
                 log.debug(merchantName + " Funds " + ethBalance + " sent to main account!!!");
             } catch (Exception e) {
                 subscribeCreated = false;
-                //log.error(merchantName + " " + e);
+                log.error(merchantName + " " + e);
             }
         }
     }
@@ -555,6 +534,11 @@ public class EthereumCommonServiceImpl implements EthereumCommonService {
     public boolean isValidDestinationAddress(String address) {
 
         return withdrawUtils.isValidDestinationAddress(address);
+    }
+
+    @Override
+    public void setConfirmationNeededCount(int minConfirmationsCount){
+        this.minConfirmations = minConfirmationsCount;
     }
 
 }

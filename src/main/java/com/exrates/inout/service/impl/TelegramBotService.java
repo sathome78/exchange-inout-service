@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.enums.NotificatorSubscriptionStateEnum;
 import com.exrates.inout.domain.main.TelegramSubscription;
@@ -21,9 +24,12 @@ import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class TelegramBotService extends TelegramLongPollingBot {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     @Qualifier("telegramNotificatorServiceImpl")
     @Autowired
@@ -45,7 +51,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
             try {
                 botsApi.registerBot(this);
             } catch (TelegramApiException e) {
-                //log.error("error while initialize bot {}", e);
+                log.error("error while initialize bot {}", e);
             }
         }
     }
@@ -80,7 +86,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
                             .build());
                     message.setText("Registered");
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                     message.setText("error registering profile");
                 }
             }

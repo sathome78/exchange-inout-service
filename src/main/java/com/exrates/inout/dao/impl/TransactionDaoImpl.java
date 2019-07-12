@@ -1,4 +1,7 @@
 package com.exrates.inout.dao.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.TransactionDao;
 import com.exrates.inout.domain.dto.UserSummaryOrdersDto;
@@ -39,9 +42,12 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-@Log4j2
+//@Log4j2
 @Repository
 public class TransactionDaoImpl implements TransactionDao {
+
+   private static final Logger log = LogManager.getLogger(TransactionDaoImpl.class);
+
 
     private static final Logger LOGGER = LogManager.getLogger(TransactionDaoImpl.class);
 

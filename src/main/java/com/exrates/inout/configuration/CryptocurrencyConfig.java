@@ -19,8 +19,14 @@ import com.exrates.inout.service.ethereum.EthereumCommonService;
 import com.exrates.inout.service.ethereum.EthereumCommonServiceImpl;
 import com.exrates.inout.service.impl.CurrencyServiceImpl;
 import com.exrates.inout.service.impl.MerchantServiceImpl;
+import com.exrates.inout.service.lisk.ArkRpcClient;
+import com.exrates.inout.service.lisk.ArkSpecialMethodServiceImpl;
 import com.exrates.inout.service.lisk.LiskRestClient;
 import com.exrates.inout.service.lisk.LiskRestClientImpl;
+import com.exrates.inout.service.lisk.LiskService;
+import com.exrates.inout.service.lisk.LiskServiceImpl;
+import com.exrates.inout.service.lisk.LiskSpecialMethodService;
+import com.exrates.inout.service.lisk.LiskSpecialMethodServiceImpl;
 import com.exrates.inout.service.monero.MoneroService;
 import com.exrates.inout.service.monero.MoneroServiceImpl;
 import com.exrates.inout.service.monero.hcxp.HCXPServiceImpl;
@@ -33,19 +39,24 @@ import com.exrates.inout.service.stellar.StellarAsset;
 import com.exrates.inout.service.tron.TronTrc10Token;
 import com.exrates.inout.service.waves.WavesService;
 import com.exrates.inout.service.waves.WavesServiceImpl;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-@Log4j2(topic = "config")
 @Configuration
 public class CryptocurrencyConfig {
+
+   private static final Logger log = LogManager.getLogger("config");
+
 
     @Autowired
     private CryptoCurrencyProperties ccp;
@@ -272,12 +283,12 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "cbcServiceImpl")
     public BitcoinService cbcService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getCBC());
+        return createBitcoinService(ccp.getBitcoinCoins().getCbc());
     }
 
     @Bean(name = "abbcServiceImpl")
     public BitcoinService abbcService() {
-        return createBitcoinService(ccp.getBitcoinCoins().getABBC());
+        return createBitcoinService(ccp.getBitcoinCoins().getAbbc());
     }
 
     @Bean(name = "qServiceImpl")
@@ -287,47 +298,68 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "dimeServiceImpl")
     public BitcoinService dimeServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getDIME());
+        return createBitcoinService(ccp.getBitcoinCoins().getDime());
     }
 
     @Bean(name = "bsvServiceImpl")
     public BitcoinService bsvServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getBSV());
+        return createBitcoinService(ccp.getBitcoinCoins().getBsv());
     }
 
     @Bean(name = "bchServiceImpl")
     public BitcoinService bchServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getBCH());
+        return createBitcoinService(ccp.getBitcoinCoins().getBch());
     }
 
     @Bean(name = "ctxServiceImpl")
     public BitcoinService ctxServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getCTX());
+        return createBitcoinService(ccp.getBitcoinCoins().getCtx());
     }
 
     @Bean(name = "rimeServiceImpl")
     public BitcoinService rimeServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getRIME());
+        return createBitcoinService(ccp.getBitcoinCoins().getRime());
     }
 
     @Bean(name = "exoServiceImpl")
     public BitcoinService exoServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getEXO());
+        return createBitcoinService(ccp.getBitcoinCoins().getExo());
     }
 
     @Bean(name = "grsServiceImpl")
     public BitcoinService grsServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getGRS());
+        return createBitcoinService(ccp.getBitcoinCoins().getGrs());
     }
 
     @Bean(name = "kodServiceImpl")
     public BitcoinService kodServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getKOD());
+        return createBitcoinService(ccp.getBitcoinCoins().getKod());
     }
 
     @Bean(name = "diviServiceImpl")
     public BitcoinService diviServiceImpl() {
-        return createBitcoinService(ccp.getBitcoinCoins().getDIVI());
+        return createBitcoinService(ccp.getBitcoinCoins().getDivi());
+    }
+
+    @Bean(name = "owcServiceImpl")
+    public BitcoinService owcServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getOwc());
+    }
+
+    @Bean(name = "wolfServiceImpl")
+    public BitcoinService wolfServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getWolf());
+    }
+
+
+    @Bean(name = "tslServiceImpl")
+    public BitcoinService tslServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getTsl());
+    }
+
+    @Bean(name = "vollarServiceImpl")
+    public BitcoinService vollarServiceImpl() {
+        return createBitcoinService(ccp.getBitcoinCoins().getVollar());
     }
 
     private BitcoinService createBitcoinService(BitcoinProperty property) {
@@ -337,227 +369,227 @@ public class CryptocurrencyConfig {
     //ETH Services
     @Bean(name = "ethereumServiceImpl")
     public EthereumCommonService ethereumService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEth());
+        return createEthereumService(ccp.getEthereumCoins().getEth());
     }
 
     @Bean(name = "ethereumClassicServiceImpl")
     public EthereumCommonService ethereumClassicService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEtc());
+        return createEthereumService(ccp.getEthereumCoins().getEtc());
     }
 
     @Bean(name = "etzServiceImpl")
     public EthereumCommonService etzService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEtz());
+        return createEthereumService(ccp.getEthereumCoins().getEtz());
     }
 
     @Bean(name = "cloServiceImpl")
     public EthereumCommonService cloService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getClo());
+        return createEthereumService(ccp.getEthereumCoins().getClo());
     }
 
     @Bean(name = "b2gServiceImpl")
     public EthereumCommonService b2gService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getB2g());
+        return createEthereumService(ccp.getEthereumCoins().getB2g());
     }
 
     @Bean(name = "golServiceImpl")
     public EthereumCommonService golService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getGol());
+        return createEthereumService(ccp.getEthereumCoins().getGol());
     }
 
     @Bean(name = "cnetServiceImpl")
     public EthereumCommonService cnetService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getCnet());
+        return createEthereumService(ccp.getEthereumCoins().getCnet());
     }
 
     @Bean(name = "ntyServiceImpl")
     public EthereumCommonService ntyService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getNty());
+        return createEthereumService(ccp.getEthereumCoins().getNty());
     }
 
     @Bean(name = "etherincServiceImpl")
     public EthereumCommonService etherincService() {
-        return createEthereumCommonService(ccp.getEthereumCoins().getEti());
+        return createEthereumService(ccp.getEthereumCoins().getEti());
     }
 
-    private EthereumCommonService createEthereumCommonService(EthereumProperty property) {
+    private EthereumCommonServiceImpl createEthereumService(EthereumProperty property) {
         return new EthereumCommonServiceImpl(property);
     }
 
-    //Eth tokens
+        //Eth tokens
     @Bean(name = "repServiceImpl")
     public EthTokenService RepService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRep());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getREP());
     }
 
     @Bean(name = "golemServiceImpl")
     public EthTokenService GolemService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGolem());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGOLEM());
     }
 
     @Bean(name = "omgServiceImpl")
     public EthTokenService OmgService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getOmg());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getOMG());
     }
 
     @Bean(name = "bnbServiceImpl")
     public EthTokenService BnbService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBnb());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBINANCECOIN());
     }
 
     @Bean(name = "atlServiceImpl")
     public EthTokenService ATLANTService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getAtl());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getATLANT());
     }
 
     @Bean(name = "bitRentServiceImpl")
     public EthTokenService BitRentService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRntb());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBITRENT());
     }
 
     @Bean(name = "nioServiceImpl")
     public EthTokenService NioService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNio());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNIO());
     }
 
     @Bean(name = "gosServiceImpl")
     public EthTokenService GosService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGos());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGOS());
     }
 
     @Bean(name = "bptnServiceImpl")
     public EthTokenService BptnRentService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBptn());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBPTN());
     }
 
     @Bean(name = "nbcServiceImpl")
     public EthTokenService NbcService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNbc());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNBC());
     }
 
     @Bean(name = "taxiServiceImpl")
     public EthTokenService taxiRentService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTaxi());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTAXI());
     }
 
     @Bean(name = "nbtkServiceImpl")
     public EthTokenService nbtkRentService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNbtk());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNBTK());
     }
 
     @Bean(name = "ucashServiceImpl")
     public EthTokenService ucashService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getUcash());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getUCASH());
     }
 
     @Bean(name = "nacServiceImpl")
     public EthTokenService nacService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNac());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNAC());
     }
 
     @Bean(name = "echtServiceImpl")
     public EthTokenService echtService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getEcht());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getECHT());
     }
 
     @Bean(name = "idhServiceImpl")
     public EthTokenService idhService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getIdh());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getIDH());
     }
 
     @Bean(name = "cobcServiceImpl")
     public EthTokenService cobcService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getCobc());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getCOBC());
     }
 
     @Bean(name = "bcsServiceImpl")
     public EthTokenService bcsService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBcs());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBCS());
     }
 
     @Bean(name = "uqcServiceImpl")
     public EthTokenService uqcService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getUqc());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getUQC());
     }
 
     @Bean(name = "inoServiceImpl")
     public EthTokenService inoService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getIno());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getINO());
     }
 
     @Bean(name = "profitServiceImpl")
     public EthTokenService profitService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getProfit());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getPROFIT());
     }
 
     @Bean(name = "ormeServiceImpl")
     public EthTokenService ormeService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getOrme());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getORME());
     }
 
     @Bean(name = "bezServiceImpl")
     public EthTokenService bezService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBez());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBEZ());
     }
 
     @Bean(name = "simServiceImpl")
     public EthTokenService simService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getSim());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getSIM());
     }
 
     @Bean(name = "amnServiceImpl")
     public EthTokenService amnService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getAmn());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getAMN());
     }
 
     @Bean(name = "getServiceImpl")
     public EthTokenService getService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGet());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGET());
     }
 
     @Bean(name = "flotServiceImpl")
     public EthTokenService flotService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getFlot());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getFLOT());
     }
 
     @Bean(name = "vdgServiceImpl")
     public EthTokenService vdgService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVdg());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVDG());
     }
 
     @Bean(name = "dgtxServiceImpl")
     public EthTokenService dgtxService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getDgtx());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getDGTX());
     }
 
     @Bean(name = "droneServiceImpl")
     public EthTokenService droneService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getDrone());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getDRONE());
     }
 
     @Bean(name = "wdscServiceImpl")
     public EthTokenService wdscService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getWdsc());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getWDSC());
     }
 
     @Bean(name = "fsbtServiceImpl")
     public EthTokenService fsbtService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getFsbt());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getFSBT());
     }
 
     @Bean(name = "iprServiceImpl")
     public EthTokenService iprService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getIpr());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getIPR());
     }
 
     @Bean(name = "casServiceImpl")
     public EthTokenService casService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getCas());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getCAS());
     }
 
     @Bean(name = "tnrServiceImpl")
     public EthTokenService tnrService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTnr());
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTNR());
     }
 
     @Bean(name = "inkServiceImpl")
@@ -975,39 +1007,112 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getELC());
     }
 
-
-    private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
-        return new EthTokenServiceImpl(property);
+    @Bean(name = "tttServiceImpl")
+    public EthTokenService tttService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getTTT());
     }
 
-    // LISK-like cryptos
-//    @Bean(name = "liskServiceImpl") впадло, позже сделать todo
-//    public LiskService liskService() {
-//        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "btwServiceImpl")
-//    public LiskService btwService() {
-//        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "riseServiceImpl")
-//    public LiskService riseService() {
-//        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
-//    }
-//
-//    @Bean(name = "arkServiceImpl")
-//    public LiskService arkService() {
-//        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk()));
-//    }
-//
-//    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
-//        return LiskServiceImpl.builder()
-//                .property(property)
-//                .liskRestClient(liskRestClient())
-//                .liskSpecialMethodService(liskSpecialMethodService)
-//                .build();
-//    }
+    @Bean(name = "rebServiceImpl")
+    public EthTokenService rebService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getREB());
+    }
+
+    @Bean(name = "rvcServiceImpl")
+    public EthTokenService rvcService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVC());
+    }
+
+    @Bean(name = "bioServiceImpl")
+    public EthTokenService bioService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBIO());
+    }
+
+    @Bean(name = "vraServiceImpl")
+    public EthTokenService vraService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVRA());
+    }
+
+    @Bean(name = "katServiceImpl")
+    public EthTokenService katService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getKAT());
+    }
+
+    @Bean(name = "etaServiceImpl")
+    public EthTokenService etaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getETA());
+    }
+
+    @Bean(name = "brcServiceImpl")
+    public EthTokenService brcService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBRC());
+    }
+
+    @Bean(name = "gnyServiceImpl")
+    public EthTokenService gnyService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGNY());
+    }
+
+    @Bean(name = "novaServiceImpl")
+    public EthTokenService novaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getNOVA());
+    }
+
+    @Bean(name = "rvtServiceImpl")
+    public EthTokenService rvtService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getRVT());
+    }
+
+    @Bean(name = "linaServiceImpl")
+    public EthTokenService linaService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getLINA());
+    }
+
+    @Bean(name = "gapiServiceImpl")
+    public EthTokenService gapiService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getGAPI());
+    }
+
+    @Bean(name = "embrServiceImpl")
+    public EthTokenService embrService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getEMBR());
+    }
+
+
+    private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
+        String[] s = property.getContract().replaceAll(" ", "").split(",");
+        List<String> contractAddress = Arrays.asList(s);
+        return new EthTokenServiceImpl(contractAddress,
+                property.getMerchantName(),
+                property.getCurrencyName(),
+                property.isERC20(),
+                property.getUnit(),
+                property.getMinWalletBalance());
+    }
+
+//     LISK-like cryptos
+    @Bean(name = "liskServiceImpl")
+    public LiskService liskService() {
+        return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "btwServiceImpl")
+    public LiskService btwService() {
+        return createLiskService(ccp.getLiskCoins().getBtw(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "riseServiceImpl")
+    public LiskService riseService() {
+        return createLiskService(ccp.getLiskCoins().getRise(), new LiskSpecialMethodServiceImpl(liskRestClient()));
+    }
+
+    @Bean(name = "arkServiceImpl")
+    public LiskService arkService(ArkRpcClient arkRpcClient) {
+        return createLiskService(ccp.getLiskCoins().getArk(), new ArkSpecialMethodServiceImpl(ccp.getLiskCoins().getArk().getArcNode(), arkRpcClient));
+    }
+
+    private LiskService createLiskService(LiskProperty property, LiskSpecialMethodService liskSpecialMethodService) {
+        return new LiskServiceImpl(liskRestClient(), liskSpecialMethodService, property.getMerchantName(), property.getCurrencyName(), property);
+    }
 
     @Bean
     @Scope("prototype")
@@ -1065,6 +1170,22 @@ public class CryptocurrencyConfig {
         return new NeoServiceImpl(property);
     }
 
+    @Bean(name = "cronServiceImpl")
+    public NeoService cronService() {
+        Merchant mainMerchant = merchantService().findByName(NeoAsset.CRON.name());
+        Currency mainCurrency = currencyService().findByName(NeoAsset.CRON.name());
+        Map<String, AssetMerchantCurrencyDto> neoAssetMap = new HashMap<String, AssetMerchantCurrencyDto>() {{
+            put(NeoAsset.CRON.getId(), new AssetMerchantCurrencyDto(NeoAsset.CRON,
+                    merchantService().findByName(NeoAsset.CRON.name()), currencyService().findByName(NeoAsset.CRON.name())));
+        }};
+        NeoProperty property = ccp.getNeoCoins().getNeo().toBuilder()
+                .merchant(mainMerchant)
+                .currency(mainCurrency)
+                .neoAssetMap(neoAssetMap)
+                .build();
+        return new NeoServiceImpl(property);
+    }
+
 
     @Bean(name = "bitTorrentServiceImpl")
     public TronTrc10Token bitTorrentService() {
@@ -1082,8 +1203,8 @@ public class CryptocurrencyConfig {
         return createQtumService(ccp.getQtumCoins().getHlc());
     }
 
-    private QtumTokenServiceImpl createQtumService(QtumProperty property) {
-        return new QtumTokenServiceImpl(property);
+    private QtumTokenServiceImpl createQtumService(QtumTokenProperty property) {
+        return new QtumTokenServiceImpl(property, ccp.getOtherCoins().getQtum());
     }
 
     //**** Monero ****/
@@ -1104,8 +1225,7 @@ public class CryptocurrencyConfig {
 
     @Bean(name = "hcxpServiceImpl")
     public MoneroService hcxpService() {
-        return new HCXPServiceImpl("merchants/hcxp.properties",
-                "HCXP", "HCXP", 20, 6);
+        return new HCXPServiceImpl(ccp.getMoneroCoins().getHcxp());
     }
 
     private MoneroService createMoneroService(MoneroProperty property) {
@@ -1134,10 +1254,13 @@ public class CryptocurrencyConfig {
     }
 
     @Bean(name = "digicServiceImpl")
-    public XemMosaicService digicService() {
-        return createXemMosaicService(ccp.getXemCoins().getDIGIC());
+    public XemMosaicService digicService() { return createXemMosaicService(ccp.getXemCoins().getDIGIC()); }
 
-    }
+    @Bean(name = "darcServiceImpl")
+    public XemMosaicService darcService() { return createXemMosaicService(ccp.getXemCoins().getDARC()); }
+
+    @Bean(name = "rwdsServiceImpl")
+    public XemMosaicService rwdsService() { return createXemMosaicService(ccp.getXemCoins().getRWDS()); }
 
     private XemMosaicService createXemMosaicService(XemProperty property) {
         return new XemMosaicServiceImpl(property);
@@ -1158,7 +1281,7 @@ public class CryptocurrencyConfig {
         return createStellarService(ccp.getStellarCoins().getVnt());
     }
 
-    private StellarAsset createStellarService(StellarProperty property) {
+    private StellarAsset createStellarService(StellarAssetProperty property) {
         return new StellarAsset(property);
     }
 
@@ -1170,6 +1293,6 @@ public class CryptocurrencyConfig {
     //Bithsares
     @Bean(name = "creaServiceImpl")
     public BitsharesService bitsharesService(){
-        return new CreaServiceImpl("CREA", "CREA", "merchants/crea.properties", 6, 3);
+        return new CreaServiceImpl("CREA", "CREA", ccp.getBitsharesCoins().getCrea(), 6, 3);
     }
 }

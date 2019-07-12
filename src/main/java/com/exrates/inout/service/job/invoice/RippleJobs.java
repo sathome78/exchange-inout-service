@@ -1,4 +1,7 @@
 package com.exrates.inout.service.job.invoice;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.WithdrawRequestFlatDto;
 import com.exrates.inout.domain.enums.invoice.WithdrawStatusEnum;
@@ -30,8 +33,11 @@ import java.util.concurrent.Executors;
  */
 
 @Service
-@Log4j2
+//@Log4j2
 public class RippleJobs {
+
+   private static final Logger log = LogManager.getLogger(RippleJobs.class);
+
 
     @Autowired
     private WithdrawService withdrawService;
@@ -44,7 +50,7 @@ public class RippleJobs {
     private final static ExecutorService ordersExecutors = Executors.newSingleThreadExecutor();
 
     @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
-    private void checkWithdrawals() {
+    protected void checkWithdrawals() {
         Merchant merchant = merchantService.findByName(XRP_MERCHANT);
         List<WithdrawRequestFlatDto> dtos = withdrawService.getRequestsByMerchantIdAndStatus(merchant.getId(),
                 Collections.singletonList(WithdrawStatusEnum.ON_BCH_EXAM.getCode()));

@@ -12,4 +12,6 @@ public class XemCoins {
     private XemProperty DIM_EUR;
     private XemProperty DIM_USD;
     private XemProperty DIGIC;
+    private XemProperty DARC;
+    private XemProperty RWDS;
 }

@@ -5,14 +5,15 @@ import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherTronProperty;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.bitshares.memo.Preconditions;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -25,38 +26,34 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
-//exrates.model.dto.RefillRequestAddressDto;
-//exrates.model.dto.RefillRequestFlatDto;
-//exrates.model.dto.TronReceivedTransactionDto;
-//exrates.model.dto.TronTransferDto;
-//exrates.service.RefillService;
-//exrates.service.bitshares.Preconditions;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-
-
-@Log4j2(topic = "tron")
-@PropertySource("classpath:/merchants/tron.properties")
+//@Log4j2(topic = "tron")
 @Service
 public class TronTransactionsServiceImpl implements TronTransactionsService {
 
-    @Autowired
-    public TronTransactionsServiceImpl(TronNodeService tronNodeService, TronService tronService, RefillService refillService, TronTokenContext tronTokenContext) {
-        this.tronNodeService = tronNodeService;
-        this.tronService = tronService;
-        this.refillService = refillService;
-        this.tronTokenContext = tronTokenContext;
-    }
+    private static final Logger log = LogManager.getLogger("tron");
 
-
-
-    private @Value("${tron.mainAccountHEXAddress}")String MAIN_ADDRESS_HEX;
     private final TronNodeService tronNodeService;
     private final TronService tronService;
     private final RefillService refillService;
     private final TronTokenContext tronTokenContext;
 
+    private String MAIN_ADDRESS_HEX;
+
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledExecutorService transferScheduler = Executors.newScheduledThreadPool(3);
+
+    @Autowired
+    public TronTransactionsServiceImpl(TronNodeService tronNodeService, TronService tronService,
+                                       RefillService refillService, TronTokenContext tronTokenContext,
+                                       CryptoCurrencyProperties cryptoCurrencyProperties) {
+        this.tronNodeService = tronNodeService;
+        this.tronService = tronService;
+        this.refillService = refillService;
+        this.tronTokenContext = tronTokenContext;
+
+        OtherTronProperty tronProperty = cryptoCurrencyProperties.getOtherCoins().getTron();
+        this.MAIN_ADDRESS_HEX = tronProperty.getMainAccountHexAddress();
+    }
 
     @PostConstruct
     private void init() {
@@ -73,7 +70,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                     processTransaction(p.getId(), p.getAddress(), p.getMerchantTransactionId(), p.getAmount().toString(), p.getMerchantId(), p.getCurrencyId());
                 }
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
 
@@ -86,7 +83,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                 transferToMainAccount(p);
                 refillService.updateAddressNeedTransfer(p.getAddress(), tronService.getMerchantId(), tronService.getCurrencyId(), false);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
     }
@@ -101,7 +98,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
                 transferTokenToMainAccount(p, token.getNameDescription(), token.getBlockchainName());
                 refillService.updateAddressNeedTransfer(p.getAddress(), p.getMerchantId(), p.getCurrencyId(), false);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
     }
@@ -148,7 +145,7 @@ public class TronTransactionsServiceImpl implements TronTransactionsService {
             tronService.processPayment(map);
             refillService.updateAddressNeedTransfer(address, merchantId, currencyId, true);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error("request not found {}", address);
+            log.error("request not found {}", address);
         }
     }
 

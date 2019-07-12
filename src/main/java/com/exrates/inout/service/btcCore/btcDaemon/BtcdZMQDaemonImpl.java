@@ -1,4 +1,7 @@
 package com.exrates.inout.service.btcCore.btcDaemon;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.BitcoinCoreException;
 import com.neemre.btcdcli4j.core.client.BtcdClient;
@@ -21,8 +24,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 public class BtcdZMQDaemonImpl implements BtcDaemon{
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
+
 
 
     private volatile boolean isActive = false;
@@ -75,7 +81,7 @@ public class BtcdZMQDaemonImpl implements BtcDaemon{
                                     log.warn("Illegal notification format: {}", hex);
                                 }
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                                 if (!isActive) {
                                     onError.accept(e);
                                 }
@@ -149,7 +155,7 @@ public class BtcdZMQDaemonImpl implements BtcDaemon{
         try {
             return btcdClient.getBlock(blockhash);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             throw new BitcoinCoreException(e.getMessage());
         }
     }

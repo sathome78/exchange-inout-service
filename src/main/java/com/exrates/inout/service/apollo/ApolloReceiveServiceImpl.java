@@ -1,4 +1,9 @@
 package com.exrates.inout.service.apollo;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherApolloProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -24,16 +29,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2(topic = "apollo")
-@PropertySource("classpath:/merchants/apollo.properties")
+//@Log4j2(topic = "apollo")
 @Component
 public class ApolloReceiveServiceImpl {
 
+    private static final Logger log = LogManager.getLogger("apollo");
 
-    private @Value("${apollo.main_address}")String MAIN_ADDRESS;
     private static final String PARAM_NAME = "LastBlockTime";
     private static final String MERCHANT_NAME = "APL";
     private static final long GENESIS_TIME = 1515931200;
+
+    private String MAIN_ADDRESS;
+
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private MerchantSpecParamsDao specParamsDao;
@@ -44,8 +53,11 @@ public class ApolloReceiveServiceImpl {
     @Autowired
     private RefillService refillService;
 
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledExecutorService unconfirmedScheduler = Executors.newScheduledThreadPool(1);
+    @Autowired
+    public ApolloReceiveServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherApolloProperty apolloProperty = cryptoCurrencyProperties.getOtherCoins().getApollo();
+        this.MAIN_ADDRESS = apolloProperty.getMainAddress();
+    }
 
     @PostConstruct
     private void init() {
@@ -89,16 +101,16 @@ public class ApolloReceiveServiceImpl {
                                     put("id", String.valueOf(requestAcceptDto.getRequestId()));
                                 }});
                             } catch (RefillRequestAppropriateNotFoundException e) {
-                                ////log.error(e);
+                                log.error(e);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    ////log.error(e);
+                    log.error(e);
                 }
             });
         } catch (JSONException e) {
-            ////log.error(e);
+            log.error(e);
         }
     }
 
@@ -120,11 +132,11 @@ public class ApolloReceiveServiceImpl {
                         }});
                     }
                 } catch (Exception e) {
-                    ////log.error(e);
+                    log.error(e);
                 }
             });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

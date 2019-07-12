@@ -1,11 +1,12 @@
 package com.exrates.inout.service.casinocoin;
 
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,19 +17,17 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @ClientEndpoint
 @Service
-@PropertySource("classpath:/merchants/casinocoin.properties")
 public class CasinoCoinWsService {
+
+    private static final Logger log = LogManager.getLogger("casinocoin_log");
 
     private static final String SUBSCRIBE_COMAND_ID = "watch main account transactions";
     private static final String GET_TX_COMMAND_ID = "get transaction";
 
-    @Value("${casinocoin.ws}")
     private String wsUrl;
-
-    @Value("${casinocoin.account.address}")
     private String mainAddress;
 
     private URI WS_SERVER_URL;
@@ -40,6 +39,12 @@ public class CasinoCoinWsService {
 
     @Autowired
     private CasinoCoinService casinoCoinService;
+
+    public CasinoCoinWsService(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty casinocoinProperty = cryptoCurrencyProperties.getRippleCoins().getCsc();
+        this.wsUrl = casinocoinProperty.getWs();
+        this.mainAddress = casinocoinProperty.getAccountAddress();
+    }
 
     @PostConstruct
     public void init() {
@@ -56,7 +61,7 @@ public class CasinoCoinWsService {
             try {
                 jsonMessage = new JSONObject(msg);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
                 return;
             }
             Object messageType = jsonMessage.get("type");
@@ -86,7 +91,7 @@ public class CasinoCoinWsService {
                         try {
                             subscribeToTransactions();
                         } catch (Exception e) {
-                           //log.error("Error | WebSocket error {}", e);
+                           log.error("Error | WebSocket error {}", e);
                         }
                     }
                     return;
@@ -104,7 +109,7 @@ public class CasinoCoinWsService {
                 }
             }
         } catch (Exception e) {
-            //log.error("ERROR | Exception {}", e);
+            log.error("ERROR | Exception {}", e);
         }
     }
 
@@ -140,7 +145,7 @@ public class CasinoCoinWsService {
 
             subscribeToTransactions();
         } catch (Exception e) {
-            //log.error("ERROR | Error connection to CasinoCoin WebSocket {}", e);
+            log.error("ERROR | Error connection to CasinoCoin WebSocket {}", e);
         }
     }
 
@@ -175,7 +180,7 @@ public class CasinoCoinWsService {
 
     @OnClose
     public void close(final Session session, final CloseReason reason) {
-        //log.error("ERROR | Connection lost. Session closed : {}. Reason : {}", session, reason);
+        log.error("ERROR | Connection lost. Session closed : {}. Reason : {}", session, reason);
         if (!shutdown) {
             connectAndSubscribe();
         }
@@ -187,7 +192,7 @@ public class CasinoCoinWsService {
             shutdown = true;
             session.close();
         } catch (IOException e) {
-            //log.error("ERROR | Closing session");
+            log.error("ERROR | Closing session");
         }
     }
 

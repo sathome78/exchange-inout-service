@@ -1,13 +1,19 @@
 package com.exrates.inout.domain.dto;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
-@Log4j2
+//@Log4j2
 @Data
 public class RefsListContainer {
+
+   private static final Logger log = LogManager.getLogger(RefsListContainer.class);
+
 
     private List<ReferralInfoDto> referralInfoDtos;
     private int onPage;

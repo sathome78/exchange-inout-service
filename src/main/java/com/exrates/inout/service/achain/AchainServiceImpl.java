@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -11,7 +14,7 @@ import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -36,9 +39,11 @@ import java.util.Map;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class AchainServiceImpl implements AchainService {
+
+   private static final Logger log = LogManager.getLogger("achain");
 
     private final BigDecimal ACT_COMISSION = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
     private final BigDecimal TOKENS_COMISSION = new BigDecimal(0.1).setScale(2, RoundingMode.HALF_UP);
@@ -96,13 +101,14 @@ public class AchainServiceImpl implements AchainService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("AchainServiceImpl.processPayment() start method.................");
         String address = params.get("address");
         String hash = params.get("hash");
         Currency currency = currencyService.findByName(params.get("currency"));
         Merchant merchant = merchantService.findByName(params.get("merchant"));
         BigDecimal amount = new BigDecimal(params.get("amount"));
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            //log.warn("achain tx duplicated {}", hash);
+            log.info("achain tx duplicated {}", hash);
             return;
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -117,16 +123,19 @@ public class AchainServiceImpl implements AchainService {
         Integer requestId;
         //log.info("try to accept payment {}", requestAcceptDto);
         try {
+            log.info("AchainServiceImpl --->  refillService.getRequestId(requestAcceptDto) start.................");
             requestId = refillService.getRequestId(requestAcceptDto);
             requestAcceptDto.setRequestId(requestId);
-
+            log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
             refillService.autoAcceptRefillRequest(requestAcceptDto);
+            log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.debug("RefillRequestNotFountException: " + params);
+            log.debug("RefillRequestAppropriateNotFoundException: " + params);
             requestId = refillService.createRefillRequestByFact(requestAcceptDto);
             requestAcceptDto.setRequestId(requestId);
-
+            log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto) IN CATCH SECTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             refillService.autoAcceptRefillRequest(requestAcceptDto);
+            log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto) IN CATCH SECTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         }
         final String username = refillService.getUsernameByRequestId(requestId);
 

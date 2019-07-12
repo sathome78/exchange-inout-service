@@ -2,7 +2,15 @@ package com.exrates.inout.dao.impl;
 
 import com.exrates.inout.dao.RefillRequestDao;
 import com.exrates.inout.domain.RefillOnConfirmationDto;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.InvoiceConfirmData;
+import com.exrates.inout.domain.dto.OperationUserDto;
+import com.exrates.inout.domain.dto.RefillAddressFilterData;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestAddressDto;
+import com.exrates.inout.domain.dto.RefillRequestBtcInfoDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatAdditionalDataDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
 import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.dto.filterdata.RefillFilterData;
 import com.exrates.inout.domain.enums.UserRole;
@@ -19,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -31,7 +40,14 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.exrates.inout.domain.enums.TransactionSourceType.REFILL;
 import static java.util.Collections.singletonMap;
@@ -997,7 +1013,7 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         }
     }
 
-    @Override
+    @Override //0xc1e4a8119a70bdc2ea4141b10e36a9ca5a21d36d
     public List<String> findAllAddresses(Integer merchantId, Integer currencyId, List<Boolean> isValidStatuses) {
         final String sql = "SELECT REFILL_REQUEST_ADDRESS.address FROM REFILL_REQUEST_ADDRESS " +
                 "where merchant_id = :merchant_id AND currency_id = :currency_id AND is_valid IN (:isValidStatuses)";
@@ -1340,5 +1356,48 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, refillRequestAddressRowMapper);
     }
+
+    @Override
+    public Optional<Integer> autoCreate(RefillRequestAcceptDto request, int userId, int commissionId, RefillStatusEnum statusEnum) {
+        final String sql = "INSERT INTO REFILL_REQUEST " +
+                " (amount, status_id, currency_id, user_id, commission_id, merchant_id, " +
+                "  date_creation, status_modification_date, merchant_transaction_id) " +
+                " VALUES " +
+                " (:amount, :status_id, :currency_id, :user_id, :commission_id, :merchant_id, " +
+                " NOW(), NOW())";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("amount", request.getAmount())
+                .addValue("status_id", statusEnum.getCode())
+                .addValue("currency_id", request.getCurrencyId())
+                .addValue("user_id", userId)
+                .addValue("commission_id", commissionId)
+                .addValue("merchant_id", request.getMerchantId())
+                .addValue("merchant_transaction_id", request.getMerchantTransactionId());
+        namedParameterJdbcTemplate.update(sql, params, keyHolder);
+        return  Optional.of((int) keyHolder.getKey().longValue());
+    }
+
+    @Override
+    public Optional<RefillRequestBtcInfoDto> findRefillRequestByAddressAndMerchantIdAndCurrencyIdAndTransactionId(int merchantId, int currencyId, String txHash) {
+        String sql = "SELECT * FROM REFILL_REQUEST WHERE " +
+                " merchant_id = :merchant_id AND" +
+                " currency_id = :currency_id AND" +
+                " merchant_transaction_id = :hash";
+
+        Map<String, Object> namedParameters = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("currency_id", currencyId);
+            put("hash", txHash);
+        }};
+
+        try {
+            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, namedParameters, new BeanPropertyRowMapper<>(RefillRequestBtcInfoDto.class)));
+        } catch (EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
+    }
+
+
 }
 

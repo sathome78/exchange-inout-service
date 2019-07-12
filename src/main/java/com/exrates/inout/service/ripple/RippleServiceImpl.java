@@ -1,4 +1,9 @@
 package com.exrates.inout.service.ripple;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -15,6 +20,7 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -25,32 +31,28 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
-
-
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.MerchantInternalException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.WithdrawUtils;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleServiceImpl implements RippleService {
 
-    private @Value("${ripple.account.address}")
-    String systemAddress;
+    private static final Logger log = LogManager.getLogger("ripple_log");
+
+    private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
+
+    private static final String XRP_MERCHANT = "Ripple";
+    private static final String XRP_CURRENCY = "XRP";
+    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
+
+    private String systemAddress;
 
     @Autowired
     private RippleTransactionService rippleTransactionService;
@@ -69,19 +71,17 @@ public class RippleServiceImpl implements RippleService {
     @Autowired
     private GtagService gtagService;
 
-    private static final String XRP_MERCHANT = "Ripple";
-
-    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
-
-    private static final String DESTINATION_TAG_ERR_MSG = "message.ripple.tagError";
-
     private Currency currency;
-
     private Merchant merchant;
+
+    public RippleServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.systemAddress = rippleProperty.getAccountAddress();
+    }
 
     @PostConstruct
     private void init() {
-        currency = currencyService.findByName("XRP");
+        currency = currencyService.findByName(XRP_CURRENCY);
         merchant = merchantService.findByName(XRP_MERCHANT);
     }
 
@@ -157,7 +157,9 @@ public class RippleServiceImpl implements RippleService {
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
 
+        log.info("BEFORE ---  refillService.createAndAutoAcceptRefillRequest(requestAcceptDto)");
         int requestId = refillService.createAndAutoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.createAndAutoAcceptRefillRequest(requestAcceptDto)");
 
         final String username = refillService.getUsernameByRequestId(requestId);
 
@@ -203,7 +205,7 @@ public class RippleServiceImpl implements RippleService {
     /*must bee only 32 bit number = 0 - 4294967295*/
     @Override
     public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
-        if (!(org.apache.commons.lang.math.NumberUtils.isDigits(destinationTag)
+        if (!(NumberUtils.isDigits(destinationTag)
                 && Long.valueOf(destinationTag) <= 4294967295L)) {
             throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());
         }
@@ -211,7 +213,6 @@ public class RippleServiceImpl implements RippleService {
 
     @Override
     public boolean isValidDestinationAddress(String address) {
-
         return withdrawUtils.isValidDestinationAddress(systemAddress, address);
     }
 }

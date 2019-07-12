@@ -1,27 +1,24 @@
 package com.exrates.inout.service.casinocoin;
 
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @Service
-@PropertySource("classpath:/merchants/casinocoin.properties")
 public class CasinoCoinTransactionServiceImpl implements CasinoCoinTransactionService {
 
-    @Value("${casinocoin.amount.multiplier}")
-    private Integer cscAmountMultiplier;
+    private static final Logger log = LogManager.getLogger("casinocoin_log");
 
-    @Value("${casinocoin.decimals}")
-    private Integer cscDecimals;
+    private final static Integer CSC_AMOUNT_MULTIPLIER = 100000000;
+    private final static Integer CSC_DECIMALS = 8;
 
     @Override
     public BigDecimal normalizeAmountToDecimal(String amount) {
-        return new BigDecimal(amount).divide(new BigDecimal(cscAmountMultiplier)).setScale(cscDecimals, RoundingMode.HALF_DOWN);
+        return new BigDecimal(amount).divide(new BigDecimal(CSC_AMOUNT_MULTIPLIER)).setScale(CSC_DECIMALS, RoundingMode.HALF_DOWN);
     }
 
 }

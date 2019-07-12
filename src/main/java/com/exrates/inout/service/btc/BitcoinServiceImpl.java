@@ -1,24 +1,49 @@
 package com.exrates.inout.service.btc;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.BtcAdminPreparedTxDto;
+import com.exrates.inout.domain.dto.BtcBlockDto;
+import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDetailedDto;
+import com.exrates.inout.domain.dto.BtcPaymentResultDto;
+import com.exrates.inout.domain.dto.BtcPreparedTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionDto;
+import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
+import com.exrates.inout.domain.dto.BtcWalletInfoDto;
+import com.exrates.inout.domain.dto.BtcWalletPaymentItemDto;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestFlatDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.RefillRequestSetConfirmationsNumberDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.dto.datatable.DataTable;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.PagingData;
-import com.exrates.inout.exceptions.*;
+import com.exrates.inout.exceptions.BtcPaymentNotFoundException;
+import com.exrates.inout.exceptions.CoreWalletPasswordNotFoundException;
+import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
+import com.exrates.inout.exceptions.MerchantSpecParamNotFoundException;
+import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
-import com.exrates.inout.service.*;
+import com.exrates.inout.service.BitcoinService;
+import com.exrates.inout.service.CurrencyService;
+import com.exrates.inout.service.GtagService;
+import com.exrates.inout.service.MerchantService;
+import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.btcCore.CoreWalletService;
 import com.exrates.inout.util.BigDecimalProcessing;
 import com.exrates.inout.util.ParamMapUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import com.neemre.btcdcli4j.core.BitcoindException;
 import com.neemre.btcdcli4j.core.CommunicationException;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -31,15 +56,26 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "bitcoin_core")
+//@Log4j2(topic = "bitcoin_core")
 @PropertySource(value = {"classpath:/job.properties"})
 public class BitcoinServiceImpl implements BitcoinService {
+
+   private static final Logger log = LogManager.getLogger("bitcoin_core");
 
     @Value("${btcInvoice.blockNotifyUsers}")
     private Boolean BLOCK_NOTIFYING;
@@ -63,7 +99,6 @@ public class BitcoinServiceImpl implements BitcoinService {
     @Autowired
     private GtagService gtagService;
     private String backupFolder;
-
     private String nodePropertySource;
 
     private Boolean zmqEnabled;
@@ -88,13 +123,15 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     private Boolean supportReferenceLine;
 
+    private Boolean useSendManyForWithdraw;
+
     private String walletPassword;
 
     private BitcoinNode node;
 
     private Merchant merchant;
-    private Currency currency;
 
+    private Currency currency;
     private ScheduledExecutorService newTxCheckerScheduler = Executors.newSingleThreadScheduledExecutor();
 
     public BitcoinServiceImpl(BitcoinProperty property) {
@@ -108,6 +145,9 @@ public class BitcoinServiceImpl implements BitcoinService {
         this.supportSubtractFee = property.isSupportSubtractFee();
         this.supportWalletNotifications = property.isSupportWalletNotifications();
         this.supportReferenceLine = property.isSupportReferenceLine();
+
+        this.useSendManyForWithdraw = property.isUseSendManyForWithdraw();
+
         this.node = property.getNode();
     }
 
@@ -127,11 +167,12 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
                               Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications) {
-        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false);
+        this(propertySource, merchantName, currencyName, minConfirmations, blockTargetForFee, rawTxEnabled, supportSubtractFee, supportWalletNotifications, false, true);
     }
 
     public BitcoinServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer blockTargetForFee,
-                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine) {
+                              Boolean rawTxEnabled, Boolean supportSubtractFee, Boolean supportWalletNotifications, Boolean supportReferenceLine,
+                              Boolean useSendManyForWithdraw) {
         Properties props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
@@ -148,8 +189,10 @@ public class BitcoinServiceImpl implements BitcoinService {
             this.supportSubtractFee = supportSubtractFee;
             this.supportWalletNotifications = supportWalletNotifications;
             this.supportReferenceLine = supportReferenceLine;
+
+            this.useSendManyForWithdraw = useSendManyForWithdraw;
         } catch (IOException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -168,6 +211,9 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @PostConstruct
     void startBitcoin() {
+        System.out.println("starting " + merchantName);
+        if(this.node.getRpcHost() == null || this.node.getRpcHost().length() == 0) return;
+
         try {
             merchant = merchantService.findByName(merchantName);
             currency = currencyService.findByName(currencyName);
@@ -186,7 +232,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 log.info("{} not started, pass props error", merchantName);
                 return;
             }
-            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine);
+            bitcoinWalletService.initCoreClient(node, supportSubtractFee, supportReferenceLine, useSendManyForWithdraw);
             bitcoinWalletService.initBtcdDaemon(node.isZmqEnabled());
             bitcoinWalletService.blockFlux().subscribe(this::onIncomingBlock);
             if (supportWalletNotifications) {
@@ -202,7 +248,6 @@ public class BitcoinServiceImpl implements BitcoinService {
         }
 
     }
-
 
 
     @Override
@@ -254,6 +299,7 @@ public class BitcoinServiceImpl implements BitcoinService {
     private String address() {
         boolean isFreshAddress = false;
         System.out.println("begin generate address");
+        System.out.println(node.toString());
         String address = bitcoinWalletService.getNewAddress(getCoreWalletPassword());
         System.out.println("end generate address " + address);
         Currency currency = currencyService.findByName(currencyName);
@@ -296,14 +342,14 @@ public class BitcoinServiceImpl implements BitcoinService {
                             try {
                                 processBtcPayment(btcPaymentFlatDto);
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                             }
                         });
             } else {
-                //log.error("Invalid transaction");
+                log.error("Invalid transaction");
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -331,7 +377,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                             .hash(btcPaymentFlatDto.getTxId())
                             .blockhash(btcPaymentFlatDto.getBlockhash()).build());
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
@@ -389,7 +435,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                         log.warn("No valid transactions available!");
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
 
             });
@@ -400,7 +446,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 changeConfirmationsOrProvide(payment);
             });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
 
@@ -434,7 +480,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyName, username);
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -559,7 +605,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 try {
                     processBtcPayment(btcPaymentFlatDto);
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
         });
@@ -573,13 +619,13 @@ public class BitcoinServiceImpl implements BitcoinService {
             try {
                 processBtcPayment(btcPaymentFlatDto);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
         });
         try {
             onIncomingBlock(bitcoinWalletService.getBlockByHash(bitcoinWalletService.getLastBlockHash()));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
     }
@@ -602,12 +648,12 @@ public class BitcoinServiceImpl implements BitcoinService {
                     log.info("Processing tx {}", btcPaymentFlatDto);
                     processBtcPayment(btcPaymentFlatDto);
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             });
             merchantSpecParamsDao.updateParam(merchantName, blockParamName, currentBlockHash);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
     }
@@ -679,5 +725,10 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     public String getCurrencyName() {
         return currencyName;
+    }
+
+    @Override
+    public void setConfirmationNeededCount(int minConfirmationCount) {
+        this.minConfirmations = minConfirmationCount;
     }
 }

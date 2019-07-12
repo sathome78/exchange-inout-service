@@ -1,4 +1,9 @@
 package com.exrates.inout.service.casinocoin;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.RefillRequestCreateDto;
@@ -31,36 +36,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.MerchantInternalException;
-//exrates.service.exception.NotImplimentedMethod;
-//exrates.service.util.WithdrawUtils;
-
-
-@Log4j2(topic = "casinocoin_log")
+//@Log4j2(topic = "casinocoin_log")
 @Service
-@PropertySource("classpath:/merchants/casinocoin.properties")
 @Data
 public class CasinoCoinServiceImpl implements CasinoCoinService {
 
+    private static final Logger log = LogManager.getLogger("casinocoin_log");
+
     private static final String DESTINATION_TAG_ERR_MSG = "message.casinocoin.tagError";
 
-    @Value("${casinocoin.ticker}")
-    private String casinoCoinTicker;
-
-    @Value("${casinocoin.max.tag.destination.digits}")
-    private int maxTagDestinationDigits;
-
-    @Value("${casinocoin.account.address}")
-    private String mainAddress;
+    private final static String CASINOCOIN_TICKER = "CSC";
+    private final static int MAX_TAG_DESTINATION_DIGITS = 9;
 
     @Autowired
     private CasinoCoinTransactionService casinoCoinTransactionService;
@@ -80,10 +66,17 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
     private Merchant merchant;
     private Currency currency;
 
+    private String mainAddress;
+
+    public CasinoCoinServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty casinocoinProperty = cryptoCurrencyProperties.getRippleCoins().getCsc();
+        this.mainAddress = casinocoinProperty.getAccountAddress();
+    }
+
     @PostConstruct
     public void init(){
-        currency = currencyService.findByName(casinoCoinTicker);
-        merchant = merchantService.findByName(casinoCoinTicker);
+        currency = currencyService.findByName(CASINOCOIN_TICKER);
+        merchant = merchantService.findByName(CASINOCOIN_TICKER);
     }
 
     @Override
@@ -162,7 +155,7 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
 
     private Integer generateDestinationTag(int userId) {
         String idInString = String.valueOf(userId);
-        int randomNumberLength = maxTagDestinationDigits - idInString.length();
+        int randomNumberLength = MAX_TAG_DESTINATION_DIGITS - idInString.length();
         if (randomNumberLength < 0) {
             throw new MerchantInternalException("error generating new destination tag for ripple" + userId);
         }
@@ -173,7 +166,7 @@ public class CasinoCoinServiceImpl implements CasinoCoinService {
     /*must bee only 32 bit number = 0 - 4294967295*/
     @Override
     public void checkDestinationTag(String destinationTag) throws CheckDestinationTagException {
-        if (!(org.apache.commons.lang.math.NumberUtils.isDigits(destinationTag)
+        if (!(org.apache.commons.lang3.math.NumberUtils.isDigits(destinationTag)
                 && Long.valueOf(destinationTag) <= 4294967295L)) {
             throw new CheckDestinationTagException(DESTINATION_TAG_ERR_MSG, additionalWithdrawFieldName());
         }

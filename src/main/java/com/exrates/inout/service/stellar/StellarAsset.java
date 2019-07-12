@@ -1,6 +1,6 @@
 package com.exrates.inout.service.stellar;
 
-import com.exrates.inout.properties.models.StellarProperty;
+import com.exrates.inout.properties.models.StellarAssetProperty;
 import lombok.Data;
 import org.stellar.sdk.Asset;
 import org.stellar.sdk.KeyPair;
@@ -18,7 +18,7 @@ public class StellarAsset {
     private KeyPair issuer;
     private Asset asset;
 
-    public StellarAsset(StellarProperty property) {
+    public StellarAsset(StellarAssetProperty property) {
         this.currencyName = property.getCurrencyName();
         this.merchantName = property.getMerchantName();
         this.assetName = property.getAssetName();

@@ -98,4 +98,8 @@ public interface BitcoinService extends IRefillable, IWithdrawable {
   default DataTable<List<BtcTransactionHistoryDto>> listTransactions(Map<String, String> tableParams) throws BitcoindException, CommunicationException {
     throw new NotImplementedMethod("");
   };
+
+    default void setConfirmationNeededCount(int minConfirmationCount){
+
+    };
 }

@@ -1,4 +1,9 @@
 package com.exrates.inout.service.omni;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherOmniProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.handlers.RestResponseErrorHandler;
 import lombok.extern.log4j.Log4j2;
@@ -16,20 +21,28 @@ import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-//exrates.service.handler.RestResponseErrorHandler;
-
-@Log4j2(topic = "omni_log")
+//@Log4j2(topic = "omni_log")
 @Service
-@PropertySource("classpath:/merchants/omni.properties")
 public class OmniNodeServiceImpl implements OmniNodeService {
 
-    private @Value("${node.omni.rpc.host}")String nodeHost;
-    private @Value("${node.omni.rpc.user}")String rpcUser;
-    private @Value("${node.omni.rpc.password}")String rpcPassword;
+    private static final Logger log = LogManager.getLogger("omni_log");
+
     private static final String[] EMPTY_PARAMS = {""};
+
+    private String nodeHost;
+    private String rpcUser;
+    private String rpcPassword;
+
     private URI nodeURI;
 
     private RestTemplate restTemplate;
+
+    public OmniNodeServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherOmniProperty omniProperty = cryptoCurrencyProperties.getOtherCoins().getOmni();
+        this.nodeHost = omniProperty.getRpcHost();
+        this.rpcUser = omniProperty.getRpcUser();
+        this.rpcPassword = omniProperty.getRpcPassword();
+    }
 
     @PostConstruct
     private void init() {
@@ -39,7 +52,7 @@ public class OmniNodeServiceImpl implements OmniNodeService {
         try {
             nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
-            //log.error("wrong ADK url");
+            log.error("wrong ADK url");
         }
     }
 

@@ -17,10 +17,27 @@ public class Wallet implements Serializable {
     private User user;
     private BigDecimal activeBalance;
     private BigDecimal reservedBalance;
+
+    private BigDecimal ieoReserved;
     private String name;
+    private String fullName;
 
     public Wallet() {
 
+    }
+
+    public String getFullName() {
+        final String activeBalance;
+        switch (currencyId) {
+            case 1:
+            case 2:
+            case 3:
+                activeBalance = this.activeBalance.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                break;
+            default:
+                activeBalance = this.activeBalance.toString();
+        }
+        return name + " " + activeBalance;
     }
 
     public Wallet(int currencyId, User user, BigDecimal activeBalance) {
@@ -77,6 +94,7 @@ public class Wallet implements Serializable {
         this.reservedBalance = reservedBalance;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,3 +136,4 @@ public class Wallet implements Serializable {
                 '}';
     }
 }
+//RELEASE V 1.0.0 preprod works

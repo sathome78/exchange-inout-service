@@ -1,9 +1,13 @@
 package com.exrates.inout.service.lisk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskOpenAccountDto;
 import com.exrates.inout.domain.lisk.LiskSendTxDto;
 import com.exrates.inout.domain.lisk.LiskTransaction;
+import com.exrates.inout.properties.models.LiskNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.log4j.Log4j2;
@@ -13,9 +17,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.exrates.inout.service.lisk.LiskRestUtils.*;
 
@@ -27,8 +34,11 @@ import static com.exrates.inout.service.lisk.LiskRestUtils.*;
 
 //.exrates.service.lisk.LiskRestUtils.*;
 
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 public class LiskRestClientImpl implements LiskRestClient {
+
+   private static final Logger log = LogManager.getLogger("lisk_log");
+
 
     @Autowired
     private RestTemplate restTemplate;
@@ -51,27 +61,19 @@ public class LiskRestClientImpl implements LiskRestClient {
     private final String getFeeEndpoint = "/api/blocks/getFee";
 
 
-
     @Override
-    public void initClient(String propertySource) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            String host = props.getProperty("lisk.node.host");
-            String mainPort = props.getProperty("lisk.node.port");
-            String openAccountPort = props.getProperty("lisk.port.getAccount");
-            String sendTxPort = props.getProperty("lisk.port.sendTx");
+    public void initClient(LiskNode props) {
+        String host = props.getHost();
+        String mainPort = props.getPort();
+        String openAccountPort = props.getPortGetAccount();
+        String sendTxPort = props.getPortSendTx();
 
-            this.baseUrl = String.join(":", host, mainPort);
-            this.openAccountUrl = String.join(":", host, openAccountPort);
-            this.sendTxUrl = String.join(":", host, sendTxPort);
-            this.sortingPrefix = props.getProperty("lisk.tx.sort.prefix");
-            this.maxTransactionQueryLimit = Integer.parseInt(props.getProperty("lisk.tx.queryLimit"));
-            this.countNodeType = JsonNodeType.valueOf(props.getProperty("lisk.tx.count.nodeType"));
-
-        } catch (IOException e) {
-            //log.error(e);
-        }
+        this.baseUrl = String.join(":", host, mainPort);
+        this.openAccountUrl = String.join(":", host, openAccountPort);
+        this.sendTxUrl = String.join(":", host, sendTxPort);
+        this.sortingPrefix = props.getTxSortPrefix();
+        this.maxTransactionQueryLimit = props.getTxQueryLimit();
+        this.countNodeType = props.getTxCountNodeType();
     }
 
     @Override

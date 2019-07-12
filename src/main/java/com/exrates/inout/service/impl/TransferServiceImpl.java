@@ -131,7 +131,7 @@ public class TransferServiceImpl implements TransferService {
                         request.getMerchantDescription(),
                         request.getLocale());
             } catch (final MailException e) {
-                //log.error(e);
+                log.error(e);
             }
             profileData.setTime2();
             BigDecimal newAmount = walletService.getWalletABalance(request.getUserWalletId());

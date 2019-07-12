@@ -1,12 +1,12 @@
 package com.exrates.inout.service.job.invoice;
-
 import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.IMerchantService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.service.impl.MerchantServiceContext;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,11 @@ import java.util.Map;
  * Created by ValkSam
  */
 @Service
-@Log4j2
+//@Log4j2
 public class RefillRequestJob {
+
+   private static final Logger log = LogManager.getLogger(RefillRequestJob.class);
+
 
     @Autowired
     RefillService refillService;
@@ -38,7 +41,7 @@ public class RefillRequestJob {
     private MerchantServiceContext serviceContext;
 
     @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
-    private void refillExpiredClean() throws Exception {
+    protected void refillExpiredClean() throws Exception {
         log.debug("\nstart expired refill cleaning ... ");
         Integer expireCount = refillService.clearExpiredInvoices();
         log.debug("\n... end expired refill cleaning. Mark as expired: " + expireCount);
@@ -49,13 +52,17 @@ public class RefillRequestJob {
      * Because blocknotify doesn't work correctly (!!! need to check node config and node config properties !!!)
      * During the check processBtcPayment is executed, which create refill request and refill user wallet.
      */
-    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
-        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC", "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD"};
+        String[] merchantNames = new String[]{"QRK", "LBTC", "LPC", "XFC", "DDX", "MBC", "BTCP", "CLX", "ABBC",
+                "CBC", "BTCZ", "KOD", "RIME", "DIVI", "KOD", "WOLF", "TSL", "DOGE"};
         for (String coin : merchantNames) {
             try {
+                if(coin.equals("KOD")) {
+                    System.out.println("Scanning " + coin);
+                }
                 getBitcoinServiceByMerchantName(coin).scanForUnprocessedTransactions(null);
             } catch (Exception e) {
                 if(coin.equals("KOD"))
@@ -92,7 +99,7 @@ public class RefillRequestJob {
         try {
             getBitcoinServiceByMerchantName(merchantName).processPayment(params);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -105,6 +112,15 @@ public class RefillRequestJob {
         return (BitcoinService) merchantService;
     }
 
+    public void forceCheckPaymentsForCoin(String ticker) {
+
+        try {
+            getBitcoinServiceByMerchantName(ticker).scanForUnprocessedTransactions(null);
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+    }
 }
 
 

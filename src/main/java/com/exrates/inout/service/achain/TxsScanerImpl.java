@@ -1,4 +1,7 @@
 package com.exrates.inout.service.achain;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
@@ -6,7 +9,7 @@ import com.exrates.inout.domain.enums.AchainTransactionType;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.google.common.base.Preconditions;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +30,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Maks on 14.06.2018.
  */
-@Log4j2(topic = "achain")
+//@Log4j2(topic = "achain")
 @Service
 public class TxsScanerImpl implements BlocksScaner {
+
+   private static final Logger log = LogManager.getLogger("achain");
+
 
     private final NodeService nodeService;
     private final AchainTokenContext tokenContext;
@@ -111,7 +117,7 @@ public class TxsScanerImpl implements BlocksScaner {
                     }
                 }
             } catch (Exception e) {
-                ////log.error(e);
+                log.error(e);
             }
         }
     }
@@ -174,7 +180,7 @@ public class TxsScanerImpl implements BlocksScaner {
         try {
             achainService.processPayment(paymentParamsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            ////log.error(e);
+            log.error(e);
         }
     }
 

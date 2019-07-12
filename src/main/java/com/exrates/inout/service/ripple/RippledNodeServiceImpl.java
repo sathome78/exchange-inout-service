@@ -1,4 +1,9 @@
 package com.exrates.inout.service.ripple;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.RippleAccount;
 import com.exrates.inout.domain.dto.RippleTransaction;
@@ -14,23 +19,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-//exrates.model.dto.RippleAccount;
-//exrates.model.dto.RippleTransaction;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-//exrates.service.exception.invoice.MerchantException;
-//exrates.service.util.RestUtil;
-
 /**
  * Created by maks on 05.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippledNodeServiceImpl implements RippledNodeService {
+
+    private static final Logger log = LogManager.getLogger("ripple_log");
 
     @Autowired
     private RestTemplate restTemplate;
-    private @Value("${ripple.rippled.rpcUrl}") String rpcUrl;
+    private String rpcUrl;
+
+    public RippledNodeServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.rpcUrl = rippleProperty.getRpcUrl();
+    }
 
     private static final String SIGN_RPC = "{\n" +
             "                     \"method\": \"sign\",\n" +
@@ -135,7 +140,7 @@ public class RippledNodeServiceImpl implements RippledNodeService {
         ResponseEntity<String> response = restTemplate.postForEntity(rpcUrl, requestBody, String.class);
         JSONObject jsonResponse = new JSONObject(response.getBody()).getJSONObject("result");
         if (RestUtil.isError(response.getStatusCode())) {
-            ////log.error("error checking transaction {}", response.getBody());
+            log.error("error checking transaction {}", response.getBody());
             throw new RuntimeException(jsonResponse.getString("error_message"));
         }
         return jsonResponse;

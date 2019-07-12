@@ -7,11 +7,12 @@ package com.exrates.inout.service.lisk;
 import com.exrates.inout.domain.lisk.LiskAccount;
 import com.exrates.inout.domain.lisk.LiskSendTxDto;
 import com.exrates.inout.domain.lisk.LiskTransaction;
+import com.exrates.inout.properties.models.LiskNode;
 
 import java.util.List;
 
 public interface LiskRestClient {
-    void initClient(String propertySource);
+    void initClient(LiskNode propertySource);
 
     LiskTransaction getTransactionById(String txId);
 

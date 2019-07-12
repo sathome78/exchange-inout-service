@@ -1,4 +1,9 @@
 package com.exrates.inout.service.impl;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherEdcProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.EDCAccountDao;
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
@@ -34,38 +39,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2(topic = "edc_log")
+//@Log4j2(topic = "edc_log")
 @Service
-@PropertySource({"classpath:/merchants/edcmerchant.properties"})
 public class EDCServiceImpl implements EDCService {
 
-    private @Value("${edcmerchant.token}")
-    String token;
-    private @Value("${edcmerchant.main_account}")
-    String main_account;
-    private @Value("${edcmerchant.hook}")
-    String hook;
-    private @Value("${edcmerchant.history}")
-    String history;
+    private static final Logger log = LogManager.getLogger("edc_log");
+
+    private TransactionService transactionService;
+    private EDCAccountDao edcAccountDao;
+    private MessageSource messageSource;
+    private RefillService refillService;
+    private MerchantService merchantService;
+    private CurrencyService currencyService;
+    private WithdrawUtils withdrawUtils;
+    private EDCServiceNode edcServiceNode;
+    private GtagService gtagService;
+
+    private String token;
+    private String main_account;
+    private String hook;
+    private String history;
 
     @Autowired
-    private TransactionService transactionService;
-    @Autowired
-    private EDCAccountDao edcAccountDao;
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private RefillService refillService;
-    @Autowired
-    private MerchantService merchantService;
-    @Autowired
-    private CurrencyService currencyService;
-    @Autowired
-    private WithdrawUtils withdrawUtils;
-    @Autowired
-    private EDCServiceNode edcServiceNode;
-    @Autowired
-    private GtagService gtagService;
+    public EDCServiceImpl(TransactionService transactionService, EDCAccountDao edcAccountDao, MessageSource messageSource,
+                          RefillService refillService, MerchantService merchantService, CurrencyService currencyService, WithdrawUtils withdrawUtils,
+                          EDCServiceNode edcServiceNode, GtagService gtagService, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.transactionService = transactionService;
+        this.edcAccountDao = edcAccountDao;
+        this.messageSource = messageSource;
+        this.refillService = refillService;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.withdrawUtils = withdrawUtils;
+        this.edcServiceNode = edcServiceNode;
+        this.gtagService = gtagService;
+
+        OtherEdcProperty edcProperty = cryptoCurrencyProperties.getOtherCoins().getEdc();
+        this.token = edcProperty.getToken();
+        this.main_account = edcProperty.getMainAccount();
+        this.hook = edcProperty.getHook();
+        this.history = edcProperty.getHistory();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
@@ -79,8 +93,10 @@ public class EDCServiceImpl implements EDCService {
     @Override
     public Map<String, String> refill(RefillRequestCreateDto request) {
         String address = getAddress();
-        String message = messageSource.getMessage("merchants.refill.edr",
-                new Object[]{address}, request.getLocale());
+        log.info("EDC. Generate new refill address: {}" + address);
+
+        String message = messageSource.getMessage("merchants.refill.edr", new Object[]{address}, request.getLocale());
+
         return new HashMap<String, String>() {{
             put("address", address);
             put("message", message);
@@ -143,6 +159,7 @@ public class EDCServiceImpl implements EDCService {
                     .body()
                     .string();
         } catch (IOException e) {
+            log.error("EDC coin. Error: {}" + e);
             throw new MerchantInternalException(e);
         }
 
@@ -160,8 +177,10 @@ public class EDCServiceImpl implements EDCService {
             }
         } catch (IllegalStateException e) {
             if ("Address not found".equals(parser.parse(returnResponse).getAsJsonObject().get("message").getAsString())) {
+                log.info("EDC coin. Address not found. Fake transaction error: {}" + e);
                 throw new RefillRequestFakePaymentReceivedException(params.toString());
             } else {
+                log.error("EDC coin. Error in parse: {}" + e);
                 throw new RefillRequestMerchantException(params.toString());
             }
         }
@@ -190,6 +209,7 @@ public class EDCServiceImpl implements EDCService {
             return object.get("address").getAsString();
 
         } catch (Exception e) {
+            log.error("EDC coin. Error in generate new address for refill: {}" + e);
             throw new MerchantInternalException("Unfortunately, the operation is not available at the moment, please try again later!");
         }
     }

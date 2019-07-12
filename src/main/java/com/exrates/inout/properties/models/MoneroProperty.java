@@ -15,6 +15,7 @@ public class MoneroProperty {
     private String currencyName;
     private int minConfirmations;
     private int decimals;
+    private String mainAccount;
 
     private MoneroNode node;
 }

@@ -1,4 +1,9 @@
 package com.exrates.inout.service.ripple;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.service.MerchantService;
@@ -27,36 +32,45 @@ import java.util.Optional;
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @ClientEndpoint
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleWsServiceImpl {
 
-    private @Value("${ripple.rippled.ws}") String wsUrl;
-    private @Value("${ripple.account.address}") String address;
-    private URI WS_SERVER_URL;
+    private static final Logger log = LogManager.getLogger("ripple_log");
 
-    private Session session;
-    private boolean access = false;
-    private volatile RemoteEndpoint.Basic endpoint = null;
+    private static final String XRP_MERCHANT = "Ripple";
+
     private static final String SUBSCRIBE_COMAND_ID = "watch main account transactions";
     private static final String GET_TX_COMMAND_ID = "get transaction";
-    private volatile boolean shutdown = false;
-    private Merchant merchant;
-    private static final String XRP_MERCHANT = "Ripple";
 
     private final RippleService rippleService;
     private final MerchantService merchantService;
     private final WithdrawService withdrawService;
 
+    private String wsUrl;
+    private String address;
+
+    private URI WS_SERVER_URL;
+
+    private Session session;
+    private boolean access = false;
+    private volatile RemoteEndpoint.Basic endpoint = null;
+
+    private volatile boolean shutdown = false;
+    private Merchant merchant;
+
     @Autowired
-    public RippleWsServiceImpl(RippleService rippleService, MerchantService merchantService, WithdrawService withdrawService) {
+    public RippleWsServiceImpl(RippleService rippleService, MerchantService merchantService,
+                               WithdrawService withdrawService, CryptoCurrencyProperties cryptoCurrencyProperties) {
         this.rippleService = rippleService;
         this.merchantService = merchantService;
         this.withdrawService = withdrawService;
-    }
 
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.wsUrl = rippleProperty.getWs();
+        this.address = rippleProperty.getAccountAddress();
+    }
 
     @PostConstruct
     public void init() {
@@ -77,7 +91,7 @@ public class RippleWsServiceImpl {
             try {
                 jsonMessage = new JSONObject(msg);
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
                 return;
             }
             Object messageType = jsonMessage.get("type");
@@ -108,7 +122,7 @@ public class RippleWsServiceImpl {
                         try {
                             subscribeToTransactions();
                         } catch (Exception e) {
-                           //log.error("ripple ws error {}", e);
+                           log.error("ripple ws error {}", e);
                         }
                     }
                     return;
@@ -123,7 +137,7 @@ public class RippleWsServiceImpl {
                 }
             }
         } catch (Exception e) {
-            //log.error("exception {}", e);
+            log.error("exception {}", e);
         }
     }
 
@@ -155,7 +169,7 @@ public class RippleWsServiceImpl {
             log.debug("ripple node ws connection established");
             subscribeToTransactions();
         } catch (Exception e) {
-            //log.error("error connection to ripple node {}", e);
+            log.error("error connection to ripple node {}", e);
         }
     }
 
@@ -187,7 +201,7 @@ public class RippleWsServiceImpl {
 
     @OnClose
     public void close(final Session session, final CloseReason reason) {
-        //log.error("Connection lost. Session closed : {}. Reason : {}", session, reason);
+        log.error("Connection lost. Session closed : {}. Reason : {}", session, reason);
         if (!shutdown) {
             connectAndSubscribe();
         }
@@ -199,7 +213,7 @@ public class RippleWsServiceImpl {
             shutdown = true;
             session.close();
         } catch (IOException e) {
-            //log.error("error closing session");
+            log.error("error closing session");
         }
     }
 

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.neo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.neo.*;
 import com.exrates.inout.exceptions.NeoApiException;
@@ -17,9 +20,10 @@ import java.util.Optional;
 //exrates.model.dto.merchants.neo.*;
 //exrates.service.exception.NeoApiException;
 
-@Log4j2(topic = "neo_log")
+//@Log4j2(topic = "neo_log")
 public class NeoNodeServiceImpl implements NeoNodeService {
 
+    private static final Logger log = LogManager.getLogger("neo_log");
 
     private String endpoint;
     private RestTemplate restTemplate;
@@ -46,7 +50,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             return Optional.of(invokeJsonRpcMethod("getblock", Arrays.asList(height, 1), new TypeReference<NeoJsonRpcResponse<Block>>() {}));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             return Optional.empty();
         }
     }
@@ -56,7 +60,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             return Optional.of(invokeJsonRpcMethod("getrawtransaction", Arrays.asList(txId, 1), new TypeReference<NeoJsonRpcResponse<NeoTransaction>>() {}));
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             return Optional.empty();
         }
     }
@@ -82,7 +86,7 @@ public class NeoNodeServiceImpl implements NeoNodeService {
         try {
             NeoJsonRpcResponse<T> response = objectMapper.readValue(responseString,  typeReference);
             if (response.getError() != null) {
-                //log.error(response.getError());
+                log.error(response.getError());
                 throw new NeoApiException(response.getError().getCode(), response.getError().getMessage());
             }
             if (response.getResult() == null) {

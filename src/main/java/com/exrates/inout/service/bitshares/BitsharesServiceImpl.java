@@ -1,11 +1,16 @@
 package com.exrates.inout.service.bitshares;
 
 import com.exrates.inout.dao.MerchantSpecParamsDao;
-import com.exrates.inout.domain.dto.*;
+import com.exrates.inout.domain.dto.MerchantSpecParamDto;
+import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
+import com.exrates.inout.domain.dto.RefillRequestCreateDto;
+import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
+import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.MerchantInternalException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.BitsharesProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -14,8 +19,10 @@ import com.exrates.inout.util.WithdrawUtils;
 import com.google.common.hash.Hashing;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,14 +30,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import javax.annotation.PostConstruct;
-import javax.websocket.*;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.ContainerProvider;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.RemoteEndpoint;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -77,32 +93,31 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     protected volatile RemoteEndpoint.Basic endpoint;
     protected final String lastIrreversebleBlockParam = "last_irreversible_block_num";
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private long SCANING_INITIAL_DELAY;
 
-    public BitsharesServiceImpl(String merchantName, String currencyName, String propertySource, long SCANING_INITIAL_DELAY, int decimal) {
+    public BitsharesServiceImpl() {
+    }
+
+    public BitsharesServiceImpl(String merchantName, String currencyName, BitsharesProperty bitsharesProperty, long SCANING_INITIAL_DELAY, int decimal) {
         this.merchantName = merchantName;
         this.currencyName = currencyName;
         this.decimal = decimal;
-        log = Logger.getLogger(merchantName.toLowerCase());
-        Properties props = new Properties();
-        try {
-            props.load(this.getClass().getClassLoader().getResourceAsStream(propertySource));
-            mainAddress = props.getProperty("mainAddress");
-            mainAddressId = props.getProperty("mainAddressId");
-            wsUrl = props.getProperty("wsUrl");
-            this.SCANING_INITIAL_DELAY = SCANING_INITIAL_DELAY;
-        } catch (IOException e){
-            log.error(e);
-        }
+
+        log = LogManager.getLogger(merchantName.toLowerCase());
+
+        mainAddress = bitsharesProperty.getMainAddress();
+        mainAddressId = bitsharesProperty.getMainAddressNum();
+        wsUrl = bitsharesProperty.getWs();
+
+        scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
     }
 
     @PostConstruct
     public void setUp() {
         try {
+            System.out.println("Try to extract private key bitshares");
+            privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
             currency = currencyService.findByName(currencyName);
             merchant = merchantService.findByName(merchantName);
-            privateKey = merchantService.getPassMerchantProperties(merchantName).getProperty("privateKey");
-            scheduler.scheduleAtFixedRate(this::reconnectAndSubscribe, SCANING_INITIAL_DELAY, RECONNECT_PERIOD, TimeUnit.MINUTES);
             MerchantSpecParamDto merchantSpecParam = merchantSpecParamsDao.getByMerchantIdAndParamName(merchant.getId(), lastIrreversebleBlockParam);
             if(merchantSpecParam == null){
                 log.error("Can not find merchant spec param with merchantId = " + merchant.getId() + " and param name = " + lastIrreversebleBlockParam + ", using default value = 0");
@@ -232,7 +247,7 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
     @Override
     public RefillRequestAcceptDto createRequest(String hash, String address, BigDecimal amount) {
         if (isTransactionDuplicate(hash, currency.getId(), merchant.getId())) {
-            log.error("aunit transaction allready received!!! {}" + hash);
+            log.error(merchantName + " transaction allready received!!! {}" + hash);
             throw new RuntimeException("aunit transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -356,7 +371,6 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
 
     }
 
-    @SneakyThrows
     protected void getBlock(int blockNum) throws IOException {
         JSONObject block = new JSONObject();
         block.put("id", 10);
@@ -381,12 +395,10 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
             }
 
         } catch (JSONException e) {
-            log.debug(e);
+            log.error(e);
         }
     }
 
-
-    @SneakyThrows
     protected void makeRefill(List<String> lisfOfMemo, JSONObject transaction, String hash) {
         JSONObject memo = transaction.getJSONObject("memo");
         try {
@@ -461,5 +473,10 @@ public abstract class BitsharesServiceImpl implements BitsharesService {
         String s = decryptBTSmemo("5KJbFnkWbfqZFVdTVo1BfBRj7vFFaGv2irkDfCfpDyHJiSgNK3k", "{\"from\":\"PPY6xkszYqrmwwBeCrwg8FmJM3NLN2DLuDFz8jwb7wZZfUcku5aPP\",\"to\":\"PPY8VikXsDhYu42VQkMECGGrj7pZUxk34GWPH3MVLTgdzjvXgnEtQ\",\"nonce\":\"396729669771043\",\"message\":\"895066dc7b1e53df553b801d7e86a45d\"}", "PPY");
 
         System.out.println(s);
+    }
+
+    @OnError
+    public void onError(Throwable e){
+        System.out.println(merchantName + " onError: "  + ExceptionUtils.getStackTrace(e));
     }
 }

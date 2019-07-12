@@ -10,6 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderClassName = "Builder", toBuilder = true)
+@ToString
 public class BitcoinNode {
 
     private boolean zmqEnabled;

@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.SmsSubscriptionDao;
 import com.exrates.inout.domain.dto.SmsSubscriptionDto;
@@ -36,12 +39,16 @@ import java.util.ArrayList;
 import static com.exrates.inout.domain.other.WalletOperationData.BalanceType.ACTIVE;
 import static com.exrates.inout.util.BigDecimalProcessing.doAction;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class SmsNotificatorServiceImpl implements NotificatorService, Subscribable {
 
+   private static final Logger log = LogManager.getLogger("message_notify");
+
+
+    @Autowired
+    private NotificatorsService notificatorsService;
     private final UserService userService;
-    private final NotificatorsService notificatorsService;
     private final WalletService walletService;
     private final CurrencyService currencyService;
     private final SmsSubscriptionDao subscriptionDao;
@@ -52,9 +59,8 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
     private static final String SENDER = "Exrates";
 
     @Autowired
-    public SmsNotificatorServiceImpl(UserService userService, NotificatorsService notificatorsService, WalletService walletService, CurrencyService currencyService, SmsSubscriptionDao subscriptionDao, EpochtaApi smsService, CompanyWalletService companyWalletService) {
+    public SmsNotificatorServiceImpl(UserService userService, WalletService walletService, CurrencyService currencyService, SmsSubscriptionDao subscriptionDao, EpochtaApi smsService, CompanyWalletService companyWalletService) {
         this.userService = userService;
-        this.notificatorsService = notificatorsService;
         this.walletService = walletService;
         this.currencyService = currencyService;
         this.subscriptionDao = subscriptionDao;
@@ -82,7 +88,7 @@ public class SmsNotificatorServiceImpl implements NotificatorService, Subscribab
                 subscriptionDao.updateDeliveryPrice(userId, cost);
             }
         } catch (Exception e) {
-            //log.error("can't get new price", e);
+            log.error("can't get new price", e);
         }
         return String.valueOf(subscriptionDto.getContact());
     }

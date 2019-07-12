@@ -1,4 +1,9 @@
 package com.exrates.inout.service.aidos;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherAdkProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 import com.exrates.inout.domain.dto.BtcTransactionDto;
@@ -7,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.RequestEntity;
@@ -24,20 +30,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "adk_log")
+//@Log4j2(topic = "adk_log")
 @Service
-@PropertySource("classpath:/merchants/adk.properties")
 public class AidosNodeServiceImpl implements AidosNodeService {
 
-    private @Value("${node.adk.rpc.host}")String nodeHost;
-    private @Value("${node.adk.rpc.user}")String rpcUser;
-    private @Value("${node.adk.rpc.password}")String rpcPassword;
-    private URI nodeURI;
+    private static final Logger log = LogManager.getLogger("adk_log");
 
     private static final String[] EMPTY_PARAMS = {};
 
+    private String nodeHost;
+    private String rpcUser;
+    private String rpcPassword;
+
+    private URI nodeURI;
+
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
+
+    public AidosNodeServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherAdkProperty adkProperty = cryptoCurrencyProperties.getOtherCoins().getAdk();
+        this.nodeHost = adkProperty.getRpcHost();
+        this.rpcUser = adkProperty.getRpcUser();
+        this.rpcPassword = adkProperty.getRpcPassword();
+    }
 
     @PostConstruct
     private void init() {
@@ -50,7 +65,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         try {
             nodeURI = new URI(nodeHost);
         } catch (URISyntaxException e) {
-            //log.error("wrong ADK url");
+            log.error("wrong ADK url");
         }
     }
 
@@ -82,7 +97,7 @@ public class AidosNodeServiceImpl implements AidosNodeService {
         try {
             return objectMapper.readValue(result.toString(), BtcTransactionDto.class);
         } catch (IOException e) {
-            //log.error(e);
+            log.error(e);
             throw new RuntimeException(e);
         }
     }

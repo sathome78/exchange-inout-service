@@ -5,12 +5,14 @@ import com.exrates.inout.domain.dto.RippleTransaction;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.exceptions.InsufficientCostsInWalletException;
 import com.exrates.inout.exceptions.RippleCheckConsensusException;
-import lombok.extern.log4j.Log4j2;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.RippleProperty;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,33 +21,32 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
-//exrates.model.dto.RippleAccount;
-//exrates.model.dto.RippleTransaction;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.service.exception.RippleCheckConsensusException;
-//exrates.service.exception.invoice.InsufficientCostsInWalletException;
-
 /**
  * Created by maks on 11.05.2017.
  */
-@Log4j2(topic = "ripple_log")
+//@Log4j2(topic = "ripple_log")
 @Service
-@PropertySource("classpath:/merchants/ripple.properties")
 public class RippleTransactionServiceImpl implements RippleTransactionService {
+
+    private static final Logger log = LogManager.getLogger("ripple_log");
+
+    private static final String LEDGER = "ledger";
+    private static final String SEQUENCE_PARAM = "sequence";
+    private static final Integer XRP_AMOUNT_MULTIPLIER = 1000000;
+    private static final Integer XRP_DECIMALS = 6;
+    private static final BigDecimal XRP_MIN_BALANCE = new BigDecimal(21);
 
     @Autowired
     private RippledNodeService rippledNodeService;
 
+    private String address;
+    private String secret;
 
-    private @Value("${ripple.account.address}") String address;
-    private @Value("${ripple.account.secret}") String secret;
-
-    private static final Integer XRP_AMOUNT_MULTIPLIER = 1000000;
-    private static final Integer XRP_DECIMALS = 6;
-    private static final BigDecimal XRP_MIN_BALANCE = new BigDecimal(21);
-    private static final String SEQUENCE_PARAM = "sequence";
-    private static final String LEDGER = "ledger";
-
+    public RippleTransactionServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        RippleProperty rippleProperty = cryptoCurrencyProperties.getRippleCoins().getRipple();
+        this.address = rippleProperty.getAccountAddress();
+        this.secret = rippleProperty.getAccountSecret();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {

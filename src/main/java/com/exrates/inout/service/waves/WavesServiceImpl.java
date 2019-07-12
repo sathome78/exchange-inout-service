@@ -1,4 +1,8 @@
 package com.exrates.inout.service.waves;
+import lombok.Synchronized;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
@@ -14,6 +18,7 @@ import com.exrates.inout.util.WithdrawUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
@@ -25,8 +30,11 @@ import java.util.concurrent.*;
 import static java.util.Objects.nonNull;
 
 
-@Log4j2(topic = "waves_log")
+//@Log4j2(topic = "waves_log")
 public class WavesServiceImpl implements WavesService {
+
+   private static final Logger log = LogManager.getLogger("waves_log");
+
 
     @Autowired
     private WavesRestClient restClient;
@@ -110,6 +118,7 @@ public class WavesServiceImpl implements WavesService {
     }
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment() start process.................");
         String address = ParamMapUtils.getIfNotNull(params, "address");
         String txId = ParamMapUtils.getIfNotNull(params, "txId");
         int blockHeight = restClient.getCurrentBlockHeight();
@@ -121,6 +130,7 @@ public class WavesServiceImpl implements WavesService {
         processWavesPayment(wavesTransaction, blockHeight);
     }
 
+    @Synchronized
     private void processWavesPayment(WavesTransaction transaction, int lastBlockHeight) {
         log.debug("Processing tx: " + transaction);
         int merchantId;
@@ -140,18 +150,23 @@ public class WavesServiceImpl implements WavesService {
             currencyId = assetInfo.getCurrencyId();
             requestAmount = scaleFromLong(transaction.getAmount(), assetInfo.getRefillScale());
         }
+        if (isTransactionDuplicate(transaction.getId(), currencyId, merchantId)) {
+            throw new RuntimeException(String.format("transaction %s currency %d, allready received", transaction.getId(), currencyId));
+        }
         Optional<RefillRequestFlatDto> refillRequestResult =
                 refillService.findFlatByAddressAndMerchantIdAndCurrencyIdAndHash(transaction.getRecipient(),
                         merchantId, currencyId, transaction.getId());
         int confirmations = lastBlockHeight - transaction.getHeight();
 
         if (!refillRequestResult.isPresent()) {
+            log.info("BEFORE ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto......)");
             Integer requestId = refillService.createRefillRequestByFact(RefillRequestAcceptDto.builder()
                     .address(transaction.getRecipient())
                     .amount(requestAmount)
                     .merchantId(merchantId)
                     .currencyId(currencyId)
                     .merchantTransactionId(transaction.getId()).build());
+            log.info("AFTER ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.....)");
             if (confirmations >= 0 && confirmations < minConfirmations) {
                 try {
                     log.debug("put on bch exam {}", transaction);
@@ -162,10 +177,12 @@ public class WavesServiceImpl implements WavesService {
                             .address(transaction.getRecipient())
                             .amount(requestAmount)
                             .hash(transaction.getId()).build());
+                    log.info("AFTER ---  refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()......)");
                 } catch (RefillRequestAppropriateNotFoundException e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             } else {
+                log.info("BEFORE ---  changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder().....)");
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
                         .requestId(requestId)
                         .address(transaction.getRecipient())
@@ -178,6 +195,7 @@ public class WavesServiceImpl implements WavesService {
         } else {
             RefillRequestFlatDto flatDto = refillRequestResult.get();
             if (!flatDto.getStatus().isSuccessEndStatus()) {
+                log.info("BEFORE ---  changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder().....)");
                 changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
                         .requestId(refillRequestResult.get().getId())
                         .address(transaction.getRecipient())
@@ -187,9 +205,15 @@ public class WavesServiceImpl implements WavesService {
                         .merchantId(merchantId)
                         .hash(transaction.getId()).build());
             }
-
         }
+        log.info("processWavesPayment() finish method.................");
     }
+
+    private boolean isTransactionDuplicate(String hash, int currencyId, int merchantId) {
+        return StringUtils.isEmpty(hash)
+                || refillService.getRequestIdByMerchantIdAndCurrencyIdAndHash(merchantId, currencyId, hash).isPresent();
+    }
+
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
@@ -234,11 +258,11 @@ public class WavesServiceImpl implements WavesService {
                         try {
                             processWavesPayment(transaction, blockHeight);
                         } catch (Exception e) {
-                            //log.error(e);
+                            log.error(e);
                         }
                     });
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -259,7 +283,7 @@ public class WavesServiceImpl implements WavesService {
                 }
             }
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -289,7 +313,7 @@ public class WavesServiceImpl implements WavesService {
             log.debug("Process of sending data to Google Analytics...");
             gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyBase.getName(), username);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -317,7 +341,7 @@ public class WavesServiceImpl implements WavesService {
             sendMailService.sendInfoMail(email);
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

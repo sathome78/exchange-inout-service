@@ -2,12 +2,13 @@ package com.exrates.inout.service.tron;
 
 import com.exrates.inout.domain.dto.TronNewAddressDto;
 import com.exrates.inout.domain.dto.TronTransferDto;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherTronProperty;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +17,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-//exrates.model.dto.TronNewAddressDto;
-//exrates.model.dto.TronTransferDto;
-
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
-@PropertySource("classpath:/merchants/tron.properties")
 public class TronNodeServiceImpl implements TronNodeService {
 
-    private final RestTemplate restTemplate;
-
-    private @Value("${tron.full_node.url}")String FULL_NODE_URL;
-    private @Value("${tron.full_node_for_send.url}")String FULL_NODE_FOR_SEND_URL;
-    private @Value("${tron.solidity_node_url}")String SOLIDITY_NODE_URL;
-    private @Value("${tron.explorer.api}")String EXPLORER_API;
-
+    private static final Logger log = LogManager.getLogger("tron");
 
     private final static String GET_ADDRESS = "/wallet/generateaddress";
     private final static String EASY_TRANSFER = "/wallet/easytransferbyprivate";
@@ -40,9 +31,22 @@ public class TronNodeServiceImpl implements TronNodeService {
     private final static String GET_LAST_BLOCK = "/wallet/getnowblock";
     private final static String GET_ACCOUNT_INFO = "/wallet/getaccount";
 
+    private final RestTemplate restTemplate;
+
+    private String FULL_NODE_URL;
+    private String FULL_NODE_FOR_SEND_URL;
+    private String SOLIDITY_NODE_URL;
+    private String EXPLORER_API;
+
     @Autowired
-    public TronNodeServiceImpl(RestTemplate restTemplate) {
+    public TronNodeServiceImpl(RestTemplate restTemplate, CryptoCurrencyProperties cryptoCurrencyProperties) {
         this.restTemplate = restTemplate;
+
+        OtherTronProperty tronProperty = cryptoCurrencyProperties.getOtherCoins().getTron();
+        this.FULL_NODE_URL = tronProperty.getFullNodeUrl();
+        this.FULL_NODE_FOR_SEND_URL = tronProperty.getFullNodeForSendUrl();
+        this.SOLIDITY_NODE_URL = tronProperty.getSolidityNodeUrl();
+        this.EXPLORER_API = tronProperty.getExplorerApi();
     }
 
 
@@ -112,7 +116,7 @@ public class TronNodeServiceImpl implements TronNodeService {
             log.debug("trx response to url {} - {}", requestEntity.getUrl(), responseEntity);
             return new String(responseEntity.getBody().getBytes(),"utf-8");
         } catch (Exception e) {
-            //log.error("trx request {} {} {}", requestEntity.getUrl(), requestEntity.getMethod(), e);
+            log.error("trx request {} {} {}", requestEntity.getUrl(), requestEntity.getMethod(), e);
             throw new RuntimeException(e);
         }
     }

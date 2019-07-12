@@ -1,8 +1,12 @@
 package com.exrates.inout.service.lisk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.lisk.ArkOpenAccountDto;
 import com.exrates.inout.domain.lisk.ArkSendTxDto;
 import com.exrates.inout.domain.lisk.LiskAccount;
+import com.exrates.inout.properties.models.ArkNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import lombok.extern.log4j.Log4j2;
@@ -14,24 +18,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.Collections;
-import java.util.Properties;
 
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractObjectFromResponse;
 import static com.exrates.inout.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
 
-//.exrates.service.lisk.LiskRestUtils.extractObjectFromResponse;
-//.exrates.service.lisk.LiskRestUtils.extractTargetNodeFromLiskResponse;
-
-//exrates.model.dto.merchants.lisk.ArkOpenAccountDto;
-//exrates.model.dto.merchants.lisk.ArkSendTxDto;
-//exrates.model.dto.merchants.lisk.LiskAccount;
-
-@Log4j2(topic = "lisk_log")
+//@Log4j2(topic = "lisk_log")
 @Service
 @Scope("prototype")
 public class ArkRpcClientImpl implements ArkRpcClient {
+
+   private static final Logger log = LogManager.getLogger("lisk_log");
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -44,24 +42,17 @@ public class ArkRpcClientImpl implements ArkRpcClient {
 
 
     @Override
-    public void initClient(String propertySource) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            String host = props.getProperty("lisk.node.host");
-            String openAccountPort = props.getProperty("lisk.port.getAccount");
-            String sendTxPort = props.getProperty("lisk.port.sendTx");
-            String createAccountEndpoint = props.getProperty("ark.createAccountEndpoint");
-            String createTxEndpoint = props.getProperty("ark.createTxEndpoint");
-            String broadcastTxEndpoint = props.getProperty("ark.broadcastTxEndpoint");
+    public void initClient(ArkNode property) {
+            String host = property.getHost();
+            String openAccountPort = property.getPortGetAccount();
+            String sendTxPort = property.getPortSendTx();
+            String createAccountEndpoint = property.getArkCreateAccountEndpoint();
+            String createTxEndpoint = property.getArkCreateTxEndpoint();
+            String broadcastTxEndpoint = property.getArkBroadcastTxEndpoint();
 
             this.openAccountUrl = String.join("", host, ":", openAccountPort, createAccountEndpoint);
             this.createTxUrl = String.join("", host, ":", sendTxPort, createTxEndpoint);
             this.broadcastTxUrl = String.join("", host, ":", sendTxPort, broadcastTxEndpoint);
-
-        } catch (IOException e) {
-            //log.error(e);
-        }
     }
 
 

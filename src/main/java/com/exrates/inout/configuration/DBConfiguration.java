@@ -28,8 +28,8 @@ public class DBConfiguration {
     private String jdbcUrl;
     @Value("${spring.datasource.hikari.username}")
     private String user;
-    @Value("${spring.datasource.hikari.ssm-path}")
-    private String ssmPath;
+    @Value("${spring.datasource.hikari.password}")
+    private String password;
 
     @Autowired
     private SSMGetter ssmGetter;
@@ -40,7 +40,7 @@ public class DBConfiguration {
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
-        hikariConfig.setPassword(getPassword(ssmPath));
+        hikariConfig.setPassword(password);
         hikariConfig.setMaximumPoolSize(1); //TODO
         return new HikariDataSource(hikariConfig);
     }
@@ -51,14 +51,10 @@ public class DBConfiguration {
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setJdbcUrl(jdbcUrl);
         hikariConfig.setUsername(user);
-        hikariConfig.setPassword(getPassword(ssmPath));
+        hikariConfig.setPassword(password);
         hikariConfig.setMaximumPoolSize(1); //TODO
         hikariConfig.setReadOnly(true);
         return new HikariDataSource(hikariConfig);
-    }
-
-    private String getPassword(String ssmPath) {
-        return ssmGetter.lookup(ssmPath);
     }
 
     @Primary

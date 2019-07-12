@@ -9,17 +9,18 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.other.ProfileData;
 import com.exrates.inout.domain.qtum.QtumTransaction;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherQtumProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -34,34 +35,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-//exrates.dao.MerchantSpecParamsDao;
-//exrates.model.Currency;
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.model.dto.merchants.qtum.QtumTransaction;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.util.WithdrawUtils;
-//exrates.service.vo.ProfileData;
-
-@Log4j2(topic = "qtum_log")
+//@Log4j2(topic = "qtum_log")
 @Service("qtumServiceImpl")
-@PropertySource("classpath:/merchants/qtum.properties")
 public class QtumServiceImpl implements QtumService {
 
-    private @Value("${qtum.min.confirmations}")
-    Integer minConfirmations;
-    private @Value("${qtum.min.transfer.amount}")
-    BigDecimal minTransferAmount;
-    private @Value("${qtum.main.address.for.transfer}")
-    String mainAddressForTransfer;
-    private @Value("${qtum.node.endpoint}")
-    String endpoint;
+    private static final Logger log = LogManager.getLogger("qtum_log");
+
+    private final static String QTUM_MERCHANT_NAME = "Qtum";
+    private final static String QTUM_CURRENCY_NAME = "QTUM";
 
     @Autowired
     private QtumNodeService qtumNodeService;
@@ -81,24 +62,35 @@ public class QtumServiceImpl implements QtumService {
     private GtagService gtagService;
 
     private Merchant merchant;
-
     private Currency currency;
 
     private final String qtumSpecParamName = "LastRecievedBlock";
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    private Integer minConfirmations;
+    private BigDecimal minTransferAmount;
+    private String mainAddressForTransfer;
+    private String endpoint;
+
+    public QtumServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherQtumProperty qtumProperty = cryptoCurrencyProperties.getOtherCoins().getQtum();
+        this.minConfirmations = qtumProperty.getMinConfirmations();
+        this.minTransferAmount = qtumProperty.getMinTransferAmount();
+        this.mainAddressForTransfer = qtumProperty.getMainAddressForTransfer();
+        this.endpoint = qtumProperty.getEndpoint();
+    }
+
     @PostConstruct
     private void init() {
-        merchant = merchantService.findByName("Qtum");
-        currency = currencyService.findByName("QTUM");
-
+        merchant = merchantService.findByName(QTUM_MERCHANT_NAME);
+        currency = currencyService.findByName(QTUM_CURRENCY_NAME);
 
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 scanBlocks();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 5L, 25L, TimeUnit.MINUTES);
@@ -107,7 +99,7 @@ public class QtumServiceImpl implements QtumService {
             try {
                 checkBalanceAndTransfer();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 90L, 120L, TimeUnit.MINUTES);
@@ -116,7 +108,7 @@ public class QtumServiceImpl implements QtumService {
             try {
                 backupWallet();
             } catch (Exception e) {
-                //log.error(e);
+                log.error(e);
             }
 
         }, 1L, 12L, TimeUnit.HOURS);
@@ -137,6 +129,7 @@ public class QtumServiceImpl implements QtumService {
 
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment start..................................");
         final BigDecimal amount = new BigDecimal(params.get("amount"));
 
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -146,12 +139,13 @@ public class QtumServiceImpl implements QtumService {
                 .amount(amount)
                 .merchantTransactionId(params.get("hash"))
                 .build();
-
+        log.info("BEFORE ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        log.info("AFTER ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         requestAcceptDto.setRequestId(requestId);
-
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
-
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(requestId);
 
         log.debug("Process of sending data to Google Analytics...");
@@ -165,7 +159,6 @@ public class QtumServiceImpl implements QtumService {
 
     @Synchronized
     private void scanBlocks() {
-
         log.debug("Start scanning blocks Qtum");
         ProfileData profileData = new ProfileData(500);
 
@@ -198,7 +191,7 @@ public class QtumServiceImpl implements QtumService {
                                 log.info("after qtum transfer");
                                 specParamsDao.updateParam(merchant.getName(), qtumSpecParamName, String.valueOf(qtumNodeService.getBlock(t.getBlockhash()).getHeight()));
                             } catch (Exception e) {
-                                //log.error(e);
+                                log.error(e);
                             }
                         }
                 );

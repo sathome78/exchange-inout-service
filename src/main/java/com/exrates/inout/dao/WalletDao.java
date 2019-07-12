@@ -23,7 +23,7 @@ public interface WalletDao {
     List<MyWalletsDetailedDto> getAllWalletsForUserDetailed(String email, List<Integer> currencyIds, List<Integer> withdrawStatusIds, Locale locale);
 
     Wallet findByUserAndCurrency(int userId, int currencyId);
-
+    
     Wallet findById(Integer walletId);
 
     Wallet createWallet(User user, int currencyId);

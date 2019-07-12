@@ -11,6 +11,8 @@ import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.RefillRequestIdNeededException;
 import com.exrates.inout.exceptions.RefillRequestNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.NixMoneyProperty;
 import com.exrates.inout.service.*;
 import com.exrates.inout.util.WithdrawUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,43 +27,49 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("classpath:/merchants/nixmoney.properties")
 public class NixMoneyServiceImpl implements NixMoneyService {
-
-    private @Value("${nixmoney.url}")
-    String url;
-    private @Value("${nixmoney.payeeAccountUSD}")
-    String payeeAccountUSD;
-    private @Value("${nixmoney.payeeAccountEUR}")
-    String payeeAccountEUR;
-    private @Value("${nixmoney.payeeName}")
-    String payeeName;
-    private @Value("${nixmoney.payeePassword}")
-    String payeePassword;
-    private @Value("${nixmoney.paymentUrl}")
-    String paymentUrl;
-    private @Value("${nixmoney.noPaymentUrl}")
-    String noPaymentUrl;
-    private @Value("${nixmoney.statustUrl}")
-    String statustUrl;
-
 
     private static final Logger logger = LogManager.getLogger(NixMoneyServiceImpl.class);
 
-    @Autowired
+    private String url;
+    private String payeeAccountUSD;
+    private String payeeAccountEUR;
+    private String payeeName;
+    private String payeePassword;
+    private String paymentUrl;
+    private String noPaymentUrl;
+    private String statustUrl;
+
     private AlgorithmService algorithmService;
-    @Autowired
     private RefillRequestDao refillRequestDao;
-    @Autowired
     private MerchantService merchantService;
-    @Autowired
     private CurrencyService currencyService;
-    @Autowired
     private RefillService refillService;
-    @Autowired
     private WithdrawUtils withdrawUtils;
-    @Autowired
     private GtagService gtagService;
+
+    @Autowired
+    public NixMoneyServiceImpl(AlgorithmService algorithmService, RefillRequestDao refillRequestDao,
+                               MerchantService merchantService, CurrencyService currencyService, RefillService refillService,
+                               WithdrawUtils withdrawUtils, GtagService gtagService, CryptoCurrencyProperties cryptoCurrencyProperties){
+        this.algorithmService = algorithmService;
+        this.refillRequestDao = refillRequestDao;
+        this.merchantService = merchantService;
+        this.currencyService = currencyService;
+        this.refillService = refillService;
+        this.withdrawUtils = withdrawUtils;
+        this.gtagService = gtagService;
+
+        NixMoneyProperty nixMoneyProperty = cryptoCurrencyProperties.getPaymentSystemMerchants().getNixmoney();
+        this.url = nixMoneyProperty.getUrl();
+        this.payeeAccountUSD = nixMoneyProperty.getPayeeAccountUSD();
+        this.payeeAccountEUR = nixMoneyProperty.getPayeeAccountEUR();
+        this.payeeName = nixMoneyProperty.getPayeeName();
+        this.payeePassword = nixMoneyProperty.getPayeePassword();
+        this.paymentUrl = nixMoneyProperty.getPaymentUrl();
+        this.noPaymentUrl = nixMoneyProperty.getNoPaymentUrl();
+        this.statustUrl = nixMoneyProperty.getStatustUrl();
+    }
 
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) {

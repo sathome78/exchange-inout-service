@@ -1,4 +1,7 @@
 package com.exrates.inout.service.tron;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.domain.dto.*;
 import com.exrates.inout.domain.main.Currency;
@@ -31,9 +34,12 @@ import java.util.stream.Collectors;
 //exrates.service.exception.RefillRequestAppropriateNotFoundException;
 //exrates.service.util.WithdrawUtils;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 public class TronServiceImpl implements TronService {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     private final static String CURRENCY_NAME = "TRX";
     private final static String MERCHANT_NAME = "TRX";
@@ -98,7 +104,7 @@ public class TronServiceImpl implements TronService {
     @Override
     public RefillRequestAcceptDto createRequest(TronReceivedTransactionDto dto) {
         if (isTransactionDuplicate(dto.getHash(), currencyId, merchantId)) {
-            //log.error("tron transaction allready received!!! {}", dto);
+            log.error("tron transaction allready received!!! {}", dto);
             throw new RuntimeException("tron transaction allready received!!!");
         }
         RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
@@ -109,13 +115,16 @@ public class TronServiceImpl implements TronService {
                 .merchantTransactionId(dto.getHash())
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+        log.info("BEFORE ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         Integer requestId = refillService.createRefillRequestByFact(requestAcceptDto);
+        log.info("AFTER ---  refillService.createRefillRequestByFact(requestAcceptDto)");
         requestAcceptDto.setRequestId(requestId);
         return requestAcceptDto;
     }
 
     @Override
     public void putOnBchExam(RefillRequestAcceptDto requestAcceptDto) {
+        log.info("putOnBchExam(RefillRequestAcceptDto requestAcceptDto) start................");
         try {
             refillService.putOnBchExamRefillRequest(
                     RefillRequestPutOnBchExamDto.builder()
@@ -127,13 +136,14 @@ public class TronServiceImpl implements TronService {
                             .hash(requestAcceptDto.getMerchantTransactionId())
                             .build());
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 
     @Synchronized
     @Override
     public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        log.info("processPayment() start process.................");
         String address = params.get("address");
         String hash = params.get("hash");
         Integer id = Integer.parseInt(params.get("id"));
@@ -151,7 +161,10 @@ public class TronServiceImpl implements TronService {
                 .merchantTransactionId(hash)
                 .toMainAccountTransferringConfirmNeeded(this.toMainAccountTransferringConfirmNeeded())
                 .build();
+
+        log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         refillService.autoAcceptRefillRequest(requestAcceptDto);
+        log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
         final String username = refillService.getUsernameByRequestId(id);
         log.debug("Process of sending data to Google Analytics...");
         gtagService.sendGtagEvents(amount.toString(), currency.getName(), username);

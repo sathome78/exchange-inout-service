@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.dao.NotificationMessagesDao;
 import com.exrates.inout.domain.dto.NotificationResultDto;
@@ -16,9 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Log4j2(topic = "message_notify")
+//@Log4j2(topic = "message_notify")
 @Component
 public class NotificationMessageServiceImpl implements NotificationMessageService {
+
+   private static final Logger log = LogManager.getLogger("message_notify");
+
 
     private final NotificatorsService notificatorsService;
     private final NotificationMessagesDao notificationMessagesDao;
@@ -44,7 +50,7 @@ public class NotificationMessageServiceImpl implements NotificationMessageServic
         try {
             contactToNotify = service.sendMessageToUser(userEmail, message, subject);
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
             if (notificationTypeEnum.getCode() != NotificationTypeEnum.EMAIL.getCode()) {
                 NotificatorService emailService = notificatorsService.getNotificationService(NotificationTypeEnum.EMAIL.getCode());
                 contactToNotify = emailService.sendMessageToUser(userEmail, message, subject);

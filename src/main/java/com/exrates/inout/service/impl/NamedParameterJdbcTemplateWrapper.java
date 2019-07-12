@@ -1,4 +1,7 @@
 package com.exrates.inout.service.impl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataAccessException;
@@ -14,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 
-@Log4j2(topic = "jdbc_logger")
+//@Log4j2(topic = "jdbc_logger")
 public class NamedParameterJdbcTemplateWrapper extends NamedParameterJdbcTemplate {
+
+   private static final Logger log = LogManager.getLogger("jdbc_logger");
+
 
     public NamedParameterJdbcTemplateWrapper(DataSource dataSource) {
         super(dataSource);

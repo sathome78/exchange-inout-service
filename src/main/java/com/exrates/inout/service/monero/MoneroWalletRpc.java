@@ -15,23 +15,36 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import types.HttpException;
 import types.Pair;
 import utils.JsonUtils;
 import utils.StreamUtils;
 import wallet.MoneroAddress;
+import wallet.MoneroException;
 import wallet.MoneroIntegratedAddress;
-import wallet.*;
+import wallet.MoneroOutput;
+import wallet.MoneroPayment;
+import wallet.MoneroRpcException;
+import wallet.MoneroTransaction;
+import wallet.MoneroUri;
+import wallet.MoneroUtils;
 
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class MoneroWalletRpc {
-    private static final Logger LOGGER = Logger.getLogger(wallet.MoneroWalletRpc.class);
+    private static final Logger LOGGER = LogManager.getLogger(wallet.MoneroWalletRpc.class);
     public static ObjectMapper MAPPER = new ObjectMapper();
     private String rpcHost;
     private int rpcPort;

@@ -1,15 +1,21 @@
 package com.exrates.inout.domain.dto.datatable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.exrates.inout.exceptions.IllegalColumnNameException;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Log4j2
+//@Log4j2
 public class DataTableParams {
+
+   private static final Logger log = LogManager.getLogger(DataTableParams.class);
+
 
     private final String SEARCH_VALUE_KEY = "search_value";
 

@@ -6,6 +6,8 @@ import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.MoneroProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -22,7 +24,6 @@ import wallet.MoneroTransaction;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -34,22 +35,33 @@ import java.util.concurrent.TimeUnit;
 
 public class HCXPServiceImpl implements MoneroService {
 
-    private MoneroWalletRpc wallet;
+    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
 
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private RefillService refillService;
-
     @Autowired
     private MerchantService merchantService;
-
     @Autowired
     private CurrencyService currencyService;
-
     @Autowired
     private WithdrawUtils withdrawUtils;
+
+    private Merchant merchant;
+    private Currency currency;
+
+    private List<String> ADDRESSES = new ArrayList<>();
+
+    private MoneroWalletRpc wallet;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    private String merchantName;
+    private String currencyName;
+    private Integer minConfirmations;
+    private Integer decimals;
+    private String mainAccount;
 
     private String HOST;
     private String PORT;
@@ -57,49 +69,20 @@ public class HCXPServiceImpl implements MoneroService {
     private String PASSWORD;
     private String MODE;
 
-    private List<String> ADDRESSES = new ArrayList<>();
-
-    private Merchant merchant;
-
-    private Currency currency;
-
-    private String merchantName;
-
-    private String currencyName;
-
-    private Integer minConfirmations;
-
-    private Integer decimals;
-
-    private String mainAccount;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-    private static final int INTEGRATED_ADDRESS_DIGITS = 16;
-
     private Logger log;
 
-    public HCXPServiceImpl(String propertySource, String merchantName, String currencyName, Integer minConfirmations, Integer decimals) {
-
-        Properties props = new Properties();
-
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.HOST = props.getProperty("monero.host");
-            this.PORT = props.getProperty("monero.port");
-            this.LOGIN = props.getProperty("monero.login");
-            this.PASSWORD = props.getProperty("monero.password");
-            this.MODE = props.getProperty("monero.mode");
-            this.mainAccount = props.getProperty("monero.mainAccount");
-            this.merchantName = merchantName;
-            this.currencyName = currencyName;
-            this.minConfirmations = minConfirmations;
-            this.decimals = decimals;
-            this.log = LogManager.getLogger(props.getProperty("monero.log"));
-        } catch (IOException e) {
-            //log.error(e);
-        }
-
+    public HCXPServiceImpl(MoneroProperty moneroProperty) {
+        this.HOST = moneroProperty.getNode().getHost();
+        this.PORT = moneroProperty.getNode().getPort();
+        this.LOGIN = moneroProperty.getNode().getLogin();
+        this.PASSWORD = moneroProperty.getNode().getPassword();
+        this.MODE = moneroProperty.getNode().getMode();
+        this.mainAccount = moneroProperty.getMainAccount();
+        this.merchantName = moneroProperty.getMerchantName();
+        this.currencyName = moneroProperty.getCurrencyName();
+        this.minConfirmations = moneroProperty.getMinConfirmations();
+        this.decimals = moneroProperty.getDecimals();
+        this.log = LogManager.getLogger(moneroProperty.getNode().getLog());
     }
 
     @Override
@@ -144,7 +127,7 @@ public class HCXPServiceImpl implements MoneroService {
             ADDRESSES.add(address);
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
 
         String message = messageSource.getMessage("merchants.refill.btc",
@@ -177,7 +160,7 @@ public class HCXPServiceImpl implements MoneroService {
                     }
                 }, 3, 30, TimeUnit.MINUTES);
             }catch (Exception e){
-                //log.error(e);
+                log.error(e);
             }
         }else {
             log.info(merchantName + " test mode...");
@@ -201,13 +184,13 @@ public class HCXPServiceImpl implements MoneroService {
             //TODO remove after successfully withdraw
             String mainAccountVerification = "hysGeMWsvZdBq7tBimycV71rXSwJPkn4f2gRNfDwP2AogUK7cNYt7saCAcYA9cFsvpeUEiiYA44jm1GRswFENhan2XEaiEfMo";
             if(!mainAccount.equals(mainAccountVerification)){
-                //log.error("Unexpected main account address, expected " + mainAccountVerification + ", but was " + mainAccount);
+                log.error("Unexpected main account address, expected " + mainAccountVerification + ", but was " + mainAccount);
                 return;
             }
             MoneroTransaction transaction = wallet.send(mainAccount, amountToSend, "", 0, 10);
             log.info(transaction);
         }catch (Throwable e){
-            //log.error(e);
+            log.error(e);
         }
     }
 
@@ -252,14 +235,14 @@ public class HCXPServiceImpl implements MoneroService {
 
                     processPayment(mapPayment);
                 }catch (Exception e){
-                    //log.error(e);
+                    log.error(e);
                 }
             }
 
             log.info(new Date());
 
         } catch (Exception e) {
-            //log.error(e);
+            log.error(e);
         }
     }
 

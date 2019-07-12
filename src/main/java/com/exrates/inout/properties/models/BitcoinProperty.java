@@ -20,6 +20,8 @@ public class BitcoinProperty {
     private boolean supportWalletNotifications;
     private boolean supportReferenceLine;
 
+    private boolean useSendManyForWithdraw;
+
     private String backupFolder;
     private String walletPassword;
 

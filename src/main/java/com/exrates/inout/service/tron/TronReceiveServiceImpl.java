@@ -1,13 +1,12 @@
 package com.exrates.inout.service.tron;
-
-
 import com.exrates.inout.dao.MerchantSpecParamsDao;
 import com.exrates.inout.domain.dto.MerchantSpecParamDto;
 import com.exrates.inout.domain.dto.RefillRequestAcceptDto;
 import com.exrates.inout.domain.dto.TronReceivedTransactionDto;
 import com.exrates.inout.domain.enums.TronTransactionTypeEnum;
 import com.google.common.base.Preconditions;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,12 @@ import java.util.concurrent.TimeUnit;
 //exrates.model.dto.TronReceivedTransactionDto;
 //exrates.model.dto.TronTransactionTypeEnum;
 
-@Log4j2(topic = "tron")
+//@Log4j2(topic = "tron")
 @Service
 public class TronReceiveServiceImpl {
+
+   private static final Logger log = LogManager.getLogger("tron");
+
 
     private final TronNodeService nodeService;
     private final TronServiceImpl tronService;
@@ -106,7 +108,7 @@ public class TronReceiveServiceImpl {
                         tronService.putOnBchExam(dto);
                     }
                 } catch (Exception e) {
-                    //log.error(e);
+                    log.error(e);
                 }
             }
         });
@@ -139,7 +141,7 @@ public class TronReceiveServiceImpl {
             try {
                 list.add(fromJson((JSONObject) p));
             } catch (Exception e) {
-                ////log.error(e);
+                log.error(e);
             }
         });
         return list;

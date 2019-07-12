@@ -9,6 +9,8 @@ import com.exrates.inout.exceptions.CheckDestinationTagException;
 import com.exrates.inout.exceptions.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
+import com.exrates.inout.properties.CryptoCurrencyProperties;
+import com.exrates.inout.properties.models.OtherStellarProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -16,11 +18,10 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.CryptoUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,36 +39,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-//exrates.dao.exception.DuplicatedMerchantTransactionIdOrAttemptToRewriteException;
-//exrates.model.Currency;
-//exrates.model.Merchant;
-//exrates.model.dto.RefillRequestAcceptDto;
-//exrates.model.dto.RefillRequestCreateDto;
-//exrates.model.dto.WithdrawMerchantOperationDto;
-//exrates.service.CurrencyService;
-//exrates.service.GtagService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.exception.CheckDestinationTagException;
-//exrates.service.exception.RefillRequestAppropriateNotFoundException;
-//exrates.service.exception.WithdrawRequestPostException;
-//exrates.service.util.CryptoUtils;
-//exrates.service.util.WithdrawUtils;
-
 /**
  * Created by maks on 06.06.2017.
  */
-@Log4j2(topic = "stellar_log")
 @Service
-@PropertySource("classpath:/merchants/stellar.properties")
 public class StellarServiceImpl implements StellarService {
 
-    private @Value("${stellar.horizon.url}")
-    String SEVER_URL;
-    private @Value("${stellar.account.name}")
-    String ACCOUNT_NAME;
-    private @Value("${stellar.account.seed}")
-    String ACCOUNT_SECRET;
+    private static final Logger log = LogManager.getLogger("stellar_log");
+
+    private static final String DESTINATION_TAG_ERR_MSG = "message.stellar.tagError";
+
+    private static final String XLM_MERCHANT = "Stellar";
+    private static final String XML_CURRENCY = "XLM";
+    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
     @Autowired
     private MerchantService merchantService;
@@ -84,20 +68,25 @@ public class StellarServiceImpl implements StellarService {
     @Autowired
     private GtagService gtagService;
 
+    private String SEVER_URL;
+    private String ACCOUNT_NAME;
+    private String ACCOUNT_SECRET;
+
     private Merchant merchant;
     private Currency currency;
-    private static final String DESTINATION_TAG_ERR_MSG = "message.stellar.tagError";
+
+    public StellarServiceImpl(CryptoCurrencyProperties cryptoCurrencyProperties){
+        OtherStellarProperty stellarProperty = cryptoCurrencyProperties.getOtherCoins().getStellar();
+        this.SEVER_URL = stellarProperty.getHorizonUrl();
+        this.ACCOUNT_NAME = stellarProperty.getAccountName();
+        this.ACCOUNT_SECRET = stellarProperty.getAccountSeed();
+    }
 
     @PostConstruct
     public void init() {
-        currency = currencyService.findByName("XLM");
+        currency = currencyService.findByName(XML_CURRENCY);
         merchant = merchantService.findByName(XLM_MERCHANT);
     }
-
-
-    private static final String XLM_MERCHANT = "Stellar";
-
-    private static final int MAX_TAG_DESTINATION_DIGITS = 9;
 
     @Override
     public void manualCheckNotReceivedTransaction(String hash) {
@@ -144,7 +133,7 @@ public class StellarServiceImpl implements StellarService {
         try {
             this.processPayment(paramsMap);
         } catch (RefillRequestAppropriateNotFoundException e) {
-            //log.error("xlm refill address not found {}", payment);
+            log.error("xlm refill address not found {}", payment);
         }
     }
 
@@ -182,7 +171,7 @@ public class StellarServiceImpl implements StellarService {
         Optional<Integer> id;
         String destinationTag;
         do {
-            destinationTag = CryptoUtils.generateDestinationTag(userId, MAX_TAG_DESTINATION_DIGITS);
+            destinationTag = CryptoUtils.generateDestinationTag(userId, MAX_TAG_DESTINATION_DIGITS, XML_CURRENCY);
             id = refillService.getRequestIdReadyForAutoAcceptByAddressAndMerchantIdAndCurrencyId(destinationTag, currency.getId(), merchant.getId());
         } while (id.isPresent());
         return destinationTag;
