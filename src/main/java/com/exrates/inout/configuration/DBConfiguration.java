@@ -5,7 +5,7 @@ import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.impl.NamedParameterJdbcTemplateWrapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import me.exrates.SSMGetter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
+@Log4j2
 @Configuration
 @EntityScan(basePackages = {"com.exrates.inout"})
 @ComponentScan({"com.exrates.inout"})
@@ -56,6 +57,11 @@ public class DBConfiguration {
         }
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setMaximumPoolSize(1);
+
+        log.info("DB_CONFIG Master| JdbcUrl: {} | Db user: {}",
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_master_host")),
+                algorithmService.getSecret("db_user"));
+
         return new HikariDataSource(hikariConfig);
     }
 
@@ -74,6 +80,11 @@ public class DBConfiguration {
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setMaximumPoolSize(1);
         hikariConfig.setReadOnly(true);
+
+        log.info("DB_CONFIG Slave| JdbcUrl: {} | Db user: {}",
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_slave_host")),
+                algorithmService.getSecret("db_user"));
+
         return new HikariDataSource(hikariConfig);
     }
 
