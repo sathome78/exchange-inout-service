@@ -1,6 +1,7 @@
 package com.exrates.inout.configuration;
 
 
+import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.impl.NamedParameterJdbcTemplateWrapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,6 +23,10 @@ import javax.sql.DataSource;
 @ComponentScan({"com.exrates.inout"})
 public class DBConfiguration {
 
+    private final static String NAME_PROD_PROFILE = "prod";
+    private final static String JDBC_URL_TEMPLATE_THAT_NEED_REPLACE = "DB_HOST";
+    private final static String JDBC_URL_CONNECT_TEMPLATE = "jdbc:mysql://" + JDBC_URL_TEMPLATE_THAT_NEED_REPLACE + ":3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true";
+
     @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverClassName;
     @Value("${spring.datasource.hikari.jdbc-url}")
@@ -31,28 +36,43 @@ public class DBConfiguration {
     @Value("${spring.datasource.hikari.password}")
     private String password;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @Autowired
-    private SSMGetter ssmGetter;
+    private AlgorithmService algorithmService;
 
     @Bean(name = "masterHikariDataSource")
     public DataSource masterHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
+        if(activeProfile.equals(NAME_PROD_PROFILE)) {
+            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_master_host")));
+            hikariConfig.setUsername(algorithmService.getSecret("db_user"));
+            hikariConfig.setPassword(algorithmService.getSecret("db_password"));
+        } else {
+            hikariConfig.setJdbcUrl(jdbcUrl);
+            hikariConfig.setUsername(user);
+            hikariConfig.setPassword(password);
+        }
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(jdbcUrl);
-        hikariConfig.setUsername(user);
-        hikariConfig.setPassword(password);
-        hikariConfig.setMaximumPoolSize(1); //TODO
+        hikariConfig.setMaximumPoolSize(1);
         return new HikariDataSource(hikariConfig);
     }
 
     @Bean(name = "slaveHikariDataSource")
     public DataSource slaveHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
+        if(activeProfile.equals(NAME_PROD_PROFILE)) {
+            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_slave_host")));
+            hikariConfig.setUsername(algorithmService.getSecret("db_user"));
+            hikariConfig.setPassword(algorithmService.getSecret("db_password"));
+        } else {
+            hikariConfig.setJdbcUrl(jdbcUrl);
+            hikariConfig.setUsername(user);
+            hikariConfig.setPassword(password);
+        }
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(jdbcUrl);
-        hikariConfig.setUsername(user);
-        hikariConfig.setPassword(password);
-        hikariConfig.setMaximumPoolSize(1); //TODO
+        hikariConfig.setMaximumPoolSize(1);
         hikariConfig.setReadOnly(true);
         return new HikariDataSource(hikariConfig);
     }
