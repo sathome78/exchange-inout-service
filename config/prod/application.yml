@@ -2611,14 +2611,14 @@ lisk-coins:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://172.10.13.104
+      host: http://172.31.14.168
       port: 8000
       address: 11069838797124010917L
       secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
       tx-sort-prefix:
       tx-query-limit: 100
       tx-count-node-type: NUMBER
-      microservice-host: http://172.10.13.104
+      microservice-host: http://172.31.14.168
       microservice-port: 19111
   btw:
     merchant-name: BitcoinWhite
