@@ -7,28 +7,18 @@ spring:
     name: input-output-service
   datasource:
     hikari:
-      ssm-path: vLHjSkPJjB6JLVcA #TODO make lookup password from ssm for prod profile
-      username: root
-      jdbc-url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
+      ssm-path:
+      username:
+      jdbc-url:
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
-  redis:
-    host: 172.50.50.50
-    port: 6379
-  flyway:
-    locations: classpath:db/migration
-    user: root
-    password: root #TODO prod
-    url: jdbc:mysql://localhost:3306/inout_test?useSSL=false
-    baseline-on-migrate: true
-    validate-on-migrate: false
   rabbitmq:
-    username: angulardemoaccess
-    password: angulardemoaccess
-    host: 172.31.14.1
+    username: prod
+    password: Urahci3n
+    host: rabbitmq-prod.service
     port: 5672
 
 logging:
