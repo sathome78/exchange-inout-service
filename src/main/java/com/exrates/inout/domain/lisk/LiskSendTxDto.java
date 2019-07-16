@@ -1,10 +1,14 @@
 package com.exrates.inout.domain.lisk;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class LiskSendTxDto {
-    private String secret;
     private Long amount;
     private String recipientId;
+    private String passphrase;
 }

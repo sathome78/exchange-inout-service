@@ -19,6 +19,6 @@ public class LiskNode {
     private String txSortPrefix;
     private int txQueryLimit;
     private JsonNodeType txCountNodeType;
-    private String portGetAccount;
-    private String portSendTx;
+    private String microserviceHost;
+    private String microservicePort;
 }

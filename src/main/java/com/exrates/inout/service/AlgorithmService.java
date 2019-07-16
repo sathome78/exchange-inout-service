@@ -13,5 +13,11 @@ public interface AlgorithmService {
 
     String base64Encode(String string);
 
+    String base64Decode(String string);
+
     String getSecret(String сode);
+
+    String encodeByKey(String code, String txt);
+
+    String decodeByKey(String code, String text);
 }
