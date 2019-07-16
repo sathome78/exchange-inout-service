@@ -8,7 +8,7 @@ spring:
   datasource:
     hikari:
       username: devpreprod
-      password: jaa9Thaipofath:3306
+      password: jaa9Thaipofath
       jdbc-url: jdbc:mysql://birzha-aurora-preprod-cluster.cluster-cedlveyttji9.us-east-2.rds.amazonaws.com:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
