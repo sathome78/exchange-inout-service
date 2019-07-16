@@ -1593,7 +1593,7 @@ ethereum-coins:
   clo:
     merchant-name: CLO
     currency-name: CLO
-    min-confirmations: 40
+    min-confirmations: 300
     node:
       currency: CLO
       url: http://172.31.14.168:8104
