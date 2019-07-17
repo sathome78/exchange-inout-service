@@ -27,6 +27,10 @@ public class DBConfiguration {
     private final static String NAME_PROD_PROFILE = "prod";
     private final static String JDBC_URL_TEMPLATE_THAT_NEED_REPLACE = "DB_HOST";
     private final static String JDBC_URL_CONNECT_TEMPLATE = "jdbc:mysql://" + JDBC_URL_TEMPLATE_THAT_NEED_REPLACE + ":3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true";
+    private final static String SECRET_PROD_DB_MASTER_HOST = "db_master_host\":\"";
+    private final static String SECRET_PROD_DB_SLAVE_HOST = "db_slave_host\":\"";
+    private final static String SECRET_PROD_DB_USER = "db_user\":\"";
+    private final static String SECRET_PROD_DB_PASSWORD = "db_password\":\"";
 
     @Value("${spring.datasource.hikari.driver-class-name}")
     private String driverClassName;
@@ -47,9 +51,9 @@ public class DBConfiguration {
     public DataSource masterHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         if(activeProfile.equals(NAME_PROD_PROFILE)) {
-            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_master_host")));
-            hikariConfig.setUsername(algorithmService.getSecret("db_user"));
-            hikariConfig.setPassword(algorithmService.getSecret("db_password"));
+            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_MASTER_HOST)));
+            hikariConfig.setUsername(algorithmService.getSecret(SECRET_PROD_DB_USER));
+            hikariConfig.setPassword(algorithmService.getSecret(SECRET_PROD_DB_PASSWORD));
         } else {
             hikariConfig.setJdbcUrl(jdbcUrl);
             hikariConfig.setUsername(user);
@@ -59,8 +63,8 @@ public class DBConfiguration {
         hikariConfig.setMaximumPoolSize(1);
 
         log.info("DB_CONFIG Master| JdbcUrl: {} | Db user: {}",
-                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_master_host")),
-                algorithmService.getSecret("db_user"));
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_MASTER_HOST)),
+                algorithmService.getSecret(SECRET_PROD_DB_USER));
 
         return new HikariDataSource(hikariConfig);
     }
@@ -69,9 +73,9 @@ public class DBConfiguration {
     public DataSource slaveHikariDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         if(activeProfile.equals(NAME_PROD_PROFILE)) {
-            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_slave_host")));
-            hikariConfig.setUsername(algorithmService.getSecret("db_user"));
-            hikariConfig.setPassword(algorithmService.getSecret("db_password"));
+            hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_SLAVE_HOST)));
+            hikariConfig.setUsername(algorithmService.getSecret(SECRET_PROD_DB_USER));
+            hikariConfig.setPassword(algorithmService.getSecret(SECRET_PROD_DB_PASSWORD));
         } else {
             hikariConfig.setJdbcUrl(jdbcUrl);
             hikariConfig.setUsername(user);
@@ -82,8 +86,8 @@ public class DBConfiguration {
         hikariConfig.setReadOnly(true);
 
         log.info("DB_CONFIG Slave| JdbcUrl: {} | Db user: {}",
-                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret("db_slave_host")),
-                algorithmService.getSecret("db_user"));
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_SLAVE_HOST)),
+                algorithmService.getSecret(SECRET_PROD_DB_USER));
 
         return new HikariDataSource(hikariConfig);
     }
