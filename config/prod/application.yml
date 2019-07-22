@@ -2591,6 +2591,13 @@ ethereum-token-coins:
     isERC20: true
     unit: AIWEI
     min-wallet-balance: 0
+  USDT:
+    merchant-name: USDT
+    currency-name: USDT
+    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7'
+    isERC20: true
+    unit: MWEI
+    min-wallet-balance: 0
 
 lisk-coins:
   lisk:

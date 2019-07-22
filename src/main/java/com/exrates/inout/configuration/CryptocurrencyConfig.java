@@ -1077,6 +1077,10 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getEMBR());
     }
 
+    @Bean(name = "usdtServiceImpl")
+    public EthTokenService usdtService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getUSDT());
+    }
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
