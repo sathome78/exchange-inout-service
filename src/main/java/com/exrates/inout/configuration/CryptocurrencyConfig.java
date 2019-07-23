@@ -1082,6 +1082,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getUSDT());
     }
 
+    @Bean(name = "asgServiceImpl")
+    public EthTokenService asgService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getASG());
+    }
+
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
         List<String> contractAddress = Arrays.asList(s);
