@@ -1541,7 +1541,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: http://172.10.13.51:8549
+      url: http://172.10.10.86:8549
       destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbCE2C5CDAA1121Cae98Bc3Fde704c812334A03a2
