@@ -142,5 +142,6 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty GAPI;
     private EthereumTokenProperty EMBR;
     private EthereumTokenProperty USDT;
+    private EthereumTokenProperty ASG;
 
 }
