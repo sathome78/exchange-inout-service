@@ -59,9 +59,12 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         key = getSecret(code);
         return xorMessage(txt, key);
     }
+    public String getSecret(String code) {
+        return code;
+    }
 
     //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
-    public String getSecret(String сode) {
+    public String getSecret2(String code) {
         String region = "us-east-2";
 
         // Create a Secrets Manager client
@@ -100,7 +103,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
             secret = new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
         }
 
-        secret = secret.substring(secret.indexOf(сode) + сode.length());
+        secret = secret.substring(secret.indexOf(code) + code.length());
         secret = secret.substring(0, secret.indexOf("\""));
         return secret;
     }

@@ -3132,3 +3132,7 @@ aws-server:
 eos-coins:
   eos:
     eosMainAddress: ha4tgmbvgege
+
+zil-coins:
+  zil:
+    zilMainaddress: zil1rjc584xkxgu85z9k3q7jcy002729u70klglzgz
