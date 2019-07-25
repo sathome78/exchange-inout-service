@@ -2,7 +2,13 @@ package com.exrates.inout.service.impl;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.*;
+import com.amazonaws.services.secretsmanager.model.DecryptionFailureException;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+import com.amazonaws.services.secretsmanager.model.InternalServiceErrorException;
+import com.amazonaws.services.secretsmanager.model.InvalidParameterException;
+import com.amazonaws.services.secretsmanager.model.InvalidRequestException;
+import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import com.exrates.inout.properties.CryptoCurrencyProperties;
 import com.exrates.inout.properties.models.AwsProperty;
 import com.exrates.inout.service.AlgorithmService;
@@ -28,6 +34,30 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     @Autowired
     public AlgorithmServiceImpl(CryptoCurrencyProperties ccp){
         this.awsProperty = ccp.getAwsServer().getAws();
+    }
+
+    @Override
+    public String encodeByKey(String code, String txt) {
+        String key = getSecret(code);
+        String text = xorMessage(txt, key);
+        try {
+            return base64Encode(text);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String decodeByKey(String code, String text) {
+        String txt;
+        String key;
+        try {
+            txt = base64Decode(text);
+        } catch (Exception e) {
+            return null;
+        }
+        key = getSecret(code);
+        return xorMessage(txt, key);
     }
 
     //    У инстанса должна быть iam policy, на чтение aws секретов!!!!!
@@ -120,11 +150,35 @@ public class AlgorithmServiceImpl implements AlgorithmService {
                 .encodeToString(string.getBytes());
     }
 
+    public String base64Decode(final String string) {
+        return new String(Base64.getDecoder().decode(string));
+    }
+
     private String byteArrayToHexString(byte[] bytes) {
         final StringBuilder result = new StringBuilder();
         for (byte aByte : bytes) {
             result.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
         return result.toString();
+    }
+
+    private String xorMessage(String message, String key) {
+        try {
+            if (message == null || key == null) {return null;}
+
+            char[] keys = key.toCharArray();
+            char[] mesg = message.toCharArray();
+
+            int ml = mesg.length;
+            int kl = keys.length;
+            char[] newmsg = new char[ml];
+
+            for (int i = 0; i < ml; i++) {
+                newmsg[i] = (char)(mesg[i] ^ keys[i % kl]);
+            }
+            return new String(newmsg);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

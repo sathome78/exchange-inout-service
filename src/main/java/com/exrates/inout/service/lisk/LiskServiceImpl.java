@@ -13,8 +13,8 @@ import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.LiskCreateAddressException;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.exceptions.WithdrawRequestPostException;
-import com.exrates.inout.properties.models.LiskNode;
 import com.exrates.inout.properties.models.LiskProperty;
+import com.exrates.inout.service.AlgorithmService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.GtagService;
 import com.exrates.inout.service.MerchantService;
@@ -22,9 +22,8 @@ import com.exrates.inout.service.RefillService;
 import com.exrates.inout.util.ParamMapUtils;
 import com.exrates.inout.util.WithdrawUtils;
 import com.mysql.jdbc.StringUtils;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import org.springframework.context.MessageSource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -40,18 +40,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
-//@Log4j2(topic = "lisk_log")
+@Log4j2(topic = "lisk_log")
 public class LiskServiceImpl implements LiskService {
 
-   private static final Logger log = LogManager.getLogger("lisk_log");
-
-
     private final BigDecimal DEFAULT_LSK_TX_FEE = BigDecimal.valueOf(0.1);
+    private final String CODE_FROM_AWS = "lisk_code\":\"";
 
     @Autowired
     private RefillService refillService;
@@ -65,6 +63,8 @@ public class LiskServiceImpl implements LiskService {
     private WithdrawUtils withdrawUtils;
     @Autowired
     private GtagService gtagService;
+    @Autowired
+    private AlgorithmService algorithmService;
 
     private LiskRestClient liskRestClient;
 
@@ -72,20 +72,21 @@ public class LiskServiceImpl implements LiskService {
 
     private final String merchantName;
     private final String currencyName;
-    private LiskNode liskNodeProperties;
+    private LiskProperty liskProperty;
     private String mainAddress;
+    // TODO need to add correct passphrases to mainSecret for withdraw()
     private String mainSecret;
     private Integer minConfirmations;
 
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 
-    public LiskServiceImpl(LiskRestClient liskRestClient, LiskSpecialMethodService liskSpecialMethodService, String merchantName, String currencyName, LiskProperty liskProperty) {
+    public LiskServiceImpl(LiskRestClient liskRestClient, LiskSpecialMethodService liskSpecialMethodService, String merchantName, String currencyName, LiskProperty propertySource) {
         this.liskRestClient = liskRestClient;
         this.liskSpecialMethodService = liskSpecialMethodService;
         this.merchantName = merchantName;
         this.currencyName = currencyName;
-        this.liskNodeProperties = liskProperty.getNode();
+        this.liskProperty = propertySource;
         this.mainAddress = liskProperty.getNode().getAddress();
         this.mainSecret = liskProperty.getNode().getSecret();
         this.minConfirmations = liskProperty.getMinConfirmations();
@@ -93,13 +94,8 @@ public class LiskServiceImpl implements LiskService {
 
     @PostConstruct
     private void init() {
-        liskRestClient.initClient(liskNodeProperties);
-        scheduler.scheduleAtFixedRate(this::processTransactionsForKnownAddresses, 3L, 30L, TimeUnit.MINUTES);
-    }
-
-    @PreDestroy
-    private void shutdown() {
-        scheduler.shutdown();
+        liskRestClient.initClient(liskProperty);
+        scheduler.scheduleAtFixedRate(this::processTransactionsForKnownAddresses, 3L, 3L, TimeUnit.MINUTES);
     }
 
     @Override
@@ -115,117 +111,14 @@ public class LiskServiceImpl implements LiskService {
                 put("message", message);
                 put("address", address);
                 put("pubKey", account.getPublicKey());
-                put("brainPrivKey", secret);
+                put("brainPrivKey", algorithmService.encodeByKey(CODE_FROM_AWS, secret));
                 put("qr", address);
             }};
             return result;
         } catch (MnemonicException.MnemonicLengthException e) {
             throw new LiskCreateAddressException(e);
         }
-
-
     }
-
-    @Override
-    public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
-        log.info("ApolloServiceImpl.processPayment() start method.................");
-        Optional<String> refillRequestIdResult = Optional.ofNullable(params.get("requestId"));
-        Integer currencyId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "currencyId"));
-        Integer merchantId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "merchantId"));
-        String address = ParamMapUtils.getIfNotNull(params, "address");
-        String txId = ParamMapUtils.getIfNotNull(params, "txId");
-        LiskTransaction transaction = getTransactionById(txId);
-        log.info("BEFORE liskRestClient.getFee() .................");
-        long txFee = liskRestClient.getFee();
-        BigDecimal scaledAmount = LiskTransaction.scaleAmount(transaction.getAmount() - txFee);
-
-        if (!refillRequestIdResult.isPresent()) {
-            log.info("BEFORE ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.........)");
-            Integer requestId = refillService.createRefillRequestByFact(RefillRequestAcceptDto.builder()
-                    .address(address)
-                    .amount(scaledAmount)
-                    .merchantId(merchantId)
-                    .currencyId(currencyId)
-                    .merchantTransactionId(txId).build());
-            log.info("AFTER ---  refillService.createRefillRequestByFact(RefillRequestAcceptDto.........)");
-            if (transaction.getConfirmations() >= 0 && transaction.getConfirmations() < minConfirmations) {
-                try {
-                    log.debug("put on bch exam {}", transaction);
-                    refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()
-                            .requestId(requestId)
-                            .merchantId(merchantId)
-                            .currencyId(currencyId)
-                            .address(address)
-                            .amount(scaledAmount)
-                            .hash(txId)
-                            .blockhash(transaction.getBlockId()).build());
-                    log.info("AFTER ---  refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder().........)");
-                } catch (RefillRequestAppropriateNotFoundException e) {
-                    log.error(e + " in processPayment() method.......");
-                }
-            } else {
-                changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
-                        .requestId(requestId)
-                        .address(address)
-                        .amount(scaledAmount)
-                        .confirmations(transaction.getConfirmations())
-                        .currencyId(currencyId)
-                        .merchantId(merchantId)
-                        .hash(txId)
-                        .blockhash(transaction.getBlockId()).build());
-            }
-        } else {
-            Integer requestId = Integer.parseInt(refillRequestIdResult.get());
-            changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
-                    .requestId(requestId)
-                    .address(address)
-                    .amount(scaledAmount)
-                    .confirmations(transaction.getConfirmations())
-                    .currencyId(currencyId)
-                    .merchantId(merchantId)
-                    .hash(txId)
-                    .blockhash(transaction.getBlockId()).build());
-        }
-        log.info("END OF LiskServiceImpl.processPayment().........");
-    }
-
-    private void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto) {
-        log.info("changeConfirmationsOrProvide start.........)");
-        try {
-            refillService.setConfirmationCollectedNumber(dto);
-            if (dto.getConfirmations() >= minConfirmations) {
-                log.debug("Providing transaction!");
-                Integer requestId = dto.getRequestId();
-
-                log.info("BEFORE RefillRequestAcceptDto.builder().........)");
-                RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
-                        .address(dto.getAddress())
-                        .amount(dto.getAmount())
-                        .currencyId(dto.getCurrencyId())
-                        .merchantId(dto.getMerchantId())
-                        .merchantTransactionId(dto.getHash())
-                        .build();
-
-                if (Objects.isNull(requestId)) {
-                    requestId = refillService.getRequestId(requestAcceptDto);
-                }
-                requestAcceptDto.setRequestId(requestId);
-                log.info("BEFORE ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
-                refillService.autoAcceptRefillRequest(requestAcceptDto);
-                log.info("AFTER ---  refillService.autoAcceptRefillRequest(requestAcceptDto)");
-                RefillRequestFlatDto flatDto = refillService.getFlatById(requestId);
-                sendTransaction(flatDto.getBrainPrivKey(), dto.getAmount(), mainAddress);
-
-                final String username = refillService.getUsernameByRequestId(requestId);
-
-                log.debug("Process of sending data to Google Analytics...");
-                gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyName, username);
-            }
-        } catch (RefillRequestAppropriateNotFoundException e) {
-            log.error(e);
-        }
-    }
-
 
     @Override
     public void processTransactionsForKnownAddresses() {
@@ -274,7 +167,100 @@ public class LiskServiceImpl implements LiskService {
         });
     }
 
+    @Override
+    public void processPayment(Map<String, String> params) throws RefillRequestAppropriateNotFoundException {
+        Optional<String> refillRequestIdResult = Optional.ofNullable(params.get("requestId"));
+        Integer currencyId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "currencyId"));
+        Integer merchantId = Integer.parseInt(ParamMapUtils.getIfNotNull(params, "merchantId"));
+        String address = ParamMapUtils.getIfNotNull(params, "address");
+        String txId = ParamMapUtils.getIfNotNull(params, "txId");
+        LiskTransaction transaction = getTransactionById(txId);
+        long txFee = liskRestClient.getFee();
+        BigDecimal scaledAmount = LiskTransaction.scaleAmount(transaction.getAmount() - txFee);
 
+        if (!refillRequestIdResult.isPresent()) {
+            Integer requestId = refillService.createRefillRequestByFact(RefillRequestAcceptDto.builder()
+                    .address(address)
+                    .amount(scaledAmount)
+                    .merchantId(merchantId)
+                    .currencyId(currencyId)
+                    .merchantTransactionId(txId).build());
+            if (transaction.getConfirmations() >= 0 && transaction.getConfirmations() < minConfirmations) {
+                try {
+                    log.debug("put on bch exam {}", transaction);
+                    refillService.putOnBchExamRefillRequest(RefillRequestPutOnBchExamDto.builder()
+                            .requestId(requestId)
+                            .merchantId(merchantId)
+                            .currencyId(currencyId)
+                            .address(address)
+                            .amount(scaledAmount)
+                            .hash(txId)
+                            .blockhash(transaction.getBlockId()).build());
+                } catch (RefillRequestAppropriateNotFoundException e) {
+                    log.error(e);
+                }
+            } else {
+                changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
+                        .requestId(requestId)
+                        .address(address)
+                        .amount(scaledAmount)
+                        .confirmations(transaction.getConfirmations())
+                        .currencyId(currencyId)
+                        .merchantId(merchantId)
+                        .hash(txId)
+                        .blockhash(transaction.getBlockId()).build());
+            }
+        } else {
+            Integer requestId = Integer.parseInt(refillRequestIdResult.get());
+            changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto.builder()
+                    .requestId(requestId)
+                    .address(address)
+                    .amount(scaledAmount)
+                    .confirmations(transaction.getConfirmations())
+                    .currencyId(currencyId)
+                    .merchantId(merchantId)
+                    .hash(txId)
+                    .blockhash(transaction.getBlockId()).build());
+        }
+    }
+
+    private void changeConfirmationsOrProvide(RefillRequestSetConfirmationsNumberDto dto) {
+        try {
+            refillService.setConfirmationCollectedNumber(dto);
+            if (dto.getConfirmations() >= minConfirmations) {
+                log.debug("Providing transaction!");
+                Integer requestId = dto.getRequestId();
+
+                RefillRequestAcceptDto requestAcceptDto = RefillRequestAcceptDto.builder()
+                        .address(dto.getAddress())
+                        .amount(dto.getAmount())
+                        .currencyId(dto.getCurrencyId())
+                        .merchantId(dto.getMerchantId())
+                        .merchantTransactionId(dto.getHash())
+                        .build();
+
+                if (Objects.isNull(requestId)) {
+                    requestId = refillService.getRequestId(requestAcceptDto);
+                }
+                requestAcceptDto.setRequestId(requestId);
+
+                RefillRequestFlatDto flatDto = refillService.getFlatById(requestId);
+                sendTransaction(algorithmService.decodeByKey(CODE_FROM_AWS, flatDto.getBrainPrivKey()),
+                        dto.getAmount(), mainAddress);
+
+                refillService.autoAcceptRefillRequest(requestAcceptDto);
+
+                final String gaTag = refillService.getUserGAByRequestId(requestId);
+                log.debug("Process of sending data to Google Analytics...");
+                gtagService.sendGtagEvents(requestAcceptDto.getAmount().toString(), currencyName, gaTag);
+            }
+        } catch (RefillRequestAppropriateNotFoundException e) {
+            log.error(e);
+        }
+    }
+
+
+    // TODO need to add correct passphrases to mainSecret for withdraw()
     @Override
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
         if (!"LSK".equalsIgnoreCase(withdrawMerchantOperationDto.getCurrency())) {
@@ -309,7 +295,6 @@ public class LiskServiceImpl implements LiskService {
         return sendTransaction(secret, LiskTransaction.unscaleAmountToLiskFormat(amount), recipientId);
     }
 
-
     @Override
     public LiskAccount createNewLiskAccount(String secret) {
         return liskSpecialMethodService.createAccount(secret);
@@ -325,6 +310,11 @@ public class LiskServiceImpl implements LiskService {
     public boolean isValidDestinationAddress(String address) {
 
         return withdrawUtils.isValidDestinationAddress(address);
+    }
+
+    @PreDestroy
+    private void shutdown() {
+        scheduler.shutdown();
     }
 
 }

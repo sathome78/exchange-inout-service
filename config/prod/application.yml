@@ -1583,7 +1583,7 @@ ethereum-coins:
   clo:
     merchant-name: CLO
     currency-name: CLO
-    min-confirmations: 40
+    min-confirmations: 300
     node:
       currency: CLO
       url: http://172.31.14.168:8104
@@ -2591,25 +2591,39 @@ ethereum-token-coins:
     isERC20: true
     unit: AIWEI
     min-wallet-balance: 0
+  USDT:
+    merchant-name: USDT
+    currency-name: USDT
+    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7'
+    isERC20: true
+    unit: MWEI
+    min-wallet-balance: 0
+  ASG:
+    merchant-name: ASG
+    currency-name: ASG
+    contract: '0x7a3d3c4f30c46f51b814bee23d970a7c9b757a32'
+    isERC20: true
+    unit: ETHER
+    min-wallet-balance: 0
 
 lisk-coins:
   lisk:
     merchant-name: Lisk
     currency-name: LSK
-    min-confirmations: 300
+    min-confirmations: 30
     create-account-endpoint:
     create-tx-endpoint:
     broadcast-tx-endpoint:
     node:
-      host: http://ip-172-31-14-168.us-east-2.compute.internal
+      host: http://172.31.14.168
       port: 8000
       address: 11069838797124010917L
-      secret:
+      secret: rice floor forest hole divorce bike caution child ankle fortune raccoon beef
       tx-sort-prefix:
-      tx-query-limit: 1000
-      tx-count-node-type: STRING
-      port-get-account: 8000
-      port-send-tx: 8000
+      tx-query-limit: 100
+      tx-count-node-type: NUMBER
+      microservice-host: http://172.31.14.168
+      microservice-port: 19111
   btw:
     merchant-name: BitcoinWhite
     currency-name: BTW
