@@ -1087,8 +1087,8 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getASG());
     }
 
-    @Bean(name = "asgServiceImpl")
-    public EthTokenService asgService() {
+    @Bean(name = "vinciServiceImpl")
+    public EthTokenService vinciService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getVINCI());
     }
 
