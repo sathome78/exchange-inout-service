@@ -922,11 +922,6 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getMCO());
     }
 
-    @Bean(name = "zilServiceImpl")
-    public EthTokenService zilService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getZIL());
-    }
-
     @Bean(name = "manaServiceImpl")
     public EthTokenService manaService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getMANA());
