@@ -19,6 +19,7 @@ import com.exrates.inout.properties.models.RippleCoins;
 import com.exrates.inout.properties.models.StellarCoins;
 import com.exrates.inout.properties.models.WavesCoins;
 import com.exrates.inout.properties.models.XemCoins;
+import com.exrates.inout.properties.models.ZilCoins;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -45,7 +46,8 @@ import org.springframework.stereotype.Component;
         BitsharesCoins.class,
         RippleCoins.class,
         QuberaConfig.class,
-        EosCoins.class})
+        EosCoins.class,
+        ZilCoins.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -67,6 +69,7 @@ public class CryptoCurrencyProperties {
     private final RippleCoins rippleCoins;
     private final QuberaConfig quberaConfig;
     private final EosCoins eosCoins;
+    private final ZilCoins zilCoins;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -87,7 +90,8 @@ public class CryptoCurrencyProperties {
                                     BitsharesCoins bitsharesCoins,
                                     RippleCoins rippleCoins,
                                     QuberaConfig quberaConfig,
-                                    EosCoins eosCoins) {
+                                    EosCoins eosCoins,
+                                    ZilCoins zilCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -107,5 +111,6 @@ public class CryptoCurrencyProperties {
         this.rippleCoins = rippleCoins;
         this.quberaConfig = quberaConfig;
         this.eosCoins = eosCoins;
+        this.zilCoins = zilCoins;
     }
 }

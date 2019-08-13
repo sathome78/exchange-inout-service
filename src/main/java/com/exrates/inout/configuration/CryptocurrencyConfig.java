@@ -922,11 +922,6 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getMCO());
     }
 
-    @Bean(name = "zilServiceImpl")
-    public EthTokenService zilService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getZIL());
-    }
-
     @Bean(name = "manaServiceImpl")
     public EthTokenService manaService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getMANA());
@@ -1085,6 +1080,11 @@ public class CryptocurrencyConfig {
     @Bean(name = "asgServiceImpl")
     public EthTokenService asgService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getASG());
+    }
+
+    @Bean(name = "vinciServiceImpl")
+    public EthTokenService vinciService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVINCI());
     }
 
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {

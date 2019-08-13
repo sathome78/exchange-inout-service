@@ -143,5 +143,6 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty EMBR;
     private EthereumTokenProperty USDT;
     private EthereumTokenProperty ASG;
+    private EthereumTokenProperty VINCI;
 
 }

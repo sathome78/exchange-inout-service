@@ -1540,7 +1540,7 @@ ethereum-coins:
     min-confirmations: 12
     node:
       currency: Ethereum
-      url: http://172.10.13.51:8549
+      url: http://172.10.10.86:8549
       destination-dir: //data//ethereum//keystore//
       password: 061372f91f949effb934abadff5f0636de09113d
       main-address: 0xbce2c5cdaa1121cae98bc3fde704c812334a03a2
@@ -2602,6 +2602,13 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  VINCI:
+    merchant-name: VINCI
+    currency-name: VINCI
+    contract: '0x3db99ab08006aefcc9600972eca8c202396b4300'
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
 
 
 lisk-coins:
@@ -3132,3 +3139,7 @@ aws-server:
 eos-coins:
   eos:
     eosMainAddress: ha4tgmbvgege
+
+zil-coins:
+  zil:
+    zilMainaddress: zil1rjc584xkxgu85z9k3q7jcy002729u70klglzgz
