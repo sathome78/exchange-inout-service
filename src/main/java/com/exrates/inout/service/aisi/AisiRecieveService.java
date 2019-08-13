@@ -45,7 +45,7 @@ public class AisiRecieveService {
         merchant = merchantService.findByName(AisiServiceImpl.MERCHANT_NAME);
     }
 
-    @Scheduled(initialDelay = 10 * 1000, fixedDelay = 1000 * 60 * 1)
+    @Scheduled(initialDelay = 10 * 1000, fixedDelay = 1000 * 60 * 5)
     void checkIncomePayment() {
         log.info("*** Aisi *** Scheduler start");
         List<String> listOfAddress = refillService.getListOfValidAddressByMerchantIdAndCurrency(merchant.getId(), currency.getId());
