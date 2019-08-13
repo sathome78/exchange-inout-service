@@ -1087,6 +1087,11 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getASG());
     }
 
+    @Bean(name = "vinciServiceImpl")
+    public EthTokenService vinciService() {
+        return createEthereumTokenService(ccp.getEthereumTokenCoins().getVINCI());
+    }
+
     private EthTokenService createEthereumTokenService(EthereumTokenProperty property) {
         String[] s = property.getContract().replaceAll(" ", "").split(",");
         List<String> contractAddress = Arrays.asList(s);
