@@ -2602,6 +2602,13 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
+  VINCI:
+    merchant-name: VINCI
+    currency-name: VINCI
+    contract: '0x3db99ab08006aefcc9600972eca8c202396b4300'
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
 
 
 lisk-coins:
