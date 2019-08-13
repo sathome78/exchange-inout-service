@@ -1,4 +1,5 @@
 package com.exrates.inout.service.job.invoice;
+
 import com.exrates.inout.domain.dto.BtcTransactionHistoryDto;
 import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.IMerchantService;
@@ -8,19 +9,11 @@ import com.exrates.inout.service.impl.MerchantServiceContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-//exrates.model.dto.BtcTransactionHistoryDto;
-//exrates.service.BitcoinService;
-//exrates.service.MerchantService;
-//exrates.service.RefillService;
-//exrates.service.merchantStrategy.IMerchantService;
-//exrates.service.merchantStrategy.MerchantServiceContext;
 
 /**
  * Created by ValkSam
@@ -40,7 +33,7 @@ public class RefillRequestJob {
     @Autowired
     private MerchantServiceContext serviceContext;
 
-    @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
+//    @Scheduled(initialDelay = 180000, fixedDelay = 1000 * 60 * 5)
     protected void refillExpiredClean() throws Exception {
         log.debug("\nstart expired refill cleaning ... ");
         Integer expireCount = refillService.clearExpiredInvoices();
@@ -52,7 +45,7 @@ public class RefillRequestJob {
      * Because blocknotify doesn't work correctly (!!! need to check node config and node config properties !!!)
      * During the check processBtcPayment is executed, which create refill request and refill user wallet.
      */
-    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
+//    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
@@ -72,7 +65,7 @@ public class RefillRequestJob {
 
     }
 
-    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
+//    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
     public void refillPaymentsForNonSupportedCoins() {
             String[] merchantNames = new String[]{"Q", "DIME"};
             for (String merchantName : merchantNames) {

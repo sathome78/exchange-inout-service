@@ -1557,7 +1557,7 @@ ethereum-coins:
     node:
       currency: Ethereum
       #      url-our-node:
-      url: https://mainnet.infura.io/2zQ7hq4aaTq14sYckrfk
+      url: http://172.10.10.86:8549
       #      url: http://18.216.0.44:8545
       #      url: http://18.216.0.44:8549
       #      url: http://13.59.242.131:8545
