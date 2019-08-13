@@ -52,7 +52,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
 
     public String generateNewAddress() {
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
+        requestParameters.add("api_key", "970E22216DA4C486CC22EEF9A58CD30E5B3A8A0D22A62F5D5B57222D16337814CEF3E7B1D7227C4754C733FE39F433F5C4E4E0F8B6D9D8F76F893BBA4");
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/account/address/new")
                 .queryParams(requestParameters)
@@ -82,7 +82,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
     public List<Transaction> getAccountTransactions(){
         Integer max = Integer.MAX_VALUE;
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
+        requestParameters.add("api_key", "970E22216DA4C486CC22EEF9A58CD30E5B3A8A0D22A62F5D5B57222D16337814CEF3E7B1D7227C4754C733FE39F433F5C4E4E0F8B6D9D8F76F893BBA4");
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/transaction/account/{max}")
                 .queryParams(requestParameters)
@@ -130,7 +130,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
 
     public String createNewTransaction(String address, BigDecimal amount){
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
+        requestParameters.add("api_key", "970E22216DA4C486CC22EEF9A58CD30E5B3A8A0D22A62F5D5B57222D16337814CEF3E7B1D7227C4754C733FE39F433F5C4E4E0F8B6D9D8F76F893BBA4");
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/transaction/create/{FROM_ADDRESS}/{TO_ADDRESS}/{AMOUNT}")
                 .queryParams(requestParameters)
@@ -167,7 +167,7 @@ public class AisiCurrencyServiceImpl implements AisiCurrencyService {
   */
     public String getBalanceByAddress(String address){
         final MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<>();
-        requestParameters.add("api_key", algorithmService.getSecret(AISI_CODE));
+        requestParameters.add("api_key", "970E22216DA4C486CC22EEF9A58CD30E5B3A8A0D22A62F5D5B57222D16337814CEF3E7B1D7227C4754C733FE39F433F5C4E4E0F8B6D9D8F76F893BBA4");
         UriComponents builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.aisi.io/account/{address}/balance")
                 .queryParams(requestParameters)

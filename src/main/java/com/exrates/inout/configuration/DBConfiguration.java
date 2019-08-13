@@ -54,6 +54,11 @@ public class DBConfiguration {
             hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_MASTER_HOST)));
             hikariConfig.setUsername(algorithmService.getSecret(SECRET_PROD_DB_USER));
             hikariConfig.setPassword(algorithmService.getSecret(SECRET_PROD_DB_PASSWORD));
+
+            log.info("DB_CONFIG Master| JdbcUrl: {} | Db user: {}",
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_MASTER_HOST)),
+                algorithmService.getSecret(SECRET_PROD_DB_USER));
+
         } else {
             hikariConfig.setJdbcUrl(jdbcUrl);
             hikariConfig.setUsername(user);
@@ -61,10 +66,6 @@ public class DBConfiguration {
         }
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setMaximumPoolSize(1);
-
-        log.info("DB_CONFIG Master| JdbcUrl: {} | Db user: {}",
-                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_MASTER_HOST)),
-                algorithmService.getSecret(SECRET_PROD_DB_USER));
 
         return new HikariDataSource(hikariConfig);
     }
@@ -76,6 +77,11 @@ public class DBConfiguration {
             hikariConfig.setJdbcUrl(JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_SLAVE_HOST)));
             hikariConfig.setUsername(algorithmService.getSecret(SECRET_PROD_DB_USER));
             hikariConfig.setPassword(algorithmService.getSecret(SECRET_PROD_DB_PASSWORD));
+
+            log.info("DB_CONFIG Slave| JdbcUrl: {} | Db user: {}",
+                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_SLAVE_HOST)),
+                algorithmService.getSecret(SECRET_PROD_DB_USER));
+
         } else {
             hikariConfig.setJdbcUrl(jdbcUrl);
             hikariConfig.setUsername(user);
@@ -84,10 +90,6 @@ public class DBConfiguration {
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setMaximumPoolSize(1);
         hikariConfig.setReadOnly(true);
-
-        log.info("DB_CONFIG Slave| JdbcUrl: {} | Db user: {}",
-                JDBC_URL_CONNECT_TEMPLATE.replace(JDBC_URL_TEMPLATE_THAT_NEED_REPLACE, algorithmService.getSecret(SECRET_PROD_DB_SLAVE_HOST)),
-                algorithmService.getSecret(SECRET_PROD_DB_USER));
 
         return new HikariDataSource(hikariConfig);
     }

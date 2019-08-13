@@ -26,6 +26,7 @@ import com.exrates.inout.exceptions.BtcPaymentNotFoundException;
 import com.exrates.inout.exceptions.CoreWalletPasswordNotFoundException;
 import com.exrates.inout.exceptions.IncorrectCoreWalletPasswordException;
 import com.exrates.inout.exceptions.MerchantSpecParamNotFoundException;
+import com.exrates.inout.exceptions.NotImplimentedMethod;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
 import com.exrates.inout.properties.models.BitcoinNode;
 import com.exrates.inout.properties.models.BitcoinProperty;
@@ -223,7 +224,7 @@ public class BitcoinServiceImpl implements BitcoinService {
         }
         Properties passSource;
         if (node.isEnabled()) {
-            try {
+/*            try {
                 passSource = merchantService.getPassMerchantProperties(merchantName);
                 if (!passSource.containsKey("wallet.password") || StringUtils.isEmpty(passSource.getProperty("wallet.password"))) {
                     throw new RuntimeException("No wallet password");
@@ -244,7 +245,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 bitcoinWalletService.instantSendFlux().subscribe(this::onPayment);
             }
             log.info("btc service started {} ", merchantName);
-            new Thread(()->examineMissingPaymentsOnStartup()).start();
+            new Thread(()->examineMissingPaymentsOnStartup()).start();*/
         }
 
     }
@@ -253,9 +254,10 @@ public class BitcoinServiceImpl implements BitcoinService {
     @Override
     @Transactional
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
-        BigDecimal withdrawAmount = new BigDecimal(withdrawMerchantOperationDto.getAmount());
+/*        BigDecimal withdrawAmount = new BigDecimal(withdrawMerchantOperationDto.getAmount());
         String txId = bitcoinWalletService.sendToAddressAuto(withdrawMerchantOperationDto.getAccountTo(), withdrawAmount, getCoreWalletPassword());
-        return Collections.singletonMap("hash", txId);
+        return Collections.singletonMap("hash", txId);*/
+        throw new NotImplimentedMethod("Comment method for withdraw.");
     }
 
     private String getCoreWalletPassword() {
@@ -718,8 +720,8 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @PreDestroy
     public void shutdown() {
-        bitcoinWalletService.shutdown();
-        newTxCheckerScheduler.shutdown();
+//        bitcoinWalletService.shutdown();
+//        newTxCheckerScheduler.shutdown();
     }
 
 
