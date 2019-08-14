@@ -676,6 +676,15 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+        <RollingFile name="binance_log" fileName="${sys:catalina.home}/logs/merchants/binance.log"
+                     filePattern="${sys:catalina.home}/logs/merchants/binance_log%d_%i.log" append="true">
+            <PatternLayout pattern="log_file=binance_log %d{dd MMM yyyy HH:mm:ss.SSS} %level - %message%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="20 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
         <RollingFile name="zil_log" fileName="${sys:catalina.home}/logs/merchants/zil.log"
                      filePattern="${sys:catalina.home}/logs/merchants/zil_log%d_%i.log" append="true">
             <PatternLayout pattern="log_file=zil_log %d{dd MMM yyyy HH:mm:ss.SSS} %level - %message%n"/>
@@ -1095,6 +1104,10 @@
         <logger name="aisi_log" level="ALL" additivity="false">
             <AppenderRef ref="Socket"/>
             <AppenderRef ref="aisi_log"/>
+        </logger>
+        <logger name="binance_log" level="ALL" additivity="false">
+            <AppenderRef ref="Socket"/>
+            <AppenderRef ref="binance_log"/>
         </logger>
         <logger name="zil_log" level="ALL" additivity="false">
             <AppenderRef ref="Socket"/>

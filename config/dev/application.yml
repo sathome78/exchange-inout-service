@@ -3214,3 +3214,11 @@ eos-coins:
 zil-coins:
   zil:
     zilMainaddress: zil1rjc584xkxgu85z9k3q7jcy002729u70klglzgz
+
+binance-coins:
+  binance:
+    binanceMainAddress: bnb1l9whj8d4vjw6jwkj6h260eu5xr6lkt067zhumu
+    binanceNodeHost: http://172.31.30.170
+    binanceNodePort: 27147
+  BNB:
+  ARN:
