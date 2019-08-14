@@ -4,6 +4,8 @@ import com.exrates.inout.domain.dto.RefillRequestCreateDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.BinanceCoins;
+import com.exrates.inout.properties.models.BinanceTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.util.CryptoUtils;
 import com.exrates.inout.util.WithdrawUtils;
@@ -12,17 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Log4j2(topic = "binance_log")
 public class BinTokenServiceImpl implements BinTokenService {
 
-    private String currencyName;
-    private String merchantName;
     private String mainAddress;
+    private String merchantName;
+    private String currencyName;
     private Currency currency;
 
     @Autowired
@@ -32,18 +32,11 @@ public class BinTokenServiceImpl implements BinTokenService {
     @Autowired
     private WithdrawUtils withdrawUtils;
 
-    public BinTokenServiceImpl(String propertySource, String merchantName, String currencyName){
-        Properties props = new Properties();
+    public BinTokenServiceImpl(BinanceCoins binanceCoins, BinanceTokenProperty binanceTokenProperty){
 
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.mainAddress = props.getProperty("binance.main.address");
-        } catch (IOException e) {
-            log.error(e);
-        }
-
-        this.merchantName = merchantName;
-        this.currencyName = currencyName;
+        this.mainAddress = binanceCoins.getBinance().getBinanceMainAddress();
+        this.merchantName = binanceTokenProperty.getMerchantName();
+        this.currencyName = binanceTokenProperty.getCurrencyName();
     }
 
     @PostConstruct

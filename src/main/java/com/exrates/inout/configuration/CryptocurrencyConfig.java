@@ -10,6 +10,12 @@ import com.exrates.inout.service.BitcoinService;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.achain.AchainContract;
+import com.exrates.inout.service.binance.BinTokenService;
+import com.exrates.inout.service.binance.BinTokenServiceImpl;
+import com.exrates.inout.service.binance.BinanceCurrencyService;
+import com.exrates.inout.service.binance.BinanceCurrencyServiceImpl;
+import com.exrates.inout.service.binance.BinanceService;
+import com.exrates.inout.service.binance.BinanceServiceImpl;
 import com.exrates.inout.service.bitshares.BitsharesService;
 import com.exrates.inout.service.bitshares.crea.CreaServiceImpl;
 import com.exrates.inout.service.btc.BitcoinServiceImpl;
@@ -432,11 +438,6 @@ public class CryptocurrencyConfig {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getOMG());
     }
 
-    @Bean(name = "bnbServiceImpl")
-    public EthTokenService BnbService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getBINANCECOIN());
-    }
-
     @Bean(name = "atlServiceImpl")
     public EthTokenService ATLANTService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getATLANT());
@@ -610,11 +611,6 @@ public class CryptocurrencyConfig {
     @Bean(name = "mtcServiceImpl")
     public EthTokenService mtcService() {
         return createEthereumTokenService(ccp.getEthereumTokenCoins().getMTC());
-    }
-
-    @Bean(name = "arnServiceImpl")
-    public EthTokenService arnService() {
-        return createEthereumTokenService(ccp.getEthereumTokenCoins().getARN());
     }
 
     @Bean(name = "hstServiceImpl")
@@ -1098,7 +1094,28 @@ public class CryptocurrencyConfig {
                 property.getMinWalletBalance());
     }
 
-//     LISK-like cryptos
+    @Bean
+    public BinanceCurrencyService binanceCurrencyService(){
+        return new BinanceCurrencyServiceImpl(ccp.getBinanceCoins().getBinance());
+    }
+
+    @Bean(name = "binanceServiceImpl")
+    public BinanceService binanceService(){
+        return new BinanceServiceImpl(ccp.getBinanceCoins().getBinance());
+    }
+
+    @Bean(name = "bnbServiceImpl")
+    public BinTokenService bnbService() {
+        return new BinTokenServiceImpl(ccp.getBinanceCoins(), ccp.getBinanceCoins().getBNB());
+    }
+
+    @Bean(name = "arnServiceImpl")
+    public BinTokenService arnService() {
+        return new BinTokenServiceImpl(ccp.getBinanceCoins(), ccp.getBinanceCoins().getARN());
+    }
+
+
+    //     LISK-like cryptos
     @Bean(name = "liskServiceImpl")
     public LiskService liskService() {
         return createLiskService(ccp.getLiskCoins().getLisk(), new LiskSpecialMethodServiceImpl(liskRestClient()));

@@ -10,6 +10,9 @@ import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.exceptions.RefillRequestAppropriateNotFoundException;
+import com.exrates.inout.properties.models.BinanceCoins;
+import com.exrates.inout.properties.models.BinanceProperty;
+import com.exrates.inout.properties.models.BinanceTokenProperty;
 import com.exrates.inout.service.CurrencyService;
 import com.exrates.inout.service.MerchantService;
 import com.exrates.inout.service.RefillService;
@@ -20,12 +23,10 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -38,13 +39,13 @@ public class BinanceServiceImpl implements BinanceService {
     private String merchantName;
     private int confirmations;
     private static Map<String, BinTokenService> tokenMap = new HashMap<String, BinTokenService>(){{
-        put("BNB", new BinTokenServiceImpl("merchants/binance.properties", "BinanceCoin","BNB"));
-        put("ARN-71B", new BinTokenServiceImpl("merchants/binance.properties", "ARN","ARN"));
+        put("BNB", new BinTokenServiceImpl(new BinanceCoins(), new BinanceTokenProperty("BinanceCoin","BNB")));
+        put("ARN-71B", new BinTokenServiceImpl(new BinanceCoins(), new BinanceTokenProperty("ARN","ARN")));
     }};
 
+    private String mainAddress;
     private Merchant assetMerchant;
     private Currency assetCurrency;
-    private String mainAddress;
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -61,17 +62,10 @@ public class BinanceServiceImpl implements BinanceService {
     @Autowired
     private BinanceCurrencyService binanceCurrencyService;
 
-    public BinanceServiceImpl(String propertySource, String merchantName, int confirmations){
-        Properties props = new Properties();
-
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            this.mainAddress = props.getProperty("binance.main.address");
-        } catch (IOException e) {
-            log.error(e);
-        }
-        this.merchantName = merchantName;
-        this.confirmations = confirmations;
+    public BinanceServiceImpl(BinanceProperty binanceProperty){
+        this.merchantName = binanceProperty.getMerchantName();
+        this.confirmations = Integer.valueOf(binanceProperty.getConfirmations());
+        this.mainAddress = binanceProperty.getBinanceMainAddress();
     }
 
     @PostConstruct

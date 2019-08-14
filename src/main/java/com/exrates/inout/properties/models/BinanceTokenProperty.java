@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder(builderClassName = "Builder", toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BinanceProperty {
+public class BinanceTokenProperty {
 
-    private String binanceMainAddress;
-    private String binanceNodeHost;
-    private String binanceNodePort;
     private String merchantName;
-    private String confirmations;
+    private String currencyName;
 }

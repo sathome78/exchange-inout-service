@@ -1681,13 +1681,6 @@ ethereum-token-coins:
     isERC20: true
     unit: ETHER
     min-wallet-balance: 0
-  BINANCECOIN:
-    merchant-name: BinanceCoin
-    currency-name: BNB
-    contract: '0xb8c77482e45f1f44de1745f52c74426c631bdd52'
-    isERC20: true
-    unit: ETHER
-    min-wallet-balance: 0
   ATLANT:
     merchant-name: ATLANT
     currency-name: ATL
@@ -1932,13 +1925,6 @@ ethereum-token-coins:
     contract: '0x905e337c6c8645263d3521205aa37bf4d034e745'
     isERC20: true
     unit: ETHER
-    min-wallet-balance: 0
-  ARN:
-    merchant-name: ARN
-    currency-name: ARN
-    contract: '0xba5f11b16b155792cf3b2e6880e8706859a8aeb6'
-    isERC20: true
-    unit: AIWEI
     min-wallet-balance: 0
   HST:
     merchant-name: HST
@@ -3135,3 +3121,17 @@ eos-coins:
 zil-coins:
   zil:
     zilMainaddress: zil1rjc584xkxgu85z9k3q7jcy002729u70klglzgz
+
+binance-coins:
+  binance:
+    binanceMainAddress: bnb1l9whj8d4vjw6jwkj6h260eu5xr6lkt067zhumu
+    binanceNodeHost: http://172.31.30.170
+    binanceNodePort: 27147
+    merchantName: BinanceBlockchain
+    confirmations: 40
+  BNB:
+    merchantName: BinanceCoin
+    currencyName: BNB
+  ARN:
+    merchantName: ARN
+    currencyName: ARN

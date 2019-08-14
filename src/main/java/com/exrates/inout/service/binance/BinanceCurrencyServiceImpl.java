@@ -2,13 +2,12 @@ package com.exrates.inout.service.binance;
 
 import com.binance.dex.api.client.domain.broadcast.Transaction;
 import com.binance.dex.api.client.impl.BinanceDexApiNodeClientImpl;
+import com.exrates.inout.properties.models.BinanceProperty;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Properties;
 
 @Log4j2(topic = "binance_log")
 public class BinanceCurrencyServiceImpl implements BinanceCurrencyService {
@@ -22,16 +21,10 @@ public class BinanceCurrencyServiceImpl implements BinanceCurrencyService {
     private String fullUrl;
 
     @Autowired
-    public BinanceCurrencyServiceImpl(String propertySource){
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream(propertySource));
-            String host = props.getProperty("binance.node.host");
-            String port = props.getProperty("binance.node.port");
-            fullUrl = String.join(":", host, port);
-        } catch (IOException e) {
-            log.error(e);
-        }
+    public BinanceCurrencyServiceImpl(BinanceProperty binanceProperty){
+        String host = binanceProperty.getBinanceNodeHost();
+        String port = binanceProperty.getBinanceNodePort();
+        fullUrl = String.join(":", host, port);
 
         // TODO HRP????
         binanceDexApiNodeClient = new BinanceDexApiNodeClientImpl(fullUrl,"BNB");
