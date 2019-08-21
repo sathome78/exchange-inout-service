@@ -28,7 +28,7 @@ public class DataTableParams {
     private List<String> columns = Collections.EMPTY_LIST;
 
 
-    enum OrderDirection {
+    public enum OrderDirection {
         ASC, DESC
     }
 
@@ -53,6 +53,10 @@ public class DataTableParams {
 
     public List<String> getColumns() {
         return columns;
+    }
+
+    public OrderDirection getOrderDirection() {
+        return orderDirection;
     }
 
     public static DataTableParams resolveParamsFromRequest(Map<String, String> requestParams) {
@@ -96,6 +100,13 @@ public class DataTableParams {
             return "";
         }
         return new StringJoiner(" ").add("ORDER BY").add(columns.get(orderColumn)).add(orderDirection.name()).toString();
+    }
+
+    public String getOrderColumnName(){
+        if (columns.isEmpty() || orderColumn >= columns.size()) {
+            return "";
+        }
+        return columns.get(orderColumn);
     }
 
     public String getSearchClause() {

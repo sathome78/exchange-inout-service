@@ -1,4 +1,5 @@
 package com.exrates.inout.service.btcCore;
+
 import com.exrates.inout.domain.dto.BtcBlockDto;
 import com.exrates.inout.domain.dto.BtcPaymentFlatDto;
 import com.exrates.inout.domain.dto.BtcPaymentResultDto;
@@ -9,6 +10,7 @@ import com.exrates.inout.domain.dto.BtcTxOutputDto;
 import com.exrates.inout.domain.dto.BtcTxPaymentDto;
 import com.exrates.inout.domain.dto.BtcWalletInfoDto;
 import com.exrates.inout.domain.dto.TxReceivedByAddressFlatDto;
+import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.enums.ActionType;
 import com.exrates.inout.domain.main.PagingData;
 import com.exrates.inout.exceptions.BitcoinCoreException;
@@ -76,6 +78,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -748,26 +751,49 @@ public class CoreWalletServiceImpl implements CoreWalletService {
     }
 
     @Override
-    public PagingData<List<BtcTransactionHistoryDto>> listTransaction(int start, int length, String searchValue) {
+    public PagingData<List<BtcTransactionHistoryDto>> listTransaction(DataTableParams dataTableParams) {
+        PagingData<List<BtcTransactionHistoryDto>> result = new PagingData<>();
+        int start = dataTableParams.getStart();
+        int length = dataTableParams.getLength() == 0 ? 10 : dataTableParams.getLength();
+        String searchValue = dataTableParams.getSearchValue();
+        String orderColumn = dataTableParams.getOrderColumnName();
+        DataTableParams.OrderDirection orderDirection = dataTableParams.getOrderDirection();
         try {
-            PagingData<List<BtcTransactionHistoryDto>> result = new PagingData<>();
-
-            int recordsTotal = getWalletInfo().getTransactionCount() != null ? getWalletInfo().getTransactionCount() : calculateTransactionCount();
-            List<BtcTransactionHistoryDto> data = getTransactionsForPagination(start, length);
-
-            if (!(StringUtils.isEmpty(searchValue))) {
-                recordsTotal = findTransactions(searchValue).size();
-                data = findTransactions(searchValue);
+            final Integer transactionCount = getWalletInfo().getTransactionCount();
+            if (transactionCount == null || transactionCount == 0 ) {
+                return  PagingData.empty();
             }
-            result.setData(data);
+            int recordsTotal = transactionCount > 10000 ? 10000 : transactionCount;
+            if (orderDirection == DataTableParams.OrderDirection.DESC && orderColumn.equals("time")){
+                result.setData(getTransactionsForPagination(start, length));
+            } else {
+                List<BtcTransactionHistoryDto> dataAll = getTransactionsForPagination(0, recordsTotal);
+                if (StringUtils.isNotEmpty(searchValue)) {
+                    dataAll = dataAll
+                            .stream()
+                            .filter(historyDtoPredicate(searchValue))
+                            .collect(Collectors.toList());
+                    recordsTotal = dataAll.size();
+                }
+                dataAll.sort(BtcTransactionHistoryDto.getComparator(orderColumn, orderDirection));
+                int end = recordsTotal < (start + length) ? recordsTotal : start + length;
+                result.setData(dataAll.subList(start, end));
+            }
+
             result.setTotal(recordsTotal);
             result.setFiltered(recordsTotal);
-
             return result;
         } catch (BitcoindException | CommunicationException e) {
             log.error(e);
             throw new BitcoinCoreException(e.getMessage());
         }
+    }
+
+    private Predicate<BtcTransactionHistoryDto> historyDtoPredicate(String value) {
+        return e ->
+                (StringUtils.equals(e.getAddress(), value))
+                        || StringUtils.equals(e.getBlockhash(), value)
+                        || StringUtils.equals(e.getTxId(), value);
     }
 
     @Override
