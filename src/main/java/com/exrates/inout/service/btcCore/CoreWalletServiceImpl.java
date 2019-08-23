@@ -759,11 +759,12 @@ public class CoreWalletServiceImpl implements CoreWalletService {
         String orderColumn = dataTableParams.getOrderColumnName();
         DataTableParams.OrderDirection orderDirection = dataTableParams.getOrderDirection();
         try {
-            final Integer transactionCount = getWalletInfo().getTransactionCount();
-            if (transactionCount == null || transactionCount == 0 ) {
-                return  PagingData.empty();
-            }
-            int recordsTotal = transactionCount > 10000 ? 10000 : transactionCount;
+            final Integer transactionCount = getWalletInfo().getTransactionCount() != null
+                    ? getWalletInfo().getTransactionCount()
+                    : calculateTransactionCount();
+            int recordsTotal = transactionCount > 10000
+                    ? 10000
+                    : transactionCount;
             if (orderDirection == DataTableParams.OrderDirection.DESC && orderColumn.equals("time")){
                 result.setData(getTransactionsForPagination(start, length));
             } else {
