@@ -10,7 +10,7 @@ spring:
       ssm-path: vLHjSkPJjB6JLVcA
       username: root
       password: root
-      jdbc-url: jdbc:mysql://localhost:3306/birzha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
+      jdbc-url: jdbc:mysql://localhost:3306/staging?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
       connection-test-query: SELECT 1 FROM DUAL
       driver-class-name: com.mysql.jdbc.Driver
   jpa:

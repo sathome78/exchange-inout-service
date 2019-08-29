@@ -29,7 +29,7 @@ public class InputApiController {
         return inputOutputService.prepareCreditsOperation(payment, extractUserId(request), extractUserRole(request));
     }
 
-    @GetMapping("/checkInputRequestsLimit")
+    @GetMapping(value = "/checkInputRequestsLimit", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public boolean checkInputRequestsLimit(HttpServletRequest request, @RequestParam("currency_id") int currencyId){
         return refillService.checkInputRequestsLimit(currencyId, extractUserRole(request), extractUserId(request));
     }

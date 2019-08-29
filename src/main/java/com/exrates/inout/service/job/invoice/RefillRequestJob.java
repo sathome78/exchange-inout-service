@@ -9,6 +9,7 @@ import com.exrates.inout.service.impl.MerchantServiceContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -45,7 +46,7 @@ public class RefillRequestJob {
      * Because blocknotify doesn't work correctly (!!! need to check node config and node config properties !!!)
      * During the check processBtcPayment is executed, which create refill request and refill user wallet.
      */
-//    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 3)
     public void refillCheckPaymentsForCoins() {
 
         log.info("Starting refillCheckPaymentsForCoins");
@@ -65,7 +66,7 @@ public class RefillRequestJob {
 
     }
 
-//    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
+    @Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 5)
     public void refillPaymentsForNonSupportedCoins() {
             String[] merchantNames = new String[]{"Q", "DIME"};
             for (String merchantName : merchantNames) {

@@ -224,7 +224,7 @@ public class BitcoinServiceImpl implements BitcoinService {
         }
         Properties passSource;
         if (node.isEnabled()) {
-/*            try {
+            try {
                 passSource = merchantService.getPassMerchantProperties(merchantName);
                 if (!passSource.containsKey("wallet.password") || StringUtils.isEmpty(passSource.getProperty("wallet.password"))) {
                     throw new RuntimeException("No wallet password");
@@ -245,7 +245,7 @@ public class BitcoinServiceImpl implements BitcoinService {
                 bitcoinWalletService.instantSendFlux().subscribe(this::onPayment);
             }
             log.info("btc service started {} ", merchantName);
-            new Thread(()->examineMissingPaymentsOnStartup()).start();*/
+            new Thread(()->examineMissingPaymentsOnStartup()).start();
         }
 
     }
@@ -254,10 +254,9 @@ public class BitcoinServiceImpl implements BitcoinService {
     @Override
     @Transactional
     public Map<String, String> withdraw(WithdrawMerchantOperationDto withdrawMerchantOperationDto) throws Exception {
-/*        BigDecimal withdrawAmount = new BigDecimal(withdrawMerchantOperationDto.getAmount());
+        BigDecimal withdrawAmount = new BigDecimal(withdrawMerchantOperationDto.getAmount());
         String txId = bitcoinWalletService.sendToAddressAuto(withdrawMerchantOperationDto.getAccountTo(), withdrawAmount, getCoreWalletPassword());
-        return Collections.singletonMap("hash", txId);*/
-        throw new NotImplimentedMethod("Comment method for withdraw.");
+        return Collections.singletonMap("hash", txId);
     }
 
     private String getCoreWalletPassword() {
@@ -407,8 +406,6 @@ public class BitcoinServiceImpl implements BitcoinService {
         String blockHash = blockDto.getHash();
         log.info("incoming block {} - {}", currencyName, blockHash);
         try {
-//            Merchant merchant = merchantService.findByName(merchantName);
-//            Currency currency = currencyService.findByName(currencyName);
             List<RefillRequestFlatDto> btcRefillRequests = refillService.getInExamineByMerchantIdAndCurrencyIdList(merchant.getId(), currency.getId());
             log.info("Refill requests ready for update: " +
                     btcRefillRequests.stream().map(RefillRequestFlatDto::getId).collect(Collectors.toList()));
@@ -720,8 +717,8 @@ public class BitcoinServiceImpl implements BitcoinService {
 
     @PreDestroy
     public void shutdown() {
-//        bitcoinWalletService.shutdown();
-//        newTxCheckerScheduler.shutdown();
+        bitcoinWalletService.shutdown();
+        newTxCheckerScheduler.shutdown();
     }
 
 
