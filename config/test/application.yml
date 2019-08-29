@@ -81,7 +81,7 @@ mail:
 
 
 endpoints:
-  stock: http://dev1.exrates.tech/
+  stock: http://test.exapp/
   inoutPrefix: /inout
 
 telegram:
@@ -3052,8 +3052,8 @@ payment-system-merchants:
   interkassa:
     url: https://sci.interkassa.com/
     checkout-id: 5bf2ca393c1eaf6b098b456a
-    status-url: http://dev1.exrates.tech/merchants/interkassa/payment/status
-    success-url: http://dev1.exrates.tech/merchants/interkassa/payment/success
+    status-url: http://dev1.exapp/merchants/interkassa/payment/status
+    success-url: http://dev1.exapp/merchants/interkassa/payment/success
     secret-key: lVf3A5Nc0JPLYJkf
     secret-url: https://api.interkassa.com/v1/paysystem-input-payway?checkoutId=
     username: 5bf2a6c03c1eafc8048b4576
