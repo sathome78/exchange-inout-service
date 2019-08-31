@@ -19,6 +19,7 @@ import com.exrates.inout.domain.dto.RefillRequestPutOnBchExamDto;
 import com.exrates.inout.domain.dto.RefillRequestSetConfirmationsNumberDto;
 import com.exrates.inout.domain.dto.WithdrawMerchantOperationDto;
 import com.exrates.inout.domain.dto.datatable.DataTable;
+import com.exrates.inout.domain.dto.datatable.DataTableParams;
 import com.exrates.inout.domain.main.Currency;
 import com.exrates.inout.domain.main.Merchant;
 import com.exrates.inout.domain.main.PagingData;
@@ -700,12 +701,9 @@ public class BitcoinServiceImpl implements BitcoinService {
     }
 
     @Override
-    public DataTable<List<BtcTransactionHistoryDto>> listTransactions(Map<String, String> tableParams){
-        Integer start = Integer.parseInt(tableParams.getOrDefault("start", "0"));
-        Integer length = Integer.parseInt(tableParams.getOrDefault("length", "10"));
-        String searchValue = tableParams.get("search[value]");
-
-        PagingData<List<BtcTransactionHistoryDto>> searchResult = bitcoinWalletService.listTransaction(start, length, searchValue);
+    public DataTable<List<BtcTransactionHistoryDto>> listTransactions(Map<String, String> tableParams) throws BitcoindException, CommunicationException{
+        DataTableParams dataTableParams = DataTableParams.resolveParamsFromRequest(tableParams);
+        PagingData<List<BtcTransactionHistoryDto>> searchResult = bitcoinWalletService.listTransaction(dataTableParams);
 
         DataTable<List<BtcTransactionHistoryDto>> output = new DataTable<>();
         output.setData(searchResult.getData());

@@ -1,12 +1,24 @@
 package com.exrates.inout.domain.main;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class PagingData<E extends Collection<?>> {
 
     private int total;
     private int filtered;
     private E data;
+
+    public PagingData() { }
+
+    private PagingData(int total, int filtered, E data) {
+        this.total = total;
+        this.filtered = filtered;
+        this.data = data;
+    }
+    public static  PagingData empty() {
+        return new PagingData(0, 0, Collections.emptyList());
+    }
 
     public int getTotal() {
         return total;
