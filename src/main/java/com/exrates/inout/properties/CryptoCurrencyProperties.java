@@ -2,6 +2,7 @@ package com.exrates.inout.properties;
 
 import com.exrates.inout.properties.models.AisiCoins;
 import com.exrates.inout.properties.models.AwsServer;
+import com.exrates.inout.properties.models.BinanceCoins;
 import com.exrates.inout.properties.models.BitcoinCoins;
 import com.exrates.inout.properties.models.BitsharesCoins;
 import com.exrates.inout.properties.models.EosCoins;
@@ -47,7 +48,8 @@ import org.springframework.stereotype.Component;
         RippleCoins.class,
         QuberaConfig.class,
         EosCoins.class,
-        ZilCoins.class})
+        ZilCoins.class,
+        BinanceCoins.class})
 public class CryptoCurrencyProperties {
 
     private final BitcoinCoins bitcoinCoins;
@@ -70,6 +72,7 @@ public class CryptoCurrencyProperties {
     private final QuberaConfig quberaConfig;
     private final EosCoins eosCoins;
     private final ZilCoins zilCoins;
+    private final BinanceCoins binanceCoins;
 
     @Autowired
     public CryptoCurrencyProperties(BitcoinCoins bitcoinCoins,
@@ -91,7 +94,8 @@ public class CryptoCurrencyProperties {
                                     RippleCoins rippleCoins,
                                     QuberaConfig quberaConfig,
                                     EosCoins eosCoins,
-                                    ZilCoins zilCoins) {
+                                    ZilCoins zilCoins,
+                                    BinanceCoins binanceCoins) {
         this.bitcoinCoins = bitcoinCoins;
         this.ethereumCoins = ethereumCoins;
         this.ethereumTokenCoins = ethereumTokenCoins;
@@ -112,5 +116,6 @@ public class CryptoCurrencyProperties {
         this.quberaConfig = quberaConfig;
         this.eosCoins = eosCoins;
         this.zilCoins = zilCoins;
+        this.binanceCoins = binanceCoins;
     }
 }
