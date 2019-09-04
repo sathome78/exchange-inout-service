@@ -2595,6 +2595,13 @@ ethereum-token-coins:
     isERC20: false
     unit: ETHER
     min-wallet-balance: 0
+  ACU:
+    merchant-name: ACU
+    currency-name: ACU
+    contract: '0xd536bbd5414a8c2beed82a63737b9327d2fa35a6'
+    isERC20: false
+    unit: ETHER
+    min-wallet-balance: 0
 
 
 lisk-coins:

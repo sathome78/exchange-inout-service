@@ -144,5 +144,6 @@ public class EthereumTokenCoins {
     private EthereumTokenProperty USDT;
     private EthereumTokenProperty ASG;
     private EthereumTokenProperty VINCI;
+    private EthereumTokenProperty ACU;
 
 }
