@@ -1069,7 +1069,7 @@ bitcoin-coins:
   qrk:
     merchant-name: QRK
     currency-name: QRK
-    min-confirmations: 30
+    min-confirmations: 100
     block-target-for-fee: 20
     raw-tx-enabled: false
     support-subtract-fee: false
