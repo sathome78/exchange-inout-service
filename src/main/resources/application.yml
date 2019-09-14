@@ -33,6 +33,7 @@ spring:
     host: 172.31.14.1
     port: 5672
 
+core_url_back: https://exrates.me
 logging:
   config: classpath:log4j2-dev.xml
 
@@ -3072,6 +3073,10 @@ blockchain:
   identifier: 83f0914a-4659-4e36-8c04-24643b9b8596
 
 payment-system-merchants:
+  adgoup:
+    client_id: 730DfaD3nJXK7oj
+    client_secret: tSjTd17EAKbUQpE3lHJq7NnKo3ATCO
+    base_url: https://dev.adgroup.finance/
   advcash:
     url: https://wallet.advcash.com/sci/
     accountId: exratesnew@gmail.com

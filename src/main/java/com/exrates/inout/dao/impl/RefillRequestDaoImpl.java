@@ -122,6 +122,20 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         return refillRequestAddressDto;
     };
 
+    private static RowMapper<RefillRequestFlatDto> refillRequestFlatDtoRowMapperShort = (rs, idx) -> {
+        RefillRequestFlatDto refillRequestFlatDto = new RefillRequestFlatDto();
+        refillRequestFlatDto.setId(rs.getInt("id"));
+        refillRequestFlatDto.setAmount(rs.getBigDecimal("amount"));
+        refillRequestFlatDto.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
+        refillRequestFlatDto.setStatus(RefillStatusEnum.convert(rs.getInt("status_id")));
+        refillRequestFlatDto.setCurrencyId(rs.getInt("currency_id"));
+        refillRequestFlatDto.setMerchantId(rs.getInt("merchant_id"));
+        refillRequestFlatDto.setMerchantTransactionId(rs.getString("merchant_transaction_id"));
+        refillRequestFlatDto.setRemark(rs.getString("remark"), "");
+        refillRequestFlatDto.setAdminHolderId(rs.getInt("admin_holder_id"));
+        return refillRequestFlatDto;
+    };
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -1398,6 +1412,18 @@ public class RefillRequestDaoImpl implements RefillRequestDao {
         }
     }
 
+    @Override
+    public List<RefillRequestFlatDto> getByMerchantIdAndRemark(int merchantId, String remark) {
+        String sql = "SELECT  REFILL_REQUEST.* " +
+                " FROM REFILL_REQUEST WHERE REFILL_REQUEST.merchant_id = :merchant_id " +
+                "       AND REFILL_REQUEST.remark = :remark ";
+
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("merchant_id", merchantId);
+            put("remark", remark);
+        }};
+        return namedParameterJdbcTemplate.query(sql, params, refillRequestFlatDtoRowMapperShort);
+    }
 
 }
 
